@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Outfit } from 'next/font/google' // Assuming there's a font called Outfit
 import './globals.css'
+import toast, { Toaster } from 'react-hot-toast';
 
 const outfit = Outfit({ subsets: ['latin'] })
 
@@ -47,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={outfit.className}>{children}</body>
+      <Toaster />
     </html>
   )
 }
