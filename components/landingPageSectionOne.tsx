@@ -2,11 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from 'next/image'
-import { Icon } from '@iconify/react';
 import { Button } from '@/components/ui/button'
 import { LandingPageFormData } from '@/components/landingPageFormData'
-import { useWindowScroll } from "@uidotdev/usehooks";
-import { useInView } from 'react-intersection-observer';
 
 
 
