@@ -1,10 +1,13 @@
 "use client"
 
+import { motion } from "framer-motion";
 import Image from 'next/image'
 import { Icon } from '@iconify/react';
 import { Button } from '@/components/ui/button'
 import { LandingPageFormData } from '@/components/landingPageFormData'
 import { useWindowScroll } from "@uidotdev/usehooks";
+import { useInView } from 'react-intersection-observer';
+
 
 
 export const SectionOneLanding = () => {
@@ -66,14 +69,19 @@ export const SectionOneLanding = () => {
                   </Button>
                 }
               </div>
+<div   className="translate-y-[100px] sm:translate-y-[77px] z-10 md:pl-3">
+  
 
-              <Image
-                src="https://res.cloudinary.com/drykej1am/image/upload/v1704631376/weeshr_website/heirzqtff6zevkg4fosi.png"
-                alt="circle img"
-                width={70}
-                height={70}
-                className="translate-y-[100px] sm:translate-y-[77px] z-10 "
-              />
+<motion.img
+  src="https://res.cloudinary.com/drykej1am/image/upload/v1704631376/weeshr_website/heirzqtff6zevkg4fosi.png"
+  alt="circle img"
+  width={70}
+  height={70}
+
+  whileInView={{ rotate: 360, transition: { duration: 20, loop: Infinity } }}
+
+/>
+</div>
             </div>
           </div>
 
