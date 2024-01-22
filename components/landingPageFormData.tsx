@@ -93,7 +93,9 @@ const profileFormSchema = z.object({
     dob: z.date({
       required_error: "A date of birth is required.",
     }),
-  
+    wish: z.string({
+      required_error: "Please enter your birthday wish.",
+    }).optional(),
 
      
   
