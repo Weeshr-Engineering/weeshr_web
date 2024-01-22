@@ -154,7 +154,7 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
 </h4> 
 </div>
 
-<div className='px-6 pt-14 w-full max-w-[600px] md:max-w-[450px]  '>
+<div className='px-6 pt-14 w-full max-w-[600px] md:max-w-[500px]  '>
   
 
 <Form {...form}>
