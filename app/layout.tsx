@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 
 
   title: "Weeshr",
-  description: "Make a Weesh",
+  description: "Make a Weesh!! ",
 
   openGraph: {
-    title: "Birble AI",
-    description: "AI Dashboard to unleash creative wonders.",
+    title: "Weeshr",
+    description: "Make a Weesh!!",
     url: 'https://weeshr.com',
     images: [
       {
