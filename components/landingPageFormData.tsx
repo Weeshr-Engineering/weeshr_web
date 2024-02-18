@@ -44,63 +44,35 @@ import { Textarea } from "@/components/ui/textarea"
 
 
 const profileFormSchema = z.object({
-  firstName: z
+  preferredName: z
     .string(
       {
-        required_error: "Please input your first name",
+        required_error: "Please input your preferred name",
       }
     )
     .min(2, {
       message: "First name must be at least 2 characters.",
     })
     .max(30, {
-      message: "First name  must not be longer than 30 characters.",
+      message: "Preferred name  must not be longer than 30 characters.",
     }),
-    lastName: z
+    wish: z
     .string(
       {
-        required_error: "Please input your last name",
+        required_error: "Please input your preferred name",
       }
     )
-    .min(2, {
-      message: "Last name must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Last name  must not be longer than 30 characters.",
-    }),
+    .optional(),
   email: z
     .string({
       required_error: "Please input your  email",
     })
-    .email(),
-    
-    phoneNumber: z.string({
-      required_error: "Please enter your valid phone number.",
-    })
-      .min(10, {
-        message: "Phone number must be at least 10 characters.",
-      })
-      .max(14, {
-        message: "Phone number must be at most 14 characters.",
-      })
-    
-,    
-    gender: z
-    .string({
-      required_error: "Please select your gender.",
-    })
-    ,
-    dob: z.date({
-      required_error: "A date of birth is required.",
+    .email({
+      message: "Please enter a valid email address",
     }),
-    wish: z.string({
-      required_error: "Please enter your birthday wish.",
-    }).optional(),
+   
 
-     
-  
-
-
+    
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -114,23 +86,91 @@ export const LandingPageFormData = () => {
     mode: "onChange",
   })
 
-
   function onSubmit(data: ProfileFormValues) {
-    toast('Weeshr Form Submitted !!',
-    {
-      position:"top-right",
-      icon: '✅',
-      style: {
-        borderRadius: '10px',
-                color: '#000',
-      },
-   
-    }
-  );
+    const requestBody = {
+      name: data.preferredName,
+      email: data.email,
+      feedback: data.wish || 'none',
+    };
+  
+    const apiUrl = 'https://api.staging.weeshr.com/api/v1/user-feedback'; // API URL
+  
+    // console.log('Request Body:', requestBody); // Log the request body
+    // console.log('API URL:', apiUrl); // Log the API URL
+  
+    toast.promise(
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }).then((response) => {
+        if (!response.ok) {
+          // console.error('Error fetching', response);
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }),
+      {
+        loading: 'Saving...',
+        success: <b>Weeshr Form Submitted!</b>,
+        error: 'Submission unsuccessful. Please try again.',
+
+      }
+    ).then(() => {
+      // console.log('Form submitted successfully!'); // Log success message
+      form.reset({
+        preferredName: '',
+        email: '',
+        wish: '',
+      });
+    }).catch((error) => {
+      // console.error('Error:', error); // Log any errors that occur
+      // Additional error handling, such as displaying an error message to the user
+    });
   }
 
+  
+
+  // function onSubmit(data: ProfileFormValues) {
+  //   const requestBody = {
+  //     name: data.preferredName,
+  //     email: data.email,
+  //     feedback: data.wish,
+  //   };
+  
+  //   toast.promise(
+  //     fetch('https://api.staging.weeshr.com/api/v1/user-feedback', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(requestBody),
+  //       mode: 'no-cors',
+  //     }).then((response) => response.json()),
+  //     {
+  //       loading: 'Saving...',
+  //       success: <b>Weeshr Form Submitted!</b>,
+  //       error: <b>Could not save.</b>,
+  //     }
+  //   ).then(() => {
+  //     form.reset(
+  //       {
+  //         preferredName: "",
+  //         email: "",
+  //         wish: "",
+  //       }
+  //     );// Reset the form after it has been saved
+  //   });
+  // }
+  
+
+ 
+  
+
   return (
-    <div className="flex flex-col items-center justify-center w-full md:flex-row">
+    <div className="flex flex-col items-center justify-center w-full pt-10 md:flex-row md:pt-0">
      
   
   <div className='md:-translate-y-[90px] md:pl-10 '>
@@ -154,38 +194,27 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
 </h4> 
 </div>
 
-<div className='px-6 pt-14 w-full max-w-[600px] md:max-w-[500px]  '>
+<div className='px-6 md:pt-8 pt-14  w-full max-w-[600px] md:max-w-[500px]'>
   
 
 <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="px-10 space-y-4 bg-white py-14 rounded-2xl ">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full px-10 space-y-4 bg-white py-14 rounded-2xl ">
        <div className='flex flex-row justify-between gap-[15px] '>
        
        <FormField
           control={form.control}
-          name="firstName"
+          name="preferredName"
           render={({ field }) => (
             <FormItem>
            
               <FormControl>
-                <Input placeholder="First Name" {...field} className='w-full' />
+                <Input placeholder="Your preferred name" {...field} className='w-full' />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-           <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Last Name" {...field} className='w-full' />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        
        </div>
 
        <FormField
@@ -200,43 +229,9 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="phoneNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input 
-                type="number"
-                placeholder="Your phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    
      
-        <FormField
-          control={form.control}
-          name="gender"
-          render={({ field }) => (
-            <FormItem>
-             
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Gender" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="Others">Prefer not to say</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+       
         <FormField
           control={form.control}
           name="wish"
@@ -257,51 +252,11 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
           )}
         />
 
-<FormField
-          control={form.control}
-          name="dob"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal h-11 bg-[#c3c7db32]",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Birth date</span>
-                      )}
-                      <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         
      <div className='flex justify-end pt-10'>
      <Button
-        className="px-4 py-4 text-xs transition-all rounded-full hover:scale-105 "
+        className="px-6 py-6 rounded-full transimtion-all text-s hover:scale-105 "
           style={{
             background:
               'linear-gradient(90deg, #0CC990 0%, #6A70FF 35.94%, #41C7D9 66.15%, #AEE219 100%)',
