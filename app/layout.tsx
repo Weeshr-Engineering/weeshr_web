@@ -48,7 +48,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={outfit.className}>{children}</body>
-      <Toaster />
+      <Toaster 
+       position="top-right"
+      />
     </html>
   )
 }
