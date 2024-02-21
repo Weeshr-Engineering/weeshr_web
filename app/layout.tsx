@@ -50,6 +50,7 @@ export default function RootLayout({
       <body className={outfit.className}>{children}</body>
       <Toaster 
        position="top-right"
+       reverseOrder={false}
       />
     </html>
   )
