@@ -96,7 +96,7 @@ export const LandingPageFormData = () => {
     const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df';
   
     console.log('Request Body:', requestBody); // Log the request body
-    console.log('API URL:', apiUrl); // Log the API URL
+    console.log('API URL:', apiUrl); // L og the API URL
   
     toast.promise(
       fetch(apiUrl, {
