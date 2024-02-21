@@ -93,7 +93,7 @@ export const LandingPageFormData = () => {
       wish: data.wish || 'none',
     };
   
-    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/:listId';
+    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df';
   
     console.log('Request Body:', requestBody); // Log the request body
     console.log('API URL:', apiUrl); // Log the API URL
