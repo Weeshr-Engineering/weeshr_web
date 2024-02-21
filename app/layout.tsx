@@ -49,7 +49,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={outfit.className}>{children}</body>
       <Toaster 
-       position="top-right"
+       position="bottom-right"
        reverseOrder={false}
       />
     </html>
