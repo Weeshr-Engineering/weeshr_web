@@ -90,13 +90,13 @@ export const LandingPageFormData = () => {
     const requestBody = {
       name: data.preferredName,
       email: data.email,
-      feedback: data.wish || 'none',
+      wish: data.wish || 'none',
     };
   
-    const apiUrl = 'https://api.staging.weeshr.com/api/v1/user-feedback'; // API URL
+    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/:listId'; // API URL
   
-    // console.log('Request Body:', requestBody); // Log the request body
-    // console.log('API URL:', apiUrl); // Log the API URL
+    //  console.log('Request Body:', requestBody); // Log the request body
+    //  console.log('API URL:', apiUrl); // Log the API URL
   
     toast.promise(
       fetch(apiUrl, {
@@ -115,7 +115,8 @@ export const LandingPageFormData = () => {
       {
         loading: 'Saving...',
         success: <b>Weeshr Form Submitted!</b>,
-        error: 'Submission unsuccessful. Please try again.',
+        error: (error) => `Submission unsuccessful. Error: ${error.message}`,
+
 
       }
     ).then(() => {
@@ -132,7 +133,7 @@ export const LandingPageFormData = () => {
   }
 
   
-
+ 
   // function onSubmit(data: ProfileFormValues) {
   //   const requestBody = {
   //     name: data.preferredName,
