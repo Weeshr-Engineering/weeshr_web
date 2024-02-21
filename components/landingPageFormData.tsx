@@ -93,10 +93,10 @@ export const LandingPageFormData = () => {
       wish: data.wish || 'none',
     };
   
-    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/:listId'; // API URL
+    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/:listId';
   
-    //  console.log('Request Body:', requestBody); // Log the request body
-    //  console.log('API URL:', apiUrl); // Log the API URL
+    console.log('Request Body:', requestBody); // Log the request body
+    console.log('API URL:', apiUrl); // Log the API URL
   
     toast.promise(
       fetch(apiUrl, {
@@ -107,7 +107,7 @@ export const LandingPageFormData = () => {
         body: JSON.stringify(requestBody),
       }).then((response) => {
         if (!response.ok) {
-          // console.error('Error fetching', response);
+          console.error('Error fetching', response);
           throw new Error('Network response was not ok');
         }
         return response.json();
