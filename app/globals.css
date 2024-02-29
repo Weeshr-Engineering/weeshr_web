@@ -137,11 +137,27 @@ input#pure-date:focus-visible {
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5); /* Add custom focus indicator */
 }
 
-::placeholder {
-  color: red;
-  opacity: 1; /* Firefox */
+input#pure-date:focus,input#pure-date:focus-visible, input#pure-date:focus-within {
+  width: -webkit-fill-available;
+  width:100%;
+  background-color: #c3c7db32;
+  background-color: #c3c7db32;
+  border: 1px solid #e4e4e7;
+  color: rgb(113 113 122);
+  border-radius: 6px;
+  padding: 9px;
+  font-size: 0.875rem;
 }
 
-::-ms-input-placeholder { /* Edge 12 -18 */
-  color: red;
+
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: rgb(113 113 122);
 }
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: rgb(113 113 122);
+}
+
