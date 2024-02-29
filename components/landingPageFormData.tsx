@@ -9,9 +9,9 @@ import * as z from "zod"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import toast from 'react-hot-toast';
-
-
-
+import React, {useState} from "react"; 
+import DatePicker from "react-multi-date-picker"
+import InputIcon from "react-multi-date-picker/components/input_icon"
 
 import {
   Popover,
@@ -70,6 +70,8 @@ const profileFormSchema = z.object({
     .email({
       message: "Please enter a valid email address",
     }),
+    dob: z.string().optional(),
+
    
 
     
@@ -80,6 +82,9 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 
 export const LandingPageFormData = () => {
+	let [dob, setValue] = useState(new Date())
+
+  const [isDateInput, setIsDateInput] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -91,6 +96,8 @@ export const LandingPageFormData = () => {
       name: data.preferredName,
       email: data.email,
       wish: data.wish || 'none',
+      dob: data.dob || 'none',
+      
     };
   
     const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df';
@@ -125,7 +132,8 @@ export const LandingPageFormData = () => {
         preferredName: '',
         email: '',
         wish: '',
-      });
+        dob: '',
+      })
     }).catch((error) => {
       // console.error('Error:', error); // Log any errors that occur
       // Additional error handling, such as displaying an error message to the user
@@ -168,7 +176,14 @@ export const LandingPageFormData = () => {
   
 
  
-  
+
+  const handleFocus = () => {
+    setIsDateInput(true);
+  };
+
+  const handleBlur = () => {
+    setIsDateInput(false);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full pt-10 md:flex-row md:pt-0">
@@ -216,7 +231,7 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
           )}
         />
         
-       </div>
+        </div>
 
        <FormField
           control={form.control}
@@ -225,6 +240,36 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
             <FormItem>
               <FormControl>
                 <Input placeholder="Your email address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+<FormField
+          control={form.control}
+          name="dob"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+              <div className="col">
+        <div className="form-group">
+            <div className="mb-4 input-group">
+           
+            <input
+           
+      type={isDateInput ? 'date' : 'text'}
+      onFocus={handleFocus}
+      placeholder="Date of Birth"
+      className="form-control"
+      id="pure-date"
+      aria-describedby="date-design-prepend"
+      {...field}
+    />
+            </div>
+          </div>
+      </div>
+
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -278,3 +323,7 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
     </div>
   )
 }
+
+
+
+
