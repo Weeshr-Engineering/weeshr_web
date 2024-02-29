@@ -180,9 +180,7 @@ export const LandingPageFormData = () => {
     setIsDateInput(true);
   };
 
-  const handleBlur = () => {
-    setIsDateInput(false);
-  };
+
 
   return (
     <div className="flex flex-col items-center justify-center w-full pt-10 md:flex-row md:pt-0">

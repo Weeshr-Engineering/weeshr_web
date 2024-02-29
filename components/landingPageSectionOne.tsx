@@ -80,8 +80,9 @@ export const SectionOneLanding = () => {
 
                 {
                   <Button
+                    
                     onClick={() =>
-                      scrollTo({ left: 0, top: 2, behavior: 'smooth' })
+                      scrollTo({ left: 0, top: 2000, behavior: 'smooth' })
                     }
                     className="w-auto bg-white text-[#020721] hover:bg-slate-50 rounded-full py-5 px-4"
                   >
