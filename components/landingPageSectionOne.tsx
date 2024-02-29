@@ -124,8 +124,8 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px]">
-        <div className="w-[93%] bg-[#312782] p-6  relative   sm:p-14 lg:p-16 lg:pt-18 mt-[125px] lg:my-0 rounded-2xl sm:w-[80%] sm:max-w-[560px]   lg:max-w-[720px] flex flex-col  lg:flex-row-reverse h-[670px] lg:h-full lg:justify-end">
+      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px] z-50">
+        <div className="w-[93%] bg-[#312782] p-6  relative   sm:p-14 lg:p-16 lg:pt-18 mt-[125px] lg:my-0 rounded-2xl sm:w-[80%] sm:max-w-[560px]   lg:max-w-[720px] flex flex-col  lg:flex-row-reverse h-[670px] lg:h-full lg:justify-end mb-5">
           <div className="flex justify-center py-8 lg:py-0 -translate-y-[120px] lg:translate-y-0 lg:absolute  -right-[60px] ">
             <div className="  flex justify-center  w-[290px] lg:w-full relative ">
               <div className=" z-[900] relative bg-gradient-to-b from-[#ECB59D] to-[#BF715D] h-[250px] w-[250px] rounded-xl translate-x-1">
