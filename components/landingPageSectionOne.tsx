@@ -81,7 +81,7 @@ export const SectionOneLanding = () => {
                 {
                   <Button
                     onClick={() =>
-                      scrollTo({ left: 0, top: 2000, behavior: 'smooth' })
+                      scrollTo({ left: 0, top: 2, behavior: 'smooth' })
                     }
                     className="w-auto bg-white text-[#020721] hover:bg-slate-50 rounded-full py-5 px-4"
                   >
@@ -264,7 +264,7 @@ export const SectionOneLanding = () => {
                     alt={'cake'}
                     height={70}
                     width={200}
-                    className="bg-contain  object-contain"
+                    className="object-contain bg-contain"
                   />
                 </div>
               </div>
@@ -366,7 +366,7 @@ export const SectionOneLanding = () => {
             width={43}
               src={link.icon}
               alt={link.name}
-              className="inline-block  hover:opacity-80 transition-opacity duration-300 md:w-12"
+              className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
             />
           </a>
         </li>
@@ -376,7 +376,7 @@ export const SectionOneLanding = () => {
 
 
 
-              <h4 className="text-xs md:text-sm text-center ">@2024 Weeshr.ALL right reserved</h4>
+              <h4 className="text-xs text-center md:text-sm ">@2024 Weeshr.ALL right reserved</h4>
             </div>
           </div>
         </div>
