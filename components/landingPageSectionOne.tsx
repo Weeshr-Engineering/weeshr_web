@@ -345,41 +345,7 @@ export const SectionOneLanding = () => {
               d="M0,128L26.7,149.3C53.3,171,107,213,160,245.3C213.3,277,267,299,320,266.7C373.3,235,427,149,480,138.7C533.3,128,587,192,640,181.3C693.3,171,747,85,800,90.7C853.3,96,907,192,960,240C1013.3,288,1067,288,1120,277.3C1173.3,267,1227,245,1280,218.7C1333.3,192,1387,160,1413,144L1440,128L1440,320L1413.3,320C1386.7,320,1333,320,1280,320C1226.7,320,1173,320,1120,320C1066.7,320,1013,320,960,320C906.7,320,853,320,800,320C746.7,320,693,320,640,320C586.7,320,533,320,480,320C426.7,320,373,320,320,320C266.7,320,213,320,160,320C106.7,320,53,320,27,320L0,320Z"
             ></path>
           </svg>
-          <div className="bg-[#4537BA] flex flex-row -translate-y-1 justify-between w-full px-6 py-10">
-            <div className="md:w-[30%] flex justify-center">
-              <Image
-                alt="image"
-                src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
-                width={100}
-                height={90}
-              ></Image>
-            </div>
-
-            <div className="md:flex md:flex-row-reverse  md:items-center md:w-[70%] md:justify-around">
-  
-
-            <ul className="flex space-x-0">
-      {socialMediaLinks.map((link) => (
-        <li key={link.name}>
-          <a href={link.url} target="_blank" rel="noopener noreferrer">
-            <Image
-            height={43}
-            width={43}
-              src={link.icon}
-              alt={link.name}
-              className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
-            />
-          </a>
-        </li>
-      ))}
-    </ul>
-       
-
-
-
-              <h4 className="text-xs text-center md:text-sm ">@2024 Weeshr.ALL right reserved</h4>
-            </div>
-          </div>
+         
         </div>
       </div>
     </div>

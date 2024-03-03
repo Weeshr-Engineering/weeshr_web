@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { motion } from 'framer-motion'
 
 
 const profileFormSchema = z.object({
@@ -61,6 +62,9 @@ const profileFormSchema = z.object({
         required_error: "Please input your preferred name",
       }
     )
+    .max(200, {
+      message: 'Wish  must not be longer than 200 characters.',
+    })
     .optional(),
   email: z
     .string({
@@ -141,37 +145,7 @@ export const LandingPageFormData = () => {
 
   
  
-  // function onSubmit(data: ProfileFormValues) {
-  //   const requestBody = {
-  //     name: data.preferredName,
-  //     email: data.email,
-  //     feedback: data.wish,
-  //   };
-  
-  //   toast.promise(
-  //     fetch('https://api.staging.weeshr.com/api/v1/user-feedback', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(requestBody),
-  //       mode: 'no-cors',
-  //     }).then((response) => response.json()),
-  //     {
-  //       loading: 'Saving...',
-  //       success: <b>Weeshr Form Submitted!</b>,
-  //       error: <b>Could not save.</b>,
-  //     }
-  //   ).then(() => {
-  //     form.reset(
-  //       {
-  //         preferredName: "",
-  //         email: "",
-  //         wish: "",
-  //       }
-  //     );// Reset the form after it has been saved
-  //   });
-  // }
+ 
   
 
  
@@ -207,7 +181,12 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
 </h4> 
 </div>
 
-<div className='px-6 md:pt-8 pt-14  w-full max-w-[600px] md:max-w-[500px]'>
+<motion.div
+  transition={{ duration: 0.5 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  initial={{ opacity: 0, y: 100 }}
+
+className='px-6 md:pt-8 pt-14  w-full max-w-[600px] md:max-w-[500px]'>
   
 
 <Form {...form}>
@@ -309,7 +288,7 @@ Weeshr is bringing happiness to your in boxes! Join our waitlist to be the first
     
       </form>
     </Form>
-    </div>
+    </motion.div>
     <div>
 </div>
 
