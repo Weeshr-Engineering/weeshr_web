@@ -186,12 +186,12 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
         <div className=" text-center md:text-left text-[#474B61]  text-4xl leading-[35px]  justify-start md:items-start  h-full pt-10">
           <h2 className="leading-10">We know your birthday</h2>
           <h2 className="leading-10">
-            is in <span className="font-bold"> {month}</span>
+            is in <span className="font-bold capitalize"> {month}</span>
           </h2>
         </div>
         <div className="flex flex-col items-center justify-center w-full">
-          <h4 className="  text-black flex flex-wrap text-lg pt-10 md:w-[350px] text-center  items-center md:text-left w-11/12 sm:w-9/12 md:-translate-x-[7px] font-medium">
-            Join 5000+ people celebrating their birthday in {month}, we have a
+          <h4 className="  text-black flex flex-wrap text-lg pt-10 md:w-[370px] text-center  items-center md:text-left w-11/12 sm:w-10/12 md:translate-x-[2px] font-medium">
+            Join 5000+ people celebrating their birthday in <span className="capitalize">{month}</span>, we have a
             gift for you!! 🥳🥳
           </h4>
         </div>
