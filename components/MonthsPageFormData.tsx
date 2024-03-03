@@ -190,7 +190,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
           </h2>
         </div>
         <div className="flex flex-col items-center justify-center w-full">
-          <h4 className="  text-black flex flex-wrap text-lg pt-10 md:w-[370px] text-center  items-center md:text-left w-11/12 sm:w-10/12 md:translate-x-[2px] font-medium">
+          <h4 className="  text-black flex flex-wrap text-lg pt-10 md:w-[370px] text-center  items-center md:text-left w-11/12 sm:w-10/12 md:translate-x-[2px] font-medium justify-center md:justify-start">
             Join 5000+ people celebrating their birthday in <span className="capitalize">{month}</span>, we have a
             gift for you!! 🥳🥳
           </h4>
