@@ -57,6 +57,18 @@ const MonthsPage = ({ params }: { params: { id: string } }) => {
     'October',
     'November',
     'December',
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
   ].includes(id)
 
   if (!isValidId) {
