@@ -125,7 +125,7 @@ export const LandingPageFormData = () => {
   })
 
   function onSubmit(data: ProfileFormValues) {
-    const requestBody = {
+    const requestBody:any = {
       name: data.preferredName,
       email: data.email,
       wish: data.wish || '',
@@ -191,7 +191,7 @@ export const LandingPageFormData = () => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center w-full pt-10 md:flex-row md:pt-0">
+    <div className="z-50 flex flex-col items-center justify-center w-full pt-10 md:flex-row md:pt-0">
      
   
   <div className='md:-translate-y-[90px] md:pl-10 '>

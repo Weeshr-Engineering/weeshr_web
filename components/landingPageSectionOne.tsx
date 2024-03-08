@@ -124,7 +124,7 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px] ">
+      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px] relative">
         <div className="w-[93%] bg-[#312782] p-6  relative   sm:p-14 lg:p-16 lg:pt-18 mt-[125px] lg:my-0 rounded-2xl sm:w-[80%] sm:max-w-[560px]   lg:max-w-[720px] flex flex-col  lg:flex-row-reverse h-[670px] lg:h-full lg:justify-end">
           <div className="flex justify-center py-8 lg:py-0 -translate-y-[120px] lg:translate-y-0 lg:absolute  -right-[60px] ">
             <div className="  flex justify-center  w-[290px] lg:w-full relative ">
@@ -332,12 +332,12 @@ export const SectionOneLanding = () => {
           </div>
 
           {/* <div className='-translate-y-[100px] md:-translate-y-[200px] lg:-translate-y-[330px] '> */}
-          <div className="w-full">
+          <div className="z-50 w-full">
             <LandingPageFormData />
           </div>
         </div>
 
-        <div className="w-full translate-y-[64px]">
+        <div className="absolute bottom-0 w-full translate-y-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path
               fill="#4537BA"
@@ -349,7 +349,7 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="bg-[#4537BA] flex flex-row -translate-y-1 justify-between w-full px-6 py-10">
+      <div className="bg-[#4537BA] flex flex-row translate-y-0 justify-between w-full px-6 py-10">
             <div className="md:w-[30%] flex justify-center">
               <Image
                 alt="image"
