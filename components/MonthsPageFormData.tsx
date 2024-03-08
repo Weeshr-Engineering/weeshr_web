@@ -181,12 +181,12 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
 
   return (
     <div className="z-50 flex flex-col items-center justify-center w-full md:flex-row md:pt-10">
-      <div className="flex flex-col items-center justify-center w-auto py-10 md:justify-center md:items-center lg:pr-28">
+      <div className="flex flex-col items-center justify-center w-auto py-10 md:justify-start md:pt-0 md:items-start lg:pr-28">
         <Image
           alt="image"
           src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
-          width={200}
-          height={150}
+          width={150}
+          height={150} 
         ></Image>
 
         <div className=" text-center md:text-left text-[#474B61]  text-4xl leading-[35px]  justify-start md:items-start  h-full pt-10">
