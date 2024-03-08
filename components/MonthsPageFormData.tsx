@@ -10,6 +10,8 @@ import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import React, { useState } from 'react'
+import axios from 'axios';
+
 
 import {
   Popover,
@@ -83,59 +85,63 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
     resolver: zodResolver(profileFormSchema),
     mode: 'onChange',
   })
+ 
 
   function onSubmit(data: ProfileFormValues) {
-    const requestBody = {
+    const requestBody : any = {
       name: data.preferredName,
       email: data.email,
       wish: data.wish || 'none',
-      dob: data.dob || 'none',
       phone: data.phone || 'none',
-      month: month || 'none',
+      month: month || "none",
+    };
+
+    if (data.dob) {
+      requestBody.dob = data.dob;
     }
-
-    const apiUrl =
-      'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df'
-
-    console.log('Request Body:', requestBody) // Log the request body
-    console.log('API URL:', apiUrl) // L og the API URL
-
-    toast
-      .promise(
-        fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        }).then((response) => {
-          if (!response.ok) {
-            console.error('Error fetching', response)
-            throw new Error('Network response was not ok')
-          }
-          return response.json()
-        }),
-        {
-          loading: 'Saving...',
-          success: <b>Weeshr Form Submitted!</b>,
-          error: (error) => `Submission unsuccessful. Error: ${error.message}`,
+  
+    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df';
+  
+    console.log('Request Body:', requestBody); // Log the request body
+    console.log('API URL:', apiUrl); // Log the API URL
+  
+    axios
+      .post(apiUrl, requestBody, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
-      .then(() => {
-        // console.log('Form submitted successfully!'); // Log success message
+      })
+      .then((response) => {
+        console.log('Response:', response.data);
+        toast.success('Weeshr Form Submitted!');
         form.reset({
           preferredName: '',
           email: '',
           wish: '',
           dob: '',
           phone: '',
-        })
+        });
       })
       .catch((error) => {
-        // console.error('Error:', error); // Log any errors that occur
-        // Additional error handling, such as displaying an error message to the user
-      })
+        console.error('Error:', error);
+        if (error.response) {
+          // The request was made and the server responded with a status code that falls out of the range of 2xx
+          console.error('Server Error:', error.response.data);
+          console.error('Status:', error.response.status);
+          console.error('Headers:', error.response.headers);
+          toast.error( error.response.data.message || 'An error occurred.');
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Request Error:', error.request);
+          toast.error('Submission unsuccessful. No response received.');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('General Error:', error.message);
+          toast.error('Submission unsuccessful. An error occurred.');
+        }
+      });
   }
+  
 
   // function onSubmit(data: ProfileFormValues) {
   //   const requestBody = {
@@ -174,8 +180,8 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full pt-10 md:flex-row md:pt-28">
-      <div className="flex items-center justify-center w-auto py-10  xl:translate-y-[50px] 2xl:translate-y-[70px] md:justify-center md:items-center flex-col lg:pr-28">
+    <div className="z-50 flex flex-col items-center justify-center w-full md:flex-row md:pt-10">
+      <div className="flex flex-col items-center justify-center w-auto py-10 md:justify-center md:items-center lg:pr-28">
         <Image
           alt="image"
           src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"

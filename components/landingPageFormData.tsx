@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import React, {useState} from "react"; 
 
 
+
 import {
   Popover,
   PopoverContent,
@@ -41,7 +42,36 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { motion } from 'framer-motion'
+import axios from 'axios'
 
+
+const socialMediaLinks = [
+  {
+    name: 'Facebook',
+    url: 'https://www.facebook.com/weeshrapp',
+    icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg',
+  },
+  {
+    name: 'Instagram',
+    url: 'https://www.instagram.com/weeshrapp/',
+    icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288265/weeshr_website/IG_jw9rir.svg',
+  },
+  {
+    name: 'Twitter',
+    url: 'https://twitter.com/weeshrapp',
+    icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288266/weeshr_website/X_vigvoj.svg',
+  },
+  {
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/company/weeshrapp',
+    icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288750/weeshr_website/Group_80_dhlm3v.svg',
+  },
+  {
+    name: 'TikTok',
+    url: 'https://www.tiktok.com/@weeshrapp',
+    icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288501/weeshr_website/TiTokWeeshr_yvqc4r.svg',
+  },
+];
 
 const profileFormSchema = z.object({
   preferredName: z
@@ -98,50 +128,54 @@ export const LandingPageFormData = () => {
     const requestBody = {
       name: data.preferredName,
       email: data.email,
-      wish: data.wish || 'none',
-      dob: data.dob || 'none',
-      
+      wish: data.wish || '',
     };
+
+    if (data.dob) {
+      requestBody.dob = data.dob;
+    }
   
     const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df';
   
     console.log('Request Body:', requestBody); // Log the request body
-    console.log('API URL:', apiUrl); // L og the API URL
+    console.log('API URL:', apiUrl); // Log the API URL
   
-    toast.promise(
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      }).then((response) => {
-        if (!response.ok) {
-          console.error('Error fetching', response);
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      }),
-      {
-        loading: 'Saving...',
-        success: <b>Weeshr Form Submitted!</b>,
-        error: (error) => `Submission unsuccessful. Error: ${error.message}`,
-
-
-      }
-    ).then(() => {
-      // console.log('Form submitted successfully!'); // Log success message
+    axios.post(apiUrl, requestBody, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      // Handle success
+      console.log('Response:', response.data);
+      toast.success('Weeshr Form Submitted!');
       form.reset({
         preferredName: '',
         email: '',
         wish: '',
         dob: '',
-      })
+      });
     }).catch((error) => {
-      // console.error('Error:', error); // Log any errors that occur
-      // Additional error handling, such as displaying an error message to the user
+      // Handle error
+      console.error('Error:', error);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Data:', error.response.data);
+        console.error('Status:', error.response.status);
+        console.error('Headers:', error.response.headers);
+        toast.error(error.response.data.message || 'An error occurred.');
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Request:', error.request);
+        toast.error('Submission unsuccessful. No response received.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error:', error.message);
+        toast.error('Submission unsuccessful. An error occurred.');
+      }
     });
   }
+  
 
   
  
@@ -289,8 +323,12 @@ className='px-6 md:pt-8 pt-14  w-full max-w-[600px] md:max-w-[500px]'>
       </form>
     </Form>
     </motion.div>
+
+    
     <div>
 </div>
+
+
 
     
       
