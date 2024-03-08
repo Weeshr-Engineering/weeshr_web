@@ -86,7 +86,7 @@ const MonthsPage = ({ params }: { params: { id: string } }) => {
               <MonthsPageFormData month={id} />
             </div>
 
-            <div className="w-full translate-y-[64px]">
+            <div className="w-full translate-y-[2px] absolute bottom-0">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
                 <path
                   fill="#4537BA"
@@ -95,9 +95,50 @@ const MonthsPage = ({ params }: { params: { id: string } }) => {
                 ></path>
               </svg>
             </div>
+            
+
+            
           </div>
+          
+          
         </div>
       </div>
+
+      <div className="bg-[#4537BA] flex flex-row -translate-y-1 justify-between w-full px-6 py-10">
+            <div className="md:w-[30%] flex justify-center">
+              <Image
+                alt="image"
+                src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
+                width={100}
+                height={90}
+              ></Image>
+            </div>
+
+            <div className="md:flex md:flex-row-reverse  md:items-center md:w-[70%] md:justify-around">
+  
+
+            <ul className="flex space-x-0">
+      {socialMediaLinks.map((link) => (
+        <li key={link.name}>
+          <a href={link.url} target="_blank" rel="noopener noreferrer">
+            <Image
+            height={43}
+            width={43}
+              src={link.icon}
+              alt={link.name}
+              className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
+            />
+          </a>
+        </li>
+      ))}
+    </ul>
+       
+
+
+
+              <h4 className="text-xs text-center md:text-sm ">@2024 Weeshr.ALL right reserved</h4>
+            </div>
+          </div>
     </div>
   )
 }

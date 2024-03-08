@@ -97,7 +97,7 @@ export const SectionOneLanding = () => {
                   </Button>
                 }
               </div>
-              <div className="translate-y-[100px] sm:translate-y-[77px] z-10 md:pl-3">
+              <div className="translate-y-[100px] sm:translate-y-[77px]  md:pl-3 z-50">
                 <motion.img
                   src="https://res.cloudinary.com/drykej1am/image/upload/v1704631376/weeshr_website/heirzqtff6zevkg4fosi.png"
                   alt="circle img"
@@ -124,7 +124,7 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px] z-50">
+      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px] relative">
         <div className="w-[93%] bg-[#312782] p-6  relative   sm:p-14 lg:p-16 lg:pt-18 mt-[125px] lg:my-0 rounded-2xl sm:w-[80%] sm:max-w-[560px]   lg:max-w-[720px] flex flex-col  lg:flex-row-reverse h-[670px] lg:h-full lg:justify-end">
           <div className="flex justify-center py-8 lg:py-0 -translate-y-[120px] lg:translate-y-0 lg:absolute  -right-[60px] ">
             <div className="  flex justify-center  w-[290px] lg:w-full relative ">
@@ -332,12 +332,12 @@ export const SectionOneLanding = () => {
           </div>
 
           {/* <div className='-translate-y-[100px] md:-translate-y-[200px] lg:-translate-y-[330px] '> */}
-          <div className="w-full">
+          <div className="z-50 w-full">
             <LandingPageFormData />
           </div>
         </div>
 
-        <div className="w-full translate-y-[64px]">
+        <div className="absolute bottom-0 w-full translate-y-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path
               fill="#4537BA"
@@ -348,6 +348,42 @@ export const SectionOneLanding = () => {
          
         </div>
       </div>
+
+      <div className="bg-[#4537BA] flex flex-row translate-y-0 justify-between w-full px-6 py-10">
+            <div className="md:w-[30%] flex justify-center">
+              <Image
+                alt="image"
+                src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
+                width={100}
+                height={90}
+              ></Image>
+            </div>
+
+            <div className="md:flex md:flex-row-reverse  md:items-center md:w-[70%] md:justify-around">
+  
+
+            <ul className="flex space-x-0">
+      {socialMediaLinks.map((link) => (
+        <li key={link.name}>
+          <a href={link.url} target="_blank" rel="noopener noreferrer">
+            <Image
+            height={43}
+            width={43}
+              src={link.icon}
+              alt={link.name}
+              className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
+            />
+          </a>
+        </li>
+      ))}
+    </ul>
+       
+
+
+
+              <h4 className="text-xs text-center md:text-sm ">@2024 Weeshr.ALL right reserved</h4>
+            </div>
+          </div>
     </div>
   )
 }
