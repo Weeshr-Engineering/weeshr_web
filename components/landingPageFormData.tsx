@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import toast from 'react-hot-toast';
 import React, {useState} from "react"; 
 
+import {DatePicker} from '@gsebdev/react-simple-datepicker';
 
 
 import {
@@ -256,7 +257,7 @@ className='px-6 md:pt-8 pt-14  w-full max-w-[600px] md:max-w-[500px]'>
           )}
         />
 
-<FormField
+{/* <FormField
           control={form.control}
           name="dob"
           render={({ field }) => (
@@ -285,8 +286,34 @@ className='px-6 md:pt-8 pt-14  w-full max-w-[600px] md:max-w-[500px]'>
             </FormItem>
           )}
         />
-    
+     */}
      
+
+     <FormField
+          control={form.control}
+          name="dob"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+              <div className="col">
+        <div className="form-group">
+            <div className="mb-4 input-group">
+           
+            <DatePicker
+        id='datepicker-id'
+        placeholder={"Date of Birth"}
+        {...field}
+    />  
+            </div>
+          </div>
+      </div>
+
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+    
        
         <FormField
           control={form.control}

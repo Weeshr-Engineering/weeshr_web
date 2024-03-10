@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import React, { useState } from 'react'
 import axios from 'axios';
+import {DatePicker} from '@gsebdev/react-simple-datepicker';
 
 
 import {
@@ -258,32 +259,30 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="dob"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="col">
-                      <div className="form-group">
-                        <div className="mb-4 input-group">
-                          <input
-                            type={isDateInput ? 'date' : 'text'}
-                            onFocus={handleFocus}
-                            placeholder="Date of Birth"
-                            className="form-control"
-                            id="pure-date"
-                            aria-describedby="date-design-prepend"
-                            {...field}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+<FormField
+          control={form.control}
+          name="dob"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+              <div className="col">
+        <div className="form-group">
+            <div className="mb-4 input-group">
+           
+            <DatePicker
+        id='datepicker-id'
+        placeholder={"Date of Birth"}
+        {...field}
+    />  
+            </div>
+          </div>
+      </div>
+
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
             <FormField
               control={form.control}
