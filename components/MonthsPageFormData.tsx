@@ -102,7 +102,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
       // Check if the Date object is valid
       if (!isNaN(dobDate.getTime())) {
         // Convert the Date object to string in the desired format using dayjs
-        requestBody.dob = dayjs(dobDate).format('yyyy-mm-dd');
+        requestBody.dob = dayjs(dobDate).format('YYYY-MM-DD');
         
         // Log the converted dob
         console.log('Converted dob:', requestBody.dob);
@@ -110,7 +110,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
         console.error('Invalid date value:', data.dob);
       }
     }
-
+    
     const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df'
 
     console.log('Request Body:', requestBody) // Log the request body
@@ -129,7 +129,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
           preferredName: '',
           email: '',
           wish: '',
-          dob: '', 
+          // dob: '', 
           phone: ''
         })
       })
