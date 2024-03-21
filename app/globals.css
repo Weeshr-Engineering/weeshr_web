@@ -114,97 +114,22 @@ button {
   font-family: "Outfit", sans-serif;
 }
 
-
-
-
-
-
-
-input#pure-date {
-  width: -webkit-fill-available;
-  width:100%;
-  background-color: #c3c7db32;
-  background-color: #c3c7db32;
-  border: 1px solid #e4e4e7;
-  color: rgb(113 113 122);
-  border-radius: 6px;
-  padding: 9px;
-  font-size: 0.875rem;
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #3b82f680;
 }
 
-input#pure-date:focus-visible {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5); /* Add custom focus indicator */
-}
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+ 
+  height: 46px;
+  border:0.5px;
+  font-size: 15px;
+  color:#71717a;
 
-input#pure-date:focus,input#pure-date:focus-visible, input#pure-date:focus-within {
-  width: -webkit-fill-available;
-  width:100%;
-  background-color: #c3c7db32;
-  background-color: #c3c7db32;
-  border: 1px solid #e4e4e7;
-  color: rgb(113 113 122);
-  border-radius: 6px;
-  padding: 9px;
-  font-size: 0.875rem;
 }
 
 
-
-#datepicker-id:-webkit-input-placeholder {
-  color: rgb(113 113 122);
-  width: -webkit-fill-available;
-}
-
-#datepicker-id,
-input:-moz-placeholder,
-textarea:-moz-placeholder {
-  color: rgb(113 113 122);
-  width: -webkit-fill-available;
-}
-
-#datepicker-id {
-  width: -webkit-fill-available;
-  width:100%;
-  background-color: #c3c7db32;
-  background-color: #c3c7db32;
-  border: 1px solid #e4e4e7;
-  color: rgb(113 113 122);
-  border-radius: 6px;
-  padding: 9px;
-  font-size: 0.875rem;
-}
-
-#datepicker-id:focus-visible {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5); /* Add custom focus indicator */
-  width: -webkit-fill-available;
-}
-
-input#pure-date:focus,input#pure-date:focus-visible, input#pure-date:focus-within #datepicker-id {
-  width: -webkit-fill-available;
-  width:100%;
-  background-color: #c3c7db32;
-  background-color: #c3c7db32;
-  border: 1px solid #e4e4e7;
-  color: rgb(113 113 122);
-  border-radius: 6px;
-  padding: 9px;
-  font-size: 0.875rem;
-}
-
-
-
-input::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
-  color: rgb(113 113 122);
-}
-
-input:-moz-placeholder,
-textarea:-moz-placeholder {
-  color: rgb(113 113 122);
-}
-
-.SG-datepicker__input-container {
-width: 100%;
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+ 
+  color: #000000;
+  font-weight: 500;
 }
