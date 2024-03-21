@@ -122,19 +122,23 @@ export const LandingPageFormData = () => {
     }
 
     if (data.dob) {
-      console.log('dob changed' + data.dob)
-
+      console.log('dob changed' + data.dob);
+    
       // Convert the timestamp to a Date object
-      const dobDate = new Date(data.dob)
-
+      const dobDate = new Date(data.dob);
+    
       // Check if the Date object is valid
       if (!isNaN(dobDate.getTime())) {
         // Convert the Date object to string in the desired format
-        requestBody.dob = format(dobDate, 'yyyy-mm-dd')
+        const year = dobDate.getFullYear();
+        const month = ('0' + (dobDate.getMonth() + 1)).slice(-2); // Ensure leading zero if needed
+        const day = ('0' + dobDate.getDate()).slice(-2); // Ensure leading zero if needed
+        requestBody.dob = `${year}-${month}-${day}`;
       } else {
-        console.error('Invalid date value:', data.dob)
+        console.error('Invalid date value:', data.dob);
       }
     }
+    
 
     const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df'
 
@@ -155,7 +159,7 @@ export const LandingPageFormData = () => {
           preferredName: '',
           email: '',
           wish: '',
-          dob: ''
+          // dob: 'MM/DD/YYYY'
         })
       })
       .catch((error) => {
