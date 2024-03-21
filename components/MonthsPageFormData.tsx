@@ -10,15 +10,13 @@ import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import React, { useState } from 'react'
-import axios from 'axios';
-import {DatePicker} from '@gsebdev/react-simple-datepicker';
+import axios from 'axios'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
 
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 import { CalendarIcon, CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
 
@@ -31,7 +29,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
@@ -39,7 +37,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { motion } from 'framer-motion'
@@ -48,101 +46,112 @@ import MonthsPage from '../app/(landing)/[id]/page'
 const profileFormSchema = z.object({
   preferredName: z
     .string({
-      required_error: 'Please input your preferred name',
+      required_error: 'Please input your preferred name'
     })
     .min(2, {
-      message: 'First name must be at least 2 characters.',
+      message: 'First name must be at least 2 characters.'
     })
     .max(30, {
-      message: 'Preferred name  must not be longer than 30 characters.',
+      message: 'Preferred name  must not be longer than 30 characters.'
     }),
   wish: z
     .string({
-      required_error: 'Please input your preferred name',
+      required_error: 'Please input your preferred name'
     })
     .max(200, {
-      message: 'Wish  must not be longer than 200 characters.',
+      message: 'Wish  must not be longer than 200 characters.'
     })
     .optional(),
   email: z
     .string({
-      required_error: 'Please input your  email',
+      required_error: 'Please input your  email'
     })
     .email({
-      message: 'Please enter a valid email address',
+      message: 'Please enter a valid email address'
     }),
-  dob: z.string().optional(),
-  phone: z.string().optional(),
+  dob: z.any().optional(),
+  phone: z.string().optional()
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 export const MonthsPageFormData = ({ month }: { month: string }) => {
-  let [dob, setValue] = useState(new Date())
-
   const [isDateInput, setIsDateInput] = useState(false)
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    mode: 'onChange',
+    mode: 'onChange'
   })
- 
 
   function onSubmit(data: ProfileFormValues) {
-    const requestBody : any = {
+    console.log('Received dob:', data.dob);
+
+    
+    const requestBody: any = {
       name: data.preferredName,
       email: data.email,
       wish: data.wish || 'none',
       phone: data.phone || 'none',
-      month: month || "none",
-    };
+      month: month || 'none'
+    }
 
     if (data.dob) {
-      requestBody.dob = data.dob;
+      // Convert the timestamp to a Date object
+      const dobDate = new Date(data.dob);
+      
+      // Check if the Date object is valid
+      if (!isNaN(dobDate.getTime())) {
+        // Convert the Date object to string in the desired format using dayjs
+        requestBody.dob = dayjs(dobDate).format('DD-MM-YYYY');
+        
+        // Log the converted dob
+        console.log('Converted dob:', requestBody.dob);
+      } else {
+        console.error('Invalid date value:', data.dob);
+      }
     }
-  
-    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df';
-  
-    console.log('Request Body:', requestBody); // Log the request body
-    console.log('API URL:', apiUrl); // Log the API URL
-  
+
+    const apiUrl = 'https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df'
+
+    console.log('Request Body:', requestBody) // Log the request body
+    console.log('API URL:', apiUrl) // Log the API URL
+
     axios
       .post(apiUrl, requestBody, {
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       })
       .then((response) => {
-        console.log('Response:', response.data);
-        toast.success('Weeshr Form Submitted!');
+        console.log('Response:', response.data)
+        toast.success('Weeshr Form Submitted!')
         form.reset({
           preferredName: '',
           email: '',
           wish: '',
-          dob: '',
-          phone: '',
-        });
+          dob: '', 
+          phone: ''
+        })
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error:', error)
         if (error.response) {
           // The request was made and the server responded with a status code that falls out of the range of 2xx
-          console.error('Server Error:', error.response.data);
-          console.error('Status:', error.response.status);
-          console.error('Headers:', error.response.headers);
-          toast.error( error.response.data.message || 'An error occurred.');
+          console.error('Server Error:', error.response.data)
+          console.error('Status:', error.response.status)
+          console.error('Headers:', error.response.headers)
+          toast.error(error.response.data.message || 'An error occurred.')
         } else if (error.request) {
           // The request was made but no response was received
-          console.error('Request Error:', error.request);
-          toast.error('Submission unsuccessful. No response received.');
+          console.error('Request Error:', error.request)
+          toast.error('Submission unsuccessful. No response received.')
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.error('General Error:', error.message);
-          toast.error('Submission unsuccessful. An error occurred.');
+          console.error('General Error:', error.message)
+          toast.error('Submission unsuccessful. An error occurred.')
         }
-      });
+      })
   }
-  
 
   // function onSubmit(data: ProfileFormValues) {
   //   const requestBody = {
@@ -187,7 +196,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
           alt="image"
           src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
           width={150}
-          height={150} 
+          height={150}
         ></Image>
 
         <div className=" text-center md:text-left text-[#474B61]  text-4xl leading-[35px]  justify-start md:items-start  h-full pt-10">
@@ -198,8 +207,8 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
         </div>
         <div className="flex flex-col items-center justify-center w-full">
           <h4 className="  text-black flex flex-wrap text-lg pt-10 md:w-[370px] text-center  items-center md:text-left w-11/12 sm:w-10/12 md:translate-x-[2px] font-medium justify-center md:justify-start">
-            Join 5000+ people celebrating their birthday in <span className="capitalize">{month}</span>, we have a
-            gift for you!! 🥳🥳
+            Join 5000+ people celebrating their birthday in{' '}
+            <span className="capitalize">{month}</span>, we have a gift for you!! 🥳🥳
           </h4>
         </div>
       </div>
@@ -221,11 +230,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder="Your preferred name"
-                        {...field}
-                        className="w-full"
-                      />
+                      <Input placeholder="Your preferred name" {...field} className="w-full" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -260,29 +265,34 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
             />
 
 <FormField
-          control={form.control}
-          name="dob"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-              <div className="col">
-        <div className="form-group">
+  control={form.control}
+  name="dob"
+  render={({ field }) => (
+    <FormItem>
+      <FormControl>
+        <div className="col">
+          <div className="form-group">
             <div className="mb-4 input-group">
-           
-            <DatePicker
-        id='datepicker-id'
-        placeholder={"Date of Birth"}
-        {...field}
-    />  
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  sx={{
+                    bgcolor: '#c3c7db32',
+                    width: '100%'
+                  }}
+                  value={field.value} // Manually handle value
+                  onChange={(date) => field.onChange(date?.toISOString())} // Convert selected date to ISO string
+                  maxDate={dayjs('2022-04-17')}
+                />
+              </LocalizationProvider>
             </div>
           </div>
-      </div>
+        </div>
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
 
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
             <FormField
               control={form.control}
