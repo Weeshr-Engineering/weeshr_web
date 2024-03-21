@@ -130,7 +130,7 @@ export const LandingPageFormData = () => {
       // Check if the Date object is valid
       if (!isNaN(dobDate.getTime())) {
         // Convert the Date object to string in the desired format
-        requestBody.dob = format(dobDate, 'dd-MM-yyyy')
+        requestBody.dob = format(dobDate, 'YYYY-MM-DD')
       } else {
         console.error('Invalid date value:', data.dob)
       }
