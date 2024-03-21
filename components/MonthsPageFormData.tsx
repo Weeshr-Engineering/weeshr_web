@@ -102,7 +102,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
       // Check if the Date object is valid
       if (!isNaN(dobDate.getTime())) {
         // Convert the Date object to string in the desired format using dayjs
-        requestBody.dob = dayjs(dobDate).format('DD-MM-YYYY');
+        requestBody.dob = dayjs(dobDate).format('YYYY-MM-DD');
         
         // Log the converted dob
         console.log('Converted dob:', requestBody.dob);
