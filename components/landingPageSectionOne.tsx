@@ -1,37 +1,36 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { LandingPageFormData } from '@/components/landingPageFormData'
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { LandingPageFormData } from "@/components/landingPageFormData";
 
 export const SectionOneLanding = () => {
-
   const socialMediaLinks = [
     {
-      name: 'Facebook',
-      url: 'https://www.facebook.com/weeshrapp',
-      icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg',
+      name: "Facebook",
+      url: "https://www.facebook.com/weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg",
     },
     {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/weeshrapp/',
-      icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288265/weeshr_website/IG_jw9rir.svg',
+      name: "Instagram",
+      url: "https://www.instagram.com/weeshrapp/",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288265/weeshr_website/IG_jw9rir.svg",
     },
     {
-      name: 'Twitter',
-      url: 'https://twitter.com/weeshrapp',
-      icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288266/weeshr_website/X_vigvoj.svg',
+      name: "Twitter",
+      url: "https://twitter.com/weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288266/weeshr_website/X_vigvoj.svg",
     },
     {
-      name: 'LinkedIn',
-      url: 'https://www.linkedin.com/company/weeshrapp',
-      icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288750/weeshr_website/Group_80_dhlm3v.svg',
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/company/weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288750/weeshr_website/Group_80_dhlm3v.svg",
     },
     {
-      name: 'TikTok',
-      url: 'https://www.tiktok.com/@weeshrapp',
-      icon: 'https://res.cloudinary.com/drykej1am/image/upload/v1708288501/weeshr_website/TiTokWeeshr_yvqc4r.svg',
+      name: "TikTok",
+      url: "https://www.tiktok.com/@weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288501/weeshr_website/TiTokWeeshr_yvqc4r.svg",
     },
   ];
 
@@ -66,12 +65,12 @@ export const SectionOneLanding = () => {
                 className="z-10 flex flex-wrap items-center justify-center gap-4 px-2 py-2 translate-y-20 rounded-full sm:px-4 sm:py-4"
                 style={{
                   background:
-                    'linear-gradient(90deg, rgba(10,231,165,1) 7%, rgba(149,112,255,1) 40%, rgba(0,224,255,1) 69%, rgba(189,255,0,1) 100%)',
+                    "linear-gradient(90deg, rgba(10,231,165,1) 7%, rgba(149,112,255,1) 40%, rgba(0,224,255,1) 69%, rgba(189,255,0,1) 100%)",
                 }}
               >
                 <p className=" [&:not(:first-child)]:mt-6 text-white text-md pl-4  ">
                   <span className="hidden sm:block">
-                    {' '}
+                    {" "}
                     We are building you birthday magic
                   </span>
 
@@ -80,13 +79,12 @@ export const SectionOneLanding = () => {
 
                 {
                   <Button
-                    
                     onClick={() =>
-                      scrollTo({ left: 0, top: 2000, behavior: 'smooth' })
+                      scrollTo({ left: 0, top: 2000, behavior: "smooth" })
                     }
                     className="w-auto bg-white text-[#020721] hover:bg-slate-50 rounded-full py-5 px-4"
                   >
-                    Get on the waitlist{' '}
+                    Get on the waitlist{" "}
                     <Image
                       alt="image"
                       src="https://res.cloudinary.com/drykej1am/image/upload/v1704626565/weeshr_website/axcqc2ou9crmtvkeom6o.png"
@@ -124,7 +122,7 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-[75px] flex  items-center justify-center flex-col relative pb-[60px] relative">
+      <div className="bg-[#4537BA] w-full -translate-y-1 lg:translate-y-auto flex  items-center justify-center flex-col relative pb-[60px] relative">
         <div className="w-[93%] bg-[#312782] p-6  relative   sm:p-14 lg:p-16 lg:pt-18 mt-[125px] lg:my-0 rounded-2xl sm:w-[80%] sm:max-w-[560px]   lg:max-w-[720px] flex flex-col  lg:flex-row-reverse h-[670px] lg:h-full lg:justify-end">
           <div className="flex justify-center py-8 lg:py-0 -translate-y-[120px] lg:translate-y-0 lg:absolute  -right-[60px] ">
             <div className="  flex justify-center  w-[290px] lg:w-full relative ">
@@ -132,9 +130,9 @@ export const SectionOneLanding = () => {
                 <Image
                   className="absolute -right-4 -translate-y-9"
                   src={
-                    'https://res.cloudinary.com/drykej1am/image/upload/v1705252910/weeshr_website/pvr4bjqv6e5pqujqwe49.png'
+                    "https://res.cloudinary.com/drykej1am/image/upload/v1705252910/weeshr_website/pvr4bjqv6e5pqujqwe49.png"
                   }
-                  alt={'cake'}
+                  alt={"cake"}
                   height={100}
                   width={150}
                 />
@@ -149,9 +147,9 @@ export const SectionOneLanding = () => {
               <Image
                 className="absolute -bottom-10 left-0 lg:-left-[18px]"
                 src={
-                  'https://res.cloudinary.com/drykej1am/image/upload/v1705252910/weeshr_website/c1omqu2mhzzvuypxi0og.svg'
+                  "https://res.cloudinary.com/drykej1am/image/upload/v1705252910/weeshr_website/c1omqu2mhzzvuypxi0og.svg"
                 }
-                alt={'cake'}
+                alt={"cake"}
                 height={100}
                 width={150}
               />
@@ -162,7 +160,7 @@ export const SectionOneLanding = () => {
               <h2 className="text-3xl font-thin text-white">
                 Putting back the
               </h2>
-              <h2 className={'font-thin text-white text-3xl '}>
+              <h2 className={"font-thin text-white text-3xl "}>
                 <span className="pr-1 font-extrabold">Happy</span>
                 in your <span className="font-extrabold">Birthday</span>
               </h2>
@@ -194,7 +192,7 @@ export const SectionOneLanding = () => {
             <div className="flex gap-5 pb-10 pt-14 lg:pb-0">
               <Button
                 onClick={() =>
-                  scrollTo({ left: 0, top: 2000, behavior: 'smooth' })
+                  scrollTo({ left: 0, top: 2000, behavior: "smooth" })
                 }
                 className="w-auto bg-transparent text-sm   rounded-full py-5 px-5  border-[1px] text-white hover:bg-white hover:text-black  "
               >
@@ -203,7 +201,7 @@ export const SectionOneLanding = () => {
 
               <Button
                 onClick={() =>
-                  scrollTo({ left: 0, top: 2000, behavior: 'smooth' })
+                  scrollTo({ left: 0, top: 2000, behavior: "smooth" })
                 }
                 className="w-auto bg-black  rounded-full py-5 px-5 text-sm text-white hover:bg-white hover:text-black border-[1px] border-black"
               >
@@ -214,7 +212,7 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="-translate-y-1 bg-white border-transparent border-">
+      <div className="bg-white border-transparent sm:translate-y-0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
           <path
             fill="#4537BA"
@@ -227,7 +225,7 @@ export const SectionOneLanding = () => {
       <div
         className=" w-full -translate-y-1 flex  items-center justify-center flex-col relative pb-[60px] "
         style={{
-          background: 'linear-gradient(180deg, #FFF 0.11%, #E4E6F5 99.89%)',
+          background: "linear-gradient(180deg, #FFF 0.11%, #E4E6F5 99.89%)",
         }}
       >
         <div className="relative flex flex-col items-center pt-5 ">
@@ -249,7 +247,7 @@ export const SectionOneLanding = () => {
 
                   <Button
                     onClick={() =>
-                      scrollTo({ left: 0, top: 2000, behavior: 'smooth' })
+                      scrollTo({ left: 0, top: 2000, behavior: "smooth" })
                     }
                     className="w-auto bg-black  rounded-full py-5 px-5 text-sm text-white hover:bg-white hover:text-black border-[1px] border-black my-10"
                   >
@@ -260,9 +258,9 @@ export const SectionOneLanding = () => {
                 <div className="w-[40%] flex   justify-end align-bottom items-end">
                   <Image
                     src={
-                      'https://res.cloudinary.com/drykej1am/image/upload/v1705867666/weeshr_website/feyxbd3slxkcfhhenub5.png'
+                      "https://res.cloudinary.com/drykej1am/image/upload/v1705867666/weeshr_website/feyxbd3slxkcfhhenub5.png"
                     }
-                    alt={'cake'}
+                    alt={"cake"}
                     height={70}
                     width={200}
                     className="object-contain bg-contain"
@@ -277,9 +275,9 @@ export const SectionOneLanding = () => {
                 <div className="flex items-end justify-end ">
                   <Image
                     src={
-                      'https://res.cloudinary.com/drykej1am/image/upload/v1705867665/weeshr_website/hn2blrz80x7hk7vmwxbn.png'
+                      "https://res.cloudinary.com/drykej1am/image/upload/v1705867665/weeshr_website/hn2blrz80x7hk7vmwxbn.png"
                     }
-                    alt={'cake'}
+                    alt={"cake"}
                     height={70}
                     width={150}
                     className="bg-cover "
@@ -318,9 +316,9 @@ export const SectionOneLanding = () => {
                 <div className="flex items-end justify-end ">
                   <Image
                     src={
-                      'https://res.cloudinary.com/drykej1am/image/upload/v1705867664/weeshr_website/lvrvetish4qewmtkqzlq.png'
+                      "https://res.cloudinary.com/drykej1am/image/upload/v1705867664/weeshr_website/lvrvetish4qewmtkqzlq.png"
                     }
-                    alt={'cake'}
+                    alt={"cake"}
                     height={70}
                     width={240}
                     className="bg-cover "
@@ -345,45 +343,41 @@ export const SectionOneLanding = () => {
               d="M0,128L26.7,149.3C53.3,171,107,213,160,245.3C213.3,277,267,299,320,266.7C373.3,235,427,149,480,138.7C533.3,128,587,192,640,181.3C693.3,171,747,85,800,90.7C853.3,96,907,192,960,240C1013.3,288,1067,288,1120,277.3C1173.3,267,1227,245,1280,218.7C1333.3,192,1387,160,1413,144L1440,128L1440,320L1413.3,320C1386.7,320,1333,320,1280,320C1226.7,320,1173,320,1120,320C1066.7,320,1013,320,960,320C906.7,320,853,320,800,320C746.7,320,693,320,640,320C586.7,320,533,320,480,320C426.7,320,373,320,320,320C266.7,320,213,320,160,320C106.7,320,53,320,27,320L0,320Z"
             ></path>
           </svg>
-         
         </div>
       </div>
 
       <div className="bg-[#4537BA] flex flex-row translate-y-0 justify-between w-full px-6 py-10">
-            <div className="md:w-[30%] flex justify-center">
-              <Image
-                alt="image"
-                src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
-                width={100}
-                height={90}
-              ></Image>
-            </div>
+        <div className="md:w-[30%] flex justify-center">
+          <Image
+            alt="image"
+            src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
+            width={100}
+            height={90}
+          ></Image>
+        </div>
 
-            <div className="md:flex md:flex-row-reverse  md:items-center md:w-[70%] md:justify-around">
-  
+        <div className="md:flex md:flex-row-reverse  md:items-center md:w-[70%] md:justify-around">
+          <ul className="flex space-x-0">
+            {socialMediaLinks.map((link) => (
+              <li key={link.name}>
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  <Image
+                    height={43}
+                    width={43}
+                    src={link.icon}
+                    alt={link.name}
+                    className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
 
-            <ul className="flex space-x-0">
-      {socialMediaLinks.map((link) => (
-        <li key={link.name}>
-          <a href={link.url} target="_blank" rel="noopener noreferrer">
-            <Image
-            height={43}
-            width={43}
-              src={link.icon}
-              alt={link.name}
-              className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
-            />
-          </a>
-        </li>
-      ))}
-    </ul>
-       
-
-
-
-              <h4 className="text-xs text-center md:text-sm ">@2024 Weeshr.ALL right reserved</h4>
-            </div>
-          </div>
+          <h4 className="text-xs text-center md:text-sm ">
+            @2024 Weeshr.ALL right reserved
+          </h4>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
