@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
-
+import Link from 'next/link';
 
 const ErrorPage = () => {
   return (
@@ -25,9 +25,11 @@ const ErrorPage = () => {
         Your payment has been successfully completed
         </p>
       </div>
-      <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full">
-      <a href="/" className="block p-4 font-bold text-[#020721]">Go Home</a>
-    </Button>
+      <Link href="/" passHref>
+        <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full  font-bold text-[#020721]">
+          Go Home
+        </Button>
+      </Link>
     </div>
   );
 };
