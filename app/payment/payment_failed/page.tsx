@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const ErrorPage = () => {
@@ -24,7 +24,7 @@ const ErrorPage = () => {
         There was an issue with your payment. Please try again
         </p>
       </div>
-      <Link href="/" passHref>
+      <Link href="/">
         <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full  font-bold text-[#020721]">
           Go Home
         </Button>
