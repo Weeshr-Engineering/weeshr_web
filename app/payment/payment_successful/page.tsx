@@ -2,15 +2,21 @@
 
 import React from "react";
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+
 
 const ErrorPage = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F8F9FF] p-4">
-      <img
+       <Image
         className="mb-4"
+        width={397}
+        height={90}
         src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680616/payment_successful_ngaawv.svg"
-        alt="gradient"
+        alt="Payment Successful"
       />
+      
+     
       <div className="flex flex-col items-center justify-center mb-5 text-center">
         <p className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
           Payment Successful
