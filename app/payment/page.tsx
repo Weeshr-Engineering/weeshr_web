@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -33,11 +33,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
         />
         <div className="flex flex-col items-center justify-center mb-5 text-center">
           <h3 className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
-            
-          {isAlreadyVerified
-                ? "Payment Successful"
-                : "Payment Done!"}
-                
+            {isAlreadyVerified ? "Payment Successful" : "Payment Done!"}
           </h3>
           <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
             Your payment has been successfully completed
@@ -60,13 +56,12 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
           alt="Payment Failed"
         />
-        
         <div className="flex flex-col items-center justify-center mb-5 text-center">
           <p className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
-            Payment Failed          
+            Payment Failed
           </p>
           <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
-          There was an issue with your payment. Please try again
+            There was an issue with your payment. Please try again
           </p>
         </div>
         <Link href="/">
@@ -120,7 +115,7 @@ const ErrorMessage: React.FC = () => {
   );
 };
 
-const StatusPage = () => {
+const StatusClient = () => {
   const searchParams = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
@@ -169,6 +164,14 @@ const StatusPage = () => {
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
     />
+  );
+};
+
+const StatusPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StatusClient />
+    </Suspense>
   );
 };
 
