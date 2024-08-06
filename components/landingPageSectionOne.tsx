@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LandingPageFormData } from "@/components/landingPageFormData";
+import Footer from "./footer";
 
 export const SectionOneLanding = () => {
   const socialMediaLinks = [
@@ -36,8 +37,8 @@ export const SectionOneLanding = () => {
 
   return (
     <div>
-      <div className=" bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1704589846/weeshr_website/khqkqicfommy9ofmnwkl.jpg')] bg-cover bg-center bg-no-repeat">
-        <div className="flex items-center justify-center w-full pt-24 pb-14">
+      <div className=" bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1704589846/weeshr_website/khqkqicfommy9ofmnwkl.jpg')] bg-cover bg-center bg-no-repeat pt-20">
+        <div className="flex items-center justify-center w-full pt-20 pb-14">
           <Image
             alt="image"
             src="https://res.cloudinary.com/drykej1am/image/upload/v1708293118/weeshr_website/Weeshrhello_1_tbfvi7.svg"
@@ -223,119 +224,121 @@ export const SectionOneLanding = () => {
       </div>
 
       <div
-        className=" w-full -translate-y-1 flex  items-center justify-center flex-col relative pb-[60px] "
+        className="relative flex flex-col items-center justify-center w-full -translate-y-1 "
         style={{
           background: "linear-gradient(180deg, #FFF 0.11%, #E4E6F5 99.89%)",
         }}
       >
-        <div className="relative flex flex-col items-center pt-5 ">
-          {/* <div className="flex flex-row w-full px-4 py-10 sm:px-16 lg:p-16 sm:max-w-[690px] md:max-w-[800px] lg:max-w-[1000px] md:gap-5 -translate-y-[150px] sm:-translate-y-[200px] md:-translate-y-[240px] lg:-translate-y-[300px] relative"> */}
-          <div className="flex flex-row w-full px-4 py-10 sm:px-16 lg:p-16 sm:max-w-[690px] md:max-w-[800px] lg:max-w-[1000px] md:gap-5  relative">
-            <div className="md:w-[65%]  lg:w-[50%]  relative flex">
-              <div className="bg-[#AEE219] w-full rounded-2xl flex flex-row px-6 sm:px-10 pt-10 justify-around md:px-6 z-50">
-                <div className="w-[60%]">
-                  <div className="text-3xl font-semibold text-black">
-                    <h3>Making</h3>
-                    <h3>it more than</h3>
-                    <h3>just a wish</h3>
+        <div className="relative ">
+          <div className="relative flex flex-col items-center pt-5 ">
+            {/* <div className="flex flex-row w-full px-4 py-10 sm:px-16 lg:p-16 sm:max-w-[690px] md:max-w-[800px] lg:max-w-[1000px] md:gap-5 -translate-y-[150px] sm:-translate-y-[200px] md:-translate-y-[240px] lg:-translate-y-[300px] relative"> */}
+            <div className="flex flex-row w-full px-4 py-10 sm:px-16 lg:p-16 sm:max-w-[690px] md:max-w-[800px] lg:max-w-[1000px] md:gap-5  relative">
+              <div className="md:w-[65%]  lg:w-[50%]  relative flex">
+                <div className="bg-[#AEE219] w-full rounded-2xl flex flex-row px-6 sm:px-10 pt-10 justify-around md:px-6 z-50">
+                  <div className="w-[60%]">
+                    <div className="text-3xl font-semibold text-black">
+                      <h3>Making</h3>
+                      <h3>it more than</h3>
+                      <h3>just a wish</h3>
+                    </div>
+
+                    <h5 className="text-black text-[#02072199] py-6 text-sm max-w-[250px] md:max-w-[180px]">
+                      Stop holding a wish sign and start unboxing that special
+                      gift, from that special person on your special day.
+                    </h5>
+
+                    <Button
+                      onClick={() =>
+                        scrollTo({ left: 0, top: 2000, behavior: "smooth" })
+                      }
+                      className="w-auto bg-black  rounded-full py-5 px-5 text-sm text-white hover:bg-white hover:text-black border-[1px] border-black my-10"
+                    >
+                      Be the first to know
+                    </Button>
                   </div>
 
-                  <h5 className="text-black text-[#02072199] py-6 text-sm max-w-[250px] md:max-w-[180px]">
-                    Stop holding a wish sign and start unboxing that special
-                    gift, from that special person on your special day.
-                  </h5>
-
-                  <Button
-                    onClick={() =>
-                      scrollTo({ left: 0, top: 2000, behavior: "smooth" })
-                    }
-                    className="w-auto bg-black  rounded-full py-5 px-5 text-sm text-white hover:bg-white hover:text-black border-[1px] border-black my-10"
-                  >
-                    Be the first to know
-                  </Button>
+                  <div className="w-[40%] flex   justify-end align-bottom items-end">
+                    <Image
+                      src={
+                        "https://res.cloudinary.com/drykej1am/image/upload/v1705867666/weeshr_website/feyxbd3slxkcfhhenub5.png"
+                      }
+                      alt={"cake"}
+                      height={70}
+                      width={200}
+                      className="object-contain bg-contain"
+                    />
+                  </div>
                 </div>
-
-                <div className="w-[40%] flex   justify-end align-bottom items-end">
-                  <Image
-                    src={
-                      "https://res.cloudinary.com/drykej1am/image/upload/v1705867666/weeshr_website/feyxbd3slxkcfhhenub5.png"
-                    }
-                    alt={"cake"}
-                    height={70}
-                    width={200}
-                    className="object-contain bg-contain"
-                  />
-                </div>
+                <div className="absolute ml-[10px] w-[95%] translate-y-[45px] bottom-0 left-0 right-0 h-16 bg-[#0000ff14] rounded-t-lg blur opacity-100 transition duration-3000 "></div>
               </div>
-              <div className="absolute ml-[10px] w-[95%] translate-y-[45px] bottom-0 left-0 right-0 h-16 bg-[#0000ff14] rounded-t-lg blur opacity-100 transition duration-3000 "></div>
+
+              <div className="  md:w-[35%] hidden lg:w-[25%] relative md:block">
+                <div className="bg-[#2D3193] w-full rounded-2xl md:flex flex-col pl-7  pt-0 justify-between z-50">
+                  <div className="flex items-end justify-end ">
+                    <Image
+                      src={
+                        "https://res.cloudinary.com/drykej1am/image/upload/v1705867665/weeshr_website/hn2blrz80x7hk7vmwxbn.png"
+                      }
+                      alt={"cake"}
+                      height={70}
+                      width={150}
+                      className="bg-cover "
+                    />
+                  </div>
+                  <div className="">
+                    <div className="text-3xl font-semibold text-white ">
+                      <h3>You&rsquo;re</h3>
+                      <h3>Special</h3>
+                    </div>
+
+                    <div className="py-6 font-mono text-xl leading-none text-white">
+                      <h3 className="font-thin">Let your day</h3>
+
+                      <h3 className="font-thin">be even more</h3>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute ml-[0px] w-[99%] translate-y-[45px] bottom-0 left-0 right-0 h-16 bg-[#0000ff14] rounded-t-lg blur opacity-100 transition duration-3000 "></div>
+              </div>
+
+              <div className="relative md:w-[40%] lg:w-[25%] hidden  lg:flex ">
+                <div className="bg-[#f3f4fb] w-full  rounded-2xl lg:flex flex-col pl-7  pt-0 justify-around z-50">
+                  <div className="pt-4">
+                    <div className="text-2xl font-semibold text-black leading-[1.1]">
+                      <h3>Gift that</h3>
+                      <h3>melt the heart</h3>
+                    </div>
+                    <div className="py-6 font-mono text-xl  text-black leading-[1.2]">
+                      <h3 className="font-thin">Give what</h3>
+
+                      <h3 className="font-thin">matters</h3>
+                    </div>
+                  </div>
+
+                  <div className="flex items-end justify-end ">
+                    <Image
+                      src={
+                        "https://res.cloudinary.com/drykej1am/image/upload/v1705867664/weeshr_website/lvrvetish4qewmtkqzlq.png"
+                      }
+                      alt={"cake"}
+                      height={70}
+                      width={240}
+                      className="bg-cover "
+                    />
+                  </div>
+                </div>
+                <div className="absolute ml-[0px] w-[99%] translate-y-[45px] bottom-0 left-0 right-0 h-16 bg-[#0000ff14] rounded-t-lg blur opacity-100 transition duration-3000 "></div>
+              </div>
             </div>
 
-            <div className="  md:w-[35%] hidden lg:w-[25%] relative md:block">
-              <div className="bg-[#2D3193] w-full rounded-2xl md:flex flex-col pl-7  pt-0 justify-between z-50">
-                <div className="flex items-end justify-end ">
-                  <Image
-                    src={
-                      "https://res.cloudinary.com/drykej1am/image/upload/v1705867665/weeshr_website/hn2blrz80x7hk7vmwxbn.png"
-                    }
-                    alt={"cake"}
-                    height={70}
-                    width={150}
-                    className="bg-cover "
-                  />
-                </div>
-                <div className="">
-                  <div className="text-3xl font-semibold text-white ">
-                    <h3>You&rsquo;re</h3>
-                    <h3>Special</h3>
-                  </div>
-
-                  <div className="py-6 font-mono text-xl leading-none text-white">
-                    <h3 className="font-thin">Let your day</h3>
-
-                    <h3 className="font-thin">be even more</h3>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute ml-[0px] w-[99%] translate-y-[45px] bottom-0 left-0 right-0 h-16 bg-[#0000ff14] rounded-t-lg blur opacity-100 transition duration-3000 "></div>
+            {/* <div className='-translate-y-[100px] md:-translate-y-[200px] lg:-translate-y-[330px] '> */}
+            <div className="z-50 w-full">
+              <LandingPageFormData />
             </div>
-
-            <div className="relative md:w-[40%] lg:w-[25%] hidden  lg:flex ">
-              <div className="bg-[#f3f4fb] w-full  rounded-2xl lg:flex flex-col pl-7  pt-0 justify-around z-50">
-                <div className="pt-4">
-                  <div className="text-2xl font-semibold text-black leading-[1.1]">
-                    <h3>Gift that</h3>
-                    <h3>melt the heart</h3>
-                  </div>
-                  <div className="py-6 font-mono text-xl  text-black leading-[1.2]">
-                    <h3 className="font-thin">Give what</h3>
-
-                    <h3 className="font-thin">matters</h3>
-                  </div>
-                </div>
-
-                <div className="flex items-end justify-end ">
-                  <Image
-                    src={
-                      "https://res.cloudinary.com/drykej1am/image/upload/v1705867664/weeshr_website/lvrvetish4qewmtkqzlq.png"
-                    }
-                    alt={"cake"}
-                    height={70}
-                    width={240}
-                    className="bg-cover "
-                  />
-                </div>
-              </div>
-              <div className="absolute ml-[0px] w-[99%] translate-y-[45px] bottom-0 left-0 right-0 h-16 bg-[#0000ff14] rounded-t-lg blur opacity-100 transition duration-3000 "></div>
-            </div>
-          </div>
-
-          {/* <div className='-translate-y-[100px] md:-translate-y-[200px] lg:-translate-y-[330px] '> */}
-          <div className="z-50 w-full">
-            <LandingPageFormData />
           </div>
         </div>
 
-        <div className="absolute bottom-0 w-full translate-y-1">
+        <div className="absolute bottom-0 w-full ">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path
               fill="#4537BA"
@@ -346,38 +349,7 @@ export const SectionOneLanding = () => {
         </div>
       </div>
 
-      <div className="bg-[#4537BA] flex flex-row translate-y-0 justify-between w-full px-6 py-10">
-        <div className="md:w-[30%] flex justify-center">
-          <Image
-            alt="image"
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
-            width={100}
-            height={90}
-          ></Image>
-        </div>
-
-        <div className="md:flex md:flex-row-reverse  md:items-center md:w-[70%] md:justify-around">
-          <ul className="flex space-x-0">
-            {socialMediaLinks.map((link) => (
-              <li key={link.name}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  <Image
-                    height={43}
-                    width={43}
-                    src={link.icon}
-                    alt={link.name}
-                    className="inline-block transition-opacity duration-300 hover:opacity-80 md:w-12"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <h4 className="text-xs text-center md:text-sm ">
-            @2024 Weeshr.ALL right reserved
-          </h4>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };
