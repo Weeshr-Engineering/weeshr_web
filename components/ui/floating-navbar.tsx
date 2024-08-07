@@ -64,8 +64,8 @@ export const FloatingNav = ({
             <Image
               alt="Weeshr Logo"
               src="https://res.cloudinary.com/drykej1am/image/upload/v1704590604/j7aiv2jdwuksre2bpclu.png"
-              width={100}
-              height={70}
+              width={80}
+              height={50}
               priority
             />
           </div>
@@ -83,7 +83,7 @@ export const FloatingNav = ({
                 )}
               >
                 <span className="block sm:hidden">{navItem.icon}</span>
-                <span className="text-sm  sm:block">{navItem.name}</span>
+                <span className="text-sm sm:block">{navItem.name}</span>
               </Link>
             ))}
             <button className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full">
