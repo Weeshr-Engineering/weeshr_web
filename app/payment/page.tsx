@@ -28,22 +28,24 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           className="mb-4"
           width={397}
           height={90}
-          src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680616/payment_successful_ngaawv.svg"
+          src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
           alt="Payment Successful"
         />
         <div className="flex flex-col items-center justify-center mb-5 text-center">
           <h3 className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
-            {isAlreadyVerified ? "Payment Successful" : "Payment Done!"}
+            {isAlreadyVerified ? "Hurray!!!" : "Payment Done!"}
           </h3>
           <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
-            Your payment has been successfully completed
+          You have successfully contributed toward Oguchi’s weeshes
           </p>
         </div>
-        <Link href="/">
-          <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full font-bold text-[#020721]">
-            Go Home
-          </Button>
-        </Link>
+        
+        <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full font-bold text-[#F8F9FF]">
+          <Link href="https://weeshr.com/"> Join Weeshr</Link>
+        </Button>
+        <Button variant="outline" className="w-full max-w-72 rounded-full font-bold text-[#020721] border-solid border-[#020721]">
+          <Link href="https://weeshr.com/">Download Now</Link>
+        </Button>
       </div>
     );
   } else {
@@ -64,11 +66,12 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             There was an issue with your payment. Please try again
           </p>
         </div>
-        <Link href="/">
-          <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full  font-bold text-[#020721]">
-            Go Home
-          </Button>
-        </Link>
+        <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full font-bold text-[#F8F9FF]">
+          <Link href="https://weeshr.com/"> Retry Payment</Link>
+        </Button>
+        <Button variant="outline" className="w-full max-w-72 rounded-full font-bold text-[#020721] border-solid border-[#020721]">
+          <Link href="https://weeshr.com/">View Weeshes</Link>
+        </Button>
       </div>
     );
   }
