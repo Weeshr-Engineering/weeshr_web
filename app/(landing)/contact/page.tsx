@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import WidthLayout from "@/components/width-layout";
-
+import { Icon } from "@iconify/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { handleApiError } from "@/lib/handle-err";
 
 // Define the type for social media links
 interface SocialMediaLink {
@@ -52,6 +54,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 const Page: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -59,14 +62,16 @@ const Page: React.FC = () => {
   });
 
   function onSubmit(data: ProfileFormValues) {
+    setIsLoading(true); // Start loading
+
     const requestBody = {
-      name: data.fullName,
+      full_name: data.fullName,
       email: data.email,
       message: data.message,
     };
-
-    const apiUrl = "https://api.staging.weeshr.com/api/v1/";
-
+    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/contact-us`;
+    console.log("$$$$ User+ " + apiUrl);
     axios
       .post(apiUrl, requestBody, {
         headers: {
@@ -74,17 +79,18 @@ const Page: React.FC = () => {
         },
       })
       .then((response) => {
-        toast.success("Form Submitted Successfully!");
-        form.reset();
-      })
-      .catch((error) => {
-        if (error.response) {
-          toast.error(error.response.data.message || "An error occurred.");
-        } else if (error.request) {
-          toast.error("Submission unsuccessful. No response received.");
-        } else {
-          toast.error("Submission unsuccessful. An error occurred.");
+        if (response.status === 200 || response.status === 201) {
+          toast.success("Form Submitted Successfully!");
+          form.reset({
+            fullName: "",
+            email: "",
+            message: "",
+          });
         }
+      })
+      .catch(handleApiError) // Use the utility function for error handling
+      .finally(() => {
+        setIsLoading(false); // End loading
       });
   }
 
@@ -227,14 +233,23 @@ const Page: React.FC = () => {
                       </div>
                       <div className="flex justify-end">
                         <Button
-                          className="px-6 py-6 text-white rounded-full transimtion-all hover:scale-105 "
+                          className="w-40 px-6 py-6 text-white transition-all rounded-full hover:scale-105"
                           style={{
                             background:
                               "linear-gradient(90deg, #0CC990 0%, #6A70FF 35.94%, #41C7D9 66.15%, #AEE219 100%)",
                           }}
                           type="submit"
+                          disabled={isLoading} // Disable the button when loading
                         >
-                          Submit
+                          {isLoading ? (
+                            <Icon
+                              height={50}
+                              width={50}
+                              icon="eos-icons:three-dots-loading"
+                            />
+                          ) : (
+                            "Submit"
+                          )}
                         </Button>
                       </div>
                     </form>

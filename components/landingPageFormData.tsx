@@ -14,6 +14,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { Icon } from "@iconify/react";
 
 import {
   Popover,
@@ -45,6 +46,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { handleApiError } from "@/lib/handle-err";
 
 const socialMediaLinks = [
   {
@@ -107,6 +109,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export const LandingPageFormData = () => {
   const [isDateInput, setIsDateInput] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -119,6 +122,7 @@ export const LandingPageFormData = () => {
       email: data.email,
       wish: data.wish || "",
     };
+    setIsLoading(true); // Start loading
 
     if (data.dob) {
       console.log("dob changed" + data.dob);
@@ -161,25 +165,9 @@ export const LandingPageFormData = () => {
           // dob: 'MM/DD/YYYY'
         });
       })
-      .catch((error) => {
-        // Handle error
-        console.error("Error:", error);
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error("Data:", error.response.data);
-          console.error("Status:", error.response.status);
-          console.error("Headers:", error.response.headers);
-          toast.error(error.response.data.message || "An error occurred.");
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error("Request:", error.request);
-          toast.error("Submission unsuccessful. No response received.");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error:", error.message);
-          toast.error("Submission unsuccessful. An error occurred.");
-        }
+      .catch(handleApiError)
+      .finally(() => {
+        setIsLoading(false); // End loading
       });
   }
 
@@ -295,14 +283,22 @@ export const LandingPageFormData = () => {
 
             <div className="flex justify-end pt-10">
               <Button
-                className="px-6 py-6 text-white rounded-full transimtion-all hover:scale-105 "
+                className="w-40 px-6 py-6 text-white rounded-full transimtion-all hover:scale-105 "
                 style={{
                   background:
                     "linear-gradient(90deg, #0CC990 0%, #6A70FF 35.94%, #41C7D9 66.15%, #AEE219 100%)",
                 }}
                 type="submit"
               >
-                Join Wishlist
+                {isLoading ? (
+                  <Icon
+                    height={50}
+                    width={50}
+                    icon="eos-icons:three-dots-loading"
+                  />
+                ) : (
+                  " Join Wishlist"
+                )}
               </Button>
             </div>
           </form>
