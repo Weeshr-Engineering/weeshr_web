@@ -1,56 +1,74 @@
-import React from "react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useUserAgent } from "next-useragent";
+import { Icon } from "@iconify/react";
 import Image from "next/image";
-import { FloatingNav } from "./ui/floating-navbar";
+import { Button } from "./ui/button";
 
-// Define the type for social media links
-interface SocialMediaLink {
-  name: string;
-  url: string;
-  icon: string;
-}
+const Header = ({ uaString }: { uaString?: string }) => {
+  const [mounted, setMounted] = useState(false);
+  const ua = useUserAgent(
+    uaString ||
+      (typeof window !== "undefined" ? window.navigator.userAgent : "")
+  );
 
-const navItems = [
-  { name: "Home", link: "/" },
-  { name: "Contact", link: "/contact" },
-  // Add more items as needed
-];
-// You would typically define this array in a separate file or fetch it from an API
-const socialMediaLinks = [
-  {
-    name: "Facebook",
-    url: "https://www.facebook.com/weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg",
-  },
-  {
-    name: "Instagram",
-    url: "https://www.instagram.com/weeshrapp/",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288265/weeshr_website/IG_jw9rir.svg",
-  },
-  {
-    name: "Twitter",
-    url: "https://twitter.com/weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288266/weeshr_website/X_vigvoj.svg",
-  },
-  {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/company/weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288750/weeshr_website/Group_80_dhlm3v.svg",
-  },
-  {
-    name: "TikTok",
-    url: "https://www.tiktok.com/@weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288501/weeshr_website/TiTokWeeshr_yvqc4r.svg",
-  },
-];
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-const Header: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+  if (!mounted) {
+    return null; // or a loading placeholder
+  }
 
   return (
-    <header className="flex flex-col justify-between w-full px-6 bg-transparent md:flex-row">
-    
-      <FloatingNav navItems={navItems} />
-    </header>
+    <div className="z-10 w-full max-w-5xl flex items-center justify-between font-mono text-sm min-h-20 px-2 pr-4 py-12 pb-10">
+      <Image
+        src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
+        alt="Logo"
+        className=" md:hidden"
+        width={100}
+        height={24}
+        priority
+      />
+      <Image
+        src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
+        alt="Logo"
+        className="hidden md:block"
+        width={100}
+        height={24}
+        priority
+      />
+       <Button
+        size="secondary"
+        variant="secondary"
+        className="flex justify-between pl-4 rounded-full"
+      >
+        <h3>Download</h3>{" "}
+        {ua.isIos ? (
+          <Icon
+            icon="ion:logo-apple-appstore"
+            width="35"
+            height="35"
+            className="text-primary"
+          />
+        ) : ua.isMac ? (
+          <Icon
+            icon="ion:logo-apple-appstore"
+            width="35"
+            height="35"
+            className="text-primary"
+          />
+        ) : (
+          <Icon
+            icon="ion:logo-google-playstore"
+            width="25"
+            height="25"
+            className="text-primary"
+          />
+        )}
+      </Button>
+    </div>
   );
 };
 

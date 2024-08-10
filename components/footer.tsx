@@ -1,79 +1,82 @@
-import React from "react";
+// components/Header.tsx
+"use client";
+
+import { Icon } from "@iconify/react";
 import Image from "next/image";
+import { Button } from "./ui/button";
+import { useState, useEffect } from "react";
 
-// Define the type for social media links
-interface SocialMediaLink {
-  name: string;
-  url: string;
-  icon: string;
-}
+const Footer = () => {
+  const [isAndroid, setIsAndroid] = useState(false);
 
-// You would typically define this array in a separate file or fetch it from an API
-const socialMediaLinks = [
-  {
-    name: "Facebook",
-    url: "https://www.facebook.com/weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg",
-  },
-  {
-    name: "Instagram",
-    url: "https://www.instagram.com/weeshrapp/",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288265/weeshr_website/IG_jw9rir.svg",
-  },
-  {
-    name: "Twitter",
-    url: "https://twitter.com/weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288266/weeshr_website/X_vigvoj.svg",
-  },
-  {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/company/weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288750/weeshr_website/Group_80_dhlm3v.svg",
-  },
-  {
-    name: "TikTok",
-    url: "https://www.tiktok.com/@weeshrapp",
-    icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288501/weeshr_website/TiTokWeeshr_yvqc4r.svg",
-  },
-];
+  const socialMediaLinks = [
+    {
+      name: "Facebook",
+      url: "https://www.facebook.com/weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg",
+    },
+    {
+      name: "Instagram",
+      url: "https://www.instagram.com/weeshrapp/",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288265/weeshr_website/IG_jw9rir.svg",
+    },
+    {
+      name: "Twitter",
+      url: "https://twitter.com/weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288266/weeshr_website/X_vigvoj.svg",
+    },
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/company/weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288750/weeshr_website/Group_80_dhlm3v.svg",
+    },
+    {
+      name: "TikTok",
+      url: "https://www.tiktok.com/@weeshrapp",
+      icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288501/weeshr_website/TiTokWeeshr_yvqc4r.svg",
+    },
+  ];
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    setIsAndroid(/android/.test(userAgent));
+  }, []);
 
   return (
-    <footer className="bg-[#4537BA] flex flex-col md:flex-row justify-between w-full px-6 py-10">
-      <div className="flex justify-start mb-6 md:mb-0">
-        <Image
-          alt="Weeshr Logo"
-          src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
-          width={100}
-          height={90}
-          priority
-        />
-      </div>
+    <div className="bg-background w-full flex items-center justify-between flex-row font-mono text-sm   px-7 py-5 mb-6 ">
+      <div className=" flex flex-row items-center justify-between w-full px-6 ">
+        <div className="flex flex-col  items-center  justify-center w-full md:flex-row md:justify-between md:items-center md:px-10">
+          <div className="w-full flex  items-center md:items-start flex-col">
+            <Image
+              alt="image"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
+              width={100}
+              height={90}
+              className="pb-6 pt-4"
+            ></Image>
+            <h4 className="flex text-xs text-center md:text-sm pb-8 ">
+              @ 2024 Weeshr. All right reserved.
+            </h4>{" "}
+          </div>
 
-      <div className="md:flex md:flex-row-reverse md:items-center md:w-[70%] md:justify-around">
-        <ul className="flex justify-center mb-4 lg:space-x-4 md:mb-0">
-          {socialMediaLinks.map((link) => (
-            <li key={link.name}>
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
-                <Image
-                  src={link.icon}
-                  alt={link.name}
-                  width={43}
-                  height={43}
-                  className="transition-opacity duration-300 hover:opacity-80 md:w-12 md:h-12"
-                />
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <h4 className="text-xs text-center text-white md:text-sm">
-          ©&nbsp;{currentYear} Weeshr App Limited. All rights reserved
-        </h4>
+          <ul className="flex space-x-0 pb-16 md:pb-0">
+            {socialMediaLinks.map((link) => (
+              <li key={link.name}>
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  <Image
+                    height={60}
+                    width={60}
+                    src={link.icon}
+                    alt={link.name}
+                    className="inline-block transition-opacity duration-300 hover:opacity-80 "
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </footer>
+    </div>
   );
 };
 

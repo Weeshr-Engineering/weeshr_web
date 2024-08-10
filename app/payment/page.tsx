@@ -1,10 +1,12 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ErrTypeLayout } from "@/components/err-type-layout";
 
 interface StatusMessageProps {
   isSuccess: boolean;
@@ -23,56 +25,66 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
 
   if (isSuccess) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F8F9FF] p-4">
+      <ErrTypeLayout>
+
+      <div className="w-full h-full justify-center items-center flex flex-col">
+        <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+
         <Image
-          className="mb-4"
-          width={397}
-          height={90}
-          src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
-          alt="Payment Successful"
+            fill
+            className="rounded-sm shadow-xs absolute object-scale-down"
+            src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
+            alt="Payment Successful"
         />
-        <div className="flex flex-col items-center justify-center mb-5 text-center">
-          <h3 className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
+        </div>
+        <h2 className="text-2xl mb-2 pt-10 w-full text-center">
             {isAlreadyVerified ? "Hurray!!!" : "Payment Done!"}
-          </h3>
-          <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
+          </h2>
+          <p className="text-center mb-8 text-muted-foreground">
           You have successfully contributed toward Oguchi’s weeshes
           </p>
-        </div>
+       
         
-        <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full font-bold text-[#F8F9FF]">
+          <Button className="w-full mb-3 max-w-72">
           <Link href="https://weeshr.com/"> Join Weeshr</Link>
         </Button>
-        <Button variant="outline" className="w-full max-w-72 rounded-full font-bold text-[#020721] border-solid border-[#020721]">
+        <Button variant="outline" className="w-full max-w-72">
           <Link href="https://weeshr.com/">Download Now</Link>
         </Button>
       </div>
+      </ErrTypeLayout>
+
     );
   } else {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F8F9FF] p-4">
+      <ErrTypeLayout>
+
+      <div className="w-full h-full justify-center items-center flex flex-col">
+      <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+
         <Image
-          className="mb-4"
-          width={397}
-          height={90}
+               fill
+               className="rounded-sm shadow-xs absolute object-scale-down"
           src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
           alt="Payment Failed"
         />
-        <div className="flex flex-col items-center justify-center mb-5 text-center">
-          <p className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
+        </div>
+        <h2 className="text-2xl mb-2 pt-10 w-full text-center">
             Payment Failed
-          </p>
-          <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
+          </h2>
+          <p className="text-center mb-8 text-muted-foreground">
             There was an issue with your payment. Please try again
           </p>
-        </div>
-        <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full font-bold text-[#F8F9FF]">
+        
+          <Button className="w-full mb-3 max-w-72">
           <Link href="https://weeshr.com/"> Retry Payment</Link>
         </Button>
-        <Button variant="outline" className="w-full max-w-72 rounded-full font-bold text-[#020721] border-solid border-[#020721]">
+        <Button variant="outline" className="w-full max-w-72">
           <Link href="https://weeshr.com/">View Weeshes</Link>
         </Button>
       </div>
+      </ErrTypeLayout>
+
     );
   }
 };
