@@ -7,6 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { ErrTypeLayout } from "@/components/err-type-layout";
+
 
 interface StatusMessageProps {
   isSuccess: boolean;
