@@ -69,9 +69,9 @@ const Page: React.FC = () => {
       email: data.email,
       message: data.message,
     };
-    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+    // console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/contact-us`;
-    console.log("$$$$ User+ " + apiUrl);
+    // console.log("$$$$ User+ " + apiUrl);
     axios
       .post(apiUrl, requestBody, {
         headers: {
