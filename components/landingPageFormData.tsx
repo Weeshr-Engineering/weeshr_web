@@ -142,8 +142,8 @@ export const LandingPageFormData = () => {
       }
     }
 
-    const apiUrl =
-      "https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df";
+   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/mailinglist/subscribe/d02856a4df`;
+
 
     // console.log("Request Body:", requestBody); // Log the request body
     // console.log("API URL:", apiUrl); // Log the API URL
