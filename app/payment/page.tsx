@@ -3,10 +3,10 @@
 import React, { Suspense, useEffect, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ErrTypeLayout } from "@/components/err-type-layout";
+
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 interface StatusMessageProps {
   isSuccess: boolean;
@@ -146,7 +146,7 @@ const StatusClient = () => {
     const verifyPayment = async () => {
       try {
         const response = await fetch(
-          `https://api.staging.weeshr.com/api/v1/payments/transaction/verify/${reference}`
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
         if (response.status === 200) {
           setIsSuccess(true);
