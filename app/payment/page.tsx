@@ -1,23 +1,22 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
-
 import { useRouter, useSearchParams } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { ErrTypeLayout } from "@/components/err-type-layout";
 
-
 interface StatusMessageProps {
   isSuccess: boolean;
   isAlreadyVerified?: boolean;
+  userMessage?: string;
 }
 
 const StatusMessage: React.FC<StatusMessageProps> = ({
   isSuccess,
   isAlreadyVerified,
+  userMessage,
 }) => {
   const handleClose = () => {
     if (window.parent) {
@@ -28,65 +27,56 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   if (isSuccess) {
     return (
       <ErrTypeLayout>
-
-      <div className="w-full h-full justify-center items-center flex flex-col">
-        <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
-
-        <Image
-            fill
-            className="rounded-sm shadow-xs absolute object-scale-down"
-            src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
-            alt="Payment Successful"
-        />
-        </div>
-        <h2 className="text-2xl mb-2 pt-10 w-full text-center">
+        <div className="w-full h-full justify-center items-center flex flex-col">
+          <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+            <Image
+              fill
+              className="rounded-sm shadow-xs absolute object-scale-down"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
+              alt="Payment Successful"
+            />
+          </div>
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center">
             {isAlreadyVerified ? "Hurray!!!" : "Payment Done!"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-          You have successfully contributed toward Oguchi’s weeshes
+            {userMessage || "You have successfully contributed towards weeshes"}
           </p>
-       
-        
           <Button className="w-full mb-3 max-w-72">
-          <Link href="https://weeshr.com/"> Join Weeshr</Link>
-        </Button>
-        <Button variant="outline" className="w-full max-w-72">
-          <Link href="https://weeshr.com/">Download Now</Link>
-        </Button>
-      </div>
+            <Link href="https://weeshr.com/"> Join Weeshr</Link>
+          </Button>
+          <Button variant="outline" className="w-full max-w-72">
+            <Link href="https://weeshr.com/">Download Now</Link>
+          </Button>
+        </div>
       </ErrTypeLayout>
-
     );
   } else {
     return (
       <ErrTypeLayout>
-
-      <div className="w-full h-full justify-center items-center flex flex-col">
-      <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
-
-        <Image
-               fill
-               className="rounded-sm shadow-xs absolute object-scale-down"
-          src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
-          alt="Payment Failed"
-        />
-        </div>
-        <h2 className="text-2xl mb-2 pt-10 w-full text-center">
+        <div className="w-full h-full justify-center items-center flex flex-col">
+          <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+            <Image
+              fill
+              className="rounded-sm shadow-xs absolute object-scale-down"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
+              alt="Payment Failed"
+            />
+          </div>
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center">
             Payment Failed
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
             There was an issue with your payment. Please try again
           </p>
-        
           <Button className="w-full mb-3 max-w-72">
-          <Link href="https://weeshr.com/"> Retry Payment</Link>
-        </Button>
-        <Button variant="outline" className="w-full max-w-72">
-          <Link href="https://weeshr.com/">View Weeshes</Link>
-        </Button>
-      </div>
+            <Link href="https://weeshr.com/"> Retry Payment</Link>
+          </Button>
+          <Button variant="outline" className="w-full max-w-72">
+            <Link href="https://weeshr.com/">View Weeshes</Link>
+          </Button>
+        </div>
       </ErrTypeLayout>
-
     );
   }
 };
@@ -137,6 +127,7 @@ const StatusClient = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userMessage, setUserMessage] = useState<string | undefined>(undefined);
   const reference = searchParams.get("reference");
 
   useEffect(() => {
@@ -152,6 +143,16 @@ const StatusClient = () => {
         );
         if (response.status === 200) {
           setIsSuccess(true);
+          // Fetch user-specific message
+          const userName = "exampleUserName"; // Replace with actual logic to fetch username
+          const year = new Date().getFullYear(); // Or fetch dynamically if needed
+          const userResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/public/webpage/:userName/:year`
+          );
+          const userData = await userResponse.json();
+          setUserMessage(
+            `You have successfully contributed toward ${userData.userName}’s weeshes`
+          );
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
@@ -180,6 +181,7 @@ const StatusClient = () => {
     <StatusMessage
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
+      userMessage={userMessage}
     />
   );
 };
