@@ -1,10 +1,8 @@
-// components/Header.tsx
+// components/Footer.tsx
 "use client";
 
-import { Icon } from "@iconify/react";
-import Image from "next/image";
-import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const Footer = () => {
   const [isAndroid, setIsAndroid] = useState(false);
@@ -43,38 +41,36 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="bg-background w-full flex items-center justify-between flex-row font-mono text-sm   px-7 py-5 mb-6 ">
-      <div className=" flex flex-row items-center justify-between w-full px-6 ">
-        <div className="flex flex-col  items-center  justify-center w-full md:flex-row md:justify-between md:items-center md:px-10">
-          <div className="w-full flex  items-center md:items-start flex-col">
-            <Image
-              alt="image"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
-              width={100}
-              height={90}
-              className="pb-6 pt-4"
-            ></Image>
-            <h4 className="flex text-xs text-center md:text-sm pb-8 ">
-              @ 2024 Weeshr. All right reserved.
-            </h4>{" "}
-          </div>
-
-          <ul className="flex space-x-0 pb-16 md:pb-0">
-            {socialMediaLinks.map((link) => (
-              <li key={link.name}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  <Image
-                    height={60}
-                    width={60}
-                    src={link.icon}
-                    alt={link.name}
-                    className="inline-block transition-opacity duration-300 hover:opacity-80 "
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
+    <div className="bg-background w-full font-mono text-sm px-7 py-5">
+      <div className="flex flex-col items-center justify-between w-full px-6 md:flex-row">
+        <div className="w-full md:w-auto flex justify-center md:justify-start">
+          <Image
+            alt="Weeshr Logo"
+            src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
+            width={100}
+            height={90}
+          />
         </div>
+
+        <h4 className="text-xs text-center md:text-sm py-4 w-full md:w-auto">
+          © 2024 Weeshr. All rights reserved.
+        </h4>
+
+        <ul className="flex space-x-4 justify-center md:justify-end w-full md:w-auto">
+          {socialMediaLinks.map((link) => (
+            <li key={link.name}>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                <Image
+                  height={60}
+                  width={60}
+                  src={link.icon}
+                  alt={link.name}
+                  className="inline-block transition-opacity duration-300 hover:opacity-80"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
