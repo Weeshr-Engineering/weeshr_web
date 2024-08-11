@@ -89,7 +89,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
   });
 
   function onSubmit(data: ProfileFormValues) {
-    console.log("Received dob:", data.dob);
+    // console.log("Received dob:", data.dob);
 
     const requestBody: any = {
       name: data.preferredName,
@@ -109,7 +109,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
         requestBody.dob = dayjs(dobDate).format("YYYY-MM-DD");
 
         // Log the converted dob
-        console.log("Converted dob:", requestBody.dob);
+        // console.log("Converted dob:", requestBody.dob);
       } else {
         console.error("Invalid date value:", data.dob);
       }
@@ -118,8 +118,8 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
     const apiUrl =
       "https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df";
 
-    console.log("Request Body:", requestBody); // Log the request body
-    console.log("API URL:", apiUrl); // Log the API URL
+    // console.log("Request Body:", requestBody); // Log the request body
+    // console.log("API URL:", apiUrl); // Log the API URL
 
     axios
       .post(apiUrl, requestBody, {
@@ -128,7 +128,7 @@ export const MonthsPageFormData = ({ month }: { month: string }) => {
         },
       })
       .then((response) => {
-        console.log("Response:", response.data);
+        // console.log("Response:", response.data);
         toast.success("Weeshr Form Submitted!");
         form.reset({
           preferredName: "",
