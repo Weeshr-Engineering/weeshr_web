@@ -125,7 +125,7 @@ export const LandingPageFormData = () => {
     setIsLoading(true); // Start loading
 
     if (data.dob) {
-      console.log("dob changed" + data.dob);
+      // console.log("dob changed" + data.dob);
 
       // Convert the timestamp to a Date object
       const dobDate = new Date(data.dob);
@@ -145,8 +145,8 @@ export const LandingPageFormData = () => {
     const apiUrl =
       "https://api.staging.weeshr.com/api/v1/mailinglist/subscribe/d02856a4df";
 
-    console.log("Request Body:", requestBody); // Log the request body
-    console.log("API URL:", apiUrl); // Log the API URL
+    // console.log("Request Body:", requestBody); // Log the request body
+    // console.log("API URL:", apiUrl); // Log the API URL
 
     axios
       .post(apiUrl, requestBody, {
@@ -156,7 +156,7 @@ export const LandingPageFormData = () => {
       })
       .then((response) => {
         // Handle success
-        console.log("Response:", response.data);
+        // console.log("Response:", response.data);
         toast.success("Weeshr Form Submitted!");
         form.reset({
           preferredName: "",
