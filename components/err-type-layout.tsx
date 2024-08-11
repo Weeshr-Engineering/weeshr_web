@@ -1,5 +1,5 @@
-import Footer from "@/components/footer";
-import Header from "@/components/header";
+import Footer from "@/components/paymentfooter";
+import Header from "@/components/paymentheader";
 import InterfaceLayout from "@/components/Interface-layout";
 import WidthLayout from "@/components/width-layout";
 import Link from "next/link";

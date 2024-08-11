@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import Footer from "@/components/footer";
+import Footer from "@/components/paymentfooter";
 import WidthLayout from "@/components/width-layout";
 import { Icon } from "@iconify/react";
 import { zodResolver } from "@hookform/resolvers/zod";

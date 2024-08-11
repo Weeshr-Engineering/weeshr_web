@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Head } from "react-day-picker";
-import Header from "@/components/header";
+import Header from "@/components/paymentheader";
 
 const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
