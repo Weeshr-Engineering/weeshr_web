@@ -131,7 +131,7 @@ const StatusClient = () => {
     const verifyPayment = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}payments/transaction/verify/${reference}`
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
         if (response.status === 200) {
           setIsSuccess(true);
