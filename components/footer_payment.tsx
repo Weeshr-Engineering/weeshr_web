@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
           ))}
         </ul>
 
-        <h4 className="text-xs text-center text-white md:text-sm">
+        <h4 className="text-xs text-center text-[#020721] md:text-sm">
           ©&nbsp;{currentYear} Weeshr App Limited. All rights reserved
         </h4>
       </div>
