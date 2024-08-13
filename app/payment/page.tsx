@@ -45,7 +45,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <Button className="w-full mb-3 max-w-72">
             <Link href="https://weeshr.com/"> Join Weeshr</Link>
           </Button>
-          <Button variant="outline" className="w-full max-w-72">
+          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
             <Link href="https://weeshr.com/">Download Now</Link>
           </Button>
         </div>
@@ -69,10 +69,10 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <p className="text-center mb-8 text-muted-foreground">
             There was an issue with your payment. Please try again
           </p>
-          <Button className="w-full mb-3 max-w-72">
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Retry Payment</Link>
           </Button>
-          <Button variant="outline" className="w-full max-w-72">
+          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
             <Link href="https://weeshr.com/">View Weeshes</Link>
           </Button>
         </div>
