@@ -36,13 +36,13 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               alt="Payment Successful"
             />
           </div>
-          <h2 className="text-2xl mb-2 pt-10 w-full text-center">
-            {isAlreadyVerified ? "Hurray!!!" : "Payment Done!"}
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
+             "Hurray!!!" 
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
             {userMessage || "You have successfully contributed towards weeshes"}
           </p>
-          <Button className="w-full mb-3 max-w-72">
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Join Weeshr</Link>
           </Button>
           <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
