@@ -63,7 +63,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               alt="Payment Failed"
             />
           </div>
-          <h2 className="text-2xl mb-2 pt-10 w-full text-center">
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721] ">
             Payment Failed
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
