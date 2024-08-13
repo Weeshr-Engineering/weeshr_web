@@ -37,7 +37,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
-             "Hurray!!!" 
+            {isAlreadyVerified ? "Payment Done!":"Hurray!!!"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
             {userMessage || "You have successfully contributed towards weeshes"}
