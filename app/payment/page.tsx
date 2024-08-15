@@ -37,11 +37,11 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
-            {isAlreadyVerified ? "Hurray!!! Done!":"Payment"}
+            {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            {userMessage}
-          </p>
+          {userMessage || "You have successfully contributed towards weeshes"}  
+                  </p>
           <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
@@ -148,12 +148,14 @@ const StatusClient = () => {
           const userName = "exampleUserName"; // Replace with actual logic to fetch username
           const year = new Date().getFullYear(); // Or fetch dynamically if needed
           const userResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/user/public/webpage/:userName/:year`
-          );
+            `${process.env.NEXT_PUBLIC_API_URL}/user/public/webpage/${userName}/${year}`
+                      );
           const userData = await userResponse.json();
+          console.log('Fetched User Data:', userData);
           setUserMessage(
             `You have successfully contributed toward ${userData.userName}’s weeshes`
           );
+          console.log('User Message:', userMessage);
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
