@@ -86,10 +86,17 @@ export const FloatingNav = ({
                 <span className="text-sm sm:block">{navItem.name}</span>
               </Link>
             ))}
-            <button className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full">
-              <span>Login</span>
-              <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-            </button>
+            <Link href="/login">
+              <button
+                className={cn(
+                  "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
+                  pathname === "/login" ? "text-black" : "text-neutral-500"
+                )}
+              >
+                <span>Login</span>
+                <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+              </button>
+            </Link>
           </div>
         </motion.div>
       </div>
