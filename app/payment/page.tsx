@@ -31,34 +31,35 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
-              className="rounded-sm shadow-xs absolute object-scale-down"
+              className="rounded-sm shadow-xs absolute object-contain"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
               alt="Payment Successful"
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
-            {isAlreadyVerified ? "Payment Done!":"Hurray!!!"}
+            {isAlreadyVerified ? "Hurray!!! Done!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            {userMessage || "You have successfully contributed towards weeshes"}
+            {userMessage}
           </p>
           <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
-            <Link href="https://weeshr.com/"> Join Weeshr</Link>
+            <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
           <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
-            <Link href="https://weeshr.com/">Download Now</Link>
+            <Link href="https://weeshr.com/">Download App</Link>
           </Button>
         </div>
       </ErrTypeLayout>
     );
   } else {
+   
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
           <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
-              className="rounded-sm shadow-xs absolute object-scale-down"
+              className="rounded-sm shadow-xs absolute object-contain"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
               alt="Payment Failed"
             />
@@ -67,7 +68,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             Payment Failed
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            There was an issue with your payment. Please try again
+            There was an issue with your payment. <br/>Please try again
           </p>
           <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Retry Payment</Link>
