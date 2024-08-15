@@ -40,7 +40,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-          {userMessage || "You have successfully contributed towards weeshes"}  
+          {userMessage || "You have successfully contributed towards  weeshes"}  
                   </p>
           <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
