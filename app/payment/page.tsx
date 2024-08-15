@@ -32,7 +32,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1722990518/success2_lv7tnt.svg"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723745923/SuccessIllustration_t8fhro.svg"
               alt="Payment Successful"
             />
           </div>
@@ -40,7 +40,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-          {userMessage || "You have successfully contributed towards  weeshes"}  
+          {userMessage || "You have successfully contributed towards WEESHR weeshes"}  
                   </p>
           <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
