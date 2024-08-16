@@ -128,6 +128,11 @@ const StatusClient = () => {
       return;
     }
 
+    console.log({
+      uri: process.env.NEXT_PUBLIC_API_URL,
+      port: process.env.PORT
+    })
+
     const verifyPayment = async () => {
       try {
         const response = await fetch(
