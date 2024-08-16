@@ -129,8 +129,7 @@ const StatusClient = () => {
     }
 
     console.log({
-      uri: process.env.NEXT_PUBLIC_API_URL,
-      port: process.env.PORT
+      uri: process.env['NEXT_PUBLIC_API_URL']
     })
 
     const verifyPayment = async () => {
