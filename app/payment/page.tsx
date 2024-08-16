@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import Env from "@/lib/env";
 
 interface StatusMessageProps {
   isSuccess: boolean;
@@ -129,7 +130,7 @@ const StatusClient = () => {
     }
 
     console.log({
-      uri: process.env['NEXT_PUBLIC_API_URL']
+      uri: Env.API_URL
     })
 
     const verifyPayment = async () => {
