@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import Env from "@/lib/env";
 
 interface StatusMessageProps {
   isSuccess: boolean;
@@ -129,14 +128,10 @@ const StatusClient = () => {
       return;
     }
 
-    console.log({
-      uri: Env.API_URL
-    })
-
     const verifyPayment = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
+          `${process.env.API_URL}/payments/transaction/verify/${reference}`
         );
         if (response.status === 200) {
           setIsSuccess(true);
