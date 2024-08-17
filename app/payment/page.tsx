@@ -31,7 +31,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
-              className="rounded-sm shadow-xs absolute object-contain"
+              className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1723745923/SuccessIllustration_t8fhro.svg"
               alt="Payment Successful"
             />
@@ -59,7 +59,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
-              className="rounded-sm shadow-xs absolute object-contain"
+              className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
               alt="Payment Failed"
             />
@@ -70,8 +70,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <p className="text-center mb-8 text-muted-foreground">
             There was an issue with your payment. <br/>Please try again
           </p>
-          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
-            <Link href="https://weeshr.com/"> Retry Payment</Link>
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
+          onClick={() => window.history.go(-2)}>
+             Retry Payment
           </Button>
           <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
             <Link href="https://weeshr.com/">View Weeshes</Link>

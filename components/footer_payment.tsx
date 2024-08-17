@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
 
   return (
       
-<footer className="bg-[#F8F9FF] flex flex-col md:flex-row justify-center md:justify-between w-full px-6 py-10  bottom-0 sm:absolute md:absolute xl:relative
+<footer className="bg-[#F8F9FF] flex flex-col md:flex-row justify-center md:justify-between w-full px-6 py-10  bottom-0  xl:relative
 items-center ">
   <div className="flex md:justify-start mb-6 md:mb-0 ">
           <Image
