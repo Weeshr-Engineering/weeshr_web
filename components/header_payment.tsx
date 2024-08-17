@@ -44,7 +44,7 @@ const Header = ({ uaString }: { uaString?: string }) => {
        <Button
         size="secondary"
         variant="secondary"
-        className="flex justify-between pl-4 rounded-full"
+        className="flex justify-between pl-4 rounded-full bg-[#E9F4D1]"
       >
         <h3>Download</h3>{" "}
         {ua.isIos ? (
@@ -52,26 +52,26 @@ const Header = ({ uaString }: { uaString?: string }) => {
             icon="ion:logo-apple-appstore"
             width="35"
             height="35"
-            className="text-primary"
+            className="text-[#34389B]"
           />
         ) : ua.isMac ? (
           <Icon
             icon="ion:logo-apple-appstore"
             width="35"
             height="35"
-            className="text-primary"
+          
+            className="text-[#34389B]"
           />
         ) : (
           <Icon
             icon="ion:logo-google-playstore"
             width="25"
             height="25"
-            className="text-primary"
+            className="text-[#34389B] "
           />
         )}
       </Button>
     </div>
   );
 };
-
 export default Header;
