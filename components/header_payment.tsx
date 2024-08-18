@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useUserAgent } from "next-useragent";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
-import { Button } from "./ui/button_payment";
+import { Button } from "./ui/button";
 
 const Header = ({ uaString }: { uaString?: string }) => {
   const [mounted, setMounted] = useState(false);
@@ -42,8 +42,8 @@ const Header = ({ uaString }: { uaString?: string }) => {
         priority
       />
        <Button
-        size="secondary"
-        variant="secondary"
+        size="payment_btn"
+        variant="payment_btn"
         className="flex justify-between pl-4 rounded-full bg-[#E9F4D1]"
       >
         <h3>Download</h3>{" "}
