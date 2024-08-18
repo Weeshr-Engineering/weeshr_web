@@ -4,9 +4,11 @@ import React from "react";
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ErrTypeLayout } from "@/components/err-type-layout";
 
 const ErrorPage = () => {
   return (
+    <ErrTypeLayout>
     <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F8F9FF] p-4">
       <Image
         className="mb-4"
@@ -29,6 +31,7 @@ const ErrorPage = () => {
           </Button>
         </Link>
     </div>
+    </ErrTypeLayout>
   );
 };
 
