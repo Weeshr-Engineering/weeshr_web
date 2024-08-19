@@ -294,11 +294,11 @@ export default LoginPage;
 
 const WeeshrGist = () => {
   return (
-    <div className="flex flex-col w-full bg-white/90 blur-[10] rounded-lg p-3 space-y-2  xs:hidden min-[500px]:hidden md:absolute md:block md:bottom-6 md:left-10 max-w-sm">
+    <div className="flex flex-col w-full bg-white/90 blur-[10] rounded-lg p-3 space-y-2 xs:hidden min-[500px]:hidden md:absolute md:block md:bottom-6 md:left-10 max-w-sm">
       <h4 className="font-semibold text-[#020721]">Weeshr Gist</h4>
       <div className="text-[#020721] text-sm">
         <p className="pb-1.5">
-          If wishes were horses, we'd all be riding unicorns to work or not
+          If wishes were horses, we&apos;d all be riding unicorns to work or not
           because my wish this morning is to sleep in.
         </p>
         <span className="text-[#3A8EE5] mt-4">
@@ -308,3 +308,4 @@ const WeeshrGist = () => {
     </div>
   );
 };
+
