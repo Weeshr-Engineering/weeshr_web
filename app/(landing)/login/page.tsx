@@ -128,12 +128,14 @@ const LoginPage = () => {
               <WeeshrGist />
             </div>
 
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <form className="mt-3" onSubmit={handleSubmit}>
               <input type="hidden" name="remember" value="true" />
               <div className="-space-y-px rounded-md shadow-sm">
-                <h4 className="py-8 font-semibold text-black">Sign In</h4>
+                <h4 className="w-full pt-2 pb-3 font-semibold text-[#020721]">
+                  Sign In
+                </h4>
 
-                <div>
+                <div className="">
                   <label htmlFor="email-address" className="sr-only">
                     Email address
                   </label>
@@ -143,30 +145,30 @@ const LoginPage = () => {
                     type="email"
                     autoComplete="email"
                     required
-                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border  rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm "
                     placeholder="Email address"
                   />
                 </div>
                 <div>
                   <label htmlFor="pin" className="sr-only">
-                    Password
+                    Pin
                   </label>
                   <input
                     id="number"
                     name="pin"
                     autoComplete="current-password"
                     required
-                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm"
                     placeholder="Pin"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-6">
                 <Button
                   type="submit"
                   variant={"white_btn"}
-                  className="w-full text-black bg-white rounded-md relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-[#4537BA] border border-transparent  group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="w-full text-[#020721] bg-white rounded-md relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-[#4537BA] border border-transparent  group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   disabled={isSignInLoading}
                 >
                   {isSignInLoading ? (
@@ -182,14 +184,14 @@ const LoginPage = () => {
               </div>
 
               <div className="pt-3 pb-10">
-                <h6 className="w-full py-3 text-sm font-semibold text-center text-black">
+                <h6 className="w-full py-3 text-sm font-semibold text-center text-[#020721]">
                   Continue with
                 </h6>
                 <div className="space-y-2">
                   <Button
                     variant={"white_btn"}
                     onClick={handleGoogleLogin}
-                    className="w-full text-black bg-white rounded-md"
+                    className="w-full text-[#020721] bg-white rounded-md"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -267,6 +269,10 @@ const LoginPage = () => {
                 </div>
               </div>
             </form>
+            <h6 className="w-full text-sm font-semibold text-center text-[#020721]">
+              Powered by Weeshr Core{" "}
+            </h6>
+
             {/* <div className="text-sm text-center">
             <span className="text-gray-600">Don't have an account?</span>
             <Link
@@ -289,7 +295,7 @@ export default LoginPage;
 const WeeshrGist = () => {
   return (
     <div className="flex flex-col w-full bg-white/90 blur-[10] rounded-lg p-3 space-y-2  xs:hidden min-[500px]:hidden md:absolute md:block md:bottom-6 md:left-10 max-w-sm">
-      <h4 className="font-semibold text-black">Weeshr Gist</h4>
+      <h4 className="font-semibold text-[#020721]">Weeshr Gist</h4>
       <div className="text-[#020721] text-sm">
         <p className="pb-1.5">
           If wishes were horses, we'd all be riding unicorns to work or not
