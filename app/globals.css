@@ -29,6 +29,7 @@ body {
   box-sizing: border-box;
   scrollbar-gutter: stable;
   background: #4537ba;
+
   /* background: linear-gradient(180deg, #FFF 0.11%, #E4E6F5 99.89%); */
 }
 
@@ -45,6 +46,7 @@ body {
 
     --primary: 240 5.9% 10%;
     --primary-foreground: 0 0% 98%;
+    /* --primarypayment:  238 50% 41%; */
 
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -77,6 +79,8 @@ body {
 
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
+    --primarypayment:  238 50% 41%;
+
 
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;

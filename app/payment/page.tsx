@@ -6,15 +6,18 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { handleApiError } from "@/lib/handle-err";
+import { ErrTypeLayout } from "@/components/err-type-layout";
 
 interface StatusMessageProps {
   isSuccess: boolean;
   isAlreadyVerified?: boolean;
+  userMessage?: string;
 }
 
 const StatusMessage: React.FC<StatusMessageProps> = ({
   isSuccess,
   isAlreadyVerified,
+  userMessage,
 }) => {
   const handleClose = () => {
     if (window.parent) {
@@ -24,53 +27,59 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
 
   if (isSuccess) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F8F9FF] p-4">
-        <Image
-          className="mb-4"
-          width={397}
-          height={90}
-          src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680616/payment_successful_ngaawv.svg"
-          alt="Payment Successful"
-        />
-        <div className="flex flex-col items-center justify-center mb-5 text-center">
-          <h3 className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
-            {isAlreadyVerified ? "Payment Successful" : "Payment Done!"}
-          </h3>
-          <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
-            Your payment has been successfully completed
-          </p>
-        </div>
-        <Link href="/">
-          <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full font-bold text-[#020721]">
-            Go Home
+      <ErrTypeLayout>
+        <div className="w-full h-full justify-center items-center flex flex-col">
+          <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+            <Image
+              fill
+              className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723745923/SuccessIllustration_t8fhro.svg"
+              alt="Payment Successful"
+            />
+          </div>
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
+            {isAlreadyVerified ? "Hurray!!!":"Payment"}
+          </h2>
+          <p className="text-center mb-8 text-muted-foreground">
+          {userMessage || "You have successfully contributed towards WEESHR weeshes"}  
+                  </p>
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
+            <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
-        </Link>
-      </div>
+          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
+            <Link href="https://weeshr.com/">Download App</Link>
+          </Button>
+        </div>
+      </ErrTypeLayout>
     );
   } else {
+   
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F8F9FF] p-4">
-        <Image
-          className="mb-4"
-          width={397}
-          height={90}
-          src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
-          alt="Payment Failed"
-        />
-        <div className="flex flex-col items-center justify-center mb-5 text-center">
-          <p className="text-2xl font-bold text-[#111827] md:text-3xl lg:text-4xl">
+      <ErrTypeLayout>
+        <div className="w-full h-full justify-center items-center flex flex-col">
+          <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+            <Image
+              fill
+              className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
+              alt="Payment Failed"
+            />
+          </div>
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721] ">
             Payment Failed
+          </h2>
+          <p className="text-center mb-8 text-muted-foreground">
+            There was an issue with your payment. <br/>Please try again
           </p>
-          <p className="mt-4 text-sm text-[#6B7280] md:text-lg lg:text-xl">
-            There was an issue with your payment. Please try again
-          </p>
-        </div>
-        <Link href="/">
-          <Button className="w-auto bg-[#BAEF23] hover:bg-lime-500 rounded-full  font-bold text-[#020721]">
-            Go Home
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
+          onClick={() => window.history.go(-2)}>
+             Retry Payment
           </Button>
-        </Link>
-      </div>
+          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
+            <Link href="https://weeshr.com/">View Weeshes</Link>
+          </Button>
+        </div>
+      </ErrTypeLayout>
     );
   }
 };
@@ -121,6 +130,7 @@ const StatusClient = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userMessage, setUserMessage] = useState<string | undefined>(undefined);
   const reference = searchParams.get("reference");
 
   useEffect(() => {
@@ -136,6 +146,18 @@ const StatusClient = () => {
         );
         if (response.status === 200) {
           setIsSuccess(true);
+          // Fetch user-specific message
+          const userName = "exampleUserName"; // Replace with actual logic to fetch username
+          const year = new Date().getFullYear(); // Or fetch dynamically if needed
+          const userResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/public/webpage/${userName}/${year}`
+                      );
+          const userData = await userResponse.json();
+          console.log('Fetched User Data:', userData);
+          setUserMessage(
+            `You have successfully contributed toward ${userData.userName}’s weeshes`
+          );
+          console.log('User Message:', userMessage);
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
@@ -164,6 +186,7 @@ const StatusClient = () => {
     <StatusMessage
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
+      userMessage={userMessage}
     />
   );
 };
