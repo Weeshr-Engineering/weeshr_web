@@ -15,7 +15,8 @@ const WidthLayout: React.FC<LayoutProps> = ({ children, narrow = false }) => {
       className={clsx(
         defaultClass,
         extraLargeClass,
-        "  mx-auto 2xl:max-w-7xl bg-white"
+        "  mx-auto 2xl:max-w-7xl "
+
       )}
     >
       {children}

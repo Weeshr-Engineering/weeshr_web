@@ -23,6 +23,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { handleApiError } from "@/lib/handle-err";
+import Header from "@/components/header";
 
 // Define the type for social media links
 interface SocialMediaLink {
@@ -98,6 +99,7 @@ const Page: React.FC = () => {
     <div className="w-full ">
       <>
         <div className="relative">
+          <Header />
           <div
             className="text-black bg-white pb-[240px] pt-[100px]"
             style={{

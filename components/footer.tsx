@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-// Define the type for social media links
+  // Define the type for social media links
 interface SocialMediaLink {
   name: string;
   url: string;
