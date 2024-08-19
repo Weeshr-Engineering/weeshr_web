@@ -9,11 +9,13 @@ import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLoginUserErrorHandler } from "@/lib/handle-err";
 import { useRouter } from "next/navigation"; // Import useRouter
+import toast from "react-hot-toast";
 
 const HomePage: React.FC = () => {
   const [fullName, setFullName] = useState<string>("");
   const { handleError } = useLoginUserErrorHandler(); // Use the custom hook
   const router = useRouter(); // Initialize router
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Manage loading state
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -49,6 +51,8 @@ const HomePage: React.FC = () => {
   }, [handleError]); // Ensure handleError is included in the dependency array
 
   const handleDeleteAccount = async () => {
+    setIsLoading(true); // Start loading state
+
     try {
       await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/user/account`, {
         headers: {
@@ -56,11 +60,20 @@ const HomePage: React.FC = () => {
         },
       });
 
-      // Clear local storage and redirect to login using router
-      localStorage.removeItem("authToken");
-      router.push("/login"); // Navigate to login page
+      toast.success(
+        "Your account has been deactivated. You will be logged out shortly.",
+        {
+          duration: 5000,
+        }
+      );
+
+      setTimeout(() => {
+        localStorage.removeItem("authToken");
+        router.push("/login");
+      }, 5000);
     } catch (error) {
-      handleError(error); // Use the custom error handler
+      handleError(error);
+      setIsLoading(false); // Stop loading state if there's an error
     }
   };
 
