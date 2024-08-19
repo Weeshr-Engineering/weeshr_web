@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LandingPageFormData } from "@/components/landingPageFormData";
 import Footer from "./footer";
+import Header from '@/components/header';
 
 export const SectionOneLanding = () => {
   const socialMediaLinks = [
@@ -37,6 +38,7 @@ export const SectionOneLanding = () => {
 
   return (
     <div>
+      <Header />
       <div className=" bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1704589846/weeshr_website/khqkqicfommy9ofmnwkl.jpg')] bg-cover bg-center bg-no-repeat pt-20">
         <div className="flex items-center justify-center w-full pt-20 pb-14">
           <Image
