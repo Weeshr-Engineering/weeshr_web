@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { handleApiError } from "@/lib/handle-err";
 import { ErrTypeLayout } from "@/components/err-type-layout";
 
 interface StatusMessageProps {
@@ -163,7 +164,7 @@ const StatusClient = () => {
         } else {
           setIsSuccess(false);
         }
-      } catch (error) {
+      } catch (handleApiError) {
         setIsSuccess(false);
       } finally {
         setLoading(false);

@@ -2,15 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
   font-family: "Outfit-Regular";
   src: url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.eot");
-  src: url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.eot?#iefix")format("embedded-opentype"),
-  url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.woff2")format("woff2"),
-  url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.woff")format("woff"),
-  url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.ttf")format("truetype"),
-  url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.svg#Outfit")format("svg");
+  src: url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/771c49f7c4367802d13ab202d164204b.svg#Outfit")
+      format("svg");
 }
 
 @font-face {
@@ -24,12 +28,10 @@ body {
   color: white;
   box-sizing: border-box;
   scrollbar-gutter: stable;
-  background: #4537BA;
+  background: #4537ba;
 
   /* background: linear-gradient(180deg, #FFF 0.11%, #E4E6F5 99.89%); */
 }
-
-
 
 @layer base {
   :root {
@@ -105,6 +107,42 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+
+  p,
+  li,
+  code,
+  button {
+    @apply text-xs font-normal lg:text-sm md:text-[13px]  leading-relaxed tracking-wide;
+  }
+
+  .text-h1 {
+    @apply leading-none text-5xl md:text-[56px] lg:text-[90px]  xl:text-[104px]  tracking-tight scroll-m-20 font-bold;
+  }
+  .text-h2 {
+    @apply  leading-none text-3xl md:text-[32px] lg:text-[44px] xl:text-5xl font-semibold tracking-tight scroll-m-20 first:mt-0;
+  }
+  .text-h3 {
+    @apply leading-[1]  text-xl  lg:text-[32px] xl:text-4xl font-medium tracking-tight scroll-m-20;
+  }
+  .text-h4 {
+    @apply leading-tight 2xl:leading-normal text-xl lg:text-[28px] xl:text-[32px] font-medium tracking-normal scroll-m-20;
+  }
+  .text-h5 {
+    @apply text-base font-medium leading-normal tracking-normal md:text-xl lg:text-2xl 2xl:leading-tight scroll-m-20;
+  }
+  .text-h6 {
+    @apply text-base font-medium leading-relaxed tracking-wide lg:text-lg;
+  }
+
+  .text-pb {
+    @apply text-[13px] lg:text-sm leading-[120%] -tracking-normal font-medium;
+  }
+  .text-pm {
+    @apply text-[11px] lg:text-xs leading-[120%] -tracking-normal font-normal;
+  }
+  .text-ps {
+    @apply text-[9px] lg:text-[10px] leading-[120%] -tracking-normal font-normal;
+  }
 }
 
 h1,
@@ -123,17 +161,13 @@ button {
 }
 
 .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
- 
   height: 46px;
-  border:0.5px;
+  border: 0.5px;
   font-size: 15px;
-  color:#71717a;
-
+  color: #71717a;
 }
 
-
 .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
- 
   color: #000000;
   font-weight: 500;
 }

@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
     "./node_modules/tailwind-datepicker-react/dist/**/*.js", // <--- Add this line
   ],
   prefix: "",
@@ -14,6 +14,7 @@ module.exports = {
       center: true,
       padding: "2rem",
       screens: {
+        xs: "500px",
         "2xl": "1400px",
       },
     },
@@ -38,7 +39,7 @@ module.exports = {
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          foreground: "#02072196",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
@@ -75,4 +76,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
