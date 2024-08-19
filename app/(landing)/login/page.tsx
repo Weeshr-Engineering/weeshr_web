@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { handleApiError } from "@/lib/handle-err";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
+import Header from "@/components/header";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -21,6 +23,7 @@ const loginSchema = z.object({
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignInLoading, setIsSignInLoading] = useState(false); // New state for Sign in button loading
+  const router = useRouter();
 
   const handleSubmit = async (event: any) => {
     console.log("Login successful");
@@ -53,7 +56,13 @@ const LoginPage = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Login successful");
+        // Extract user data from the API response
+        const userData = response.data.data.user;
+        const userId = response.data.data.user._id;
+        localStorage.setItem("userId", userId);
+        // Store the token in localStorage
+        localStorage.setItem("authToken", userData.token);
+        router.push("/account");
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
@@ -73,7 +82,7 @@ const LoginPage = () => {
 
       if (response.status === 200 || response.status === 201) {
         const redirectUrl = response.data.data.redirect_to;
-        toast.success("Redirecting to Google login...");
+        // toast.success("Redirecting to Google login...");
         window.location.href = redirectUrl; // Redirect the user to the Google login page
       } else {
         toast.error("Failed to initiate Google login.");
@@ -102,7 +111,18 @@ const LoginPage = () => {
           height={100}
           className="absolute mx-auto top-20 max-[500px]:flex max-[500px]:flex-cols  justify-center max-[500px]:flex-end  xs:relative  md:top-14 md:left-14"
         />
-        <div className="flex max-[500px]:justify-center max-[500px]:items-center md:min-h-screen min-w-lg">
+        <Header />
+        <div className="flex max-[500px]:justify-center max-[500px]:items-center md:min-h-screen min-w-lg relative">
+          <Image
+            height={"300"}
+            width={"250"}
+            alt="design"
+            src={
+              "https://res.cloudinary.com/drykej1am/image/upload/v1724055329/weeshr_website/Vector_173_l188oi.png"
+            }
+            className="absolute right-0 hidden object-cover md:top-0 md:block"
+          />
+
           <div className="w-full p-8 space-y-8 rounded-lg md:rounded-none  shadow-md pxs-6 bg-gradient-to-t from-gray-100 via-white/80 to-white/0 min-[500px]:bg-white min-w-96  md:flex md:w-full md:flex-col md:justify-center md:min-w-[400px] lg:min-w-[450px]">
             <div className="">
               <WeeshrGist />
