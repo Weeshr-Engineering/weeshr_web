@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,18 +25,46 @@ const LoginPage = () => {
   const [isSignInLoading, setIsSignInLoading] = useState(false); // New state for Sign in button loading
   const router = useRouter();
 
-  const handleSubmit = async (event: any) => {
-    console.log("Login successful");
+  useEffect(() => {
+    // Check if the user is already signed in
+    const authToken = localStorage.getItem("authToken");
+    if (authToken) {
+      // Make an API call to validate the token and get user data
+      const validateUser = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
 
+          if (response.status === 200 || response.status === 201) {
+            // Redirect to account page if the user is authenticated
+            router.push("/account");
+          } else {
+            // If the token is invalid, clear it from localStorage
+            localStorage.removeItem("authToken");
+          }
+        } catch (error) {
+          localStorage.removeItem("authToken");
+        }
+      };
+
+      validateUser();
+    }
+  }, [router]);
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    setIsSignInLoading(true); // Set loading state for Sign in button
+    setIsSignInLoading(true);
 
     const formData = {
       email: event.target.email.value,
       pin: event.target.pin.value,
     };
-
-    console.log("Login successful");
 
     const validation = loginSchema.safeParse(formData);
 
@@ -45,7 +73,7 @@ const LoginPage = () => {
         .map((err) => err.message)
         .join(", ");
       toast.error(`Validation failed: ${errorMessages}`);
-      setIsSignInLoading(false); // Reset loading state on validation failure
+      setIsSignInLoading(false);
       return;
     }
 
@@ -56,11 +84,9 @@ const LoginPage = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        // Extract user data from the API response
         const userData = response.data.data.user;
-        const userId = response.data.data.user._id;
+        const userId = userData._id;
         localStorage.setItem("userId", userId);
-        // Store the token in localStorage
         localStorage.setItem("authToken", userData.token);
         router.push("/account");
       } else {
@@ -69,7 +95,7 @@ const LoginPage = () => {
     } catch (error) {
       handleApiError(error);
     } finally {
-      setIsSignInLoading(false); // Reset loading state on API response
+      setIsSignInLoading(false);
     }
   };
 
@@ -82,17 +108,16 @@ const LoginPage = () => {
 
       if (response.status === 200 || response.status === 201) {
         const redirectUrl = response.data.data.redirect_to;
-        // toast.success("Redirecting to Google login...");
-        window.location.href = redirectUrl; // Redirect the user to the Google login page
+        window.location.href = redirectUrl;
       } else {
         toast.error("Failed to initiate Google login.");
       }
-    } catch (handleApiError) {
+    } catch (error) {
+      handleApiError(error);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <>
       <Head>
@@ -308,4 +333,3 @@ const WeeshrGist = () => {
     </div>
   );
 };
-

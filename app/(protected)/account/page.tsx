@@ -77,6 +77,47 @@ const HomePage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.error("No auth token found");
+        router.push("/login"); // Redirect to login page if not authenticated
+        return;
+      }
+
+      try {
+        // Fetch the user profile
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const { firstName, lastName } = response.data.data;
+          setFullName(`${firstName} ${lastName}`);
+        } else {
+          // Handle non-200 status codes gracefully
+          handleError({
+            response: {
+              status: response.status,
+              data: { message: "Failed to fetch user profile." },
+            },
+          });
+        }
+      } catch (error) {
+        handleError(error); // Use the custom error handler
+      }
+    };
+
+    fetchUserProfile();
+  }, [handleError, router]); // Ensure handleError and router are included in the dependency array
+
   return (
     <WidthLayout narrow={true}>
       <div className="container h-screen px-[0.5px] pt-32 mx-auto text-black">
