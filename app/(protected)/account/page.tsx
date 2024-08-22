@@ -10,6 +10,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLoginUserErrorHandler } from "@/lib/handle-err";
 import { useRouter } from "next/navigation"; // Import useRouter
 import toast from "react-hot-toast";
+import { faqList } from "../../../lib/constants/acc-deletion-faq";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const HomePage: React.FC = () => {
   const [fullName, setFullName] = useState<string>("");
@@ -120,7 +127,7 @@ const HomePage: React.FC = () => {
 
   return (
     <WidthLayout narrow={true}>
-      <div className="container h-screen px-[0.5px] pt-32 mx-auto text-black">
+      <div className="container h-screen px-[0.5px]  pt-40 mx-auto text-black">
         <div className="flex flex-col items-center">
           <h1 className="w-9/12 mb-4 text-center text-h2">
             Weeshr so sorry to see you go
@@ -146,7 +153,7 @@ const HomePage: React.FC = () => {
                 <Skeleton className="h-4 w-[200px]" />
               )}{" "}
             </h3>
-            <h5 className="py-1 font-semibold text-pb">
+            <h5 className="py-1 font-normal text-pb">
               Are about to delete your weeshr account
             </h5>
           </div>
@@ -177,6 +184,41 @@ const HomePage: React.FC = () => {
           >
             Temporarily Deactivate
           </Button>
+
+          <div className="relative pt-16">
+            <Image
+              alt="image"
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1724332972/weeshr_website/Untitled_2-1536x735_2_jkwrnp.png"
+              width={150}
+              height={100}
+              className="absolute top-0 -right-8"
+            ></Image>
+            <h3 className="pt-3 pb-1 pb-10 font-semibold text-h3">
+              {" "}
+              Account
+              <br />
+              Deletion
+              <br />
+              FAQ
+            </h3>
+          </div>
+
+          <Accordion type="single" collapsible className="relative w-full">
+            {faqList.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="px-3 py-1 my-2 bg-white rounded-lg"
+              >
+                <AccordionTrigger className="text-left ">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-left text-muted-foreground">
+                  <p className="">{faq.answer}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </div>
     </WidthLayout>
