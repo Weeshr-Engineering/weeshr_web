@@ -32,7 +32,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723745923/SuccessIllustration_t8fhro.svg"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
               alt="Payment Successful"
             />
           </div>
