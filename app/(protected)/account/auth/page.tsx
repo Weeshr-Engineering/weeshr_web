@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { handleApiError } from "@/lib/handle-err";
 import toast from "react-hot-toast";
@@ -13,10 +13,9 @@ const AuthPage: React.FC = () => {
     setLoading(true);
 
     try {
+      const encodedCode = encodeURIComponent(code);
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL
-        }/auth/google/login?code=${encodeURIComponent(code)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/google/login?code=${encodedCode}`,
         {
           method: "GET",
         }
@@ -27,7 +26,6 @@ const AuthPage: React.FC = () => {
         localStorage.setItem("authToken", token);
         router.push("/account");
       } else {
-        // Extract error message from backend response
         const errorData = await response.json();
         const errorMessage =
           errorData.error ||
@@ -37,14 +35,14 @@ const AuthPage: React.FC = () => {
         toast.error(errorMessage);
         setTimeout(() => {
           router.push("/login");
-        }, 3000); // Wait for the toast to show before redirecting
+        }, 3000);
       }
     } catch (error: any) {
       handleApiError(error);
 
       setTimeout(() => {
         router.push("/login");
-      }, 3000); // Wait for the toast to show before redirecting
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -54,12 +52,17 @@ const AuthPage: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
 
+    console.log("Raw Code from URL:", code);
+
     if (code) {
-      handleGoogleCallback(code);
+      // Decode the code before passing it to handleGoogleCallback
+      const decodedCode = decodeURIComponent(code);
+      console.log("Decoded Code:", decodedCode);
+      handleGoogleCallback(decodedCode);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleCodeFromUrl();
   }, []);
 
