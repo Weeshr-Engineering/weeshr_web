@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-
+import { Icon } from '@iconify/react'
 // Define the type for social media links
 interface SocialMediaLink {
   name: string;
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
 
        
 
-        <div className="justify-end">
+        <div className="justify-end py-4">
           
           <div className="flex items-center gap-1 px-2">
             <a href="#" className="w-full min-w-xl">
@@ -85,41 +85,40 @@ const Footer: React.FC = () => {
               />
             </a>
           </div>
-          <p className="text-base font-bold tracking-wide text-gray-900">
-            Contacts
-          </p>
-          <div className="flex">
-            <p className="mr-1 text-gray-800">Email:</p>
-            <a href="mailto:admin@company.com" title="send email">
-              admin@company.com
+          <div className="flex  space-x-3 md:space-x-7 py-4 lg:py-5 px-2 ">
+          <a href="/" className=" text-[#8987A1] text-sm">
+            Home
             </a>
+            <a href="/" className="text-[#8987A1] text-sm">
+              About
+            </a>
+          <a href="/" className="text-[#8987A1] text-sm">
+            How it Works
+          </a>
+          <a href="/" className="text-[#8987A1] text-sm">
+            Contact Us
+          </a>
+
           </div>
+          
+         
         </div>
       </div>
 
-      <div className="flex flex-col-reverse justify-between pt-5 pb-10 border-t lg:flex-row">
-        <p className="text-sm text-gray-600">
-        Powered by Weeshr Core
-        </p>
-        <ul className="flex flex-col mb-3 space-y-2 lg:mb-0 sm:space-y-0 sm:space-x-5 sm:flex-row">
-          <li>
-            <a
-              href="#"
-              className="text-sm text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400"
-            >
-              Privacy &amp; Cookies Policy
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="text-sm text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400"
-            >
-              Disclaimer
-            </a>
-          </li>
-        </ul>
-      </div>
+      <div className="flex flex-col items-center md:flex-row md:justify-between pt-5 pb-10">
+  <div className="text-sm text-[#020721] flex items-center">
+    
+    <Icon icon="mdi:heart-outline" width="24px" height="24px" color="#EE9F39" />
+    <p className="mx-2">Powered by Weeshr Core</p>
+  </div>
+  <div className="flex flex-wrap items-center mb-3 space-y-2  sm:space-y-0 sm:space-x-8">
+    <Icon icon="mdi:instagram" width="24px" height="24px" color="#151515" />
+    <Icon icon="mdi:heart-outline" width="24px" height="24px" color="#151515" />
+    <Icon icon="ic:baseline-tiktok" width="24px" height="24px" color="#151515" />
+    <Icon icon="prime:twitter" width="24px" height="24px" color="#151515" />
+  </div>
+</div>
+
     </footer>
   );
 };
