@@ -68,22 +68,23 @@ const Footer: React.FC = () => {
           
           <div className="flex items-center gap-1 px-2">
             <a href="#" className="w-full min-w-xl">
-              <Image
-                src="https://res.cloudinary.com/dufimctfc/image/upload/v1723963374/Google_Play_zlkalx.svg"
-                alt="Playstore Button"
+            <Image
+                src="https://res.cloudinary.com/dufimctfc/image/upload/v1723963363/App_Store_quvm85.svg"
+                alt="Apple store"
                 width={110} // Set the width property here
-                height={80} // Set the height property here
+                height={80} // Set the height property here // Set the height property here
               />
+              
             </a>
             <a
               className="w-full min-w-xl"
               href="/"
             >
               <Image
-                src="https://res.cloudinary.com/dufimctfc/image/upload/v1723963363/App_Store_quvm85.svg"
-                alt="Apple store"
+                src="https://res.cloudinary.com/dufimctfc/image/upload/v1723963374/Google_Play_zlkalx.svg"
+                alt="Playstore Button"
                 width={110} // Set the width property here
-                height={80} // Set the height property here // Set the height property here
+                height={80} // Set the height property here
               />
             </a>
           </div>
@@ -109,8 +110,9 @@ const Footer: React.FC = () => {
 
       <div className="flex flex-col items-center md:flex-row md:justify-between pt-5 pb-10">
   <div className="text-sm text-[#020721] flex items-center">
+ 
+    <Icon icon="mingcute:love-fill" width="24px" height="24px" color="#4145A7" />
     
-    <Icon icon="mdi:heart-outline" width="24px" height="24px" color="#EE9F39" />
     <p className="mx-2">Powered by Weeshr Core</p>
   </div>
   <div className="flex flex-wrap items-center mb-3 space-y-2  sm:space-y-0 sm:space-x-8">

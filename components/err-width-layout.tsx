@@ -17,7 +17,7 @@ const WidthLayout: React.FC<LayoutProps> = ({ children, narrow = false }) => {
       className={clsx(
         defaultClass,
         extraLargeClass,
-        "  mx-auto 2xl:max-w-7xl bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724611896/1720185385686_dsfn3s.png');]"
+        "  mx-auto 2xl:max-w-7xl bg-transparent"
       )}
     >
       {children}
