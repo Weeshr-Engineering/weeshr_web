@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
     
     <p className="mx-2">Powered by Weeshr Core</p>
   </div>
-  <div className="flex flex-wrap items-center mb-3 space-y-2  sm:space-y-0 sm:space-x-8">
+  <div className="flex flex-wrap items-center mb-3 space-y-2  sm:space-y-0 space-x-8">
     <Icon icon="mdi:instagram" width="24px" height="24px" color="#151515" />
     <Icon icon="mdi:heart-outline" width="24px" height="24px" color="#151515" />
     <Icon icon="ic:baseline-tiktok" width="24px" height="24px" color="#151515" />

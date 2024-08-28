@@ -42,16 +42,16 @@ const Header = ({ uaString }: { uaString?: string }) => {
       {/* Container for the centered content */}
       <div className="container mx-auto bg-[white] rounded-xl p-0">
         <div className="flex space-x-4 md:space-x-7 py-2 lg:py-4 justify-center items-center">
-          <a href="/" className="text-[#252432] text-xs md:text-sm">
+          <a href="/" className="text-[#252432] text-xs md:text-sm hover:text-[#AEE219]">
             Home
           </a>
-          <a href="/" className="text-[#252432] text-xs md:text-sm">
+          <a href="/" className="text-[#252432] text-xs md:text-sm hover:text-[#AEE219]">
             About
           </a>
-          <a href="/" className="text-[#252432] text-xs md:text-sm">
+          <a href="/" className="text-[#252432] text-xs md:text-sm hover:text-[#AEE219]">
             How it Works
           </a>
-          <a href="/" className="text-[#252432] text-xs md:text-sm">
+          <a href="/" className="text-[#252432] text-xs md:text-sm hover:text-[#AEE219]">
             Contact Us
           </a>
         </div>
