@@ -1,4 +1,3 @@
-// header_err
 "use client";
 
 import { useEffect, useState } from "react";
@@ -26,8 +25,8 @@ const Header = ({ uaString }: { uaString?: string }) => {
       <Image
         src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
         alt="Logo"
-        className=" md:hidden"
-        width={100}
+        className="md:hidden "
+        width={80}
         height={24}
         priority
       />
@@ -39,24 +38,26 @@ const Header = ({ uaString }: { uaString?: string }) => {
         height={24}
         priority
       />
-       
 
-       <div className="flex  space-x-3 md:space-x-7 py-4 lg:py-5 px-2 justify-center items-center ">
-          <a href="/" className=" text-[#8987A1] text-sm">
+      {/* Container for the centered content */}
+      <div className="container mx-auto bg-[white] rounded-xl p-0">
+        <div className="flex space-x-4 md:space-x-7 py-2 lg:py-4 justify-center items-center">
+          <a href="/" className="text-[#252432] text-xs md:text-sm">
             Home
-            </a>
-            <a href="/" className="text-[#8987A1] text-sm">
-              About
-            </a>
-          <a href="/" className="text-[#8987A1] text-sm">
+          </a>
+          <a href="/" className="text-[#252432] text-xs md:text-sm">
+            About
+          </a>
+          <a href="/" className="text-[#252432] text-xs md:text-sm">
             How it Works
           </a>
-          <a href="/" className="text-[#8987A1] text-sm">
+          <a href="/" className="text-[#252432] text-xs md:text-sm">
             Contact Us
           </a>
-
-          </div>
+        </div>
+      </div>
     </div>
   );
 };
+
 export default Header;
