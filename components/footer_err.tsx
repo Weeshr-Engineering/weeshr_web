@@ -82,10 +82,10 @@ const Footer: React.FC = () => {
             <a href="/" className="text-[#8987A1] text-sm">
               Home
             </a>
-            <a href="/" className="text-[#8987A1] text-sm">
+            <a href="/contact" className="text-[#8987A1] text-sm">
               Contact
             </a>
-            <a href="/" className="text-[#8987A1] text-sm">
+            <a href="/login" className="text-[#8987A1] text-sm">
               Login
             </a>
           </div>
@@ -98,10 +98,18 @@ const Footer: React.FC = () => {
           <p className="mx-2">Powered by Weeshr Core</p>
         </div>
         <div className="flex items-center space-x-4 mt-4 md:mt-0">
+         <a href="https://www.instagram.com/weeshrapp/" target="_blank" rel="noopener noreferrer">
           <Icon icon="mdi:instagram" width="24px" height="24px" color="#151515" />
+         </a>
+         <a href="https://www.facebook.com/weeshrapp" target="_blank" rel="noopener noreferrer">
           <Icon icon="mdi:heart-outline" width="24px" height="24px" color="#151515" />
-          <Icon icon="ic:baseline-tiktok" width="24px" height="24px" color="#151515" />
-          <Icon icon="prime:twitter" width="24px" height="24px" color="#151515" />
+        </a>
+        <a href="https://www.tiktok.com/@weeshrapp" target="_blank" rel="noopener noreferrer">
+      <Icon icon="ic:baseline-tiktok" width="24px" height="24px" color="#151515" />
+    </a>
+    <a href="https://twitter.com/weeshrapp" target="_blank" rel="noopener noreferrer">
+      <Icon icon="prime:twitter" width="24px" height="24px" color="#151515" />
+    </a>
         </div>
       </div>
     </footer>
