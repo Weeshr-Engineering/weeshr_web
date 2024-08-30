@@ -11,7 +11,7 @@ const ErrorPage = () => {
     <ErrTypeLayout>
     <div className="flex flex-col items-center justify-center w-full h-[100]  p-4">
       <Image
-        className="mb-4"
+        className="mb-4 h-auto w-16 md:w-24"
         src="https://res.cloudinary.com/dufimctfc/image/upload/v1724603226/top-quality-emoticon-closing-eyes-flat-emoji-closing-eyes-with-hand-yellow-face-emoji-popular-element_686498-2711-removebg-preview_topycq.png"
         alt="errorpage"
         width={100}
@@ -26,7 +26,7 @@ const ErrorPage = () => {
                 </p>
       </div>
       <Link href="/">
-          <Button className="w-20 md:w-32 bg-[#020721] hover:bg-gray-500 rounded-sm text-sm text-[#FFFFFF]">
+          <Button className="w-36 md:w-52 bg-[#020721] hover:bg-gray-500 rounded-sm text-sm text-[#FFFFFF]">
             Go Home
           </Button>
         </Link>

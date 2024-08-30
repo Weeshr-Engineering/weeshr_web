@@ -1,7 +1,7 @@
 // components/err-type-layout
 
 import Footer from "@/components/footer_err";
-import Header from "@/components/header_err";
+import Header from "@/components/header";
 import InterfaceLayout from "@/components/err-Interface-layout";
 import WidthLayout from "@/components/err-width-layout";
 import Link from "next/link";
