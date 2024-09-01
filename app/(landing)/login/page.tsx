@@ -15,9 +15,7 @@ import Header from "@/components/header";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  pin: z
-    .string()
-    .min(5, { message: "Password must be at least 5 characters long" }),
+  pin: z.string().min(4, { message: "Password must be  4 characters long" }),
 });
 
 const LoginPage = () => {
