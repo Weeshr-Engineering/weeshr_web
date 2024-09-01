@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
             />
           </a>
           <div className="mt-4 md:mt-2 lg:max-w-md text-center md:text-left">
-            <p className="text-sm text-muted-foreground md:text-xs lg:text-sm">
+            <p className="text-sm text-muted-foreground md:text-sm lg:text-sm">
               Weeshr helps you collect your birthday gifts with
               <br /> the click of one button from your friends, fans, and family!
             </p>
@@ -98,18 +98,25 @@ const Footer: React.FC = () => {
           <p className="mx-2">Powered by Weeshr Core</p>
         </div>
         <div className="flex items-center space-x-4 mt-4 md:mt-0">
-         <a href="https://www.instagram.com/weeshrapp/" target="_blank" rel="noopener noreferrer">
-          <Icon icon="mdi:instagram" width="24px" height="24px" color="#151515" />
-         </a>
-         <a href="https://www.facebook.com/weeshrapp" target="_blank" rel="noopener noreferrer">
-          <Icon icon="mdi:heart-outline" width="24px" height="24px" color="#151515" />
+        <a href="https://www.facebook.com/weeshrapp" target="_blank" rel="noopener noreferrer">
+          <Icon icon="ri:facebook-fill" width="24px" height="24px" color="#151515" />
         </a>
+         <a href="https://www.instagram.com/weeshrapp/" target="_blank" rel="noopener noreferrer">
+          <Icon icon="line-md:instagram" width="24px" height="24px" color="#151515" />
+         </a>
+
+         <a href="https://twitter.com/weeshrapp" target="_blank" rel="noopener noreferrer">
+      <Icon icon="prime:twitter" width="24px" height="20px" color="#151515" />
+    </a>
+
+    <a href="https://linkedin.com/weeshrapp" target="_blank" rel="noopener noreferrer">
+      <Icon icon="bi:linkedin" width="24px" height="20px" color="#151515" />
+    </a>
+
         <a href="https://www.tiktok.com/@weeshrapp" target="_blank" rel="noopener noreferrer">
       <Icon icon="ic:baseline-tiktok" width="24px" height="24px" color="#151515" />
     </a>
-    <a href="https://twitter.com/weeshrapp" target="_blank" rel="noopener noreferrer">
-      <Icon icon="prime:twitter" width="24px" height="24px" color="#151515" />
-    </a>
+    
         </div>
       </div>
     </footer>
