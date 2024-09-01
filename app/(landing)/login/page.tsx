@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,9 +15,7 @@ import Header from "@/components/header";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  pin: z
-    .string()
-    .min(5, { message: "Password must be at least 5 characters long" }),
+  pin: z.string().min(4, { message: "Password must be  4 characters long" }),
 });
 
 const LoginPage = () => {
@@ -25,18 +23,46 @@ const LoginPage = () => {
   const [isSignInLoading, setIsSignInLoading] = useState(false); // New state for Sign in button loading
   const router = useRouter();
 
-  const handleSubmit = async (event: any) => {
-    console.log("Login successful");
+  useEffect(() => {
+    // Check if the user is already signed in
+    const authToken = localStorage.getItem("authToken");
+    if (authToken) {
+      // Make an API call to validate the token and get user data
+      const validateUser = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
 
+          if (response.status === 200 || response.status === 201) {
+            // Redirect to account page if the user is authenticated
+            router.push("/account");
+          } else {
+            // If the token is invalid, clear it from localStorage
+            localStorage.removeItem("authToken");
+          }
+        } catch (error) {
+          localStorage.removeItem("authToken");
+        }
+      };
+
+      validateUser();
+    }
+  }, [router]);
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    setIsSignInLoading(true); // Set loading state for Sign in button
+    setIsSignInLoading(true);
 
     const formData = {
       email: event.target.email.value,
       pin: event.target.pin.value,
     };
-
-    console.log("Login successful");
 
     const validation = loginSchema.safeParse(formData);
 
@@ -45,7 +71,7 @@ const LoginPage = () => {
         .map((err) => err.message)
         .join(", ");
       toast.error(`Validation failed: ${errorMessages}`);
-      setIsSignInLoading(false); // Reset loading state on validation failure
+      setIsSignInLoading(false);
       return;
     }
 
@@ -56,11 +82,9 @@ const LoginPage = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        // Extract user data from the API response
         const userData = response.data.data.user;
-        const userId = response.data.data.user._id;
+        const userId = userData._id;
         localStorage.setItem("userId", userId);
-        // Store the token in localStorage
         localStorage.setItem("authToken", userData.token);
         router.push("/account");
       } else {
@@ -69,7 +93,7 @@ const LoginPage = () => {
     } catch (error) {
       handleApiError(error);
     } finally {
-      setIsSignInLoading(false); // Reset loading state on API response
+      setIsSignInLoading(false);
     }
   };
 
@@ -82,17 +106,16 @@ const LoginPage = () => {
 
       if (response.status === 200 || response.status === 201) {
         const redirectUrl = response.data.data.redirect_to;
-        // toast.success("Redirecting to Google login...");
-        window.location.href = redirectUrl; // Redirect the user to the Google login page
+        window.location.href = redirectUrl;
       } else {
         toast.error("Failed to initiate Google login.");
       }
-    } catch (handleApiError) {
+    } catch (error) {
+      handleApiError(error);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <>
       <Head>
@@ -105,14 +128,23 @@ const LoginPage = () => {
         className="relative flex flex-wrap items-end justify-center min-h-screen min-[500px]:pb-20 md:pb-0 bg-gray-100 bg-no-repeat bg-cover md:flex md:justify-end w-full"
       >
         <Image
+          height={"180"}
+          width={"150"}
+          alt="design"
+          src={
+            "https://res.cloudinary.com/drykej1am/image/upload/v1724274977/weeshr_website/Vector_173_sywkf6.png"
+          }
+          className="absolute top-0 right-0 object-cover md:hidden "
+        />
+        <Image
           alt="Weeshr Logo"
           src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
           width={100}
           height={100}
           className="absolute mx-auto top-20 max-[500px]:flex max-[500px]:flex-cols  justify-center max-[500px]:flex-end  xs:relative  md:top-14 md:left-14"
         />
-        <Header />
-        <div className="flex max-[500px]:justify-center max-[500px]:items-center md:min-h-screen min-w-lg relative">
+        {/* <Header /> */}
+        <div className="flex max-[500px]:justify-center max-[500px]:items-center md:min-h-screen min-w-lg ">
           <Image
             height={"300"}
             width={"250"}
@@ -145,8 +177,8 @@ const LoginPage = () => {
                     type="email"
                     autoComplete="email"
                     required
-                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border  rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm "
-                    placeholder="Email address"
+                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm "
+                    placeholder="Enter Email address"
                   />
                 </div>
                 <div>
@@ -159,7 +191,7 @@ const LoginPage = () => {
                     autoComplete="current-password"
                     required
                     className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm"
-                    placeholder="Pin"
+                    placeholder="Enter Pin"
                   />
                 </div>
               </div>
@@ -294,7 +326,7 @@ export default LoginPage;
 
 const WeeshrGist = () => {
   return (
-    <div className="flex flex-col w-full bg-white/90 blur-[10] rounded-lg p-3 space-y-2 xs:hidden min-[500px]:hidden md:absolute md:block md:bottom-6 md:left-10 max-w-sm">
+    <div className="flex flex-col w-full bg-white/90 blur-[10] rounded-lg p-3 space-y-2 xs:hidden md:absolute  md:bottom-6 md:left-10 max-w-sm">
       <h4 className="font-semibold text-[#020721]">Weeshr Gist</h4>
       <div className="text-[#020721] text-sm">
         <p className="pb-1.5">
@@ -308,4 +340,3 @@ const WeeshrGist = () => {
     </div>
   );
 };
-
