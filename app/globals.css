@@ -79,8 +79,7 @@ body {
 
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-    --primarypayment:  238 50% 41%;
-
+    --primarypayment: 238 50% 41%;
 
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -119,10 +118,10 @@ body {
     @apply leading-none text-5xl md:text-[56px] lg:text-[90px]  xl:text-[104px]  tracking-tight scroll-m-20 font-bold;
   }
   .text-h2 {
-    @apply  leading-none text-3xl md:text-[32px] lg:text-[44px] xl:text-5xl font-semibold tracking-tight scroll-m-20 first:mt-0;
+    @apply leading-none text-3xl md:text-[32px] lg:text-[44px] xl:text-5xl font-semibold tracking-tight scroll-m-20 first:mt-0;
   }
   .text-h3 {
-    @apply leading-[1]  text-xl  lg:text-[32px] xl:text-4xl font-medium tracking-tight scroll-m-20;
+    @apply leading-tight  text-xl  lg:text-[32px] xl:text-4xl font-medium tracking-tight scroll-m-20;
   }
   .text-h4 {
     @apply leading-tight 2xl:leading-normal text-xl lg:text-[28px] xl:text-[32px] font-medium tracking-normal scroll-m-20;
