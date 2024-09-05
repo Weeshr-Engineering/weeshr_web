@@ -1,7 +1,9 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-  // Define the type for social media links
+// Define the type for social media links
 interface SocialMediaLink {
   name: string;
   url: string;
@@ -68,10 +70,21 @@ const Footer: React.FC = () => {
             </li>
           ))}
         </ul>
+        <div className="flex flex-col items-center justify-around">
+          <h4 className="text-xs text-center text-white md:text-sm">
+            ©&nbsp;{currentYear} Weeshr App Limited. All rights reserved
+          </h4>
 
-        <h4 className="text-xs text-center text-white md:text-sm">
-          ©&nbsp;{currentYear} Weeshr App Limited. All rights reserved
-        </h4>
+          <a
+            rel="canonical"
+            href="https://weeshr-privacy-policy.tiiny.site/"
+            target="_blank"
+          >
+            <Button variant={"link"} className="text-wmhite text-s">
+              Privacy Policy{" "}
+            </Button>
+          </a>
+        </div>
       </div>
     </footer>
   );
