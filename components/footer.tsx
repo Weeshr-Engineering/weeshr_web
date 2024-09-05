@@ -43,8 +43,8 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#4537BA] flex flex-col md:flex-row justify-between w-full px-6 py-10">
-      <div className="flex justify-start mb-6 md:mb-0">
+    <footer className="bg-[#4537BA] flex flex-col md:flex-row justify-between w-full px-6 py-10 ">
+      <div className="flex items-center justify-center mb-6 md:mb-0 md:justify-start lg:pl-20">
         <Image
           alt="Weeshr Logo"
           src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"
