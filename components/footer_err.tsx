@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl mb-6 mx-4 md:mb-8 md:mx-16">
-      <div className="flex flex-col md:flex-row items-center justify-between p-4 py-6 md:space-x-4 lg:space-x-6">
+      <div className="flex flex-col items-center justify-between p-4 py-6 md:flex-row md:space-x-4 lg:space-x-6">
         <div className="flex flex-col items-center md:items-start">
           <a href="/" className="inline-flex items-center">
             <Image
@@ -51,15 +51,16 @@ const Footer: React.FC = () => {
               height={80}
             />
           </a>
-          <div className="mt-4 md:mt-2 lg:max-w-md text-center md:text-left">
+          <div className="mt-4 text-center md:mt-2 lg:max-w-md md:text-left">
             <p className="text-sm text-muted-foreground md:text-sm lg:text-sm">
               Weeshr helps you collect your birthday gifts with
-              <br /> the click of one button from your friends, fans, and family!
+              <br /> the click of one button from your friends, fans, and
+              family!
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col items-center md:items-end mt-6 md:mt-0">
+        <div className="flex flex-col items-center mt-6 md:items-end md:mt-0">
           <div className="flex items-center gap-2 px-2 mb-4">
             <a href="/" className="w-full md:w-auto">
               <Image
@@ -78,7 +79,7 @@ const Footer: React.FC = () => {
               />
             </a>
           </div>
-          <div className="flex space-x-3 md:space-x-7 lg:space-x-10 px-2">
+          <div className="flex px-2 space-x-3 md:space-x-7 lg:space-x-10">
             <a href="/" className="text-[#8987A1] text-sm">
               Home
             </a>
@@ -88,35 +89,87 @@ const Footer: React.FC = () => {
             <a href="/login" className="text-[#8987A1] text-sm">
               Login
             </a>
+            <a href="/privacy-policy" className="text-[#8987A1] text-sm">
+              Privacy Policy
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-center md:flex-row md:justify-between pt-5 pb-6 md:pb-10 px-4">
+      <div className="flex flex-col items-center px-4 pt-5 pb-6 md:flex-row md:justify-between md:pb-10">
         <div className="text-sm text-[#020721] flex items-center">
-          <Icon icon="mingcute:love-fill" width="24px" height="24px" color="#4145A7" />
+          <Icon
+            icon="mingcute:love-fill"
+            width="24px"
+            height="24px"
+            color="#4145A7"
+          />
           <p className="mx-2">Powered by Weeshr Core</p>
         </div>
-        <div className="flex items-center space-x-4 mt-4 md:mt-0">
-        <a href="https://www.facebook.com/weeshrapp" target="_blank" rel="noopener noreferrer">
-          <Icon icon="ri:facebook-fill" width="24px" height="24px" color="#151515" />
-        </a>
-         <a href="https://www.instagram.com/weeshrapp/" target="_blank" rel="noopener noreferrer">
-          <Icon icon="line-md:instagram" width="24px" height="24px" color="#151515" />
-         </a>
+        <div className="flex items-center mt-4 space-x-4 md:mt-0">
+          <a
+            href="https://www.facebook.com/weeshrapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon
+              icon="ri:facebook-fill"
+              width="24px"
+              height="24px"
+              color="#151515"
+            />
+          </a>
+          <a
+            href="https://www.instagram.com/weeshrapp/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon
+              icon="line-md:instagram"
+              width="24px"
+              height="24px"
+              color="#151515"
+            />
+          </a>
 
-         <a href="https://twitter.com/weeshrapp" target="_blank" rel="noopener noreferrer">
-      <Icon icon="prime:twitter" width="24px" height="20px" color="#151515" />
-    </a>
+          <a
+            href="https://twitter.com/weeshrapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon
+              icon="prime:twitter"
+              width="24px"
+              height="20px"
+              color="#151515"
+            />
+          </a>
 
-    <a href="https://linkedin.com/weeshrapp" target="_blank" rel="noopener noreferrer">
-      <Icon icon="bi:linkedin" width="24px" height="20px" color="#151515" />
-    </a>
+          <a
+            href="https://linkedin.com/weeshrapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon
+              icon="bi:linkedin"
+              width="24px"
+              height="20px"
+              color="#151515"
+            />
+          </a>
 
-        <a href="https://www.tiktok.com/@weeshrapp" target="_blank" rel="noopener noreferrer">
-      <Icon icon="ic:baseline-tiktok" width="24px" height="24px" color="#151515" />
-    </a>
-    
+          <a
+            href="https://www.tiktok.com/@weeshrapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon
+              icon="ic:baseline-tiktok"
+              width="24px"
+              height="24px"
+              color="#151515"
+            />
+          </a>
         </div>
       </div>
     </footer>

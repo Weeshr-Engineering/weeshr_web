@@ -75,11 +75,7 @@ const Footer: React.FC = () => {
             ©&nbsp;{currentYear} Weeshr App Limited. All rights reserved
           </h4>
 
-          <a
-            rel="canonical"
-            href="https://weeshr-privacy-policy.tiiny.site/"
-            target="_blank"
-          >
+          <a rel="canonical" href="/privacy-policy" >
             <Button variant={"link"} className="text-wmhite text-s">
               Privacy Policy{" "}
             </Button>
