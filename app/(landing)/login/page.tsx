@@ -302,7 +302,7 @@ const LoginPage = () => {
               </div>
             </form>
             <h6 className="w-full text-sm font-semibold text-center text-[#020721]">
-              Powered by Weeshr Core{" "}
+              Powered by Weeshr App Limited{" "}
             </h6>
 
             {/* <div className="text-sm text-center">
