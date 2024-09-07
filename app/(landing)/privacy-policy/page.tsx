@@ -2,8 +2,6 @@
 
 import Footer from "@/components/footer_err";
 import Header from "@/components/header";
-// IMPORTING NECESSARY COMPONENTS
-import Link from "next/link";
 
 // A FUNCTION THAT RETURNS THE PRIVACY POLICY PAGE
 export default function PrivacyPolicy() {
@@ -51,8 +49,8 @@ export default function PrivacyPolicy() {
           <li>
             <strong>Affiliate:</strong> means an entity that controls, is
             controlled by or is under common control with a party, where
-            "control" means ownership of 50% or more of the shares, equity
-            interest or other securities entitled to vote for election of
+            &ldquo;control&rdquo; means ownership of 50% or more of the shares,
+            equity interest or other securities entitled to vote for election of
             directors or other managing authority.
           </li>
           <li>
@@ -60,8 +58,9 @@ export default function PrivacyPolicy() {
             provided by the Company.
           </li>
           <li>
-            <strong>Company:</strong> (referred to as either "the Company",
-            "We", "Us" or "Our" in this Agreement) refers to Weeshr App Limited,
+            <strong>Company:</strong> (referred to as either &ldquo;the
+            Company&rdquo;, &ldquo;We&rdquo;, &ldquo;Us&rdquo; or
+            &ldquo;Our&rdquo; in this Agreement) refers to Weeshr App Limited,
             Oluwalogbon House, Testing Ground Bus Stop, Obafemi Awolowo Way,
             Ikeja, Lagos.
           </li>
@@ -140,16 +139,16 @@ export default function PrivacyPolicy() {
         <h6 className="mt-4 font-semibold">Usage Data</h6>
         <p className="text-[#9094A6] text-md mb-4">
           Usage Data is collected automatically when using the Service. Usage
-          Data may include information such as Your Device's Internet Protocol
-          address (e.g. IP address), browser type, browser version, the pages of
-          our Service that You visit, the time and date of Your visit, the time
-          spent on those pages, unique device identifiers and other diagnostic
-          data. When You access the Service by or through a mobile device, We
-          may collect certain information automatically, including, but not
-          limited to, the type of mobile device You use, Your mobile device
-          unique ID, the IP address of Your mobile device, Your mobile operating
-          system, the type of mobile Internet browser You use, unique device
-          identifiers and other diagnostic data.
+          Data may include information such as Your Device&apos;s Internet
+          Protocol address (e.g. IP address), browser type, browser version, the
+          pages of our Service that You visit, the time and date of Your visit,
+          the time spent on those pages, unique device identifiers and other
+          diagnostic data. When You access the Service by or through a mobile
+          device, We may collect certain information automatically, including,
+          but not limited to, the type of mobile device You use, Your mobile
+          device unique ID, the IP address of Your mobile device, Your mobile
+          operating system, the type of mobile Internet browser You use, unique
+          device identifiers and other diagnostic data.
         </p>
 
         <h6 className="mt-4 font-semibold">
@@ -173,18 +172,18 @@ export default function PrivacyPolicy() {
         <p className="text-[#9094A6] text-md mb-4">
           If You decide to register through or otherwise grant us access to a
           Third-Party Social Media Service, We may collect Personal data that is
-          already associated with Your Third-Party Social Media Service's
+          already associated with Your Third-Party Social Media Service&apos;s
           account, such as Your name, Your email address, Your activities or
           Your contact list associated with that account and every other
           necessary information.
         </p>
         <p className="text-[#9094A6] text-md mb-4">
           You may also have the option of sharing additional information with
-          the Company through Your Third-Party Social Media Service's account.
-          If You choose to provide such information and Personal Data, during
-          registration or otherwise, You are giving the Company permission to
-          use, share, and store it in a manner consistent with this Privacy
-          Policy.
+          the Company through Your Third-Party Social Media Serviceinformation
+          such as Your Device&apos;s account. If You choose to provide such
+          information and Personal Data, during registration or otherwise, You
+          are giving the Company permission to use, share, and store it in a
+          manner consistent with this Privacy Policy.
         </p>
 
         <h5 className="mt-8 font-semibold">
@@ -196,10 +195,12 @@ export default function PrivacyPolicy() {
         </p>
         <ul className="list-disc ml-8 text-[#9094A6] text-md mb-4">
           <li>Information regarding your location</li>
-          <li>Information from your Device's phone book (contacts list)</li>
           <li>
-            Pictures and other information from your Device's camera and photo
-            library
+            Information from your Device&apos;s phone book (contacts list)
+          </li>
+          <li>
+            Pictures and other information from your Device&apos;s camera and
+            photo library
           </li>
           <li>And any other necessary permissions</li>
         </ul>
@@ -234,10 +235,10 @@ export default function PrivacyPolicy() {
           <li>
             To contact You: To contact You by email, telephone calls, SMS, or
             other equivalent forms of electronic communication, such as a mobile
-            application's push notifications regarding updates or informative
-            communications related to the functionalities, products or
-            contracted services, including the security updates, when necessary
-            or reasonable for their implementation.
+            application&apos;s push notifications regarding updates or
+            informative communications related to the functionalities, products
+            or contracted services, including the security updates, when
+            necessary or reasonable for their implementation.
           </li>
           <li>
             To provide You with news, special offers, and general information
@@ -269,7 +270,8 @@ export default function PrivacyPolicy() {
           Disclosure of Your Personal Data
         </h4>
         <p className="text-[#9094A6] text-md mb-4">
-          We may share Your personal information in the following situations:
+          We may share Your personal information with Service Providers to
+          monitor and analyze the use of our Service, to contact You.
         </p>
         <ul className="list-disc ml-8 text-[#9094A6] text-md mb-4">
           <li>
@@ -306,8 +308,8 @@ export default function PrivacyPolicy() {
             of Your activity, communicate with You and view Your profile.
           </li>
           <li>
-            With Your consent: We may disclose Your personal information for any
-            other purpose with Your consent.
+            We may disclose Your personal information for any other purpose with
+            Your consent.
           </li>
         </ul>
 
@@ -335,12 +337,12 @@ export default function PrivacyPolicy() {
         </h4>
         <p className="text-[#9094A6] text-md mb-4">
           Your information, including Personal Data, is processed at the
-          Company's operating offices and in any other places where the parties
-          involved in the processing are located. It means that this information
-          may be transferred to — and maintained on — computers located outside
-          of Your state, province, country or other governmental jurisdiction
-          where the data protection laws may differ from those in Your
-          jurisdiction.
+          Company&apos;s operating offices and in any other places where the
+          parties involved in the processing are located. It means that this
+          information may be transferred to — and maintained on — computers
+          located outside of Your state, province, country or other governmental
+          jurisdiction where the data protection laws may differ from those in
+          Your jurisdiction.
         </p>
         <p className="text-[#9094A6] text-md mb-4">
           Your consent to this Privacy Policy followed by Your submission of
@@ -420,7 +422,7 @@ export default function PrivacyPolicy() {
           its absolute security.
         </p>
 
-        <h4 className="mt-8 text-xl font-semibold">Children's Privacy</h4>
+        <h4 className="mt-8 text-xl font-semibold">Children&apos;s Privacy</h4>
         <p className="text-[#9094A6] text-md mb-4">
           Our Service does not address anyone under the age of 13. We do not
           knowingly collect personally identifiable information from anyone
@@ -433,7 +435,7 @@ export default function PrivacyPolicy() {
         <p className="text-[#9094A6] text-md mb-4">
           If We need to rely on consent as a legal basis for processing Your
           information and Your country requires consent from a parent, We may
-          require Your parent's consent before We collect and use that
+          require Your parent&apos;s consent before We collect and use that
           information.
         </p>
 
@@ -441,8 +443,8 @@ export default function PrivacyPolicy() {
         <p className="text-[#9094A6] text-md mb-4">
           Our Service may contain links to other websites that are not operated
           by Us. If You click on a third-party link, You will be directed to
-          that third party's site. We strongly advise You to review the Privacy
-          Policy of every site You visit.
+          that third party&apos;s site. We strongly advise You to review the
+          Privacy Policy of every site You visit.
         </p>
         <p className="text-[#9094A6] text-md mb-4">
           We have no control over and assume no responsibility for the content,
@@ -458,11 +460,12 @@ export default function PrivacyPolicy() {
         </p>
         <p className="text-[#9094A6] text-md mb-4">
           We will let You know via email and/or a prominent notice on Our
-          Service, prior to the change becoming effective and update the "Last
-          updated" date at the top of this Privacy Policy.
+          Service, prior to the change becoming effective and update the
+          &quot;Last updated&quot; date at the top of this Privacy Policy.
         </p>
+
         <p className="text-[#9094A6] text-md mb-4">
-          You are advised to review this Privacy Policy periodically for any
+          You&apos;re advised to review this Privacy Policy periodically for any
           changes. Changes to this Privacy Policy are effective when they are
           posted on this page.
         </p>
