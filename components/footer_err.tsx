@@ -104,7 +104,7 @@ const Footer: React.FC = () => {
             height="24px"
             color="#4145A7"
           />
-          <p className="mx-2">Powered by Weeshr Core</p>
+          <p className="mx-2">Powered by Weeshr App Limited</p>
         </div>
         <div className="flex items-center mt-4 space-x-4 md:mt-0">
           <a
