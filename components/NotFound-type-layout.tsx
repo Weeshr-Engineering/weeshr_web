@@ -16,7 +16,7 @@ interface ErrTypeLayoutProps {
 export const ErrTypeLayout: React.FC<ErrTypeLayoutProps> = ({ children }) => {
   return (
     <InterfaceLayout>
-      <div className="w-4/5 mx-auto flex items-center justify-center  h-44">
+      <div className="w-4/5 mx-auto flex items-center justify-center  min-h-100vh">
         <Header />
       </div>
       <WidthLayout narrow={true}>
