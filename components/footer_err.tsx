@@ -79,18 +79,16 @@ const Footer: React.FC = () => {
               />
             </a>
           </div>
-          <div className="flex px-2 space-x-3 md:space-x-7 lg:space-x-10">
-            <a href="/" className="text-[#8987A1] text-sm">
-              Home
-            </a>
+          <div className="flex px-2 space-x-3 md:space-x-4 lg:space-x-10 ">
             <a href="/contact" className="text-[#8987A1] text-sm">
               Contact
             </a>
-            <a href="/login" className="text-[#8987A1] text-sm">
-              Login
-            </a>
+
             <a href="/privacy-policy" className="text-[#8987A1] text-sm">
               Privacy Policy
+            </a>
+            <a href="/terms-and-conditions" className="text-[#8987A1] text-sm">
+              Term and Conditions
             </a>
           </div>
         </div>
