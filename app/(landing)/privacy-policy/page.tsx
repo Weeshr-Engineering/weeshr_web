@@ -6,7 +6,7 @@ import Header from "@/components/header";
 // A FUNCTION THAT RETURNS THE PRIVACY POLICY PAGE
 export default function PrivacyPolicy() {
   return (
-    <div className="text-black   pt-[100px] pb-6  text-black   pt-[100px] pb-6 bg-white  md:bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724865851/BGLong_hkaxwc.svg');] bg-no-repeat bg-cover min-h-screen bg-fixed	">
+    <div className="text-black   pt-[100px] pb-2 md:pb-6 text-black   pt-[100px] pb-6 bg-white  md:bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724865851/BGLong_hkaxwc.svg');] bg-no-repeat bg-cover min-h-screen bg-fixed	">
       <Header />
       <h2 className="py-10 text-4xl font-bold text-center dark:text-gray-100">
         Privacy Policy
