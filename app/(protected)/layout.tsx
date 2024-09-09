@@ -6,13 +6,13 @@ import Header from "@/components/header";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="h-full overflow-auto overflow-x-hidden bg-white">
-      <Image
+      {/* <Image
         alt="Weeshr Logo"
         src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
         width={100}
         height={100}
         className="absolute mx-auto top-10 left-6"
-      />
+      /> */}
       <Image
         height={"100"}
         width={"100"}
