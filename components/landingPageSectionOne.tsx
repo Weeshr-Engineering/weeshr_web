@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LandingPageFormData } from "@/components/landingPageFormData";
 import Footer from "./footer";
-import Header from '@/components/header';
+import Header from "@/components/header";
 
 export const SectionOneLanding = () => {
   const socialMediaLinks = [
@@ -340,7 +340,7 @@ export const SectionOneLanding = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-0 w-full ">
+        <div className="absolute -bottom-[2px] w-full ">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path
               fill="#4537BA"
