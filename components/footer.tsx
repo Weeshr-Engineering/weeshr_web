@@ -85,6 +85,11 @@ const Footer: React.FC = () => {
               <Button variant={"link"} className="text-wmhite text-s">
                 Term and Conditions{" "}
               </Button>
+            </a>{" "}
+            <a rel="canonical" href="/contact">
+              <Button variant={"link"} className="text-wmhite text-s">
+                Contact Us
+              </Button>
             </a>
           </span>
         </div>
