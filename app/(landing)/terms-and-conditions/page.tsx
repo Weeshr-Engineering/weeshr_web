@@ -1,12 +1,11 @@
 "use client";
 
 import Header from "@/components/header";
-import React from "react";
 import Footer from "@/components/footer_err";
 
-const TermsAndConditions = () => {
+export default function TermsAndConditions() {
   return (
-    <div className="text-black   pt-[100px]  text-black   pt-[100px] pb-2 md:pb-6 bg-white  md:bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724865851/BGLong_hkaxwc.svg');] bg-no-repeat bg-cover min-h-screen bg-fixed	">
+    <div className="text-black   pt-[100px] pb-2 md:pb-6 text-black   pt-[100px] pb-6 bg-white  md:bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724865851/BGLong_hkaxwc.svg');] bg-no-repeat bg-cover min-h-screen bg-fixed	">
       <Header />
       <h2 className="py-10 text-4xl font-bold text-center dark:text-gray-100">
         Terms and Conditions
@@ -15,56 +14,57 @@ const TermsAndConditions = () => {
         <small className="w-full italic text-20 leading-23">
           Last updated: August 03, 2024
         </small>
-
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="mt-4 text-base text-muted-foreground">
           Weeshr App Limited builds technologies and services that allow people
-          to give and accept gifts, connect, create and join communities. These
+          to give and accept gifts, connect, create, and join communities. These
           Terms govern your use of Weeshr App, and other related products,
           features, apps, services, technologies, and software we offer
           (collectively referred to as "Weeshr Products" or "Products"), except
           where specific terms apply that differ from these.
         </p>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="mt-4 text-base text-muted-foreground">
           Weeshr App Limited charges you specified percentage fees for every
           wish created on the platform. By using our Products, you agree that we
           can charge you fees according to our mode of operations based on
           wishes you created and are contributed to. We use your personal data
           to give better experience on the platform.
         </p>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="mt-4 text-base text-muted-foreground">
           We do not sell your personal data to advertisers, nor do we share
           information that directly identifies you (such as your name, email
           address, or other contact information).
         </p>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="mt-4 text-base text-muted-foreground">
           Our Privacy Policy outlines how we collect and use your personal data
           to help determine the best experience for you. You can visit the
           settings pages of the relevant Weeshr Product at any time to review
           and adjust your privacy choices.
         </p>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="mt-4 text-base text-muted-foreground">
           These Terms and Conditions ("Terms") govern your access to and use of
           the Weeshr mobile application ("Application"), website ("Website"),
           and related services (collectively referred to as the "Service")
           provided by Weeshr App Limited ("Company", "We", "Us", or "Our"). By
           accessing or using the Service, you ("You", "Your", or "User")
-          acknowledge and agree to be bound by these Terms. If You do not agree
-          to these Terms, You must immediately cease using the Service.
+          acknowledge and agree to be bound by these Terms. If you do not agree
+          to any provision of these Terms, you must immediately cease using the
+          Service.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
           1. Interpretation and Definitions
-        </h3>
-        <h4 className="text-xl font-semibold text-gray-800">
+        </h2>
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
           1.1 Interpretation
-        </h4>
-        <p className="text-[#9094A6] mb-4 text-md">
+        </h3>
+        <p className="mt-2 text-muted-foreground">
           The words in which the initial letter is capitalized have meanings
           defined under the following conditions. These definitions shall apply
           whether the words appear in the singular or plural form.
         </p>
-        <h4 className="text-xl font-semibold text-gray-800">1.2 Definitions</h4>
-        <ul className="ml-6 list-disc text-[#9094A6] mb-4 text-md">
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          1.2 Definitions
+        </h3>
+        <ul className="mt-2 list-disc list-inside text-muted-foreground">
           <li>
             <strong>Account:</strong> A unique account created by You to access
             Our Service or parts of Our Service.
@@ -110,48 +110,48 @@ const TermsAndConditions = () => {
             using the Service.
           </li>
         </ul>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
           2. Acceptance of Terms
-        </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
+        </h2>
+        <p className="mt-4 text-base text-muted-foreground">
           By accessing or using the Service, You represent that You have read,
           understood, and agree to be bound by these Terms. If You do not agree
           to any provision of these Terms, You must refrain from accessing or
           using the Service.
         </p>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="mt-4 text-base text-muted-foreground">
           If You are using the Service on behalf of a legal entity, You
           represent and warrant that You have the authority to bind that entity
           to these Terms, and references to "You" shall refer to both the entity
           and the individual accessing the Service.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
           3. Account Registration and Security
-        </h3>
-        <h4 className="text-xl font-semibold text-gray-800">
+        </h2>
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
           3.1 Account Creation
-        </h4>
-        <p className="text-[#9094A6] mb-4 text-md">
+        </h3>
+        <p className="mt-2 text-muted-foreground">
           To use certain features of the Service, You must create an Account by
           providing accurate, complete, and up-to-date information. You agree to
           update Your information as necessary to maintain its accuracy. Failure
           to provide accurate information may result in the suspension or
           termination of Your Account.
         </p>
-        <h4 className="text-xl font-semibold text-gray-800">
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
           3.2 Account Responsibilities
-        </h4>
-        <p className="text-[#9094A6] mb-4 text-md">
+        </h3>
+        <p className="mt-2 text-muted-foreground">
           You are responsible for maintaining the confidentiality of Your login
           credentials, including Your username and password. You are solely
           responsible for all activities that occur under Your Account, whether
-          authorized by You or not. You agree to notify the Company immediately
-          of any unauthorized access or use of Your Account.
+          authorised by You or not. You agree to notify the Company immediately
+          of any unauthorised access or use of Your Account.
         </p>
-        <h4 className="text-xl font-semibold text-gray-800">3.3 Eligibility</h4>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          3.3 Eligibility
+        </h3>
+        <p className="mt-2 text-muted-foreground">
           To use the Service, You must be at least 18 years old or the age of
           majority in Your jurisdiction, whichever is greater. If You are under
           18, You may only use the Service under the supervision of a parent or
@@ -159,24 +159,24 @@ const TermsAndConditions = () => {
           Account on behalf of a legal entity, You represent and warrant that
           You have the authority to bind that entity to these Terms.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
           4. Use of the Service
-        </h3>
-        <h4 className="text-xl font-semibold text-gray-800">
+        </h2>
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
           4.1 License to Use the Service
-        </h4>
-        <p className="text-[#9094A6] mb-4 text-md">
+        </h3>
+        <p className="mt-2 text-muted-foreground">
           The Company grants You a limited, non-exclusive, non-transferable,
           revocable license to access and use the Service for personal or
           internal business purposes, subject to these Terms. This license does
           not include any rights to modify, distribute, sell, or sublicense the
           Service or any part of it.
         </p>
-        <h4 className="text-xl font-semibold text-gray-800">
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
           4.2 Prohibited Conduct
-        </h4>
-        <ul className="ml-6 list-disc text-[#9094A6] mb-4 text-md">
+        </h3>
+        <p className="mt-2 text-muted-foreground">You agree not to:</p>
+        <ul className="mt-2 list-disc list-inside text-muted-foreground">
           <li>
             Use the Service for any illegal, harmful, or fraudulent purpose.
           </li>
@@ -200,111 +200,260 @@ const TermsAndConditions = () => {
             otherwise objectionable.
           </li>
           <li>
-            Impersonate any person or entity or falsely state or misrepresent
-            Your affiliation with any person or entity.
+            Misrepresent Your identity or impersonate any individual or entity.
           </li>
         </ul>
-        <h4 className="text-xl font-semibold text-gray-800">
-          4.3 Content Ownership
-        </h4>
-        <p className="text-[#9094A6] mb-4 text-md">
-          All Content available through the Service, including but not limited
-          to text, images, graphics, and software, is owned by the Company or
-          its licensors and is protected by intellectual property laws. You may
-          not copy, reproduce, distribute, or create derivative works based on
-          the Content without the Company's prior written consent.
-        </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          5. Fees and Payments
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          4.3 Suspension and Termination of Use
         </h3>
-        <h4 className="text-xl font-semibold text-gray-800">5.1 Fees</h4>
-        <p className="text-[#9094A6] mb-4 text-md">
-          The Company may charge fees for certain features or services offered
-          through the Service. The applicable fees will be disclosed to You
-          before You incur any charges. All fees are non-refundable unless
-          otherwise specified.
-        </p>
-        <h4 className="text-xl font-semibold text-gray-800">5.2 Payments</h4>
-        <p className="text-[#9094A6] mb-4 text-md">
-          Payments for any fees or charges must be made through the payment
-          methods provided by the Company. You agree to provide accurate and
-          complete payment information and to promptly pay any amounts due. If
-          payment is not received or is declined, We may suspend or terminate
-          Your access to the Service.
-        </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          6. Privacy and Data Protection
+        <p className="mt-2 text-muted-foreground">
+          The Company reserves the right to suspend or terminate Your access to
+          the Service at any time, with or without notice, for violating these
+          Terms or for any other reason, including if We believe Your use poses
+          a risk to the security or integrity of the Service. Upon termination,
+          all rights and licenses granted to You under these Terms will cease
+          immediately.
+        </p>{" "}
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          5. User-Generated Content
+        </h2>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            5.1 Responsibility for Content
+          </h3>
+          <p className="text-muted-foreground">
+            You are solely responsible for any content that You post, upload, or
+            otherwise make available through the Service. You represent and
+            warrant that You have the rights and permissions necessary to post
+            such content and that Your content does not infringe upon any
+            third-party rights, including intellectual property or privacy
+            rights.
+          </p>
+        </div>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            5.2 License to Use User Content
+          </h3>
+          <p className="text-muted-foreground">
+            By posting or sharing content through the Service, You grant the
+            Company a worldwide, non-exclusive, royalty-free, fully paid-up,
+            perpetual, irrevocable, transferable, and sublicensable license to
+            use, reproduce, modify, distribute, display, and perform Your
+            content for the purposes of operating, promoting, and improving the
+            Service.
+          </p>
+        </div>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            5.3 Content Removal
+          </h3>
+          <p className="text-muted-foreground">
+            We reserve the right to remove or disable access to any content that
+            violates these Terms, is illegal, or that We believe may harm Our
+            users, the Company, or third parties. However, We are not obligated
+            to monitor or remove any specific content.
+          </p>
+        </div>
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          6. Payments, Subscriptions, and Refunds
+        </h2>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            6.1 Payment Terms
+          </h3>
+          <p className="text-muted-foreground">
+            Certain features of the Service may require payment. By making a
+            payment, You agree to provide accurate and complete payment
+            information and authorize the Company or its third-party payment
+            processors to charge the specified amount to Your payment method.
+          </p>
+        </div>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            6.2 Subscription Plans
+          </h3>
+          <p className="text-muted-foreground">
+            Some portions of the Service may be offered on a subscription basis.
+            By subscribing, You agree to pay the applicable fees in accordance
+            with the billing cycle provided during the subscription process.
+            Subscription fees are non-refundable, and cancellations will only
+            take effect at the end of the current billing period unless
+            otherwise specified.
+          </p>
+        </div>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            6.3 Changes to Pricing and Subscription Plans
+          </h3>
+          <p className="text-muted-foreground">
+            The Company reserves the right to change pricing and subscription
+            plans at any time. In the event of a price change, existing
+            subscribers will be notified in advance and given the option to
+            continue their subscription under the new terms or cancel their
+            subscription.
+          </p>
+        </div>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            6.4 Refunds
+          </h3>
+          <p className="text-muted-foreground">
+            Except where required by law or specifically stated by Us, all
+            payments made to the Company are non-refundable. Any disputes or
+            issues regarding payments or refunds should be directed to Our
+            support team.
+          </p>
+        </div>
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          7. Intellectual Property Rights
+        </h2>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            7.1 Ownership of Content and Materials
+          </h3>
+          <p className="text-muted-foreground">
+            All content and materials available on the Service, including but
+            not limited to text, graphics, images, software, code, and
+            trademarks, are the intellectual property of the Company or its
+            licensors. The use of such content is governed by these Terms and
+            applicable intellectual property laws.
+          </p>
+        </div>
+        <div className="mb-6">
+          <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+            7.2 License Restrictions
+          </h3>
+          <p className="text-muted-foreground">
+            Except as expressly permitted in these Terms, You may not copy,
+            modify, distribute, sell, sublicense, or create derivative works of
+            any content or materials on the Service. Any unauthorized use of the
+            content or materials may violate intellectual property laws and
+            result in legal consequences.
+          </p>
+        </div>
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          8. Third-Party Services and Links
+        </h2>
+        <div className="mb-6">
+          <p className="text-muted-foreground">
+            The Service may include links to third-party websites, applications,
+            or services that are not owned or controlled by the Company. These
+            links are provided for Your convenience, and We do not endorse or
+            assume any responsibility for the content, privacy policies, or
+            practices of third-party services. Your interactions with
+            third-party services are governed by their respective terms and
+            conditions.
+          </p>
+        </div>
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          9. Limitation of Liability
+        </h2>
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          9.1 No Liability for Damages
         </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
-          We are committed to protecting Your privacy and handling Your personal
-          data in accordance with applicable data protection laws. Our Privacy
-          Policy provides detailed information about how We collect, use, and
-          protect Your personal data.
+        <p className="text-muted-foreground">
+          To the fullest extent permitted by law, the Company shall not be
+          liable for any direct, indirect, incidental, consequential, special,
+          or punitive damages, including but not limited to loss of profits,
+          data, goodwill, or other intangible losses arising from or related to
+          Your use of the Service, even if We have been advised of the
+          possibility of such damages.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          7. Limitation of Liability
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          9.2 Limitation of Remedies
         </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
-          To the maximum extent permitted by applicable law, the Company shall
-          not be liable for any indirect, incidental, consequential, special, or
-          punitive damages arising out of or related to Your use of the Service.
-          Our total liability for any claim arising out of or related to these
-          Terms or the Service shall not exceed the amount paid by You, if any,
-          for accessing the Service.
+        <p className="text-muted-foreground">
+          In no event shall the Company’s total liability to You for all claims
+          arising from or related to Your use of the Service exceed the amount
+          You have paid to Us in the twelve (12) months preceding the date of
+          the claim.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          8. Termination
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          10. Disclaimer of Warranties
+        </h2>
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          10.1 No Warranty
         </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
-          We reserve the right to terminate or suspend Your access to the
-          Service at Our sole discretion, without prior notice, for any reason,
-          including but not limited to Your violation of these Terms. Upon
-          termination, Your right to use the Service will immediately cease, and
-          We may delete Your Account and any Content associated with it.
+        <p className="text-muted-foreground">
+          The Service is provided "as is" and "as available" without any
+          warranties or guarantees, express or implied. The Company makes no
+          representation or warranty that the Service will meet Your
+          requirements, be available without interruption, or be free from
+          errors, defects, or security vulnerabilities.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          9. Governing Law
+        <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+          10.2 No Endorsement
         </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
+        <p className="text-muted-foreground">
+          The Company does not endorse, approve, or verify any content or
+          materials posted by users or third parties on the Service. All such
+          content is the responsibility of the individual or entity that
+          provided it.
+        </p>
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          11. Indemnification
+        </h2>
+        <p className="text-muted-foreground">
+          You agree to indemnify, defend, and hold harmless the Company, its
+          officers, directors, employees, and agents from and against any
+          claims, damages, liabilities, costs, or expenses (including reasonable
+          legal fees) arising from Your use of the Service, Your breach of these
+          Terms, or Your violation of any applicable law or third-party rights.
+        </p>
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          12. Governing Law and Dispute Resolution
+        </h2>
+        <p className="text-muted-foreground">
           These Terms shall be governed by and construed in accordance with the
-          laws of the jurisdiction in which the Company is located, without
-          regard to its conflict of law principles. Any disputes arising out of
-          or relating to these Terms or the Service shall be subject to the
-          exclusive jurisdiction of the courts located in that jurisdiction.
+          laws of the Federal Republic of Nigeria, without regard to its
+          conflict of law provisions. Any disputes arising out of or related to
+          these Terms or the Service shall be resolved exclusively through
+          arbitration in Lagos, Nigeria, in accordance with the rules of the
+          Arbitration and Conciliation Act.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          10. Changes to Terms
-        </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
-          We reserve the right to modify or update these Terms at any time. Any
-          changes will be effective immediately upon posting the updated Terms
-          on the Service. Your continued use of the Service after any changes
-          constitutes Your acceptance of the modified Terms.
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          13. Changes to These Terms
+        </h2>
+        <p className="text-muted-foreground">
+          We may update these Terms from time to time to reflect changes in Our
+          policies, practices, or legal requirements. When We make material
+          changes, We will notify You by posting the revised Terms on the
+          Service and updating the "Last updated" date. Your continued use of
+          the Service after the changes take effect signifies Your acceptance of
+          the new Terms.
         </p>
-
-        <h3 className="mt-10 text-2xl font-bold text-gray-900">
-          11. Contact Us
-        </h3>
-        <p className="text-[#9094A6] mb-4 text-md">
-          If You have any questions or concerns about these Terms or the
-          Service, please contact Us at support@weeshr.com.
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          14. Severability
+        </h2>
+        <p className="text-muted-foreground">
+          If any provision of these Terms is found to be invalid or
+          unenforceable, that provision will be enforced to the maximum extent
+          permitted by law, and the remaining provisions will remain in full
+          force and effect.
         </p>
-
-        <p className="text-[#9094A6] mt-6 mb-4">
-          Thank you for using Weeshr App Limited.
+        <h2 className="mt-8 text-xl font-semibold text-gray-800">
+          15. Contact Information
+        </h2>
+        <p className="text-muted-foreground">
+          If You have any questions or concerns about these Terms, You can
+          contact Us:
+          <ul>
+            <li>By email: hello@weeshr.com</li>
+            <li>
+              By mail: Oluwalogbon House, Testing Ground Bus Stop, Obafemi
+              Awolowo Way, Ikeja, Lagos, Nigeria.
+            </li>
+          </ul>
+        </p>
+        <p className="mt-3 text-muted-foreground">
+          These Terms and Conditions constitute the entire agreement between You
+          and the Company regarding Your use of the Service and supersede any
+          prior agreements or understandings.
         </p>
       </section>
       <div className="pt-[70px]">
         <Footer />
-      </div>{" "}
+      </div>
     </div>
   );
-};
-
-export default TermsAndConditions;
+}
