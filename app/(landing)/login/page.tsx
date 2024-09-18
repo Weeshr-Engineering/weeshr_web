@@ -13,6 +13,8 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 
+
+
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   pin: z.string().min(4, { message: "Password must be  4 characters long" }),
@@ -21,6 +23,7 @@ const loginSchema = z.object({
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignInLoading, setIsSignInLoading] = useState(false); // New state for Sign in button loading
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -181,10 +184,10 @@ const LoginPage = () => {
                     autoComplete="email"
                     required
                     className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm pb-3"
-                    placeholder="Enter Email address"
+                    placeholder="Enter registered email"
                   />
                 </div>
-                <div>
+                <div className="relative">
                   <p className="font-semibold pt-2 pb-2 text-[#020721]">Password</p>
                   <label htmlFor="pin" className="sr-only">
                     Pin
@@ -192,11 +195,23 @@ const LoginPage = () => {
                   <input
                     id="number"
                     name="pin"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     required
-                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm"
-                    placeholder="Enter Pin"
+                    className="relative block w-full px-3 py-2 pr-10 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[#292D32]/10 backdrop-blur-sm"
+                    placeholder="Enter password"
                   />
+                  <span
+                    className="absolute inset-y-0 right-0 pt-8 pr-3 flex items-center cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)} // Toggle visibility on click
+                  >
+                    <Icon
+                      icon={showPassword ? "mdi:eye-off-outline" : "mdi:eye-outline"} // Change icon based on state
+                      width={20}
+                      height={20}
+                      color="#292D32"
+                    />
+                  </span>
                 </div>
               </div>
 
