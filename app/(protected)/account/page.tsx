@@ -10,6 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLoginUserErrorHandler } from "@/lib/handle-err";
 import { useRouter } from "next/navigation"; // Import useRouter
 import toast from "react-hot-toast";
+import Footer from "@/components/footer_err";
+import InterfaceLayout from "@/components/err-Interface-layout";
+
 import { faqList } from "../../../lib/constants/acc-deletion-faq";
 import {
   Accordion,
@@ -126,8 +129,14 @@ const HomePage: React.FC = () => {
   }, [handleError, router]); // Ensure handleError and router are included in the dependency array
 
   return (
+    <InterfaceLayout>
+     
     <WidthLayout narrow={true}>
-      <div className="container h-screen px-[0.5px]  pt-40 mx-auto text-black">
+      
+      <div className="h-screen px-[0.5px]  pt-40 mx-auto text-black">
+
+        {/* section1 */}
+
         <div className="flex flex-col items-center">
           <h1 className="w-9/12 mb-4 text-center text-h2">
             Weeshr so sorry to see you go
@@ -137,9 +146,11 @@ const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex-col w-full p-6 px-4 mt-16 rounded-lg bg-white/60 backdrop-blur-3xl">
-          <div className="px-4">
-            <Image
+        {/* section2 */}
+
+        <div className="flex flex-col md:flex-row w-full p-6 px-4 mt-16 rounded-lg bg-white/60 backdrop-blur-3xl">
+          <div className="w-full md:w-1/2 px-4">
+                      <Image
               alt="image"
               src="https://res.cloudinary.com/drykej1am/image/upload/v1724061821/weeshr_website/Vector_50_yna0vu.png"
               width={50}
@@ -153,16 +164,15 @@ const HomePage: React.FC = () => {
                 <Skeleton className="h-4 w-[200px]" />
               )}{" "}
             </h3>
-            <h5 className="py-1 font-normal text-pb">
+            <h5 className="py-1 font-normal text-pb pt-4">
               Are about to delete your weeshr account
             </h5>
-          </div>
+          
           <div className="p-5 mt-4 bg-white rounded-lg">
             <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-md">
               <Icon icon="hugeicons:alert-02" height={"30"} width={"30"} />
             </div>
             <h3 className="pt-3 pb-1 font-semibold text-h6">Disclaimer</h3>
-
             <div className="space-y-3 text-muted-foreground">
               <p>
                 Account deletion is permanent. Your data, wishes, weeshr connect
@@ -176,6 +186,7 @@ const HomePage: React.FC = () => {
               </p>
             </div>
           </div>
+          
           <Button
             onClick={handleDeleteAccount}
             size={"xl"}
@@ -184,8 +195,67 @@ const HomePage: React.FC = () => {
           >
             Temporarily Deactivate
           </Button>
+            
+          </div>
 
-          <div className="relative pt-16">
+          <div className="w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">
+          <h3 className="text-h4 font-semibold">Delete your account</h3>
+            <p className="mt-2 text-muted-foreground">
+            Rate your experience on Weeshr:
+            </p>
+            <div className="flex justify-between mt-4">
+              
+                    <button className="flex flex-col items-center space-y-2">
+                    <span className="text-4xl">😡</span>
+                    <span className="text-sm">Terrible</span>
+                    </button>
+                    <button className="flex flex-col items-center space-y-2">
+                    <span className="text-4xl">😔</span>
+                    <span className="text-sm">Bad</span>
+                    </button>
+                    <button className="flex flex-col items-center space-y-2">
+                    <span className="text-4xl">😐</span>
+                    <span className="text-sm">Okay</span>
+                    </button>
+                    <button className="flex flex-col items-center space-y-2">
+                    <span className="text-4xl">😄</span>
+                    <span className="text-sm">Good</span>
+                    </button>
+                    <button className="flex flex-col items-center space-y-2">
+                    <span className="text-4xl">🥳</span>
+                    <span className="text-sm">Good</span>
+                    </button>
+            </div>
+            <div className="mt-6">
+                <label className="block text-sm font-medium text-gray-700">
+                  Reason for deleting account
+                </label>
+                <select className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option>Select One</option>
+                  <option>Privacy concerns</option>
+                  <option>Too much spam</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Additional information
+                  </label>
+                   <textarea
+                    className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    rows={4}
+              />
+            </div>
+
+             <Button
+                size={"xl"}
+                className="w-full mt-6 font-semibold text-white bg-[#4145A7]"
+              >
+                Delete account
+            </Button>
+          </div>
+        </div>
+        <div className="relative pt-16">
             <Image
               alt="image"
               src="https://res.cloudinary.com/drykej1am/image/upload/v1724332972/weeshr_website/Untitled_2-1536x735_2_jkwrnp.png"
@@ -193,22 +263,25 @@ const HomePage: React.FC = () => {
               height={100}
               className="absolute top-0 -right-8"
             ></Image>
-            <h3 className="pt-3 pb-1 pb-10 font-semibold text-h3">
+          
+          </div>
+
+          <div className="flex flex-col md:flex-row w-full p-6 px-4 mt-16 bg-transparent ">
+
+          <h3 className="pt-3 pb-10  font-semibold text-h3 w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">
               {" "}
               Account
               <br />
               Deletion
               <br />
-              FAQ
+              FAQs
             </h3>
-          </div>
-
-          <Accordion type="single" collapsible className="relative w-full">
+          <Accordion type="single" collapsible className="w-full md:w-1/2 mt-8 md:mt-0 md:ml-4 ">
             {faqList.map((faq, index) => (
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="px-3 py-1 my-2 bg-white rounded-lg"
+                className="px-3 py-1 my-2 bg-primary-foreground rounded-lg"
               >
                 <AccordionTrigger className="text-left ">
                   {faq.question}
@@ -219,9 +292,14 @@ const HomePage: React.FC = () => {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+          </div>
+          <Footer />
       </div>
+      
     </WidthLayout>
+  
+    </InterfaceLayout>
+
   );
 };
 
