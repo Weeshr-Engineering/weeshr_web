@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { handleApiError } from "@/lib/handle-err";
 import { ErrTypeLayout } from "@/components/err-type-layout";
 
 interface StatusMessageProps {
@@ -29,15 +28,15 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="mt-8 mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+          <div className="mb-2 relative h-80 lg:h-96  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1726921305/GiftIllustration_1_sb3epj.svg"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
               alt="Payment Successful"
             />
           </div>
-          <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
+          <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
             {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
@@ -57,7 +56,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="mt-8 mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+          <div className="mb-8 relative h-80 lg:h-96  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
@@ -164,7 +163,7 @@ const StatusClient = () => {
         } else {
           setIsSuccess(false);
         }
-      } catch (handleApiError) {
+      } catch (error) {
         setIsSuccess(false);
       } finally {
         setLoading(false);
