@@ -128,7 +128,7 @@ const LoginPage = () => {
         style={{
           backgroundImage: `url('https://res.cloudinary.com/drykej1am/image/upload/v1723760346/weeshr_website/owcdkhmybidka83hiksb.png')`,
         }}
-        className="relative flex flex-wrap items-end justify-center min-h-screen min-[500px]:pb-20 md:pb-0 bg-gray-100 bg-no-repeat bg-cover md:flex md:justify-end w-full"
+        className="relative flex flex-wrap items-end justify-center min-h-screen  md:pb-0 bg-gray-100 bg-no-repeat bg-cover md:flex md:justify-end w-full"
       >
         <Image
           height={"180"}
