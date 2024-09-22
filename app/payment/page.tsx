@@ -56,7 +56,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="mb-8 relative h-80 lg:h-96  lg:64  w-4/5 md:w-3/5">
+          <div className="mt-10 mb-2 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
