@@ -198,12 +198,33 @@ const HomePage: React.FC = () => {
             
           </div>
 
-          <div className="w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">
-          <h3 className="text-h4 font-semibold">Delete your account</h3>
-            <p className="mt-2 text-muted-foreground">
-            Rate your experience on Weeshr:
-            </p>
-            <div className="flex justify-between mt-4">
+          <div className="w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">          
+          <h3 className="pt-3 pb-10  font-semibold text-h3 w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">
+              {" "}
+              Account
+              <br />
+              Deletion
+              <br />
+              FAQs
+            </h3>
+            <Accordion type="single" collapsible className="w-full md:w-full mt-8 md:mt-0 md:ml-4 ">
+            {faqList.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="px-3 py-1 my-2 bg-primary-foreground rounded-lg"
+              >
+                <AccordionTrigger className="text-left ">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-left text-muted-foreground">
+                  <p className="">{faq.answer}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+
+            {/* <div className="flex justify-between mt-4">
               
                     <button className="flex flex-col items-center space-y-2">
                     <span className="text-4xl">😡</span>
@@ -225,8 +246,8 @@ const HomePage: React.FC = () => {
                     <span className="text-4xl">🥳</span>
                     <span className="text-sm">Good</span>
                     </button>
-            </div>
-            <div className="mt-6">
+            </div> */}
+            {/* <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700">
                   Reason for deleting account
                 </label>
@@ -245,14 +266,14 @@ const HomePage: React.FC = () => {
                     className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     rows={4}
               />
-            </div>
+            </div> */}
 
-             <Button
+             {/* <Button
                 size={"xl"}
                 className="w-full mt-6 font-semibold text-white bg-[#4145A7]"
               >
                 Delete account
-            </Button>
+            </Button> */}
           </div>
         </div>
         <div className="relative pt-16">
@@ -265,7 +286,7 @@ const HomePage: React.FC = () => {
             ></Image>
           
           </div>
-
+{/* 
           <div className="flex flex-col md:flex-row w-full p-6 px-4 mt-16 bg-transparent ">
 
           <h3 className="pt-3 pb-10  font-semibold text-h3 w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">
@@ -292,7 +313,7 @@ const HomePage: React.FC = () => {
               </AccordionItem>
             ))}
           </Accordion>
-          </div>
+          </div> */}
           <Footer />
       </div>
       
