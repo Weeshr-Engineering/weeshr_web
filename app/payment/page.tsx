@@ -45,9 +45,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
-          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
-            <Link href="https://weeshr.com/">Download App</Link>
-          </Button>
+         
         </div>
       </ErrTypeLayout>
     );
