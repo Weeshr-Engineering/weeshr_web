@@ -11,12 +11,16 @@ interface StatusMessageProps {
   isSuccess: boolean;
   isAlreadyVerified?: boolean;
   userMessage?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 const StatusMessage: React.FC<StatusMessageProps> = ({
   isSuccess,
   isAlreadyVerified,
   userMessage,
+  first_name,
+  last_name,
 }) => {
   const handleClose = () => {
     if (window.parent) {
@@ -28,24 +32,30 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="mb-2 relative h-80 lg:h-96  lg:64  w-4/5 md:w-3/5">
+          <div className="my-2 relative h-80 lg:h-96  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
               alt="Payment Successful"
             />
+            
           </div>
+          <div className="mt-[-87px]">
           <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
             {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-          {userMessage || "You have successfully contributed towards WEESHR weeshes"}  
-                  </p>
-          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
+            {userMessage || "You have successfully contributed towards"}{" "}
+            {first_name && last_name
+              ? `${first_name} ${last_name}’s weeshes`
+              : "undefined weeshes"}
+          </p>
+          
+          </div>
+          <Button className="w-full md:my-9  max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
-         
         </div>
       </ErrTypeLayout>
     );
@@ -130,6 +140,9 @@ const StatusClient = () => {
   const [userMessage, setUserMessage] = useState<string | undefined>(undefined);
   const reference = searchParams.get("reference");
 
+  const [first_name, setFirstName] = useState<string | undefined>(undefined);
+  const [last_name, setLastName] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     if (!reference) {
       setLoading(false);
@@ -151,8 +164,13 @@ const StatusClient = () => {
                       );
           const userData = await userResponse.json();
           console.log('Fetched User Data:', userData);
+
+          const { first_name, last_name } = userData;
+          setFirstName(first_name);
+          setLastName(last_name);
+  
           setUserMessage(
-            `You have successfully contributed toward ${userData.userName}’s weeshes`
+            `You have successfully contributed toward ${first_name} ${last_name}’s weeshes`
           );
           console.log('User Message:', userMessage);
         } else if (response.status === 422) {
