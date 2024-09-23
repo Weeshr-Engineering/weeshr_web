@@ -185,16 +185,17 @@ const HomePage: React.FC = () => {
                 This action cannot be undone.
               </p>
             </div>
-          </div>
-          
-          <Button
+            <Button
             onClick={handleDeleteAccount}
             size={"xl"}
             variant={"outline"}
-            className="w-full font-semibold text-pb"
+            className="w-full font-semibold text-pb mt-4"
           >
             Temporarily Deactivate
           </Button>
+          </div>
+          
+          
             
           </div>
 
