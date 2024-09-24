@@ -11,16 +11,16 @@ interface StatusMessageProps {
   isSuccess: boolean;
   isAlreadyVerified?: boolean;
   userMessage?: string;
-  first_name?: string;
-  last_name?: string;
+  firstname?: string;
+  lastname?: string;
 }
 
 const StatusMessage: React.FC<StatusMessageProps> = ({
   isSuccess,
   isAlreadyVerified,
   userMessage,
-  first_name,
-  last_name,
+  firstname,
+  lastname,
 }) => {
   const handleClose = () => {
     if (window.parent) {
@@ -47,8 +47,8 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
             {userMessage || "You have successfully contributed towards"}{" "}
-            {first_name && last_name
-              ? `${first_name} ${last_name}’s weeshes`
+            {firstname && lastname
+              ? `${firstname} ${lastname}’s weeshes`
               : "undefined weeshes"}
           </p>
           
@@ -140,8 +140,8 @@ const StatusClient = () => {
   const [userMessage, setUserMessage] = useState<string | undefined>(undefined);
   const reference = searchParams.get("reference");
 
-  const [first_name, setFirstName] = useState<string | undefined>(undefined);
-  const [last_name, setLastName] = useState<string | undefined>(undefined);
+  const [firstname, setFirstName] = useState<string | undefined>(undefined);
+  const [lastname, setLastName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (!reference) {
@@ -165,14 +165,14 @@ const StatusClient = () => {
           const userData = await userResponse.json();
           console.log('Fetched User Data:', userData);
 
-          const { first_name, last_name } = userData;
-          setFirstName(first_name);
-          setLastName(last_name);
+          const { firstname, lastname } = userData;
+          setFirstName(firstname);
+          setLastName(lastname);
   
           setUserMessage(
-            `You have successfully contributed toward ${first_name} ${last_name}’s weeshes`
+            `You have successfully contributed toward ${firstname} ${lastname}’s weeshes`
           );
-          console.log('User Message:', userMessage);
+        
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
@@ -202,6 +202,8 @@ const StatusClient = () => {
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
       userMessage={userMessage}
+      firstname={firstname}  
+      lastname={lastname}   
     />
   );
 };
