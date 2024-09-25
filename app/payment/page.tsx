@@ -52,7 +52,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               : "null weeshes"}
           </p>
           {isAlreadyVerified && (
-             <p className="text-center mt-4 text-muted-foreground">
+             <p className="text-center mt-2 mb-2 text-muted-foreground">
               {userMessage}
              </p>
 )}
