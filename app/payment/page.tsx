@@ -46,16 +46,25 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            {userMessage || "You have successfully contributed towards"}{" "}
+            { "You have successfully contributed towards"}{" "}
             {firstname && lastname
               ? `${firstname} ${lastname}’s weeshes`
-              : "undefined weeshes"}
+              : "null weeshes"}
           </p>
+          {isAlreadyVerified && (
+             <p className="text-center mt-4 text-muted-foreground">
+              {userMessage}
+             </p>
+)}
+
+     
           
           </div>
           <Button className="w-full md:my-9  max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
+
+         
         </div>
       </ErrTypeLayout>
     );
@@ -154,18 +163,16 @@ const StatusClient = () => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
+
+
+        const data = await response.json();
+        
         if (response.status === 200) {
           setIsSuccess(true);
-          // Fetch user-specific message
-          const userName = "exampleUserName"; // Replace with actual logic to fetch username
-          const year = new Date().getFullYear(); // Or fetch dynamically if needed
-          const userResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/user/public/webpage/${userName}/${year}`
-                      );
-          const userData = await userResponse.json();
-          console.log('Fetched User Data:', userData);
+       
+        
 
-          const { firstname, lastname } = userData;
+          const { firstname, lastname } = data.user || {};
           setFirstName(firstname);
           setLastName(lastname);
   
@@ -176,6 +183,10 @@ const StatusClient = () => {
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
+
+           // Set message directly from 422 response
+           setUserMessage(data.message || "This payment has already been verified.");
+          
         } else {
           setIsSuccess(false);
         }
