@@ -28,47 +28,65 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     }
   };
 
+  if (isAlreadyVerified) {
+    return (
+      <ErrTypeLayout>
+        <div className="w-full h-full justify-center items-center flex flex-col">
+          <div className="my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
+            <Image
+              fill
+              className="rounded-sm shadow-xs absolute object-contain"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1727392613/10945899_4572989_edzbvh.svg"
+              alt="Already Verified"
+            />
+          </div>
+          <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
+            Payment Already Verified!
+          </h2>
+          <p className="text-center mb-8 text-muted-foreground">
+            {userMessage || "This payment has already been verified."}
+          </p>
+          <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
+            <Link href="https://weeshr.com/">Go Home</Link>
+          </Button>
+        </div>
+      </ErrTypeLayout>
+    );
+  }
+
+
   if (isSuccess) {
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="my-2 relative h-80 lg:h-96  lg:64  w-4/5 md:w-3/5">
+          <div className="my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
               alt="Payment Successful"
             />
-            
           </div>
-          <div className="mt-[-87px]">
           <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
-            {isAlreadyVerified ? "Hurray!!!":"Payment"}
+            Payment Successful
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            { "You have successfully contributed towards"}{" "}
-            {firstname && lastname
-              ? `${firstname} ${lastname}’s weeshes`
-              : "null weeshes"}
+            {userMessage ||
+              `You have successfully contributed ${
+                firstname && lastname
+                  ? `towards ${firstname} ${lastname}’s weeshes`
+                  : ""
+              }`}
           </p>
-          {isAlreadyVerified && (
-             <p className="text-center mt-2 mb-2 text-muted-foreground">
-              {userMessage}
-             </p>
-)}
-
-     
-          
-          </div>
-          <Button className="w-full md:my-9  max-w-72 bg-[#34389B] rounded-full">
+          <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
-
-         
         </div>
       </ErrTypeLayout>
     );
-  } else {
+  } 
+  
+  else {
    
     return (
       <ErrTypeLayout>
