@@ -199,10 +199,10 @@ const HomePage: React.FC = () => {
             
           </div>
 
-          <div className="w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">          
-          <h3 className="pt-3 pb-10  font-semibold text-h3 w-full md:w-1/2 mt-8 md:mt-0 md:ml-4">
+          <div className="w-full md:w-1/2 mt-8 md:mt-0 ml-4 ">          
+          <h3 className=" pt-3 pb-10  font-semibold text-h3 w-full md:w-1/2 mt-8 md:mt-0 ml-6  ">
               {" "}
-              Account
+              Account 
               <br />
               Deletion
               <br />
@@ -315,6 +315,7 @@ const HomePage: React.FC = () => {
             ))}
           </Accordion>
           </div> */}
+          
           <Footer />
       </div>
       
