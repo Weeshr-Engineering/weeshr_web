@@ -133,7 +133,7 @@ const HomePage: React.FC = () => {
      
     <WidthLayout narrow={true}>
       
-      <div className="h-screen px-[0.5px]  pt-40 mx-auto text-black">
+      <div className=" px-[0.5px]  pt-40 mx-auto text-black">
 
         {/* section1 */}
 
@@ -208,7 +208,7 @@ const HomePage: React.FC = () => {
               <br />
               FAQs
             </h3>
-            <Accordion type="single" collapsible className="w-full md:w-full mt-8 md:mt-0 md:ml-4 ">
+            <Accordion type="single" collapsible className="w-full md:w-full mt-8 md:mt-0  ">
             {faqList.map((faq, index) => (
               <AccordionItem
                 key={index}
@@ -316,12 +316,13 @@ const HomePage: React.FC = () => {
           </Accordion>
           </div> */}
           
-          <Footer />
+        <Footer />
       </div>
-      
+
     </WidthLayout>
-  
+    
     </InterfaceLayout>
+    
 
   );
 };
