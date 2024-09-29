@@ -208,7 +208,7 @@ const HomePage: React.FC = () => {
               <br />
               FAQs
             </h3>
-            <Accordion type="single" collapsible className="w-full md:w-full mt-8 md:mt-0  ">
+            <Accordion type="single" collapsible className="w-full  md:w-full mt-8 md:mt-0  ">
             {faqList.map((faq, index) => (
               <AccordionItem
                 key={index}
