@@ -55,6 +55,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   }
 
   if (isSuccess) {
+    console.log("Displaying success page");
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
@@ -84,6 +85,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
       </ErrTypeLayout>
     );
   } else {
+    console.log("Displaying failure page");
     return (
       <ErrTypeLayout>
         <div className="w-full pb-10 h-full justify-center items-center flex flex-col">
@@ -183,36 +185,39 @@ const StatusClient = () => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
-
+        
         const responseData = await response.json();
-
+    
+        console.log("Response Data: ", responseData); // Log the full response
+    
         if (response.status === 200 && responseData.data?.metadata?.user) {
+          console.log("User metadata found: ", responseData.data.metadata.user); // Log the user metadata
+    
           setIsSuccess(true);
-
           const { firstName = "", lastName = "" } = responseData.data.metadata.user;
+    
           setFirstName(firstName);
           setLastName(lastName);
-
           setUserMessage(
             `You have successfully contributed toward ${firstName} ${lastName}’s weeshes`
           );
+          
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
-
-          // Set message directly from 422 response
-          setUserMessage(
-            responseData.message || "This payment has already been verified."
-          );
+          setUserMessage(responseData.message || "This payment has already been verified.");
         } else {
+          console.log("Unexpected response status: ", response.status);
           setIsSuccess(false);
         }
       } catch (error) {
+        console.error("Error verifying payment: ", error); // Log the error for debugging
         setIsSuccess(false);
       } finally {
         setLoading(false);
       }
     };
+    
 
     verifyPayment();
   }, [reference]);
