@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
       
 <footer className="bg-[#F8F9FF] flex flex-col md:flex-row justify-center md:justify-between w-full px-6 py-10  bottom-0  xl:relative
 items-center ">
-  <div className="flex md:justify-start mb-6 md:mb-0 md:pl-20">
+  <div className="flex md:justify-start mb-6 md:mb-0 md:pl-10 lg:pl-20">
           <Image
             alt="Weeshr Logo"
             src="https://res.cloudinary.com/dufimctfc/image/upload/v1726559017/logo-1_nmxrgj.svg"
