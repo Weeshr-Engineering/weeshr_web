@@ -200,15 +200,11 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="w-full md:w-1/2 mt-8 md:mt-0 ml-4 ">          
-          <h3 className=" pt-3 pb-10  font-semibold text-h3 w-full md:w-1/2 mt-8 md:mt-0 ml-6  ">
+          <h3 className=" pt-3 pb-10  font-semibold text-h4 w-full md:w-1/2 mt-8 md:mt-0 ml-6  ">
               {" "}
-              Account 
-              <br />
-              Deletion
-              <br />
-              FAQs
+              Account Deletion FAQs
             </h3>
-            <Accordion type="single" collapsible className="w-full  md:w-full mt-8 md:mt-0  ">
+            <Accordion type="single" collapsible className="w-full  md:w-full mt-8 md:mt-3  ">
             {faqList.map((faq, index) => (
               <AccordionItem
                 key={index}
