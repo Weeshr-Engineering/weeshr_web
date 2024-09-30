@@ -32,7 +32,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
+          <div className="lg:mt-5 my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
@@ -43,7 +43,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
             Payment Already Verified!
           </h2>
-          <p className="text-center mb-8 text-muted-foreground">
+          <p className="text-center mb-2 text-muted-foreground">
             {userMessage || "This payment has already been verified."}
           </p>
           <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
@@ -70,7 +70,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
             Payment Successful
           </h2>
-          <p className="text-center mb-8 text-muted-foreground">
+          <p className="text-center mb-2 text-muted-foreground">
             {userMessage ||
               `You have successfully contributed ${
                 firstname && lastname
