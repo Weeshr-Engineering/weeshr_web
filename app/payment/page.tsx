@@ -185,38 +185,45 @@ const StatusClient = () => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
-        
+    
         const responseData = await response.json();
     
-        console.log("Response Data: ", responseData); // Log the full response
+        // Log the response data to understand the structure better
+        console.log("Response Status: ", response.status);
+        console.log("Response Data: ", responseData);
     
-        if (response.status === 200 && responseData.data?.metadata?.user) {
-          console.log("User metadata found: ", responseData.data.metadata.user); // Log the user metadata
+        if (response.status === 200 && responseData.data?.data?.metadata?.user) {
+          // Correctly access the nested user data
+          const user = responseData.data.data.metadata.user;
+          
+          console.log("User Data: ", user);  // Log user data to verify access
+          setIsSuccess(true);  // Success state should trigger success message
     
-          setIsSuccess(true);
-          const { firstName = "", lastName = "" } = responseData.data.metadata.user;
-    
+          const { firstName = "", lastName = "" } = user;
           setFirstName(firstName);
           setLastName(lastName);
+    
           setUserMessage(
             `You have successfully contributed toward ${firstName} ${lastName}’s weeshes`
           );
-          
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
+    
+          // Set message directly from 422 response
           setUserMessage(responseData.message || "This payment has already been verified.");
         } else {
-          console.log("Unexpected response status: ", response.status);
+          console.log("Unsuccessful Response");
           setIsSuccess(false);
         }
       } catch (error) {
-        console.error("Error verifying payment: ", error); // Log the error for debugging
+        console.error("Error verifying payment: ", error);
         setIsSuccess(false);
       } finally {
         setLoading(false);
       }
     };
+    
     
 
     verifyPayment();
