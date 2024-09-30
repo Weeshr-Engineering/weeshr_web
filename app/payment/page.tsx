@@ -54,7 +54,6 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     );
   }
 
-
   if (isSuccess) {
     return (
       <ErrTypeLayout>
@@ -75,7 +74,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               `You have successfully contributed ${
                 firstName && lastName
                   ? `towards ${firstName} ${lastName}’s weeshes`
-                  : ""
+                  : "towards this weesh."
               }`}
           </p>
           <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
@@ -84,10 +83,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
         </div>
       </ErrTypeLayout>
     );
-  } 
-  
-  else {
-   
+  } else {
     return (
       <ErrTypeLayout>
         <div className="w-full pb-10 h-full justify-center items-center flex flex-col">
@@ -103,13 +99,19 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             Payment Failed
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            There was an issue with your payment. <br/>Please try again
+            There was an issue with your payment. <br />
+            Please try again
           </p>
-          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
-          onClick={() => window.history.go(-2)}>
-             Retry Payment
+          <Button
+            className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
+            onClick={() => window.history.go(-2)}
+          >
+            Retry Payment
           </Button>
-          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
+          <Button
+            variant="outline"
+            className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]"
+          >
             <Link href="https://weeshr.com/">View Weeshes</Link>
           </Button>
         </div>
@@ -182,29 +184,26 @@ const StatusClient = () => {
           `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
 
+        const responseData = await response.json();
 
-        const data = await response.json();
-        
-        if (response.status === 200) {
+        if (response.status === 200 && responseData.data?.metadata?.user) {
           setIsSuccess(true);
-       
-        
 
-          const { firstName, lastName } = data.user || {};
+          const { firstName = "", lastName = "" } = responseData.data.metadata.user;
           setFirstName(firstName);
           setLastName(lastName);
-  
+
           setUserMessage(
             `You have successfully contributed toward ${firstName} ${lastName}’s weeshes`
           );
-        
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
 
-           // Set message directly from 422 response
-           setUserMessage(data.message || "This payment has already been verified.");
-          
+          // Set message directly from 422 response
+          setUserMessage(
+            responseData.message || "This payment has already been verified."
+          );
         } else {
           setIsSuccess(false);
         }
@@ -231,8 +230,8 @@ const StatusClient = () => {
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
       userMessage={userMessage}
-      firstName={firstName}  
-      lastName={lastName}   
+      firstName={firstName}
+      lastName={lastName}
     />
   );
 };
