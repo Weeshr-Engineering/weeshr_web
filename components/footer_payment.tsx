@@ -44,12 +44,12 @@ const Footer: React.FC = () => {
       
 <footer className="bg-[#F8F9FF] flex flex-col md:flex-row justify-center md:justify-between w-full px-6 py-10  bottom-0  xl:relative
 items-center ">
-  <div className="flex md:justify-start mb-6 md:mb-0 ">
+  <div className="flex md:justify-start mb-6 md:mb-0 md:pl-20">
           <Image
             alt="Weeshr Logo"
-            src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
-            width={100}
-            height={90}
+            src="https://res.cloudinary.com/dufimctfc/image/upload/v1726559017/logo-1_nmxrgj.svg"
+            width={80}
+            height={60}
             priority
           />
         </div>
