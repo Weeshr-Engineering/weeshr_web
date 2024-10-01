@@ -5,7 +5,7 @@ import WidthLayout from "@/components/commons/width-layout";
 export default function TermsAndConditions() {
   return (
     <WidthLayout>
-      <div className="text-black  pb-2 md:pb-6     pb-6 	">
+      <div className="text-black  md:pb-6     pb-6 	">
         <h2 className="py-10 text-4xl font-bold text-center dark:text-gray-100">
           Terms and Conditions
         </h2>

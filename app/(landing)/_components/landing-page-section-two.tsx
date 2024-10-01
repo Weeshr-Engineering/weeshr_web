@@ -15,7 +15,7 @@ export const LandingPageSectionTwo = () => {
         alt="Hero Image"
         width={500} // Adjust based on your design
         height={500} // Adjust based on your design
-        className="hidden md:block object-cover" // Show this on md and larger screens
+        className="hidden md:block object-cover lg:w-[600px]" // Show this on md and larger screens
       />
     </div>
   );
