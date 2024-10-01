@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -60,7 +60,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   }
 
   if (isSuccess) {
-    console.log("Displaying success page");
+    // console.log("Displaying success page");
     return (
       <PaymentLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
@@ -182,8 +182,7 @@ const StatusClient = () => {
   const [lastName, setLastName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!reference) {
-      setLoading(false);
+    if (!reference || loading === false) {
       return;
     }
 
@@ -195,36 +194,30 @@ const StatusClient = () => {
 
         const responseData = await response.json();
 
-        // Log the response data to understand the structure better
-        console.log("Response Status: ", response.status);
-        console.log("Response Data: ", responseData);
+        // console.log("Response Status: ", response.status);
+        // console.log("Response Data: ", responseData);
 
         if (
           response.status === 200 &&
           responseData.data?.data?.metadata?.user
         ) {
-          // Correctly access the nested user data
           const user = responseData.data.data.metadata.user;
-
-          setIsSuccess(true); // Success state should trigger success message
 
           const { firstName = "", lastName = "" } = user;
           setFirstName(firstName);
           setLastName(lastName);
 
           setUserMessage(
-            `You have successfully contributed toward ${firstName} ${lastName}’s weeshes`
+            `You have successfully contributed toward ${firstName} ${lastName}’s  Weeshes`
           );
-        } else if (response.status === 422) {
-          setIsSuccess(true);
-          setIsAlreadyVerified(true);
 
-          // Set message directly from 422 response
+          setIsSuccess(true);
+        } else if (response.status === 422) {
+          setIsAlreadyVerified(true);
           setUserMessage(
             responseData.message || "This payment has already been verified."
           );
         } else {
-          console.log("Unsuccessful Response");
           setIsSuccess(false);
         }
       } catch (error) {
@@ -236,7 +229,7 @@ const StatusClient = () => {
     };
 
     verifyPayment();
-  }, [reference]);
+  }, [reference, loading]); // Dependency array
 
   if (loading) {
     return <div>Loading...</div>;
