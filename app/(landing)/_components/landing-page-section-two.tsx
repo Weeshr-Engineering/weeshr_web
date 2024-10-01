@@ -37,7 +37,7 @@ export const LandingPageSectionTwo = () => {
     >
       <motion.div variants={itemVariant} className="md:hidden w-full">
         <Image
-          src="https://res.cloudinary.com/drykej1am/image/upload/v1727713418/weeshr_website/1_tsukgg.png"
+          src="https://res.cloudinary.com/drykej1am/image/upload/v1727795807/weeshr_website/WeeshrShowM_qzd1ws.png"
           alt="Hero Image"
           width={200}
           height={100}
@@ -47,7 +47,7 @@ export const LandingPageSectionTwo = () => {
 
       <motion.div variants={itemVariant} className="hidden md:block">
         <Image
-          src="https://res.cloudinary.com/drykej1am/image/upload/v1727712591/weeshr_website/2_mwuork.png"
+          src="https://res.cloudinary.com/drykej1am/image/upload/v1727795805/weeshr_website/WeeshrMock_f6cn4l.png"
           alt="Hero Image"
           width={500}
           height={500}
