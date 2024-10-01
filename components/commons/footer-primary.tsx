@@ -11,7 +11,7 @@ interface SocialMediaLink {
 const socialMediaLinks: SocialMediaLink[] = [
   {
     name: "Facebook",
-    url: "https://www.facebook.com/weeshrapp",
+    url: "https://www.facebook.com/share/Bz1y1zKvQMX545NR/?mibextid=LQQJ4d",
     icon: "https://res.cloudinary.com/drykej1am/image/upload/v1708288264/weeshr_website/FB_mufgbd.svg",
   },
   {
@@ -40,8 +40,8 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="py-10  lg:pb-16">
-      <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl mx-4 md:mx-16">
+    <div className="pb-10 lg:pb-16">
+      <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl">
         <div className="flex flex-col items-center justify-between p-4 py-6 md:flex-row md:space-x-4 lg:space-x-6">
           <div className="flex flex-col items-center md:items-start">
             <a href="/" className="inline-flex items-center">
@@ -52,18 +52,22 @@ const Footer: React.FC = () => {
                 height={80}
               />
             </a>
-            <div className="mt-4 text-center md:mt-2 lg:max-w-md md:text-left">
+            <div className="mt-4 text-center md:mt-6 lg:max-w-md md:text-left">
               <p className="text-sm text-muted-foreground md:text-sm lg:text-sm">
-                Weeshr helps you collect your birthday gifts with
-                <br /> the click of one button from your friends, fans, and
-                family!
+                Weeshr helps you collect your birthday gifts with the click of
+                one button from your friends, fans, and family!
               </p>
             </div>
           </div>
 
           <div className="flex flex-col items-center mt-6 md:items-end md:mt-0">
             <div className="flex items-center gap-2 px-2 mb-4">
-              <a href="/" className="w-full md:w-auto">
+              <a
+                href="https://apps.apple.com/ng/app/weeshr/id6602884408"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full md:w-auto"
+              >
                 <Image
                   src="https://res.cloudinary.com/dufimctfc/image/upload/v1723963363/App_Store_quvm85.svg"
                   alt="Apple store"
@@ -71,7 +75,12 @@ const Footer: React.FC = () => {
                   height={80}
                 />
               </a>
-              <a className="w-full md:w-auto" href="/">
+              <a
+                className="w-full md:w-auto"
+                href="https://play.google.com/store/apps/details?id=com.app.weeshr&pcampaignid=web_share"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <Image
                   src="https://res.cloudinary.com/dufimctfc/image/upload/v1723963374/Google_Play_zlkalx.svg"
                   alt="Playstore Button"
@@ -80,11 +89,10 @@ const Footer: React.FC = () => {
                 />
               </a>
             </div>
-            <div className="flex px-2 space-x-3 md:space-x-4 lg:space-x-10 ">
+            <div className="flex px-2 space-x-3 md:space-x-4 lg:space-x-10 pt-4 md:pt-6">
               <a href="/contact" className="text-[#8987A1] text-sm">
                 Contact
               </a>
-
               <a href="/privacy-policy" className="text-[#8987A1] text-sm">
                 Privacy Policy
               </a>
@@ -92,13 +100,13 @@ const Footer: React.FC = () => {
                 href="/terms-and-conditions"
                 className="text-[#8987A1] text-sm"
               >
-                Term and Conditions
+                Terms and Conditions
               </a>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-center px-4 pt-5 pb-6 md:flex-row md:justify-between md:pb-10">
+        <div className="flex flex-col items-center px-4  md:flex-row md:justify-between md:pb-10">
           <div className="text-sm text-[#020721] flex items-center">
             <Icon
               icon="mingcute:love-fill"
@@ -108,70 +116,22 @@ const Footer: React.FC = () => {
             />
             <p className="mx-2">Powered by Weeshr App Limited</p>
           </div>
-          <div className="flex items-center mt-4 space-x-4 md:mt-0">
-            <a
-              href="https://www.facebook.com/weeshrapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                icon="ri:facebook-fill"
-                width="24px"
-                height="24px"
-                color="#151515"
-              />
-            </a>
-            <a
-              href="https://www.instagram.com/weeshrapp/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                icon="line-md:instagram"
-                width="24px"
-                height="24px"
-                color="#151515"
-              />
-            </a>
-
-            <a
-              href="https://twitter.com/weeshrapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                icon="prime:twitter"
-                width="24px"
-                height="20px"
-                color="#151515"
-              />
-            </a>
-
-            <a
-              href="https://linkedin.com/weeshrapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                icon="bi:linkedin"
-                width="24px"
-                height="20px"
-                color="#151515"
-              />
-            </a>
-
-            <a
-              href="https://www.tiktok.com/@weeshrapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                icon="ic:baseline-tiktok"
-                width="24px"
-                height="24px"
-                color="#151515"
-              />
-            </a>
+          <div className="flex items-center mt-4 space-x-2 md:mt-0">
+            {socialMediaLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={link.icon}
+                  alt={`${link.name} icon`}
+                  width={60}
+                  height={60}
+                />
+              </a>
+            ))}
           </div>
         </div>
       </footer>
