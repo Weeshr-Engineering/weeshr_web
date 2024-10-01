@@ -5,22 +5,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { handleApiError } from "@/lib/handle-err";
 import { ErrTypeLayout } from "@/components/err-type-layout";
 
 interface StatusMessageProps {
   isSuccess: boolean;
   isAlreadyVerified?: boolean;
   userMessage?: string;
-  firstName?: string;
-  lastName?: string;
 }
 
 const StatusMessage: React.FC<StatusMessageProps> = ({
   isSuccess,
   isAlreadyVerified,
   userMessage,
-  firstName,
-  lastName,
 }) => {
   const handleClose = () => {
     if (window.parent) {
@@ -28,68 +25,39 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     }
   };
 
-  if (isAlreadyVerified) {
-    return (
-      <ErrTypeLayout>
-        <div className="w-full pt-4 mb-12 h-full justify-center items-center flex flex-col">
-          <div className="lg:mt-12 my-0 relative h-80 lg:h-96 w-4/5 md:w-3/5">
-            <Image
-              fill
-              className="rounded-sm shadow-xs absolute object-contain"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1727392613/10945899_4572989_edzbvh.svg"
-              alt="Already Verified"
-            />
-          </div>
-          <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
-            Payment Already Verified!
-          </h2>
-          <p className="text-center mb-3 text-muted-foreground">
-            {userMessage || "This payment has already been verified."}
-          </p>
-          <Button className="w-full lg:mb-10 lg:my-2 md:my-9  max-w-72 bg-[#34389B] rounded-full">
-            <Link href="https://weeshr.com/">Go Home</Link>
-          </Button>
-        </div>
-      </ErrTypeLayout>
-    );
-  }
-
   if (isSuccess) {
-    console.log("Displaying success page");
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
+          <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723745923/SuccessIllustration_t8fhro.svg"
               alt="Payment Successful"
             />
           </div>
-          <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
-            Payment Successful
+          <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721]">
+            {isAlreadyVerified ? "Hurray!!!":"Payment"}
           </h2>
-          <p className="text-center mb-2 text-muted-foreground">
-            {userMessage ||
-              `You have successfully contributed ${
-                firstName && lastName
-                  ? `towards ${firstName} ${lastName}’s weeshes`
-                  : "towards this weesh."
-              }`}
-          </p>
-          <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
+          <p className="text-center mb-8 text-muted-foreground">
+          {userMessage || "You have successfully contributed towards WEESHR weeshes"}  
+                  </p>
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/"> Go Home</Link>
+          </Button>
+          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
+            <Link href="https://weeshr.com/">Download App</Link>
           </Button>
         </div>
       </ErrTypeLayout>
     );
   } else {
-    console.log("Displaying failure page");
+   
     return (
       <ErrTypeLayout>
-        <div className="w-full pb-10 h-full justify-center items-center flex flex-col">
-          <div className="mt-10 mb-2 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+        <div className="w-full h-full justify-center items-center flex flex-col">
+          <div className="mb-8 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
@@ -101,19 +69,13 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             Payment Failed
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            There was an issue with your payment. <br />
-            Please try again
+            There was an issue with your payment. <br/>Please try again
           </p>
-          <Button
-            className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
-            onClick={() => window.history.go(-2)}
-          >
-            Retry Payment
+          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
+          onClick={() => window.history.go(-2)}>
+             Retry Payment
           </Button>
-          <Button
-            variant="outline"
-            className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]"
-          >
+          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
             <Link href="https://weeshr.com/">View Weeshes</Link>
           </Button>
         </div>
@@ -171,9 +133,6 @@ const StatusClient = () => {
   const [userMessage, setUserMessage] = useState<string | undefined>(undefined);
   const reference = searchParams.get("reference");
 
-  const [firstName, setFirstName] = useState<string | undefined>(undefined);
-  const [lastName, setLastName] = useState<string | undefined>(undefined);
-
   useEffect(() => {
     if (!reference) {
       setLoading(false);
@@ -185,46 +144,32 @@ const StatusClient = () => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
-    
-        const responseData = await response.json();
-    
-        // Log the response data to understand the structure better
-        console.log("Response Status: ", response.status);
-        console.log("Response Data: ", responseData);
-    
-        if (response.status === 200 && responseData.data?.data?.metadata?.user) {
-          // Correctly access the nested user data
-          const user = responseData.data.data.metadata.user;
-          
-          console.log("User Data: ", user);  // Log user data to verify access
-          setIsSuccess(true);  // Success state should trigger success message
-    
-          const { firstName = "", lastName = "" } = user;
-          setFirstName(firstName);
-          setLastName(lastName);
-    
+        if (response.status === 200) {
+          setIsSuccess(true);
+          // Fetch user-specific message
+          const userName = "exampleUserName"; // Replace with actual logic to fetch username
+          const year = new Date().getFullYear(); // Or fetch dynamically if needed
+          const userResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/public/webpage/${userName}/${year}`
+                      );
+          const userData = await userResponse.json();
+          console.log('Fetched User Data:', userData);
           setUserMessage(
-            `You have successfully contributed toward ${firstName} ${lastName}’s weeshes`
+            `You have successfully contributed toward ${userData.userName}’s weeshes`
           );
+          console.log('User Message:', userMessage);
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
-    
-          // Set message directly from 422 response
-          setUserMessage(responseData.message || "This payment has already been verified.");
         } else {
-          console.log("Unsuccessful Response");
           setIsSuccess(false);
         }
-      } catch (error) {
-        console.error("Error verifying payment: ", error);
+      } catch (handleApiError) {
         setIsSuccess(false);
       } finally {
         setLoading(false);
       }
     };
-    
-    
 
     verifyPayment();
   }, [reference]);
@@ -242,8 +187,6 @@ const StatusClient = () => {
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
       userMessage={userMessage}
-      firstName={firstName}
-      lastName={lastName}
     />
   );
 };

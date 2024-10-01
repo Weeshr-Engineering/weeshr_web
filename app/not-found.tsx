@@ -9,7 +9,7 @@ import { ErrTypeLayout } from "@/components/NotFound-type-layout";
 const ErrorPage = () => {
   return (
     <ErrTypeLayout>
-    <div className="flex flex-col items-center justify-center w-full h-[100]  p-4">
+    <div className="flex flex-col items-center justify-center w-full h-[100rm]  min-h-100vh p-4 ">
       <Image
         className="mb-4 h-auto w-16 md:w-24"
         src="https://res.cloudinary.com/dufimctfc/image/upload/v1724603226/top-quality-emoticon-closing-eyes-flat-emoji-closing-eyes-with-hand-yellow-face-emoji-popular-element_686498-2711-removebg-preview_topycq.png"

@@ -26,7 +26,7 @@ const Header = ({ uaString }: { uaString?: string }) => {
   return (
     <div className="z-10 w-full max-w-5xl flex items-center justify-between font-mono text-sm min-h-20 px-2 pr-4 py-12 pb-10">
       <Image
-        src="https://res.cloudinary.com/dufimctfc/image/upload/v1726559017/logo-1_nmxrgj.svg"
+        src="https://res.cloudinary.com/dufimctfc/image/upload/v1723267395/Weeshr_Logo_-_White_BG_ducgo9.png"
         alt="Logo"
         className=" md:hidden"
         width={100}
@@ -41,7 +41,7 @@ const Header = ({ uaString }: { uaString?: string }) => {
         height={24}
         priority
       />
-      <Button
+       <Button
         size="secondary"
         variant="secondary"
         className="flex justify-between pl-4 rounded-full bg-[#E9F4D1]"
