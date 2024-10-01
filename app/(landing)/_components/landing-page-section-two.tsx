@@ -41,7 +41,7 @@ export const LandingPageSectionTwo = () => {
           alt="Hero Image"
           width={200}
           height={100}
-          className="object-cover"
+          className="object-cover w-full"
         />
       </motion.div>
 
