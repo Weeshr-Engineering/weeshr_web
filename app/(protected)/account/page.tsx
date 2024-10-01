@@ -200,11 +200,11 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="w-full md:w-1/2 mt-8 md:mt-0 ml-4 ">          
-          <h3 className=" pt-3 pb-10  font-semibold text-h4 w-full md:w-1/2 mt-8 md:mt-0 ml-6  ">
+          <h3 className="md:pt-12 lg:pt-5 font-semibold text-h4 w-full md:w-1/2  md:mt-0 ml-6  ">
               {" "}
               Account Deletion FAQs
             </h3>
-            <Accordion type="single" collapsible className="w-full  md:w-full mt-8 md:mt-3  ">
+            <Accordion type="single" collapsible className="w-[88%] md:w-full mt-8 md:mt-3  ">
             {faqList.map((faq, index) => (
               <AccordionItem
                 key={index}
@@ -273,7 +273,7 @@ const HomePage: React.FC = () => {
             </Button> */}
           </div>
         </div>
-        <div className="relative pt-16">
+        {/* <div className="relative pt-16">
             <Image
               alt="image"
               src="https://res.cloudinary.com/drykej1am/image/upload/v1724332972/weeshr_website/Untitled_2-1536x735_2_jkwrnp.png"
@@ -282,7 +282,7 @@ const HomePage: React.FC = () => {
               className="absolute top-0 -right-8"
             ></Image>
           
-          </div>
+          </div> */}
 {/* 
           <div className="flex flex-col md:flex-row w-full p-6 px-4 mt-16 bg-transparent ">
 

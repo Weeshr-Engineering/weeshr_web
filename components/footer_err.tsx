@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col items-center md:items-start">
           <a href="/" className="inline-flex items-center">
             <Image
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723970335/Logo_klw83c.svg"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1726559017/logo-1_nmxrgj.svg"
               alt="logo"
               width={90}
               height={80}
