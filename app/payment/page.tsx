@@ -11,16 +11,16 @@ interface StatusMessageProps {
   isSuccess: boolean;
   isAlreadyVerified?: boolean;
   userMessage?: string;
-  firstname?: string;
-  lastname?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 const StatusMessage: React.FC<StatusMessageProps> = ({
   isSuccess,
   isAlreadyVerified,
   userMessage,
-  firstname,
-  lastname,
+  firstName,
+  lastName,
 }) => {
   const handleClose = () => {
     if (window.parent) {
@@ -31,8 +31,8 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   if (isAlreadyVerified) {
     return (
       <ErrTypeLayout>
-        <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
+        <div className="w-full pt-4 mb-12 h-full justify-center items-center flex flex-col">
+          <div className="lg:mt-12 my-0 relative h-80 lg:h-96 w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
@@ -40,13 +40,13 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               alt="Already Verified"
             />
           </div>
-          <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
+          <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
             Payment Already Verified!
           </h2>
-          <p className="text-center mb-8 text-muted-foreground">
+          <p className="text-center mb-3 text-muted-foreground">
             {userMessage || "This payment has already been verified."}
           </p>
-          <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
+          <Button className="w-full lg:mb-10 lg:my-2 md:my-9  max-w-72 bg-[#34389B] rounded-full">
             <Link href="https://weeshr.com/">Go Home</Link>
           </Button>
         </div>
@@ -54,8 +54,8 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     );
   }
 
-
   if (isSuccess) {
+    console.log("Displaying success page");
     return (
       <ErrTypeLayout>
         <div className="w-full h-full justify-center items-center flex flex-col">
@@ -70,12 +70,12 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
             Payment Successful
           </h2>
-          <p className="text-center mb-8 text-muted-foreground">
+          <p className="text-center mb-2 text-muted-foreground">
             {userMessage ||
               `You have successfully contributed ${
-                firstname && lastname
-                  ? `towards ${firstname} ${lastname}’s weeshes`
-                  : ""
+                firstName && lastName
+                  ? `towards ${firstName} ${lastName}’s weeshes`
+                  : "towards this weesh."
               }`}
           </p>
           <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
@@ -84,13 +84,11 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
         </div>
       </ErrTypeLayout>
     );
-  } 
-  
-  else {
-   
+  } else {
+    console.log("Displaying failure page");
     return (
       <ErrTypeLayout>
-        <div className="w-full h-full justify-center items-center flex flex-col">
+        <div className="w-full pb-10 h-full justify-center items-center flex flex-col">
           <div className="mt-10 mb-2 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
             <Image
               fill
@@ -103,13 +101,19 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             Payment Failed
           </h2>
           <p className="text-center mb-8 text-muted-foreground">
-            There was an issue with your payment. <br/>Please try again
+            There was an issue with your payment. <br />
+            Please try again
           </p>
-          <Button className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
-          onClick={() => window.history.go(-2)}>
-             Retry Payment
+          <Button
+            className="w-full mb-3 max-w-72 bg-[#34389B] rounded-full"
+            onClick={() => window.history.go(-2)}
+          >
+            Retry Payment
           </Button>
-          <Button variant="outline" className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]">
+          <Button
+            variant="outline"
+            className="w-full max-w-72 rounded-full border-[#020721] text-[#020721]"
+          >
             <Link href="https://weeshr.com/">View Weeshes</Link>
           </Button>
         </div>
@@ -167,8 +171,8 @@ const StatusClient = () => {
   const [userMessage, setUserMessage] = useState<string | undefined>(undefined);
   const reference = searchParams.get("reference");
 
-  const [firstname, setFirstName] = useState<string | undefined>(undefined);
-  const [lastname, setLastName] = useState<string | undefined>(undefined);
+  const [firstName, setFirstName] = useState<string | undefined>(undefined);
+  const [lastName, setLastName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (!reference) {
@@ -181,39 +185,46 @@ const StatusClient = () => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
         );
-
-
-        const data = await response.json();
-        
-        if (response.status === 200) {
-          setIsSuccess(true);
-       
-        
-
-          const { firstname, lastname } = data.user || {};
-          setFirstName(firstname);
-          setLastName(lastname);
-  
+    
+        const responseData = await response.json();
+    
+        // Log the response data to understand the structure better
+        console.log("Response Status: ", response.status);
+        console.log("Response Data: ", responseData);
+    
+        if (response.status === 200 && responseData.data?.data?.metadata?.user) {
+          // Correctly access the nested user data
+          const user = responseData.data.data.metadata.user;
+          
+          console.log("User Data: ", user);  // Log user data to verify access
+          setIsSuccess(true);  // Success state should trigger success message
+    
+          const { firstName = "", lastName = "" } = user;
+          setFirstName(firstName);
+          setLastName(lastName);
+    
           setUserMessage(
-            `You have successfully contributed toward ${firstname} ${lastname}’s weeshes`
+            `You have successfully contributed toward ${firstName} ${lastName}’s weeshes`
           );
-        
         } else if (response.status === 422) {
           setIsSuccess(true);
           setIsAlreadyVerified(true);
-
-           // Set message directly from 422 response
-           setUserMessage(data.message || "This payment has already been verified.");
-          
+    
+          // Set message directly from 422 response
+          setUserMessage(responseData.message || "This payment has already been verified.");
         } else {
+          console.log("Unsuccessful Response");
           setIsSuccess(false);
         }
       } catch (error) {
+        console.error("Error verifying payment: ", error);
         setIsSuccess(false);
       } finally {
         setLoading(false);
       }
     };
+    
+    
 
     verifyPayment();
   }, [reference]);
@@ -231,8 +242,8 @@ const StatusClient = () => {
       isSuccess={isSuccess}
       isAlreadyVerified={isAlreadyVerified}
       userMessage={userMessage}
-      firstname={firstname}  
-      lastname={lastname}   
+      firstName={firstName}
+      lastName={lastName}
     />
   );
 };
