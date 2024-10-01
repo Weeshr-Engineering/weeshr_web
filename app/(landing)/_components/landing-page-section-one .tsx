@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 import { TailwindcssButtons } from "@/components/commons/tailwind-buttons";
 

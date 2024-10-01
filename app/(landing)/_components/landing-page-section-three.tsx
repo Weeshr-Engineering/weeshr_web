@@ -6,7 +6,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { howItWorksList } from "@/lib/constants/how-It-works"; // Adjust path if needed
-import Image from "next/image";
 
 export const LandingPageSectionThree = () => {
   return (

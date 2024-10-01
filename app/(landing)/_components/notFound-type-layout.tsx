@@ -1,8 +1,4 @@
-// components/err-type-layout
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { ReactNode } from "react";
 import InterfaceLayout from "./err-Interface-layout";
 import WidthLayout from "@/components/commons/width-layout";

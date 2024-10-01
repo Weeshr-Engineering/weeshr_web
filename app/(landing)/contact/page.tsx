@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -17,11 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useFieldArray, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { handleApiError } from "@/lib/handle-err";
-import Header from "@/components/commons/header-mobile";
 import WidthLayout from "@/components/commons/width-layout";
 
 // Define the type for social media links
@@ -31,13 +29,7 @@ interface SocialMediaLink {
   icon: string;
 }
 
-// You would typically define this array in a separate file or fetch it from an API
-const socialMediaLinks: SocialMediaLink[] = [
-  // Add your social media links here, for example:
-  // { name: 'Facebook', url: 'https://facebook.com/weeshr', icon: '/images/facebook-icon.svg' },
-  // { name: 'Twitter', url: 'https://twitter.com/weeshr', icon: '/images/twitter-icon.svg' },
-  // Add more as needed
-];
+
 
 const profileFormSchema = z.object({
   fullName: z
@@ -53,7 +45,6 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 const Page: React.FC = () => {
-  const currentYear = new Date().getFullYear();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
