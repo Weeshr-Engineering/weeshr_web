@@ -8,9 +8,9 @@ interface InterfaceLayoutProps {
 
 const InterfaceLayout: FC<InterfaceLayoutProps> = ({ children }) => {
   return (
-    <div className="bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724865851/BGLong_hkaxwc.svg');] md:bg-primary  bg-no-repeat bg-cover min-h-screen flex flex-col justify-between">
-      {children}
-    </div>
+    <div className="bg-[url('https://res.cloudinary.com/dufimctfc/image/upload/v1724865851/BGLong_hkaxwc.svg')] md:bg-primary bg-no-repeat bg-cover  min-h-screen marker:h-auto flex flex-col justify-between">
+    {children}
+  </div>
   );
 };
 

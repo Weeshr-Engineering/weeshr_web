@@ -20,9 +20,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         src={
           "https://res.cloudinary.com/drykej1am/image/upload/v1724057819/weeshr_website/Vector_173_eha0sp.png"
         }
-        className="absolute right-0 object-cover md:hidden md:top-0"
+        className="absolute right-0  md:hidden md:top-0"
       />
-      <Image
+      {/* <Image
         height={"300"}
         width={"250"}
         alt="design"
@@ -30,7 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           "https://res.cloudinary.com/drykej1am/image/upload/v1724055329/weeshr_website/Vector_173_l188oi.png"
         }
         className="absolute right-0 hidden object-cover md:top-0 md:block"
-      />
+      /> */}
 
       <Image
         height={"200"}
