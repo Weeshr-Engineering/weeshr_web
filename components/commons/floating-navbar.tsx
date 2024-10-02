@@ -11,6 +11,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const FloatingNav = ({
   navItems,
@@ -66,6 +71,10 @@ export const FloatingNav = ({
     router.push("/login");
   };
 
+  const handleLogin = () => {
+    router.push("/login");
+  };
+
   const showLogout = pathname === "/account";
   const showAccount = isAuthenticated && pathname !== "/account";
 
@@ -95,7 +104,7 @@ export const FloatingNav = ({
                 key={`link=${idx}`}
                 href={navItem.link}
                 className={cn(
-                  "relative items-center flex space-x-1",
+                  "relative items-center flex space-x-1 ",
                   pathname === navItem.link
                     ? "text-black"
                     : "text-neutral-500 hover:text-black"
@@ -107,6 +116,7 @@ export const FloatingNav = ({
             ))}
 
             {/* Disable Login and Account Buttons */}
+
             {showLogout ? (
               <button
                 onClick={handleLogout}
@@ -114,27 +124,27 @@ export const FloatingNav = ({
                   "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
                   "bg-red-100 text-red-800"
                 )}
-                disabled // Disable the logout button
               >
                 <span>Logout</span>
                 <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
               </button>
             ) : showAccount ? (
-              <button
-                className={cn(
-                  "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
-                )}
-                disabled // Disable the account button
-              >
-                <span>Account</span>
-                <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-              </button>
+              <Link href="/account">
+                <button
+                  className={cn(
+                    "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                  )}
+                >
+                  <span>Account</span>
+                  <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                </button>
+              </Link>
             ) : (
               <button
+                onClick={handleLogin}
                 className={cn(
                   "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
                 )}
-                disabled // Disable the login button
               >
                 <span>Login</span>
                 <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />

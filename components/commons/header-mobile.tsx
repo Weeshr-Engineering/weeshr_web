@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Fade as Hamburger } from "hamburger-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,9 +8,34 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { navigationLinks } from "@/lib/constants/navigation-items"; // Import the navigation links
 import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function HeaderMobile() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    setIsAuthenticated(false);
+    router.push("/login");
+  };
+  const handleLogin = () => {
+    router.push("/login");
+  };
+
+  useEffect(() => {
+    const checkAuthentication = () => {
+      setIsAuthenticated(!!localStorage.getItem("authToken"));
+    };
+
+    checkAuthentication();
+  }, []);
+
+  const showLogout = pathname === "/account";
+  const showAccount = isAuthenticated && pathname !== "/account";
 
   return (
     <div className="flex items-center justify-between border-gray-400 py-8 lg:py-0">
@@ -39,14 +64,14 @@ export default function HeaderMobile() {
                 exit={{ opacity: 0, y: -100 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="CLOSE-ICON absolute top-0 right-0 pr-4 py-8 ">
+                <div className="CLOSE-ICON absolute top-0 right-0 pr-4 py-8">
                   <Hamburger toggled={isNavOpen} toggle={setIsNavOpen} />
                 </div>
                 <ul className="MENU-LINK-MOBILE-OPEN flex flex-col items-center justify-between min-h-[250px] -mt-52">
                   {navigationLinks.map((link) => (
                     <li
                       key={link.link}
-                      className={`border-b border-gray-400 my-6 uppercase ${
+                      className={`mb-10 border-b border-gray-400 my-6 uppercase ${
                         link.disabled ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                     >
@@ -70,15 +95,40 @@ export default function HeaderMobile() {
                     </li>
                   ))}
 
-                  <button
-                    disabled
-                    className={cn(
-                      "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-10 py-2 rounded-full text-neutral-500 mt-6"
-                    )}
-                  >
-                    <span>Login</span>
-                    <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                  </button>
+                  {/* Show different options based on login status */}
+                  {showLogout ? (
+                    <button
+                      onClick={handleLogout}
+                      className={cn(
+                        "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
+                        "bg-red-100 text-red-800"
+                      )}
+                    >
+                      <span>Logout</span>
+                      <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
+                    </button>
+                  ) : showAccount ? (
+                    <Link href="/account">
+                      <button
+                        className={cn(
+                          "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                        )}
+                      >
+                        <span>Account</span>
+                        <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                      </button>
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={handleLogin}
+                      className={cn(
+                        "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                      )}
+                    >
+                      <span>Login</span>
+                      <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                    </button>
+                  )}
                 </ul>
               </motion.div>
             )}
