@@ -14,12 +14,12 @@ export const metadata: Metadata = {
     url: "https://weeshr.com",
     images: [
       {
-        url: "https://res.cloudinary.com/drykej1am/image/upload/v1704585596/weeshr_website/scybremtt3coh9qnsj3v.png",
+        url: "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
         width: 800,
         height: 600,
       },
       {
-        url: "https://res.cloudinary.com/drykej1am/image/upload/v1704585596/weeshr_website/scybremtt3coh9qnsj3v.png",
+        url: "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
         width: 1800,
         height: 1600,
         alt: "Weeshr alt",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: "Weeshr",
     description: "Make a Weesh",
     images: [
-      "https://res.cloudinary.com/drykej1am/image/upload/v1704585596/weeshr_website/scybremtt3coh9qnsj3v.png",
+      "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
     ],
   },
   other: {

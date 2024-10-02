@@ -81,3 +81,22 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+.text-h1 {
+  @apply leading-none text-5xl md:text-[56px] lg:text-[90px]  xl:text-[104px]  tracking-tight scroll-m-20 font-bold;
+}
+.text-h2 {
+  @apply leading-none text-3xl md:text-[32px] lg:text-[44px] xl:text-5xl font-semibold tracking-tight scroll-m-20 first:mt-0;
+}
+.text-h3 {
+  @apply leading-tight  text-xl  lg:text-[32px] xl:text-4xl font-medium tracking-tight scroll-m-20;
+}
+.text-h4 {
+  @apply leading-tight 2xl:leading-normal text-xl lg:text-[28px] xl:text-[32px] font-medium tracking-normal scroll-m-20;
+}
+.text-h5 {
+  @apply text-base font-medium leading-normal tracking-normal md:text-xl lg:text-2xl 2xl:leading-tight scroll-m-20;
+}
+.text-h6 {
+  @apply text-base font-medium leading-relaxed tracking-wide lg:text-lg;
+}
