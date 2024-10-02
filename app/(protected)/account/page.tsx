@@ -76,7 +76,7 @@ const HomePage: React.FC = () => {
 
       setTimeout(() => {
         localStorage.removeItem("authToken");
-        router.push("/login");
+        router.push("/");
       }, 5000);
     } catch (error) {
       handleError(error);

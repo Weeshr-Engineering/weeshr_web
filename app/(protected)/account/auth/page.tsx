@@ -97,12 +97,8 @@ const AuthPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative h-screen bg-[#4537ba]">
-      {loading && (
-        <div className="absolute text-lg text-white top-4 left-4">
-          Loading...
-        </div>
-      )}
+    <div className="relative h-screen ">
+      {loading && <div className="text-lg text-white ">Loading...</div>}
     </div>
   );
 };

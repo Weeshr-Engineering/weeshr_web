@@ -68,7 +68,7 @@ export const FloatingNav = ({
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setIsAuthenticated(false);
-    router.push("/login");
+    router.push("/");
   };
 
   const handleLogin = () => {
