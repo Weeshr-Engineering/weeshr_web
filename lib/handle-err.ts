@@ -1,8 +1,18 @@
-// utils/handleApiError.ts
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-export function handleApiError(error: any) {
+type ApiError = {
+  response?: {
+    status: number;
+    data: {
+      message: string;
+    };
+  };
+  request?: unknown;
+  message?: string;
+};
+
+export function handleApiError(error: ApiError) {
   if (error.response) {
     const status = error.response.status;
     const message = error.response.data.message;
@@ -29,16 +39,15 @@ export function handleApiError(error: any) {
 export function useLoginUserErrorHandler() {
   const router = useRouter();
 
-  const handleError = (error: any) => {
+  const handleError = (error: ApiError) => {
     if (error.response) {
       const status = error.response.status;
       const message = error.response.data.message || "An error occurred";
 
       switch (status) {
         case 401:
-          // Handle unauthorized error
           toast.error("Session expired. Please log in again.");
-          router.push("/login"); // Redirect to login
+          router.push("/login");
           break;
         case 400:
         case 403:
