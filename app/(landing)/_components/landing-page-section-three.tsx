@@ -12,7 +12,7 @@ export const LandingPageSectionThree = () => {
     <WidthLayout>
       <div
         id="howItWorks"
-        className="relative flex items-center justify-center md:mb-10 lg:mb-0 md:py-14 flex-col md:flex-row bg-white/60 p-8 md:p-10 lg:p-14 rounded-2xl -mt-32  backdrop-blur-2xl md:items-start md:justify-between"
+        className="relative flex items-center justify-center md:mb-10 lg:mb-0 md:py-14 flex-col md:flex-row bg-white/60 p-8 md:p-10 lg:p-14 rounded-2xl -mt-32 md:-mt-12 lg:-mt-32  backdrop-blur-2xl md:items-start md:justify-between "
       >
         <div className="relative pt-8 md:pt-0 flex justify-start items-start w-full md:w-auto">
           <h2 className="pt-3 pb-10 pl-4 md:pl-0 font-semibold  text-left w-full flex justify-start items-start text-3xl md:text-5xl">
