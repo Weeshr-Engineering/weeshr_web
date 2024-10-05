@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,11 +22,6 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   firstName,
   lastName,
 }) => {
-  const handleClose = () => {
-    if (window.parent) {
-      window.parent.postMessage("closeIframe", "*");
-    }
-  };
 
   if (isAlreadyVerified) {
     return (

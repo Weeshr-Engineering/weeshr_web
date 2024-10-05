@@ -2,6 +2,8 @@
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+// Disable no-explicit-any for this function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function handleApiError(error: any) {
   if (error.response) {
     const status = error.response.status;
@@ -29,6 +31,8 @@ export function handleApiError(error: any) {
 export function useLoginUserErrorHandler() {
   const router = useRouter();
 
+  // Disable no-explicit-any for this function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleError = (error: any) => {
     if (error.response) {
       const status = error.response.status;

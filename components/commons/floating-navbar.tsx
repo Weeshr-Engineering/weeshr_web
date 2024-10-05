@@ -9,7 +9,6 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   HoverCard,
@@ -59,7 +58,6 @@ export const FloatingNav = ({
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number" && isScrollable) {
-      let direction = current - scrollYProgress.getPrevious()!;
 
       setVisible(true);
     }
