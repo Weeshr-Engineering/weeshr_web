@@ -43,13 +43,13 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
             Payment Already Verified!
           </h2>
-          <p className="text-center mb-3 text-muted-foreground">
+          <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage || "This payment has already been verified."}
           </p>
           <Link href="https://weeshr.com/" passHref>
             <Button
               size={"customTet"}
-              className="g:mb-10 lg:my-2 md:my-9 max-w-72 bg-[#34389B] rounded-full"
+              className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
             >
               Go Home
             </Button>
@@ -60,22 +60,22 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   }
 
   if (isSuccess) {
-    // console.log("Displaying success page");
+
     return (
       <PaymentLayout>
-        <div className="w-full h-full justify-center items-center flex flex-col">
-          <div className="my-2 relative h-80 lg:h-96 w-4/5 md:w-3/5">
+        <div className="w-full pt-4 mb-12 h-full justify-center items-center flex flex-col">
+          <div className="lg:mt-12 my-0 relative h-80 lg:h-96 w-4/5 md:w-3/5">
             <Image
               fill
-              className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
+              className="rounded-sm shadow-xs absolute object-contain"
               src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
               alt="Payment Successful"
             />
           </div>
-          <h2 className="text-2xl mb-2 pt-4 w-full text-center text-[#020721]">
+          <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
             Payment Successful
           </h2>
-          <p className="text-center mb-2 text-muted-foreground">
+          <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage ||
               `You have successfully contributed ${
                 firstName && lastName
@@ -83,7 +83,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
                   : "towards this weesh."
               }`}
           </p>
-          <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
+          <Button
+              className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
+              >
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
         </div>
@@ -92,8 +94,8 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   } else {
     return (
       <PaymentLayout>
-        <div className="w-full pb-10 h-full justify-center items-center flex flex-col">
-          <div className="mt-10 mb-2 relative h-80 lg:h-52  lg:64  w-4/5 md:w-3/5">
+        <div className="w-full pt-4 mb-12 h-full justify-center items-center flex flex-col">
+        <div className="lg:mt-12 my-0 relative h-80 lg:h-96 w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
