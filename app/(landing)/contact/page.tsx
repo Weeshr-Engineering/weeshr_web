@@ -22,12 +22,7 @@ import { useState } from "react";
 import { handleApiError } from "@/lib/handle-err";
 import WidthLayout from "@/components/commons/width-layout";
 
-// Define the type for social media links
-// interface SocialMediaLink {
-//   name: string;
-//   url: string;
-//   icon: string;
-// }
+
 
 
 

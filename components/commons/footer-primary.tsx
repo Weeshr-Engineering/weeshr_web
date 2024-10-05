@@ -37,8 +37,6 @@ const socialMediaLinks: SocialMediaLink[] = [
 ];
 
 const Footer: React.FC = () => {
-  // const currentYear = new Date().getFullYear();
-
   return (
     <div className="pb-10 lg:pb-16">
       <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl">
