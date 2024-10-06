@@ -43,6 +43,7 @@ body {
 		--radius: 0.5rem;
 		--text-primary: 231 15% 33%;
 		--core-purple: 238 44% 45%;
+		--light-blue: 222 30% 92%;
 	}
 	.dark {
 		--background: 222.2 84% 4.9%;
@@ -69,6 +70,7 @@ body {
 		--chart-3: 30 80% 55%;
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
+		--text-primary: 231 8% 82%;
 	}
 }
 

@@ -87,6 +87,7 @@ const config: Config = {
 				},
 				dark: "hsl(var(--text-primary))",
 				core: "hsl(var(--core-purple))",
+				lightBlue: "hsl(var(--light-blue))",
 			},
 			borderRadius: {
 				lg: "var(--radius)",

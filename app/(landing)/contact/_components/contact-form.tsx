@@ -46,7 +46,7 @@ const ContactForm = () => {
 				initial={{ opacity: 0, scale: 0.5 }}
 				animate={{ opacity: 1, scale: 1 }}
 				transition={{ duration: 0.5 }}
-				className="p-8">
+				className="p-4 lg:p-8">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<div className="grid gap-4 mb-3 md:grid-cols-1">
@@ -56,7 +56,11 @@ const ContactForm = () => {
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
-											<Input placeholder="Full Name" {...field} />
+											<Input
+												placeholder="Full Name"
+												{...field}
+												className="bg-lightBlue"
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -72,6 +76,7 @@ const ContactForm = () => {
 												type="email"
 												placeholder="Email Address"
 												{...field}
+												className="bg-lightBlue"
 											/>
 										</FormControl>
 										<FormMessage />
@@ -85,7 +90,7 @@ const ContactForm = () => {
 									<FormItem>
 										<FormControl>
 											<Textarea
-												className="min-h-40"
+												className="min-h-40 bg-lightBlue"
 												placeholder="Your Message"
 												{...field}
 											/>
@@ -97,7 +102,7 @@ const ContactForm = () => {
 						</div>
 						<div className="flex justify-center lg:justify-end pt-5">
 							<Button
-								className="w-50 px-10 py-4 text-xs text-white transition-all rounded-md hover:scale-105 bg-core"
+								className="w-full lg:max-w-[50%] px-10 py-4 text-xs text-white transition-all rounded-md hover:scale-105 bg-core"
 								type="submit"
 								disabled={loading}>
 								{loading ? (
