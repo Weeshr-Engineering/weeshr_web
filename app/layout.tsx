@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import Head from "next/head";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -48,34 +49,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
+      <GoogleTagManager gtmId="G-2W2JYJPBXZ" />
+      <GoogleAnalytics gaId="G-2W2JYJPBXZ" />
+
+      <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        {/* Add other fonts if necessary, using next/font/google */}
+        {/* Example for the Dancing Script font */}
         <link
           href="https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap"
           rel="stylesheet"
         />
-
-        {/* Google Tag (gtag.js) */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-2W2JYJPBXZ"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-2W2JYJPBXZ');
-            `,
-          }}
-        />
-      </Head>
+      </head>
       <body className={outfit.className}>
         {children}
         <Toaster position="bottom-right" reverseOrder={false} />
