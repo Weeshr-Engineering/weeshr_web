@@ -38,13 +38,13 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
             Payment Already Verified!
           </h2>
-          <p className="text-center mb-3 text-muted-foreground">
+          <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage || "This payment has already been verified."}
           </p>
           <Link href="https://weeshr.com/" passHref>
             <Button
               size={"customTet"}
-              className="g:mb-10 lg:my-2 md:my-9 max-w-72 bg-[#34389B] rounded-full"
+              className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
             >
               Go Home
             </Button>
@@ -55,7 +55,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   }
 
   if (isSuccess) {
-    // console.log("Displaying success page");
+
     return (
       <PaymentLayout>
         <div className="w-full pt-4 mb-12 h-full justify-center items-center flex flex-col">
@@ -70,7 +70,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
             Payment Successful
           </h2>
-          <p className="text-center mb-3 text-muted-foreground">
+          <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage ||
               `You have successfully contributed ${
                 firstName && lastName
@@ -79,8 +79,8 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               }`}
           </p>
           <Button
-             className="g:mb-10 lg:my-2 md:my-9 max-w-72 bg-[#34389B] rounded-full"
-                         >
+              className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
+              >
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
         </div>

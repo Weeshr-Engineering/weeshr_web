@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -14,12 +16,12 @@ export const metadata: Metadata = {
     url: "https://weeshr.com",
     images: [
       {
-        url: "https://res.cloudinary.com/drykej1am/image/upload/v1704585596/weeshr_website/scybremtt3coh9qnsj3v.png",
+        url: "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
         width: 800,
         height: 600,
       },
       {
-        url: "https://res.cloudinary.com/drykej1am/image/upload/v1704585596/weeshr_website/scybremtt3coh9qnsj3v.png",
+        url: "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
         width: 1800,
         height: 1600,
         alt: "Weeshr alt",
@@ -32,7 +34,7 @@ export const metadata: Metadata = {
     title: "Weeshr",
     description: "Make a Weesh",
     images: [
-      "https://res.cloudinary.com/drykej1am/image/upload/v1704585596/weeshr_website/scybremtt3coh9qnsj3v.png",
+      "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
     ],
   },
   other: {
@@ -47,6 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <GoogleTagManager gtmId="G-2W2JYJPBXZ" />
+      <GoogleAnalytics gaId="G-2W2JYJPBXZ" />
+
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
