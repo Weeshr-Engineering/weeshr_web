@@ -1,8 +1,3 @@
-// components/err-type-layout
-
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { ReactNode } from "react";
 import Header from "../_component/header_payment";
 import Footer from "../_component/footer_payment";

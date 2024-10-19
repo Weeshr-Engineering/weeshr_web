@@ -2,10 +2,10 @@ import React from "react";
 import Image from "next/image";
 
 // Define the type for social media links
-interface SocialMediaLink {
-  name: string;
-  url: string;
-  icon: string;
+interface socialMediaLinks {
+name: string;
+url: string;
+icon: string;
 }
 
 // You would typically define this array in a separate file or fetch it from an API

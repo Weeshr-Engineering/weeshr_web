@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { ButtonsCard } from "../ui/aceternity-buttons";
-import Link from "next/link";
 
 interface ButtonProps {
   svgIcon: React.ReactNode;
