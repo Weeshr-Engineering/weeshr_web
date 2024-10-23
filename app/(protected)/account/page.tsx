@@ -133,7 +133,7 @@ const HomePage: React.FC = () => {
      
     <WidthLayout narrow={true}>
       
-      <div className=" px-[0.5px]  pt-40 mx-auto text-black">
+      <div className=" px-[0.5px]  pt-40 mx-auto text-bodytext-foreground">
 
         {/* section1 */}
 
@@ -148,7 +148,7 @@ const HomePage: React.FC = () => {
 
         {/* section2 */}
 
-        <div className="flex flex-col md:flex-row w-full p-6 px-4 mt-16 rounded-lg bg-white/60 backdrop-blur-3xl">
+        <div className="flex flex-col md:flex-row w-full p-6 px-4 mt-16 rounded-lg bg-icon ">
           <div className="w-full md:w-1/2 px-4">
                       <Image
               alt="image"
@@ -168,8 +168,8 @@ const HomePage: React.FC = () => {
               Are about to delete your weeshr account
             </h5>
           
-          <div className="p-5 mt-4 bg-white rounded-lg">
-            <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-md">
+          <div className="p-5 mt-4 bg-background rounded-lg">
+            <div className="flex items-center justify-center w-10 h-10 bg-icon rounded-md">
               <Icon icon="hugeicons:alert-02" height={"30"} width={"30"} />
             </div>
             <h3 className="pt-3 pb-1 font-semibold text-h6">Disclaimer</h3>
@@ -209,12 +209,12 @@ const HomePage: React.FC = () => {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="px-3 py-1 my-2 bg-primary-foreground rounded-lg"
+                className="px-3 py-1 my-2 bg-background rounded-lg"
               >
                 <AccordionTrigger className="text-left ">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-left text-muted-foreground">
+                <AccordionContent className="text-left">
                   <p className="">{faq.answer}</p>
                 </AccordionContent>
               </AccordionItem>
