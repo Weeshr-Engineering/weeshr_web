@@ -1,4 +1,3 @@
-
 import { TailwindcssButtons } from "@/components/commons/tailwind-buttons";
 
 export const LandingPageSectionOne = () => {
@@ -21,8 +20,8 @@ export const LandingPageSectionOne = () => {
 
       <p className="mx-auto  max-w-2xl text-lg tracking-tight ">
         <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
-          Weeshr makes it easy for you to get the birthday gift you want and
-          deserve. It starts with a weesh!
+          Weeshr makes it easy for you to get the gift you want and deserve for
+          your celebrations and occasions.
         </span>
       </p>
 

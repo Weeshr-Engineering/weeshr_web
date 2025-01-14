@@ -54,8 +54,8 @@ const Footer: React.FC = () => {
             </a>
             <div className="mt-4 text-center md:mt-6 lg:max-w-md md:text-left">
               <p className="text-sm text-muted-foreground md:text-sm lg:text-sm">
-                Weeshr helps you collect your birthday gifts with the click of
-                one button from your friends, fans, and family!
+                Weeshr helps you collect your gifts with the click of one button
+                from your friends, fans, and family!
               </p>
             </div>
           </div>
