@@ -47,6 +47,9 @@ body {
     --primary: 240 5.9% 10%;
     --primary-foreground: 0 0% 98%;
     /* --primarypayment:  238 50% 41%; */
+    --bodytext-foreground:230 89% 7% ;
+    --icon: 222 100% 98% ;
+
 
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;

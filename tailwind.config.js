@@ -37,6 +37,8 @@ module.exports = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        icon: "hsl(var(--icon))",
+        "bodytext-foreground": "hsl(var(--bodytext-foreground))",
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "#02072196",
