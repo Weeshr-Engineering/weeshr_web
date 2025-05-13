@@ -12,7 +12,7 @@ const Header = ({ uaString }: { uaString?: string }) => {
   const [mounted, setMounted] = useState(false);
   const ua = useUserAgent(
     uaString ||
-      (typeof window !== "undefined" ? window.navigator.userAgent : "")
+    (typeof window !== "undefined" ? window.navigator.userAgent : "")
   );
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Header = ({ uaString }: { uaString?: string }) => {
   return (
     <div className="z-10 w-full max-w-5xl flex items-center justify-between font-mono text-sm min-h-20 px-2 pr-4 py-12 pb-10">
       <Image
-        src="https://res.cloudinary.com/dufimctfc/image/upload/v1726559017/logo-1_nmxrgj.svg"
+        src="/logo.svg"
         alt="Logo"
         className=" md:hidden"
         width={100}

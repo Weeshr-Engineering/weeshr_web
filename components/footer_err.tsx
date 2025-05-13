@@ -40,12 +40,12 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl mb-6 mx-4 md:mb-8 md:mx-16">
+    <footer className="mt-20 px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl mb-6 mx-4 md:mb-8 md:mx-16 ">
       <div className="flex flex-col items-center justify-between p-4 py-6 md:flex-row md:space-x-4 lg:space-x-6">
         <div className="flex flex-col items-center md:items-start">
           <a href="/" className="inline-flex items-center">
             <Image
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1723970335/Logo_klw83c.svg"
+              src="https://res.cloudinary.com/dufimctfc/image/upload/v1726559017/logo-1_nmxrgj.svg"
               alt="logo"
               width={90}
               height={80}

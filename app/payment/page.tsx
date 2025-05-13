@@ -28,6 +28,16 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     }
   };
 
+  const successImg = 'https://res.cloudinary.com/drykej1am/image/upload/v1746962436/weehser%20pay/GiftIllustration_ojatmt.png'
+  const errorImg = 'https://res.cloudinary.com/drykej1am/image/upload/v1746961505/weehser%20pay/Illustration_1_c0tedl.png'
+  const isAlreadyVerifiedImg = 'https://res.cloudinary.com/drykej1am/image/upload/v1746962824/weehser%20pay/approved_wk7jbo.png'
+
+  const [imgSrc, setImgSrc] = useState(isSuccess ? successImg : (isAlreadyVerified ? isAlreadyVerifiedImg : errorImg));
+
+  const setFallbackImage = (): void => {
+    setImgSrc('/logo.svg')
+  };
+
   if (isAlreadyVerified) {
     return (
       <ErrTypeLayout>
@@ -36,7 +46,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1727392613/10945899_4572989_edzbvh.svg"
+              onError={setFallbackImage}
+              src={imgSrc}
+              // src="https://res.cloudinary.com/drykej1am/image/upload/v1746962824/weehser%20pay/approved_wk7jbo.png"
               alt="Already Verified"
             />
           </div>
@@ -63,7 +75,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
+              // src="https://res.cloudinary.com/drykej1am/image/upload/v1746962436/weehser%20pay/GiftIllustration_ojatmt.png"
+              onError={setFallbackImage}
+              src={imgSrc}
               alt="Payment Successful"
             />
           </div>
@@ -72,10 +86,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           </h2>
           <p className="text-center mb-2 text-muted-foreground">
             {userMessage ||
-              `You have successfully contributed ${
-                firstName && lastName
-                  ? `towards ${firstName} ${lastName}’s weeshes`
-                  : "towards this weesh."
+              `You have successfully contributed ${firstName && lastName
+                ? `towards ${firstName} ${lastName}’s weeshes`
+                : "towards this weesh."
               }`}
           </p>
           <Button className="w-full md:my-9 max-w-72 bg-[#34389B] rounded-full">
@@ -85,7 +98,6 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
       </ErrTypeLayout>
     );
   } else {
-    console.log("Displaying failure page");
     return (
       <ErrTypeLayout>
         <div className="w-full pb-10 h-full justify-center items-center flex flex-col">
@@ -93,7 +105,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
+              // src="https://res.cloudinary.com/drykej1am/image/upload/v1746961505/weehser%20pay/Illustration_1_c0tedl.png"
+              onError={setFallbackImage}
+              src={imgSrc}
               alt="Payment Failed"
             />
           </div>
