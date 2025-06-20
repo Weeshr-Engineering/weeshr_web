@@ -4,6 +4,7 @@ import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -69,6 +70,19 @@ export default function RootLayout({
       <body className={outfit.className}>
         {children}
         <Toaster position="bottom-right" reverseOrder={false} />
+
+        {/* Ruut Chat Integration */}
+        <Script
+          id="ruut-chat-sdk"
+          strategy="lazyOnload"
+          src="https://app.ruut.chat/packs/js/sdk.js"
+          onLoad={() => {
+            window.ruutSDK?.run({
+              websiteToken: "RE18sLhczDqbdwg7zKKtdrVF",
+              baseUrl: "https://app.ruut.chat",
+            });
+          }}
+        />
       </body>
     </html>
   );
