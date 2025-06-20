@@ -4,6 +4,8 @@ import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
+import RuutChat from "@/components/commons/RuutChat";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -69,6 +71,9 @@ export default function RootLayout({
       <body className={outfit.className}>
         {children}
         <Toaster position="bottom-right" reverseOrder={false} />
+
+        {/* Ruut Chat Integration */}
+        <RuutChat />
       </body>
     </html>
   );
