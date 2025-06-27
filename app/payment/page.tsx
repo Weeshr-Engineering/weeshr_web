@@ -37,7 +37,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
       setSuccessImg('/logo.svg')
     } else if (val === 'failed') {
       setFailedImg('/logo.svg')
-    } else if ('verified') {
+    } else if (val === 'verified') {
       setVerifiedImg('/logo.svg')
     }
   };
