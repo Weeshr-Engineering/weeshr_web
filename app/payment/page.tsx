@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { PaymentLayout } from "./_component/payment-type-layout";
+import { verify } from "crypto";
 
 interface StatusMessageProps {
   isSuccess: boolean;
@@ -22,9 +23,22 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   firstName,
   lastName,
 }) => {
+  const [successImg, setSuccessImg] = useState('https://res.cloudinary.com/drykej1am/image/upload/v1746962436/weehser%20pay/GiftIllustration_ojatmt.png')
+  const [failedImg, setFailedImg] = useState('https://res.cloudinary.com/drykej1am/image/upload/v1746961505/weehser%20pay/Illustration_1_c0tedl.png')
+  const [verifiedImg, setVerifiedImg] = useState('https://res.cloudinary.com/drykej1am/image/upload/v1746962824/weehser%20pay/approved_wk7jbo.png')
   const handleClose = () => {
     if (window.parent) {
       window.parent.postMessage("closeIframe", "*");
+    }
+  };
+
+  const setFallbackImage = (val: 'success' | 'failed' | 'verified'): void => {
+    if (val === 'success') {
+      setSuccessImg('/logo.svg')
+    } else if (val === 'failed') {
+      setFailedImg('/logo.svg')
+    } else if (val === 'verified') {
+      setVerifiedImg('/logo.svg')
     }
   };
 
@@ -36,8 +50,10 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1727392613/10945899_4572989_edzbvh.svg"
+              src={verifiedImg}
               alt="Already Verified"
+              onError={() => setFallbackImage('verified')}
+              priority
             />
           </div>
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
@@ -68,8 +84,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1724481230/SuccessWeeshrIcon_yhlxpf.svg"
               alt="Payment Successful"
+              src={successImg}
+              onError={() => setFallbackImage('success')}
             />
           </div>
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
@@ -77,15 +94,14 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           </h2>
           <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage ||
-              `You have successfully contributed ${
-                firstName && lastName
-                  ? `towards ${firstName} ${lastName}’s weeshes`
-                  : "towards this weesh."
+              `You have successfully contributed ${firstName && lastName
+                ? `towards ${firstName} ${lastName}’s weeshes`
+                : "towards this weesh."
               }`}
           </p>
           <Button
-              className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
-              >
+            className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
+          >
             <Link href="https://weeshr.com/"> Go Home</Link>
           </Button>
         </div>
@@ -95,12 +111,13 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
     return (
       <PaymentLayout>
         <div className="w-full pt-4 mb-12 h-full justify-center items-center flex flex-col">
-        <div className="lg:mt-12 my-0 relative h-80 lg:h-96 w-4/5 md:w-3/5">
+          <div className="lg:mt-12 my-0 relative h-80 lg:h-96 w-4/5 md:w-3/5">
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
-              src="https://res.cloudinary.com/dufimctfc/image/upload/v1720680326/payment_failed_ro0qx3.svg"
               alt="Payment Failed"
+              src={failedImg}
+              onError={() => setFallbackImage('failed')}
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721] ">
