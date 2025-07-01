@@ -23,22 +23,9 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
   firstName,
   lastName,
 }) => {
-  const [successImg, setSuccessImg] = useState('https://res.cloudinary.com/drykej1am/image/upload/v1746962436/weehser%20pay/GiftIllustration_ojatmt.png')
-  const [failedImg, setFailedImg] = useState('https://res.cloudinary.com/drykej1am/image/upload/v1746961505/weehser%20pay/Illustration_1_c0tedl.png')
-  const [verifiedImg, setVerifiedImg] = useState('https://res.cloudinary.com/drykej1am/image/upload/v1746962824/weehser%20pay/approved_wk7jbo.png')
   const handleClose = () => {
     if (window.parent) {
       window.parent.postMessage("closeIframe", "*");
-    }
-  };
-
-  const setFallbackImage = (val: 'success' | 'failed' | 'verified'): void => {
-    if (val === 'success') {
-      setSuccessImg('/logo.svg')
-    } else if (val === 'failed') {
-      setFailedImg('/logo.svg')
-    } else if (val === 'verified') {
-      setVerifiedImg('/logo.svg')
     }
   };
 
@@ -50,9 +37,8 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
             <Image
               fill
               className="rounded-sm shadow-xs absolute object-contain"
-              src={verifiedImg}
+              src='/approved.png'
               alt="Already Verified"
-              onError={() => setFallbackImage('verified')}
               priority
             />
           </div>
@@ -85,8 +71,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               fill
               className="rounded-sm shadow-xs absolute object-contain"
               alt="Payment Successful"
-              src={successImg}
-              onError={() => setFallbackImage('success')}
+              src='/success.png'
             />
           </div>
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
@@ -116,8 +101,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               alt="Payment Failed"
-              src={failedImg}
-              onError={() => setFallbackImage('failed')}
+              src='/failed.png'
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721] ">
@@ -214,7 +198,7 @@ const StatusClient = () => {
         const responseData = await response.json();
 
         // console.log("Response Status: ", response.status);
-        // console.log("Response Data: ", responseData);
+        // console.log("Response Data: testing ");
 
         if (
           response.status === 200 &&
