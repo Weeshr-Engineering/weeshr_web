@@ -71,7 +71,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               fill
               className="rounded-sm shadow-xs absolute object-contain"
               alt="Payment Successful"
-              src='/success.png'
+              src='/success.svg'
             />
           </div>
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
@@ -101,7 +101,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               alt="Payment Failed"
-              src='/failed.png'
+              src='/failed.svg'
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721] ">
