@@ -48,7 +48,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage || "This payment has already been verified."}
           </p>
-          <Link href="https://weeshr.com/" passHref>
+          <Link href="https://onelink.to/3p5ge8/" passHref>
             <Button
               size={"customTet"}
               className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
@@ -87,7 +87,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <Button
             className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
           >
-            <Link href="https://weeshr.com/"> Go Home</Link>
+            <Link href="https://onelink.to/3p5ge8/"> Go Home</Link>
           </Button>
         </div>
       </PaymentLayout>
@@ -117,7 +117,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           >
             Retry Payment
           </Button>
-          <Link href="https://weeshr.com/" passHref>
+          <Link href="https://onelink.to/3p5ge8/" passHref>
             <Button
               variant="outline"
               size={"customTet"}
@@ -190,45 +190,45 @@ const StatusClient = () => {
     }
 
     const verifyPayment = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
-        );
+      // try {
+      //   const response = await fetch(
+      //     `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
+      //   );
 
-        const responseData = await response.json();
+      //   const responseData = await response.json();
 
-        // console.log("Response Status: ", response.status);
-        // console.log("Response Data: testing ");
+      //   // console.log("Response Status: ", response.status);
+      //   // console.log("Response Data: testing ");
 
-        if (
-          response.status === 200 &&
-          responseData.data?.data?.metadata?.user
-        ) {
-          const user = responseData.data.data.metadata.user;
+      //   if (
+      //     response.status === 200 &&
+      //     responseData.data?.data?.metadata?.user
+      //   ) {
+      //     const user = responseData.data.data.metadata.user;
 
-          const { firstName = "", lastName = "" } = user;
-          setFirstName(firstName);
-          setLastName(lastName);
+      //     const { firstName = "", lastName = "" } = user;
+      //     setFirstName(firstName);
+      //     setLastName(lastName);
 
-          setUserMessage(
-            `You have successfully contributed toward ${firstName} ${lastName}’s  Weeshes`
-          );
+      // setUserMessage(
+      //   `You have successfully contributed toward ${firstName} ${lastName}’s  Weeshes`
+      // );
 
-          setIsSuccess(true);
-        } else if (response.status === 422) {
-          setIsAlreadyVerified(true);
-          setUserMessage(
-            responseData.message || "This payment has already been verified."
-          );
-        } else {
-          setIsSuccess(false);
-        }
-      } catch (error) {
-        console.error("Error verifying payment: ", error);
-        setIsSuccess(false);
-      } finally {
-        setLoading(false);
-      }
+      // setIsSuccess(true);
+      //   } else if (response.status === 422) {
+      //     setIsAlreadyVerified(true);
+      //     setUserMessage(
+      //       responseData.message || "This payment has already been verified."
+      //     );
+      //   } else {
+      setIsSuccess(false);
+      //   }
+      // } catch (error) {
+      //   console.error("Error verifying payment: ", error);
+      //   setIsSuccess(false);
+      // } finally {
+      setLoading(false);
+      // }
     };
 
     verifyPayment();
