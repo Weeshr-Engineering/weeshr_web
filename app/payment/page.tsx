@@ -190,45 +190,42 @@ const StatusClient = () => {
     }
 
     const verifyPayment = async () => {
-      // try {
-      //   const response = await fetch(
-      //     `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
-      //   );
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`
+        );
 
-      //   const responseData = await response.json();
+        const responseData = await response.json();
 
-      //   // console.log("Response Status: ", response.status);
-      //   // console.log("Response Data: testing ");
+        if (
+          response.status === 200 &&
+          responseData.data?.data?.metadata?.user
+        ) {
+          const user = responseData.data.data.metadata.user;
 
-      //   if (
-      //     response.status === 200 &&
-      //     responseData.data?.data?.metadata?.user
-      //   ) {
-      //     const user = responseData.data.data.metadata.user;
+          const { firstName = "", lastName = "" } = user;
+          setFirstName(firstName);
+          setLastName(lastName);
 
-      //     const { firstName = "", lastName = "" } = user;
-      //     setFirstName(firstName);
-      //     setLastName(lastName);
+          setUserMessage(
+            `You have successfully contributed toward ${firstName} ${lastName}’s  Weeshes`
+          );
 
-      // setUserMessage(
-      //   `You have successfully contributed toward ${firstName} ${lastName}’s  Weeshes`
-      // );
-
-      // setIsSuccess(true);
-      //   } else if (response.status === 422) {
-      //     setIsAlreadyVerified(true);
-      //     setUserMessage(
-      //       responseData.message || "This payment has already been verified."
-      //     );
-      //   } else {
-      setIsSuccess(false);
-      //   }
-      // } catch (error) {
-      //   console.error("Error verifying payment: ", error);
-      //   setIsSuccess(false);
-      // } finally {
-      setLoading(false);
-      // }
+          setIsSuccess(true);
+        } else if (response.status === 422) {
+          setIsAlreadyVerified(true);
+          setUserMessage(
+            responseData.message || "This payment has already been verified."
+          );
+        } else {
+          setIsSuccess(false);
+        }
+      } catch (error) {
+        console.error("Error verifying payment: ", error);
+        setIsSuccess(false);
+      } finally {
+        setLoading(false);
+      }
     };
 
     verifyPayment();
