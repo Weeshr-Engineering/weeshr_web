@@ -48,7 +48,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <p className="text-center mb-5 md:mb-3  text-muted-foreground">
             {userMessage || "This payment has already been verified."}
           </p>
-          <Link href="https://weeshr.com/" passHref>
+          <Link href="https://onelink.to/3p5ge8/" passHref>
             <Button
               size={"customTet"}
               className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
@@ -71,7 +71,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               fill
               className="rounded-sm shadow-xs absolute object-contain"
               alt="Payment Successful"
-              src='/success.png'
+              src='/success.svg'
             />
           </div>
           <h2 className="text-2xl mb-1  w-full text-center text-[#020721]">
@@ -87,7 +87,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <Button
             className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
           >
-            <Link href="https://weeshr.com/"> Go Home</Link>
+            <Link href="https://onelink.to/3p5ge8/"> Go Home</Link>
           </Button>
         </div>
       </PaymentLayout>
@@ -101,7 +101,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               fill
               className="rounded-sm shadow-xs absolute object-contain bg-blend-overlay"
               alt="Payment Failed"
-              src='/failed.png'
+              src='/failed.svg'
             />
           </div>
           <h2 className="text-2xl mb-2 pt-10 w-full text-center text-[#020721] ">
@@ -117,7 +117,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           >
             Retry Payment
           </Button>
-          <Link href="https://weeshr.com/" passHref>
+          <Link href="https://onelink.to/3p5ge8/" passHref>
             <Button
               variant="outline"
               size={"customTet"}
@@ -196,9 +196,6 @@ const StatusClient = () => {
         );
 
         const responseData = await response.json();
-
-        // console.log("Response Status: ", response.status);
-        // console.log("Response Data: testing ");
 
         if (
           response.status === 200 &&
