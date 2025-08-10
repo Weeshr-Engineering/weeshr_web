@@ -53,7 +53,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               size={"customTet"}
               className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
             >
-              Go Home
+              Create Yours
             </Button>
           </Link>
         </div>
@@ -87,7 +87,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
           <Button
             className="md:my-4 lg:my-2  min-w-72 bg-[#34389B] rounded-full"
           >
-            <Link href="https://onelink.to/3p5ge8/"> Go Home</Link>
+            <Link href="https://onelink.to/3p5ge8/"> Create Yours</Link>
           </Button>
         </div>
       </PaymentLayout>
@@ -123,7 +123,7 @@ const StatusMessage: React.FC<StatusMessageProps> = ({
               size={"customTet"}
               className=" rounded-full border-[#020721] text-[#020721]"
             >
-              View Weeshes
+              Create Yours
             </Button>
           </Link>
         </div>
