@@ -20,14 +20,16 @@ import {
 export const FloatingNav = ({
   navItems,
   className,
+  showLoginButton = true, // ✅ new prop with default true
 }: {
   navItems: {
     name: string;
     link: string;
     icon?: JSX.Element;
-    disabled?: boolean; // Add disabled prop
+    disabled?: boolean;
   }[];
   className?: string;
+  showLoginButton?: boolean; // ✅ type definition
 }) => {
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
@@ -60,7 +62,6 @@ export const FloatingNav = ({
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number" && isScrollable) {
       let direction = current - scrollYProgress.getPrevious()!;
-
       setVisible(true);
     }
   });
@@ -98,7 +99,12 @@ export const FloatingNav = ({
             className
           )}
         >
-          <div className="flex gap-4 w-full  justify-between">
+          <div
+            className={cn(
+              "flex gap-4 w-full justify-between",
+              !showLoginButton && "px-4 py-1"
+            )}
+          >
             {navItems.map((navItem, idx) => (
               <Link
                 key={`link=${idx}`}
@@ -115,40 +121,43 @@ export const FloatingNav = ({
               </Link>
             ))}
 
-            {/* Disable Login and Account Buttons */}
-
-            {showLogout ? (
-              <button
-                onClick={handleLogout}
-                className={cn(
-                  "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
-                  "bg-red-100 text-red-800"
+            {/* ✅ Conditionally render login/account/logout buttons */}
+            {showLoginButton && (
+              <>
+                {showLogout ? (
+                  <button
+                    onClick={handleLogout}
+                    className={cn(
+                      "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
+                      "bg-red-100 text-red-800"
+                    )}
+                  >
+                    <span>Logout</span>
+                    <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
+                  </button>
+                ) : showAccount ? (
+                  <Link href="/account">
+                    <button
+                      className={cn(
+                        "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                      )}
+                    >
+                      <span>Account</span>
+                      <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                    </button>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleLogin}
+                    className={cn(
+                      "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                    )}
+                  >
+                    <span>Login</span>
+                    <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                  </button>
                 )}
-              >
-                <span>Logout</span>
-                <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
-              </button>
-            ) : showAccount ? (
-              <Link href="/account">
-                <button
-                  className={cn(
-                    "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
-                  )}
-                >
-                  <span>Account</span>
-                  <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                </button>
-              </Link>
-            ) : (
-              <button
-                onClick={handleLogin}
-                className={cn(
-                  "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
-                )}
-              >
-                <span>Login</span>
-                <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-              </button>
+              </>
             )}
           </div>
         </motion.div>

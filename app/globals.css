@@ -105,3 +105,9 @@ html {
 .text-h6 {
 	@apply text-base font-medium leading-relaxed tracking-wide lg:text-lg;
 }
+
+
+
+.bg-gradient-custom {
+  background-image: linear-gradient(to right, #0CC990 0%, #6A70FF 36%, #41C7D9 66%, #AEE219 100%);
+}
