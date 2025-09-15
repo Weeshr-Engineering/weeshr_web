@@ -6,9 +6,13 @@ export const navigationLinks = [
 ];
 
 export const marketplaceLinks = [
-  { name: "All", link: "/marketplace/all", disabled: false },
-  { name: "Food", link: "/marketplace/food", disabled: false }, // Disabled link
-  { name: "Fashion", link: "/marketplace/fashion", disabled: false }, // Disabled link
-  { name: "Gadget", link: "/marketplace/gadget", disabled: false }, // Disabled link
-  { name: "Lifestyle", link: "/marketplace/lifestyle", disabled: false }, // Disabled link
+  { name: "All", link: "/marketplace/categories/all", disabled: false },
+  { name: "Food", link: "/marketplace/categories/food", disabled: false }, // Disabled link
+  { name: "Fashion", link: "/marketplace/categories/fashion", disabled: false }, // Disabled link
+  { name: "Gadget", link: "/marketplace/categories/gadget", disabled: false }, // Disabled link
+  {
+    name: "Lifestyle",
+    link: "/marketplace/categories/lifestyle",
+    disabled: false,
+  }, // Disabled link
 ];

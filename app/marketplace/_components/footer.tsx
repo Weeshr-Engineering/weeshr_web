@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="w-full mt-auto pt-20 md:p-10 p-4">
+    <footer className="w-full mt-auto pt-20  p-4 md:pt-10">
       <div className="mx-auto flex items-center justify-between gap-6 px-4 py-6 flex-row sm:gap-0 sm:px-6 lg:px-8 reve">
         {/* Logo */}
         <div className="flex-shrink-0">

@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import TiltedCard from "./_components/tilted-card";
+import TiltedCard from "../_components/tilted-card";
 import { FlipWords } from "@/components/ui/flip-words";
 import { cn } from "@/lib/utils";
 
@@ -51,15 +51,14 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center p-6 max-h-max">
-      <div className="pt-10 md:pt-20 text-center">
+      <div className="pt-10 md:pt-32 text-center">
         <h1 className="mx-auto max-w-4xl text-3xl tracking-normal text-slate-900 sm:text-5xl font-normal">
           What would you like to{" "}
           <span
             className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-3xl sm:text-5xl inline-flex items-center"
             style={{ fontFamily: "Playwrite CU, sans-serif" }}
           >
-            {/* lock the FlipWords container height so it doesn’t push/pull surrounding text */}
-            <span className="inline-block h-[1.9em] overflow-hidden align-middle">
+            <span className="inline-block h-[1.9em] overflow-hidden">
               <FlipWords
                 words={[
                   "Send ?",
@@ -76,7 +75,7 @@ export default function Page() {
           </span>
         </h1>
 
-        <p className="mx-auto max-w-4xl text-lg tracking-tight text-center">
+        <p className="mx-auto max-w-4xl text-lg tracking-tight text-center pt-4">
           <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
             Speak to your person in their love language
           </span>
