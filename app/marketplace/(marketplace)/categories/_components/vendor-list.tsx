@@ -66,6 +66,8 @@ const VendorList: React.FC<VendorListProps> = ({ vendors }) => {
                 width={400}
                 height={240}
                 className="w-full h-40 object-cover"
+                loading="lazy"
+                quality={75}
               />
               <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm rounded-2xl px-2 py-1 flex gap-1.5">
                 <div className="w-3">

@@ -2,12 +2,11 @@
 
 import type { SpringOptions } from "motion/react";
 import { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring } from "motion/react";
+import { motion, useSpring } from "motion/react";
 import "./TiltedCard.css";
 
 interface TiltedCardProps {
   children: React.ReactNode;
-  containerHeight?: React.CSSProperties["height"];
   containerWidth?: React.CSSProperties["width"];
   scaleOnHover?: number;
   rotateAmplitude?: number;
@@ -21,7 +20,6 @@ const springValues: SpringOptions = {
 
 export default function TiltedCard({
   children,
-  containerHeight = "300px",
   containerWidth = "100%",
   scaleOnHover = 1.05,
   rotateAmplitude = 14,
@@ -52,7 +50,6 @@ export default function TiltedCard({
     rotateX.set(rotationX);
     rotateY.set(rotationY);
 
-    // update glare
     setGlarePos({
       x: ((e.clientX - rect.left) / rect.width) * 100,
       y: ((e.clientY - rect.top) / rect.height) * 100,
@@ -73,8 +70,8 @@ export default function TiltedCard({
   if (isMobile) {
     return (
       <div
-        className="tilted-card-figure"
-        style={{ height: containerHeight, width: containerWidth }}
+        className="tilted-card-figure h-[300px] "
+        style={{ width: containerWidth }}
       >
         {children}
       </div>
@@ -84,8 +81,8 @@ export default function TiltedCard({
   return (
     <motion.figure
       ref={ref}
-      className="tilted-card-figure relative"
-      style={{ height: containerHeight, width: containerWidth }}
+      className="tilted-card-figure relative h-[300px] lg:h-[400px]"
+      style={{ width: containerWidth }}
       onMouseMove={handleMouse}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

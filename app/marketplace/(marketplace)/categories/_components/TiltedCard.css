@@ -10,11 +10,10 @@
   transition: box-shadow 0.2s ease;
 }
 
-
 .tilted-card-figure {
   position: relative;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   perspective: 800px;
   display: flex;
   flex-direction: column;

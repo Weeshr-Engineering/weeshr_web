@@ -1,122 +1,134 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
-import TiltedCard from "../_components/tilted-card";
-import { FlipWords } from "@/components/ui/flip-words";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { Icon } from "@iconify/react";
+import WidthLayout from "@/components/commons/width-layout";
+import VendorList from "../_components/vendor-list";
+import { vendors_fashion } from "@/lib/constants/vendors";
 
-const categories = [
-  {
-    title: "Food",
-    image:
-      "https://res.cloudinary.com/drykej1am/image/upload/v1757806163/weeshr-marketplace/food_c2n9cf.png",
-    color: "bg-[#C6F4EB]",
-  },
-  {
-    title: "Fashion",
-    image:
-      "https://res.cloudinary.com/drykej1am/image/upload/v1757806164/weeshr-marketplace/fashion_hl0xe1.png",
-    color: "bg-[#DCDEFF]",
-  },
-  {
-    title: "Gadgets",
-    image:
-      "https://res.cloudinary.com/drykej1am/image/upload/v1757806163/weeshr-marketplace/gadget_rzmwyw.png",
-    color: "bg-[#E9F4D1]",
-  },
-  {
-    title: "Lifestyle",
-    image:
-      "https://res.cloudinary.com/drykej1am/image/upload/v1757806163/weeshr-marketplace/style_nqxqv7.png",
-    color: "bg-[#C6EDF6]",
-  },
-];
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const nameParam = searchParams.get("name");
-  const activeCategory = categories.find(
-    (cat) => cat.title.toLowerCase() === nameParam?.toLowerCase()
-  );
+  const [receiverName, setReceiverName] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const handleClick = (title: string) => {
-    router.push(
-      `/marketplace/categories/${title.toLowerCase()}?name=${nameParam}`
-    );
+  const nameParam = searchParams.get("name");
+
+  // Redirect if no name
+  useEffect(() => {
+    if (!nameParam) {
+      router.replace("/marketplace");
+    }
+  }, [nameParam, router]);
+
+  // 🚫 Do not render anything if no name
+  if (!nameParam) {
+    return null;
+  }
+
+  // Capitalize the name
+  const displayName = nameParam.charAt(0).toUpperCase() + nameParam.slice(1);
+
+  // Handle submit
+  const handleSubmit = () => {
+    if (receiverName.trim().length > 0) {
+      router.push(
+        `/marketplace/categories/fashion?name=${encodeURIComponent(
+          receiverName
+        )}`
+      );
+      setOpen(false); // ✅ close dialog after submit
+    }
   };
 
   return (
-    <div className="flex flex-col items-center p-6 max-h-max">
-      <div className="pt-10 md:pt-32 text-center">
-        <h1 className="mx-auto max-w-4xl text-3xl tracking-normal text-slate-900 sm:text-5xl font-normal">
-          What would you like to{" "}
-          <span
-            className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-3xl sm:text-5xl inline-flex items-center"
-            style={{ fontFamily: "Playwrite CU, sans-serif" }}
-          >
-            <span className="inline-block h-[1.9em] overflow-hidden">
-              <FlipWords
-                words={[
-                  "Send ?",
-                  "gift ?",
-                  "share ?",
-                  "treat ?",
-                  "celebrate ?",
-                  "appreciate ?",
-                  "delight?",
-                ]}
-                className="text-[#0CC990] mt-4"
-              />
-            </span>
-          </span>
-        </h1>
+    <div className="flex flex-col">
+      <WidthLayout>
+        <div className="text-left text-4xl p-6">Fashion</div>
 
-        <p className="mx-auto max-w-4xl text-lg tracking-tight text-center pt-4">
-          <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
-            Speak to your person in their love language
-          </span>
-        </p>
-      </div>
+        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6">
+          <div className="pl-4">
+            <AlertDialog open={open} onOpenChange={setOpen}>
+              <AlertDialogTrigger asChild>
+                <button className="flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 p-2 rounded-lg cursor-pointer">
+                  <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-6">
+                    <Icon icon="lsicon:switch-outline" />
+                  </div>
+                  <span>Change receiver</span>
+                </button>
+              </AlertDialogTrigger>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl pt-14 md:pt-10">
-        {categories.map((cat) => (
-          <TiltedCard key={cat.title}>
-            <Card
-              onClick={() => handleClick(cat.title)}
-              className={cn(
-                "rounded-3xl overflow-hidden shadow-lg transition cursor-pointer border-none relative h-80 pointer-events-auto",
-                activeCategory?.title === cat.title
-                  ? "ring-4 ring-[#0CC990]"
-                  : ""
-              )}
-            >
-              {/* Background Image */}
-              <Image
-                src={cat.image}
-                alt={cat.title}
-                fill
-                className="object-cover z-0 pointer-events-none"
-                priority
-              />
+              <AlertDialogContent className="border-none bg-transparent shadow-none flex items-center justify-center">
+                <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none">
+                  <CardHeader className="px-5 py-4">
+                    <CardTitle className="text-xl text-primary text-left p-0">
+                      <span className="relative text-primary pr-1 font-normal">
+                        Who would you like to
+                        <span
+                          className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl sm:text-xl"
+                          style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                        >
+                          gift?
+                        </span>
+                      </span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-1 rounded-xl border-none">
+                    <PlaceholdersAndVanishInput
+                      placeholders={[
+                        "Enter receiver's name",
+                        "Gift someone special 🎁",
+                        "Type a friend's name...",
+                        "Who’s the lucky person ? ✨",
+                        "Surprise someone today 🎉",
+                        "Add a name to start gifting",
+                        "Search for a loved one ❤️",
+                        "Who deserves a treat ? 🍫",
+                        "Enter a colleague’s name 👔",
+                        "Make someone smile 😊",
+                      ]}
+                      onChange={(e) => setReceiverName(e.target.value)}
+                      onSubmit={handleSubmit} // ✅ will redirect + close dialog
+                    />
+                  </CardContent>
+                </Card>
+              </AlertDialogContent>
+            </AlertDialog>
 
-              {/* Colored panel at the bottom */}
-              <div
-                className={`${cat.color} absolute bottom-0 left-0 right-0 h-24 flex items-center rounded-r-3xl z-20 pointer-events-none`}
-              >
-                <CardHeader className="p-4">
-                  <CardTitle className="text-left text-2xl font-light">
-                    {cat.title}
-                  </CardTitle>
-                </CardHeader>
-              </div>
-            </Card>
-          </TiltedCard>
-        ))}
-      </div>
+            <div>
+              <span className="inline-block text-primary text-4xl">
+                What would{" "}
+                <span className="relative whitespace-nowrap text-blue-600 pr-1">
+                  <span
+                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl font-medium -ml-1.5"
+                    style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                  >
+                    {displayName}
+                  </span>
+                </span>
+                <span className="inline-block pl-1"> like ?</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="text-muted-foreground pl-4 pt-6">
+            Restaurant Options
+          </div>
+          <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
+            <VendorList vendors={vendors_fashion} />
+          </div>
+        </div>
+      </WidthLayout>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import WidthLayout from "@/components/commons/width-layout";
 import VendorList from "../_components/vendor-list";
-import { vendors } from "@/lib/constants/vendors";
+import { vendors_food } from "@/lib/constants/vendors";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
@@ -123,7 +123,7 @@ export default function Page() {
             Restaurant Options
           </div>
           <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
-            <VendorList vendors={vendors} />
+            <VendorList vendors={vendors_food} />
           </div>
         </div>
       </WidthLayout>

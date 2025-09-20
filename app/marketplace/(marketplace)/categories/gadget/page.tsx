@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import WidthLayout from "@/components/commons/width-layout";
 import VendorList from "../_components/vendor-list";
-import { vendors_lifestyle } from "@/lib/constants/vendors";
+import { vendors_gadget } from "@/lib/constants/vendors";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
@@ -43,7 +43,7 @@ export default function Page() {
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
       router.push(
-        `/marketplace/categories/lifestyle?name=${encodeURIComponent(
+        `/marketplace/categories/gadget?name=${encodeURIComponent(
           receiverName
         )}`
       );
@@ -54,7 +54,7 @@ export default function Page() {
   return (
     <div className="flex flex-col">
       <WidthLayout>
-        <div className="text-left text-4xl p-6">Lifestyle</div>
+        <div className="text-left text-4xl p-6">Gadget</div>
 
         <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6">
           <div className="pl-4">
@@ -125,7 +125,7 @@ export default function Page() {
             Restaurant Options
           </div>
           <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
-            <VendorList vendors={vendors_lifestyle} />
+            <VendorList vendors={vendors_gadget} />
           </div>
         </div>
       </WidthLayout>

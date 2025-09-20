@@ -111,8 +111,8 @@ export const FloatingNav = ({
                 href={navItem.link}
                 className={cn(
                   "relative items-center flex space-x-1 ",
-                  pathname === navItem.link
-                    ? "text-black"
+                  pathname === navItem.link.split("?")[0]
+                    ? "text-black font-semibold" // active style
                     : "text-neutral-500 hover:text-black"
                 )}
               >
