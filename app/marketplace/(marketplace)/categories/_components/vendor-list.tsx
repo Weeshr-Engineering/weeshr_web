@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
@@ -27,6 +28,19 @@ interface VendorListProps {
 
 const VendorList: React.FC<VendorListProps> = ({ vendors }) => {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nameParam = searchParams.get("name"); // e.g. "jk"
+
+  // helper to slugify vendor names
+  function slugify(str: string) {
+    return str.toLowerCase().replace(/\s+/g, "-"); // "Joker Store" -> "joker-store"
+  }
+
+  function goToVendor(vendorName: string) {
+    const slug = slugify(vendorName);
+    router.push(`/marketplace/categories/food/${slug}?name=${nameParam}`);
+  }
 
   function sentenceCase(str?: string) {
     if (!str) return "";
@@ -36,7 +50,7 @@ const VendorList: React.FC<VendorListProps> = ({ vendors }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 500); // skeleton for ~0.8s
+    }, 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -116,14 +130,16 @@ const VendorList: React.FC<VendorListProps> = ({ vendors }) => {
 
                 <div className="flex">
                   <Button
-                    variant={"ghost"}
+                    variant="ghost"
+                    onClick={() => goToVendor(vendor.name)}
                     className="px-2 py-2 text-muted-foreground hover:underline hover:decoration-text-foreground hover:bg-transparent transition-colors text-sm font-medium rounded-2xl"
                   >
                     Send
                   </Button>
                   <Button
-                    size={"xl2"}
-                    variant={"marketplace"}
+                    size="xl2"
+                    variant="marketplace"
+                    onClick={() => goToVendor(vendor.name)}
                     className="transition-colors text-sm font-medium flex items-center gap-1 bg-marketplace-primary hover:bg-marketplace-primary/60"
                   >
                     <span>
