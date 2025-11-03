@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+import CategoryDisplayList from "../_components/category-display-list";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -125,7 +126,8 @@ export default function Page() {
             Restaurant Options
           </div>
           <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
-            <VendorList vendors={vendors_fashion} />
+            {/* <VendorList vendors={vendors_fashion} /> */}
+            <CategoryDisplayList />
           </div>
         </div>
       </WidthLayout>

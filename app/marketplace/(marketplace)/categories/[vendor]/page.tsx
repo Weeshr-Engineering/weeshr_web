@@ -4,8 +4,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import WidthLayout from "@/components/commons/width-layout";
 import VendorList from "../_components/vendor-list";
-import { vendors_food } from "@/lib/constants/vendors";
 import ChangeReceiverDialog from "../_components/change-receiver-dialog";
+import { Vendor, VendorService } from "@/service/vendor.service";
+
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -13,31 +14,62 @@ export default function Page() {
 
   const [receiverName, setReceiverName] = useState("");
   const [open, setOpen] = useState(false);
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const nameParam = searchParams.get("name");
+  const categoryId = searchParams.get("id"); // Get category ID from URL
 
-  // Redirect if no name
+  // Fetch vendors when categoryId is available
   useEffect(() => {
-    if (!nameParam) {
+    const fetchVendors = async () => {
+      if (!categoryId) {
+        console.error("No category ID found in URL");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const vendorsData = await VendorService.getVendorsByCategory(
+          categoryId
+        );
+        setVendors(vendorsData);
+      } catch (error) {
+        console.error("Failed to fetch vendors:", error);
+        setVendors([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVendors();
+  }, [categoryId]);
+
+  // Redirect if no name or category ID
+  useEffect(() => {
+    if (!nameParam || !categoryId) {
       router.replace("/marketplace");
     }
-  }, [nameParam, router]);
+  }, [nameParam, categoryId, router]);
 
-  // 🚫 Do not render anything if no name
-  if (!nameParam) {
+  // 🚫 Do not render anything if no name or category ID
+  if (!nameParam || !categoryId) {
     return null;
   }
 
   // Capitalize the name
   const displayName = nameParam.charAt(0).toUpperCase() + nameParam.slice(1);
 
-  // Handle submit
+  // Handle submit - preserve category ID when changing receiver
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
       router.push(
-        `/marketplace/categories/food?name=${encodeURIComponent(receiverName)}`
+        `/marketplace/categories/food?id=${categoryId}&name=${encodeURIComponent(
+          receiverName
+        )}`
       );
-      setOpen(false); // ✅ close dialog after submit
+      setOpen(false);
     }
   };
 
@@ -76,7 +108,7 @@ export default function Page() {
             Restaurant Options
           </div>
           <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
-            <VendorList vendors={vendors_food} />
+            <VendorList vendors={vendors} loading={loading} />
           </div>
         </div>
       </WidthLayout>

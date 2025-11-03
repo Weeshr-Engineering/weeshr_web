@@ -1,13 +1,17 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Icon } from "@iconify/react";
+import { Product, ProductService } from "@/service/product.service";
+
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MenuList } from "../../_components/menu-list";
-import { GiftBasket } from "../../_components/gift-basket";
-import { menu_food } from "@/lib/constants/menu-items";
 import WidthLayout from "@/components/commons/width-layout";
-import { Icon } from "@iconify/react";
+import { MenuList } from "../../_components/menu-list";
+import { BasketItem } from "@/lib/BasketItem";
 import ChangeReceiverDialog from "../../_components/change-receiver-dialog";
+import { GiftBasket } from "../../_components/gift-basket";
 
 export default function VendorPage() {
   const { vendorName } = useParams();
@@ -16,18 +20,39 @@ export default function VendorPage() {
 
   const [receiverName, setReceiverName] = useState("");
   const [open, setOpen] = useState(false);
+  const [basket, setBasket] = useState<BasketItem[]>([]); // Use shared interface
+  const [products, setProducts] = useState<Product[]>([]);
 
   const nameParam = searchParams.get("name");
+  const categoryId = searchParams.get("categoryId");
+  const vendorId = searchParams.get("vendorId");
 
-  // Redirect if no name
+  // Fetch products when vendorId changes
   useEffect(() => {
-    if (!nameParam) {
+    const fetchProducts = async () => {
+      if (!vendorId) return;
+
+      try {
+        const productsData = await ProductService.getProductsByVendor(vendorId);
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      }
+    };
+
+    fetchProducts();
+  }, [vendorId]);
+
+  // Redirect if no name or vendorId
+  useEffect(() => {
+    if (!nameParam || !vendorId) {
       router.replace("/marketplace");
     }
-  }, [nameParam, router]);
+  }, [nameParam, vendorId, router]);
 
-  // Do not render anything if no name
-  if (!nameParam) {
+  // Do not render anything if no name or vendorId
+  if (!nameParam || !vendorId) {
     return null;
   }
 
@@ -38,18 +63,15 @@ export default function VendorPage() {
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
       router.push(
-        `/marketplace/categories/${vendorName}?name=${encodeURIComponent(
+        `/marketplace/categories/food/${vendorName}?name=${encodeURIComponent(
           receiverName
-        )}`
+        )}&categoryId=${categoryId}&vendorId=${vendorId}`
       );
-      setOpen(false); // Close dialog after submit
+      setOpen(false);
     }
   };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [basket, setBasket] = useState<{ id: number; qty: number }[]>([]);
-
-  function addToBasket(id: number) {
+  function addToBasket(id: string) {
     setBasket((prev) => {
       const exists = prev.find((i) => i.id === id);
       if (exists) {
@@ -59,10 +81,11 @@ export default function VendorPage() {
     });
   }
 
+  // Calculate actual basket total based on product prices
   function getBasketTotal() {
-    return basket.reduce((sum, item) => {
-      const product = menu_food.find((m) => m.id === item.id);
-      return sum + (product?.price ?? 0) * item.qty;
+    return basket.reduce((sum, basketItem) => {
+      const product = products.find((p) => p.id === basketItem.id);
+      return sum + (product?.price || 0) * basketItem.qty;
     }, 0);
   }
 
@@ -82,8 +105,7 @@ export default function VendorPage() {
         </div>
 
         {/* Receiver Section */}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 md:gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 mt-6">
           <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6 w-full col-span-2">
             <div className="pl-4">
               <ChangeReceiverDialog
@@ -114,14 +136,14 @@ export default function VendorPage() {
               Restaurant Menu
             </div>
             <div className="md:max-h-[600px] max-h-96 overflow-y-auto mt-0 pr-2">
-              <MenuList menu={menu_food} addToBasket={addToBasket} />
+              <MenuList vendorId={vendorId} addToBasket={addToBasket} />
             </div>
           </div>
 
           <div className="mt-6 md:mt-0 ">
             <GiftBasket
               basket={basket}
-              menu={menu_food}
+              products={products}
               getBasketTotal={getBasketTotal}
               setBasket={setBasket}
             />

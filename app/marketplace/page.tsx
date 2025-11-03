@@ -21,7 +21,6 @@ export default function Home() {
     // Encode receiver name for URL safety
     const encodedName = encodeURIComponent(receiverName.trim());
     router.push(`marketplace/categories?name=${encodedName}`);
-
   };
 
   return (

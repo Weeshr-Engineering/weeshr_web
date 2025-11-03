@@ -9,18 +9,12 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 
 export const FloatingNav = ({
   navItems,
   className,
-  showLoginButton = true, // ✅ new prop with default true
+  showLoginButton = true,
 }: {
   navItems: {
     name: string;
@@ -29,7 +23,7 @@ export const FloatingNav = ({
     disabled?: boolean;
   }[];
   className?: string;
-  showLoginButton?: boolean; // ✅ type definition
+  showLoginButton?: boolean;
 }) => {
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
@@ -79,9 +73,37 @@ export const FloatingNav = ({
   const showLogout = pathname === "/account";
   const showAccount = isAuthenticated && pathname !== "/account";
 
+  // Improved active link detection that handles nested routes
+  const isLinkActive = (link: string) => {
+    const baseLink = link.split("?")[0]; // Remove query params for comparison
+    const currentPath = pathname;
+
+    // Special cases for marketplace category routes
+    if (baseLink === "/marketplace/categories/food") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+    if (baseLink === "/marketplace/categories/fashion") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+    if (baseLink === "/marketplace/categories/gadget") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+    if (baseLink === "/marketplace/categories/lifestyle") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+
+    // For "All" category, only match exact path (not subroutes)
+    if (baseLink === "/marketplace/categories") {
+      return currentPath === baseLink;
+    }
+
+    // Default exact match for other links
+    return currentPath === baseLink;
+  };
+
   return (
     <AnimatePresence mode="wait">
-      <div className=" justify-around hidden lg:flex">
+      <div className="justify-around hidden lg:flex">
         <motion.div
           initial={{
             opacity: 1,
@@ -95,7 +117,7 @@ export const FloatingNav = ({
             duration: 0.2,
           }}
           className={cn(
-            "flex md:w-[40%] max-w-md  fixed top-10 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-black bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-6 py-2 items-center justify-between space-x-4",
+            "flex md:w-[40%] max-w-md fixed top-10 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-black bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-6 py-2 items-center justify-between space-x-4",
             className
           )}
         >
@@ -110,8 +132,8 @@ export const FloatingNav = ({
                 key={`link=${idx}`}
                 href={navItem.link}
                 className={cn(
-                  "relative items-center flex space-x-1 ",
-                  pathname === navItem.link.split("?")[0]
+                  "relative items-center flex space-x-1 transition-colors duration-200",
+                  isLinkActive(navItem.link)
                     ? "text-black font-semibold" // active style
                     : "text-neutral-500 hover:text-black"
                 )}
@@ -121,7 +143,7 @@ export const FloatingNav = ({
               </Link>
             ))}
 
-            {/* ✅ Conditionally render login/account/logout buttons */}
+            {/* Conditionally render login/account/logout buttons */}
             {showLoginButton && (
               <>
                 {showLogout ? (

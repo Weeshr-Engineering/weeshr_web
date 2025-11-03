@@ -45,6 +45,10 @@ const config: Config = {
           "linear-gradient(to right, #0CC990 0%, #6A70FF 36%, #41C7D9 66%, #AEE219 100%)",
       },
       colors: {
+        "cat-food": "#C6F4EB",
+        "cat-fashion": "#DCDEFF",
+        "cat-gadget": "#E9F4D1",
+        "cat-lifestyle": "#C6EDF6",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         marketplace: {

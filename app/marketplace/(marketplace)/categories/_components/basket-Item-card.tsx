@@ -2,27 +2,22 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
-interface BasketItem {
-  id: number;
-  qty: number;
-}
-
-interface MenuItem {
-  id: number;
-  name: string;
-  price: number;
-  img: string;
-}
+import { Product } from "@/service/product.service";
+import { BasketItem } from "@/lib/BasketItem";
 
 interface BasketItemCardProps {
   item: BasketItem;
-  menu: MenuItem[];
+  products: Product[];
   setBasket: React.Dispatch<React.SetStateAction<BasketItem[]>>;
 }
 
-export function BasketItemCard({ item, menu, setBasket }: BasketItemCardProps) {
-  const product = menu.find((m) => m.id === item.id);
+export function BasketItemCard({
+  item,
+  products,
+  setBasket,
+}: BasketItemCardProps) {
+  const product = products.find((p) => p.id === item.id);
+
   if (!product) return null;
 
   // Handle increment
@@ -46,11 +41,17 @@ export function BasketItemCard({ item, menu, setBasket }: BasketItemCardProps) {
       {/* Image */}
       <div className="relative w-[60px] h-[60px] flex-shrink-0">
         <Image
-          src={product.img}
+          src={product.image}
           alt={product.name}
           fill
           className="object-cover rounded-lg"
           sizes="100px"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = `/api/placeholder/60/60?text=${encodeURIComponent(
+              product.name
+            )}`;
+          }}
         />
       </div>
 

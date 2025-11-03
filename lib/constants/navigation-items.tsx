@@ -6,7 +6,7 @@ export const navigationLinks = [
 ];
 
 export const marketplaceLinks = [
-  { name: "All", link: "/marketplace/categories/all", disabled: false },
+  { name: "All", link: "/marketplace/categories", disabled: false },
   { name: "Food", link: "/marketplace/categories/food", disabled: false }, // Disabled link
   { name: "Fashion", link: "/marketplace/categories/fashion", disabled: false }, // Disabled link
   { name: "Gadget", link: "/marketplace/categories/gadget", disabled: false }, // Disabled link

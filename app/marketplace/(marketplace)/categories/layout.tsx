@@ -1,7 +1,7 @@
 "use client";
 
 import { FloatingNav } from "@/components/commons/floating-navbar";
-import Footer from "../../../marketplace/_components/footer";
+import Footer from "@/components/commons/footer-primary";
 import HeaderMobile from "@/components/commons/header-mobile";
 import WidthLayout from "@/components/commons/width-layout";
 import { marketplaceLinks } from "@/lib/constants/navigation-items";
@@ -15,11 +15,21 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   const queryString = searchParams.toString();
   const querySuffix = queryString ? `?${queryString}` : "";
 
-  // rebuild nav links with query
-  const navWithQuery = marketplaceLinks.map((item) => ({
-    ...item,
-    link: `${item.link}${querySuffix}`,
-  }));
+  // rebuild nav links with query - but only for current category
+  const navWithQuery = marketplaceLinks.map((item) => {
+    // Only add query params to the current active category to avoid conflicts
+    const baseLink = item.link.split("?")[0];
+    const isActiveCategory =
+      pathname === baseLink ||
+      pathname.startsWith(`${baseLink}/`) ||
+      (baseLink === "/marketplace/categories/food" &&
+        pathname.includes("/food"));
+
+    return {
+      ...item,
+      link: isActiveCategory ? `${item.link}${querySuffix}` : item.link,
+    };
+  });
 
   return (
     <main

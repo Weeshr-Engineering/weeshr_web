@@ -5,58 +5,52 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
 import EmptyBasket from "./empty-basket";
 import { BasketItemCard } from "./basket-Item-card";
-
-interface MenuItem {
-  id: number;
-  name: string;
-  price: number;
-  img: string;
-}
-
-interface BasketItem {
-  id: number;
-  qty: number;
-}
+import { Product } from "@/service/product.service";
+import { BasketItem } from "@/lib/BasketItem";
 
 interface GiftBasketProps {
   basket: BasketItem[];
-  menu: MenuItem[];
+  products: Product[];
   getBasketTotal: () => number;
-  setBasket: React.Dispatch<React.SetStateAction<BasketItem[]>>; // Add setBasket to props
+  setBasket: React.Dispatch<React.SetStateAction<BasketItem[]>>;
 }
 
 export function GiftBasket({
   basket,
-  menu,
+  products,
   getBasketTotal,
   setBasket,
 }: GiftBasketProps) {
+  // Clear all items from basket
+  const clearBasket = () => {
+    setBasket([]);
+  };
+
   return (
     <div className="border-0 rounded-2xl bg-background ">
       <h3 className="font-normal pt-6 pb-2 w-full text-center">Gift basket</h3>
-      <div className="min-h-[300px] p-4 ">
+      <div className="min-h-[450px] p-4 ">
         {basket.length === 0 ? (
           <EmptyBasket />
         ) : (
-          <div className="space-y-1 max-h-[360px] overflow-y-auto">
-            {" "}
-            {/* Replace ul with div for card layout */}
+          <div className="space-y-1 max-h-[420px] overflow-y-auto">
             <div className="flex justify-between px-1.5 text-xs items-center">
-              <h5 className="text-sm">Dang!</h5>
+              <h5 className="text-sm">Your Items</h5>
 
               <Button
                 variant="ghost"
                 className="text-[#6A70FF] text-xs px-2 py-1 h-6 rounded-3xl"
-                aria-label="Delete items from basket"
+                aria-label="Delete all items from basket"
+                onClick={clearBasket}
               >
-                Delete
+                Clear All
               </Button>
             </div>
             {basket.map((b) => (
               <BasketItemCard
                 key={b.id}
                 item={b}
-                menu={menu}
+                products={products}
                 setBasket={setBasket}
               />
             ))}
@@ -66,8 +60,10 @@ export function GiftBasket({
 
       <div className="border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex flex-row justify-between items-center px-4 py-3">
         <div>
-          <h6 className="text-muted-foreground text-xs">Your basket</h6>₦{" "}
-          {getBasketTotal().toLocaleString()}
+          <h6 className="text-muted-foreground text-xs">Your basket</h6>
+          <span className="font-semibold">
+            ₦ {getBasketTotal().toLocaleString()}
+          </span>
         </div>
         <Button
           variant={"default"}
