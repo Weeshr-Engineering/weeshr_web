@@ -9,13 +9,14 @@ export function PlaceholdersAndVanishInput({
   placeholders,
   onChange,
   onSubmit,
+  value: externalValue, // 👈 receive from parent
 }: {
   placeholders: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  value?: string; // 👈 optional external value
 }) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
-
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startAnimation = () => {
     intervalRef.current = setInterval(() => {
@@ -172,6 +173,13 @@ export function PlaceholdersAndVanishInput({
     vanishAndSubmit();
     onSubmit && onSubmit(e);
   };
+
+  useEffect(() => {
+    if (externalValue !== undefined) {
+      setValue(externalValue);
+    }
+  }, [externalValue]);
+
 
   return (
     <form

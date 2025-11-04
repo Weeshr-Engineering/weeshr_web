@@ -1,16 +1,28 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import WidthLayout from "@/components/commons/width-layout";
 import VendorList from "../_components/vendor-list";
 import ChangeReceiverDialog from "../_components/change-receiver-dialog";
 import { Vendor, VendorService } from "@/service/vendor.service";
 
+// Define category labels
+const categoryLabels: Record<string, string> = {
+  food: "Restaurant Options",
+  fashion: "Fashion Stores",
+  gadget: "Gadget Stores",
+  lifestyle: "Lifestyle Stores",
+  default: "Store Options",
+};
 
 export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const params = useParams(); // Get all params
+
+  // Use 'vendor' instead of 'categoryName' to match your folder [vendor]
+  const categoryName = params.vendor as string;
 
   const [receiverName, setReceiverName] = useState("");
   const [open, setOpen] = useState(false);
@@ -18,7 +30,11 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const nameParam = searchParams.get("name");
-  const categoryId = searchParams.get("id"); // Get category ID from URL
+  const categoryId = searchParams.get("id");
+
+  // Get the display label for the category
+  const categoryLabel =
+    categoryLabels[categoryName as string] || categoryLabels.default;
 
   // Fetch vendors when categoryId is available
   useEffect(() => {
@@ -54,7 +70,7 @@ export default function Page() {
   }, [nameParam, categoryId, router]);
 
   // 🚫 Do not render anything if no name or category ID
-  if (!nameParam || !categoryId) {
+  if (!nameParam || !categoryId || !categoryName) {
     return null;
   }
 
@@ -65,7 +81,7 @@ export default function Page() {
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
       router.push(
-        `/marketplace/categories/food?id=${categoryId}&name=${encodeURIComponent(
+        `/marketplace/categories/${categoryName}?id=${categoryId}&name=${encodeURIComponent(
           receiverName
         )}`
       );
@@ -75,43 +91,43 @@ export default function Page() {
 
   return (
     <div className="flex flex-col">
-      <WidthLayout>
-        <div className="text-left text-4xl p-6">Food</div>
+      {/* Dynamic title based on category */}
+      <div className="text-left text-4xl p-4 md:p-6 capitalize">
+        {categoryName}
+      </div>
 
-        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6">
-          <div className="pl-4">
-            <ChangeReceiverDialog
-              open={open}
-              setOpen={setOpen}
-              receiverName={receiverName}
-              setReceiverName={setReceiverName}
-              handleSubmit={handleSubmit}
-            />
+      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6 min-h-screen">
+        <div className="pl-4">
+          <ChangeReceiverDialog
+            open={open}
+            setOpen={setOpen}
+            receiverName={receiverName}
+            setReceiverName={setReceiverName}
+            handleSubmit={handleSubmit}
+          />
 
-            <div>
-              <span className="inline-block text-primary text-4xl">
-                What would{" "}
-                <span className="relative whitespace-nowrap text-blue-600 pr-1">
-                  <span
-                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl font-medium -ml-1.5"
-                    style={{ fontFamily: "Playwrite CU, sans-serif" }}
-                  >
-                    {displayName}
-                  </span>
+          <div>
+            <span className="inline-block text-primary text-4xl">
+              What would{" "}
+              <span className="relative whitespace-nowrap text-blue-600 pr-1">
+                <span
+                  className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl font-medium -ml-1.5"
+                  style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                >
+                  {displayName}
                 </span>
-                <span className="inline-block pl-1"> like?</span>
               </span>
-            </div>
-          </div>
-
-          <div className="text-muted-foreground pl-4 pt-6">
-            Restaurant Options
-          </div>
-          <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
-            <VendorList vendors={vendors} loading={loading} />
+              <span className="inline-block pl-1"> like?</span>
+            </span>
           </div>
         </div>
-      </WidthLayout>
+
+        {/* Dynamic label based on category */}
+        <div className="text-muted-foreground pl-4 pt-6">{categoryLabel}</div>
+        <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
+          <VendorList vendors={vendors} loading={loading} />
+        </div>
+      </div>
     </div>
   );
 }

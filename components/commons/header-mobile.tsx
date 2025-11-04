@@ -44,7 +44,7 @@ export default function HeaderMobile({
     !hideLoginButton && !isAuthenticated && !showLogout && !showAccount;
 
   return (
-    <div className="flex items-center justify-between border-gray-400 py-8 lg:py-0">
+    <div className="flex items-center justify-between border-gray-400 py-6 lg:py-0">
       <a href="/">
         <Image
           alt="Weeshr Logo"

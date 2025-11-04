@@ -47,7 +47,7 @@ export function MenuList({ vendorId, addToBasket }: MenuListProps) {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 pt-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 pt-4">
         {Array.from({ length: 6 }).map((_, index) => (
           <Card
             key={index}
@@ -81,7 +81,7 @@ export function MenuList({ vendorId, addToBasket }: MenuListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 pt-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 pt-4">
       {products.map((product) => (
         <Card
           key={product.id}

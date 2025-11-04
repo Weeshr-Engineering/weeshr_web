@@ -68,6 +68,7 @@ export default function ChangeReceiverDialog({
               placeholders={placeholders}
               onChange={(e) => setReceiverName(e.target.value)}
               onSubmit={handleSubmit}
+              value={receiverName} // 👈 add this line
             />
           </CardContent>
         </Card>

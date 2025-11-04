@@ -67,7 +67,7 @@ const VendorList: React.FC<VendorListProps> = ({
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">
-          No restaurants found for this category.
+          No Vendor Found For This Category.
         </p>
       </div>
     );
