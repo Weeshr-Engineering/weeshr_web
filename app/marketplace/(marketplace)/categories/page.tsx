@@ -13,7 +13,7 @@ import CategorySkeletonGrid from "./_components/CategorySkeleton";
 const categoryColors: Record<string, string> = {
   Food: "bg-[#C6F4EB]",
   Fashion: "bg-[#DCDEFF]",
-  Gadgets: "bg-[#E9F4D1]",
+  Gadget: "bg-[#E9F4D1]",
   Lifestyle: "bg-[#C6EDF6]",
 };
 
