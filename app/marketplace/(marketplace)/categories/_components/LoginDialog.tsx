@@ -16,12 +16,16 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { useState, useRef, useEffect } from "react";
 import LoginSidePanel from "./LoginSidePanel";
 import ReceiverInfoModal from "./ReceiverInfoModal";
+import { BasketItem } from "@/lib/BasketItem";
+import { Product } from "@/service/product.service";
 
 interface LoginDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   basketTotal: number;
   basketCount: number;
+  basket: BasketItem[]; // ← ADD
+  products: Product[]; // ← ADD
 }
 
 interface SignupFormData {
@@ -55,6 +59,8 @@ export default function LoginDialog({
   setOpen,
   basketTotal,
   basketCount,
+  basket,
+  products,
 }: LoginDialogProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showReceiverModal, setShowReceiverModal] = useState(false);
@@ -143,14 +149,14 @@ export default function LoginDialog({
     setIsLogin(!isLogin);
   };
 
-  // Handle when ReceiverInfoModal is closed
-  const handleReceiverModalClose = () => {
+  // Reset states when modal closes
+  // Add this function to close all modals
+  const closeAllModals = () => {
     setShowReceiverModal(false);
-    // Also close the main login dialog when receiver modal is closed
     setOpen(false);
   };
 
-  // Reset states when modal closes
+  // Update the effect to reset states
   useEffect(() => {
     if (!open) {
       setShowReceiverModal(false);
@@ -161,7 +167,7 @@ export default function LoginDialog({
 
   return (
     <>
-      {/* Login/Signup Modal - Only show when main open is true AND receiver modal is not showing */}
+      {/* Login/Signup Modal */}
       <AlertDialog open={open && !showReceiverModal} onOpenChange={setOpen}>
         <AlertDialogContent
           onCloseRequest={() => setOpen(false)}
@@ -169,21 +175,22 @@ export default function LoginDialog({
         >
           <div className="w-full flex flex-col md:flex-row gap-4">
             {/* Left Side - Login/Signup Form */}
-            <Card className="flex-1 bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
+            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
               <CardHeader className="text-center pb-6 lg:pb-8 flex-shrink-0">
-                <CardTitle className="text-xl lg:text-2xl font-normal text-primary">
+                <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
                   <span className="relative text-primary pr-1">
-                    {isLogin ? "Welcome back" : "Create account"}
+                    {isLogin ? "More About" : "Create account"}
                     <span
                       className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
                       style={{ fontFamily: "Playwrite CU, sans-serif" }}
                     >
-                      {isLogin ? "Sign in to continue" : "Join us today"}
+                      {isLogin ? "you" : "Join us today"}
                     </span>
                   </span>
                   <div className="text-xs lg:text-sm text-muted-foreground mt-2">
+                    or{" "}
                     {isLogin
-                      ? "on the gift you're sending to Dorcas"
+                      ? "Let us keep you updated on the gift you’re sending to Dorcas"
                       : "to start sending amazing gifts"}
                   </div>
                 </CardTitle>
@@ -193,22 +200,27 @@ export default function LoginDialog({
                 {/* Google Login Button - Only show in login mode */}
                 {isLogin && (
                   <div className="space-y-4 flex-shrink-0">
-                    <Button
-                      variant="outline"
-                      className="w-full h-12 rounded-xl border-2 hover:bg-gray-50 transition-colors"
-                      onClick={handleGoogleLogin}
-                    >
-                      <Icon
-                        icon="flat-color-icons:google"
-                        className="w-6 h-6 mr-2"
-                      />
-                      Continue with Google
-                    </Button>
+                    <div className="space-y-2 text-center">
+                      <div className="text-sm font-normal ">
+                        Sign in with
+                      </div>
+                      <Button
+                        variant="google"
+                        className="w-full h-12 rounded-3xl border-2 hover:bg-gray-50 transition-colors text-black"
+                        onClick={handleGoogleLogin}
+                      >
+                        <Icon
+                          icon="flat-color-icons:google"
+                          className="w-6 h-6 mr-2"
+                        />
+                        Google
+                      </Button>
+                    </div>
 
                     {/* Divider */}
                     <div className="flex items-center justify-center space-x-4 my-4">
                       <div className="h-px bg-gray-300 flex-1"></div>
-                      <span className="text-sm text-muted-foreground">or</span>
+                      <span className="text-sm text-black ">or</span>
                       <div className="h-px bg-gray-300 flex-1"></div>
                     </div>
                   </div>
@@ -280,7 +292,7 @@ export default function LoginDialog({
                       <Button
                         type="submit"
                         disabled={isLoadingLogin}
-                        className="w-full h-12 rounded-xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold text-base hover:from-[#5a5fc7] hover:to-[#4145A7] transition-all duration-300 shadow-lg hover:shadow-xl"
+                        className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold text-base hover:from-[#5a5fc7] hover:to-[#4145A7] transition-all duration-300 shadow-lg hover:shadow-xl"
                       >
                         {isLoadingLogin ? (
                           <Icon
@@ -544,7 +556,7 @@ export default function LoginDialog({
                       <Button
                         type="submit"
                         disabled={isLoadingSignup}
-                        className="w-full h-12 rounded-xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold text-base hover:from-[#5a5fc7] hover:to-[#4145A7] transition-all duration-300 shadow-lg hover:shadow-xl"
+                        className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold text-base hover:from-[#5a5fc7] hover:to-[#4145A7] transition-all duration-300 shadow-lg hover:shadow-xl"
                       >
                         {isLoadingSignup ? (
                           <Icon
@@ -573,7 +585,10 @@ export default function LoginDialog({
             </Card>
 
             {/* Right Side - Separate Component */}
-            <LoginSidePanel isLogin={isLogin} />
+
+            <div className="md:w-[45%] flex">
+              <LoginSidePanel isLogin={isLogin} />
+            </div>
           </div>
         </AlertDialogContent>
       </AlertDialog>
@@ -581,10 +596,13 @@ export default function LoginDialog({
       {/* Receiver Info Modal - Shows after successful login/signup */}
       <ReceiverInfoModal
         open={showReceiverModal}
-        setOpen={handleReceiverModalClose}
+        setOpen={setShowReceiverModal}
         basketTotal={basketTotal}
         basketCount={basketCount}
         receiverName={receiverName}
+        basket={basket}
+        products={products}
+        onCloseAll={closeAllModals} // ← PASS the closeAll function
       />
     </>
   );

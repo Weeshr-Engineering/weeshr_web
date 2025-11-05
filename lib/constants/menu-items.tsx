@@ -22,7 +22,7 @@ export const menu_food = [
     price: 17500,
     img: "https://images.pexels.com/photos/2290070/pexels-photo-2290070.jpeg?auto=compress&cs=tinysrgb&w=800",
     description:
-      "Spicy chicken wings marinated in Indian spices and grilled to perfection.",
+    "Spicy chicken wings marinated in Indian spices and grilled to perfection.",
   },
   {
     id: 4,

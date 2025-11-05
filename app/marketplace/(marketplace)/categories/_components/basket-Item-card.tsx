@@ -16,7 +16,7 @@ export function BasketItemCard({
   products,
   setBasket,
 }: BasketItemCardProps) {
-  const product = products.find((p) => p.id === item.id);
+  const product = products.find((p) => p.id == item.id);
 
   if (!product) return null;
 

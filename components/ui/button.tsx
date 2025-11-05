@@ -18,9 +18,11 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        marketplace: "hover:text-accent-foreground bg-marketplace-primary  ",
+        marketplace: "hover:text-accent-foreground bg-marketplace-primary",
         link: "text-black underline-offset-4 hover:underline",
         white_btn: "bg-white hover:bg-white/80 border-black border-[1px]",
+        google:
+          "bg-[#E9F4D1] text-black border border-[#E9F4D1] hover:bg-[#dbeac2]",
       },
       size: {
         customSec: "h-10 w-32 px-1 py-2",
