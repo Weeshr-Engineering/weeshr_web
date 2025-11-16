@@ -25,7 +25,7 @@ export default function LoginSidePanel({ isLogin }: LoginSidePanelProps) {
       <Card className="h-full bg-transparent border-none shadow-2xl rounded-3xl relative w-full">
         <CardContent className="h-full flex flex-col p-8 relative z-10 text-white">
           {/* Weeshr Logo - Aligned to right */}
-          <div className="flex justify-end mb-8">
+          <div className="flex justify-start mb-8">
             <Image
               alt="Weeshr Logo"
               src="https://res.cloudinary.com/drykej1am/image/upload/v1697377875/weehser%20pay/Weeshr_Light_lrreyo.svg"

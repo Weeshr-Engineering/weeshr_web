@@ -1,120 +1,89 @@
-// services/auth.service.ts
-import ApiBase from "@/lib/api-base";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { z } from "zod";
 
-export interface SignupRequest {
-  firstName: string;
-  lastName: string;
-  email: string;
-  userName: string;
-  password: string;
-  gender: string;
-  phone: {
-    countryCode: string;
-    phoneNumber: string;
-  };
-  dob: string;
-}
+// ✅ Define Zod schema for validation
+export const SignupSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Please enter a valid email address"),
+  userName: z.string().min(1, "Username is required"),
+  password: z
+    .string()
+    .min(4, "Password must be at least 4 characters long")
+    .max(20, "Password cannot exceed 20 characters"),
+  gender: z.string().min(1, "Gender is required"),
+  dob: z.string().min(1, "Date of birth is required"),
+  phone: z.object({
+    countryCode: z.string().min(1, "Country code is required"),
+    phoneNumber: z.string().min(1, "Phone number is required"),
+  }),
+});
 
-export interface AuthResponse {
-  success: boolean;
+export type SignupFormData = z.infer<typeof SignupSchema>;
+
+export interface SignupResponse {
+  code: number;
   message: string;
-  data?: {
-    user: any;
-    token: string;
+  data: {
+    user: {
+      _id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      emailVerified: boolean;
+      avatar: string | null;
+      token: string;
+      devices: any[];
+    };
   };
+  error: null | string;
 }
 
-class AuthService extends ApiBase {
-  constructor() {
-    super();
-  }
+class SignupService {
+  private baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  async signup(userData: SignupRequest): Promise<AuthResponse> {
+  async register(userData: SignupFormData): Promise<SignupResponse> {
     try {
-      const response = await this.post<{
-        success: boolean;
-        message: string;
-        data?: any;
-      }>("/register", userData);
+      // ✅ Validate with Zod before sending
+      const validatedData = SignupSchema.parse(userData);
 
-      return {
-        success: true,
-        message: "Account created successfully!",
-        data: response.data,
-      };
-    } catch (error: any) {
-      return this.handleError(error);
-    }
-  }
+      const response = await axios.post<SignupResponse>(
+        `${this.baseUrl}/register`,
+        validatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-  async loginWithPin(email: string, pin: string): Promise<AuthResponse> {
-    try {
-      const response = await this.post<{
-        success: boolean;
-        message: string;
-        data?: any;
-      }>("/login/pin", { email, pin });
+      if (response.data.code === 200) {
+        const { user } = response.data.data;
+        localStorage.setItem("userId", user._id);
+        localStorage.setItem("authToken", user.token);
 
-      return {
-        success: true,
-        message: "Login successful!",
-        data: response.data,
-      };
-    } catch (error: any) {
-      return this.handleError(error);
-    }
-  }
-
-  async getProfile(): Promise<AuthResponse> {
-    try {
-      const response = await this.get<{
-        success: boolean;
-        message: string;
-        data?: any;
-      }>("/user/profile");
-
-      return {
-        success: true,
-        message: "Profile fetched successfully",
-        data: response.data,
-      };
-    } catch (error: any) {
-      return this.handleError(error);
-    }
-  }
-
-  private handleError(error: any): AuthResponse {
-    console.error("API Error:", error);
-
-    if (error.response) {
-      const errorMessage = error.response.data?.message || "Request failed";
-
-      if (error.response.status === 400) {
-        return {
-          success: false,
-          message: errorMessage || "Invalid input data",
-        };
-      } else if (error.response.status === 409) {
-        return {
-          success: false,
-          message: errorMessage || "User already exists",
-        };
-      } else if (error.response.status === 401) {
-        return { success: false, message: errorMessage || "Unauthorized" };
-      } else if (error.response.status === 422) {
-        return { success: false, message: errorMessage || "Validation failed" };
+        toast.success(response.data.message || "Account created successfully!");
+        return response.data;
       } else {
-        return { success: false, message: errorMessage || "Request failed" };
+        throw new Error(response.data.message || "Registration failed");
       }
-    } else if (error.request) {
-      return {
-        success: false,
-        message: "Network error. Please check your connection.",
-      };
-    } else {
-      return { success: false, message: "An unexpected error occurred." };
+    } catch (error: any) {
+      // ✅ Handle Zod errors gracefully
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          toast.error(err.message);
+        });
+        throw new Error("Validation failed");
+      }
+
+      const errorMessage =
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
+      toast.error(errorMessage);
+      throw error;
     }
   }
 }
 
-export const authService = new AuthService();
+export const signupService = new SignupService();

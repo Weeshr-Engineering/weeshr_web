@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { SignupFormData, signupService } from "@/service/auth.service";
 import toast from "react-hot-toast";
 
 interface SignupFormProps {
@@ -20,21 +21,6 @@ interface SignupFormProps {
   onSuccess: () => void;
 }
 
-interface SignupFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  userName: string;
-  password: string;
-  gender: string;
-  phone: {
-    countryCode: string;
-    phoneNumber: string;
-  };
-  dob: string;
-}
-
-// Country codes with flags
 const countryCodes = [
   { code: "+234", flag: "🇳🇬", country: "Nigeria" },
   { code: "+233", flag: "🇬🇭", country: "Ghana" },
@@ -56,12 +42,12 @@ export default function SignupForm({
     email: "",
     userName: "",
     password: "",
-    gender: "male",
+    gender: "",
+    dob: "",
     phone: {
       countryCode: "+234",
       phoneNumber: "",
     },
-    dob: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -78,31 +64,20 @@ export default function SignupForm({
   const handlePhoneChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      phone: {
-        ...prev.phone,
-        [field]: value,
-      },
+      phone: { ...prev.phone, [field]: value },
     }));
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoadingSignup(true);
 
     try {
-      // For signup, you might want to implement your actual signup API call
-      console.log("Signup data:", formData);
-
-      // Simulate successful signup and show receiver modal
-      // Replace this with your actual signup API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Show receiver modal after successful signup
+      setIsLoadingSignup(true);
+      await signupService.register(formData);
       onSuccess();
-      toast.success("Account created successfully!");
     } catch (error) {
-      console.error(error);
-      toast.error("Signup failed. Please try again.");
+      // Zod and toast already handle messages in the service
+      console.error("Signup failed:", error);
     } finally {
       setIsLoadingSignup(false);
     }
@@ -122,7 +97,7 @@ export default function SignupForm({
             </span>
           </span>
           <div className="text-xs lg:text-sm text-muted-foreground mt-2">
-            or to start sending amazing gifts
+            All fields are required
           </div>
         </CardTitle>
       </CardHeader>
@@ -133,136 +108,99 @@ export default function SignupForm({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="space-y-2 flex-1 overflow-y-auto pr-2">
+            {/* First & Last name */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label
-                  htmlFor="firstName"
-                  className="text-sm text-muted-foreground"
-                >
-                  First Name *
-                </Label>
+                <Label>First Name *</Label>
                 <Input
-                  id="firstName"
                   name="firstName"
                   placeholder="First name"
-                  className="rounded-xl h-12 border-2 transition-colors"
                   value={formData.firstName}
                   onChange={handleInputChange}
                   required
+                  className="rounded-xl h-12 border-2"
                 />
               </div>
               <div className="space-y-2">
-                <Label
-                  htmlFor="lastName"
-                  className="text-sm text-muted-foreground"
-                >
-                  Last Name *
-                </Label>
+                <Label>Last Name *</Label>
                 <Input
-                  id="lastName"
                   name="lastName"
                   placeholder="Last name"
-                  className="rounded-xl h-12 border-2 transition-colors"
                   value={formData.lastName}
                   onChange={handleInputChange}
                   required
+                  className="rounded-xl h-12 border-2"
                 />
               </div>
             </div>
 
+            {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm text-muted-foreground">
-                Email Address *
-              </Label>
+              <Label>Email *</Label>
               <Input
-                id="email"
                 name="email"
                 type="email"
                 placeholder="your@email.com"
-                className="rounded-xl h-12 border-2 transition-colors"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
+                className="rounded-xl h-12 border-2"
               />
             </div>
 
-            <div className="space-y-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="userName"
-                    className="text-sm text-muted-foreground"
-                  >
-                    Username *
-                  </Label>
+            {/* Username + Password */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Username *</Label>
+                <Input
+                  name="userName"
+                  placeholder="Choose a username"
+                  value={formData.userName}
+                  onChange={handleInputChange}
+                  required
+                  className="rounded-xl h-12 border-2"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Password *</Label>
+                <div className="relative">
                   <Input
-                    id="userName"
-                    name="userName"
-                    placeholder="Choose a username"
-                    className="rounded-xl h-12 border-2 transition-colors"
-                    value={formData.userName}
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter 4-digit PIN"
+                    value={formData.password}
                     onChange={handleInputChange}
                     required
+                    maxLength={20}
+                    className="rounded-xl h-12 border-2 pr-10"
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="password"
-                    className="text-sm text-muted-foreground"
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
                   >
-                    Password (4-digit PIN) *
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      inputMode="numeric"
-                      placeholder="Enter 4-digit PIN"
-                      className="rounded-xl h-12 border-2 transition-colors pr-10"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      required
-                      maxLength={4}
-                      pattern="[0-9]{4}"
+                    <Icon
+                      icon={
+                        showPassword ? "mdi:eye-off-outline" : "mdi:eye-outline"
+                      }
+                      className="w-5 h-5"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-                    >
-                      <Icon
-                        icon={
-                          showPassword
-                            ? "mdi:eye-off-outline"
-                            : "mdi:eye-outline"
-                        }
-                        className="w-5 h-5"
-                      />
-                    </button>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
 
+            {/* Gender & DOB */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label
-                  htmlFor="gender"
-                  className="text-sm text-muted-foreground"
-                >
-                  Gender
-                </Label>
+                <Label>Gender *</Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      gender: value,
-                    }))
+                    setFormData((prev) => ({ ...prev, gender: value }))
                   }
                 >
-                  <SelectTrigger className="rounded-xl h-12 border-2 transition-colors">
+                  <SelectTrigger className="rounded-xl h-12 border-2">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
@@ -273,24 +211,21 @@ export default function SignupForm({
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dob" className="text-sm text-muted-foreground">
-                  Date of Birth
-                </Label>
+                <Label>Date of Birth *</Label>
                 <Input
-                  id="dob"
                   name="dob"
                   type="date"
-                  className="rounded-xl h-12 border-2 transition-colors"
                   value={formData.dob}
                   onChange={handleInputChange}
+                  required
+                  className="rounded-xl h-12 border-2"
                 />
               </div>
             </div>
 
+            {/* Phone */}
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm text-muted-foreground">
-                Phone Number *
-              </Label>
+              <Label>Phone Number *</Label>
               <div className="flex gap-2">
                 <Select
                   value={formData.phone.countryCode}
@@ -298,25 +233,17 @@ export default function SignupForm({
                     handlePhoneChange("countryCode", value)
                   }
                 >
-                  <SelectTrigger className="w-32 rounded-xl h-12 border-2 transition-colors">
+                  <SelectTrigger className="w-32 rounded-xl h-12 border-2">
                     <SelectValue>
                       <span className="flex items-center gap-2 text-black">
                         <span>
                           {
                             countryCodes.find(
-                              (country) =>
-                                country.code === formData.phone.countryCode
+                              (c) => c.code === formData.phone.countryCode
                             )?.flag
                           }
                         </span>
-                        <span>
-                          {
-                            countryCodes.find(
-                              (country) =>
-                                country.code === formData.phone.countryCode
-                            )?.code
-                          }
-                        </span>
+                        <span>{formData.phone.countryCode}</span>
                       </span>
                     </SelectValue>
                   </SelectTrigger>
@@ -335,26 +262,25 @@ export default function SignupForm({
                   </SelectContent>
                 </Select>
                 <Input
-                  id="phoneNumber"
                   name="phoneNumber"
                   placeholder="791 643 8133"
-                  className="flex-1 rounded-xl h-12 border-2 transition-colors"
                   value={formData.phone.phoneNumber}
                   onChange={(e) =>
                     handlePhoneChange("phoneNumber", e.target.value)
                   }
                   required
+                  className="flex-1 rounded-xl h-12 border-2"
                 />
               </div>
             </div>
           </div>
 
-          {/* Sticky Button Section */}
+          {/* Submit */}
           <div className="flex-shrink-0 space-y-4 pt-4 mt-4 border-t border-gray-200">
             <Button
               type="submit"
               disabled={isLoadingSignup}
-              className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold text-base hover:from-[#5a5fc7] hover:to-[#4145A7] transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold hover:from-[#5a5fc7] hover:to-[#4145A7] shadow-lg hover:shadow-xl"
             >
               {isLoadingSignup ? (
                 <Icon
