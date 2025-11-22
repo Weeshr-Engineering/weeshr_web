@@ -16,6 +16,7 @@ import { MenuList } from "../../_components/menu-list";
 import { BasketItem } from "@/lib/BasketItem";
 import ChangeReceiverDialog from "../../_components/change-receiver-dialog";
 import { GiftBasket } from "../../_components/gift-basket";
+import axios from "axios";
 
 // Define category labels for vendor pages
 const vendorCategoryLabels: Record<string, string> = {
@@ -35,6 +36,8 @@ export default function VendorPage() {
   const [open, setOpen] = useState(false);
   const [basket, setBasket] = useState<BasketItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("categoryId");
@@ -49,6 +52,44 @@ export default function VendorPage() {
   const categoryLabel =
     vendorCategoryLabels[categoryName as string] ||
     vendorCategoryLabels.default;
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (authToken) {
+        try {
+          const profileResponse = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
+
+          if (
+            profileResponse.status === 200 ||
+            profileResponse.status === 201
+          ) {
+            setIsAuthenticated(true);
+            setUserId(profileResponse.data.data._id);
+          } else {
+            setIsAuthenticated(false);
+            setUserId(null);
+          }
+        } catch (error) {
+          setIsAuthenticated(false);
+          setUserId(null);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setUserId(null);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   // Fetch products for selected vendor
   useEffect(() => {
@@ -170,7 +211,14 @@ export default function VendorPage() {
           <div className="text-muted-foreground pl-4 pt-6">{categoryLabel}</div>
 
           <div className="md:max-h-[600px] max-h-96 overflow-y-auto mt-0 pr-2">
-            <MenuList vendorId={vendorId} addToBasket={addToBasket} />
+            <MenuList
+              vendorId={vendorId}
+              addToBasket={addToBasket}
+              basket={basket}
+              products={products}
+              isAuthenticated={isAuthenticated}
+              userId={userId || undefined}
+            />
           </div>
         </div>
 

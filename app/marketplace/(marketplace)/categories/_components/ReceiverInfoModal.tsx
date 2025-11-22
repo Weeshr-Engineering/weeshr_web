@@ -19,6 +19,9 @@ import PaySidePanel from "./PaySidePanel";
 import { BasketItem } from "@/lib/BasketItem";
 import { Product } from "@/service/product.service";
 import PaymentSuccessModal from "../[vendor]/[product]/_components/PaymentSuccessModal";
+import { cartService } from "@/service/cart.service";
+import toast from "react-hot-toast";
+import { checkoutService } from "@/service/checkout.service";
 
 interface ReceiverInfoModalProps {
   open: boolean;
@@ -57,26 +60,85 @@ export default function ReceiverInfoModal({
     phoneNumber: "",
     address: "",
     deliveryDate: "",
+    email: "",
   });
-
-  // ADD: State for success modal
+  const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleMakePayment = (e: React.MouseEvent) => {
+  const handleMakePayment = async (e: React.MouseEvent) => {
     e.preventDefault();
-    console.log("Payment:", {
-      receiverInfo: formData,
-      basketTotal,
-      basketCount,
-    });
 
-    // ADD: Show success modal instead of just logging
+    if (!isFormValid()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Get the current cart ID
+      const cartId = cartService.getCurrentCartId();
+
+      if (!cartId) {
+        toast.error("No active cart found. Please add items to your basket.");
+        return;
+      }
+
+      // Prepare checkout data with lowercase frequency
+      const checkoutData = {
+        cartId: cartId,
+        receiverName: receiverName,
+        email:
+          formData.email ||
+          `${receiverName.toLowerCase().replace(/\s+/g, "")}@example.com`,
+        shippingAddress: formData.address,
+        deliveryDate: formData.deliveryDate,
+        frequency: "once" as const,
+        currency: "NGN" as const,
+      };
+
+      // Process checkout
+      const result = await checkoutService.processCheckout(checkoutData);
+
+      if (result.code === 200 || result.code === 201) {
+        // Check if we have a payment URL
+        if (result.data?.authorization_url) {
+          // Redirect user to Paystack payment page
+          toast.success("Redirecting to payment page...");
+          window.open(result.data.authorization_url, "_blank");
+
+          // Store payment reference for later verification
+          if (result.data.reference) {
+            localStorage.setItem("paymentReference", result.data.reference);
+          }
+
+          // Close the modal since user is going to payment page
+          setOpen(false);
+          onCloseAll?.();
+        } else {
+          toast.error("Payment URL not received. Please try again.");
+        }
+      } else {
+        toast.error(result.message || "Checkout failed. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      toast.error("Failed to process checkout. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Function to handle successful payment (to be called from payment callback)
+  const handlePaymentSuccess = () => {
     setShowSuccessModal(true);
-    onCloseAll?.();
+    // Clear the cart after successful payment
+    // setBasket([]); // You might want to pass this as a prop
+    cartService.clearCurrentCart();
   };
 
   const formatDate = (dateString: string) => {
@@ -92,14 +154,14 @@ export default function ReceiverInfoModal({
   const isFormValid = () =>
     formData.phoneNumber.trim() &&
     formData.address.trim() &&
-    formData.deliveryDate;
+    formData.deliveryDate &&
+    formData.email.trim();
 
   const handleClose = () => {
     setOpen(false);
     onCloseAll?.();
   };
 
-  // ADD: Handle success modal close
   const handleSuccessClose = () => {
     setShowSuccessModal(false);
     setOpen(false);
@@ -115,7 +177,7 @@ export default function ReceiverInfoModal({
         >
           <div className="w-full flex flex-col md:flex-row-reverse gap-4">
             {/* Left: Form */}
-            <Card className="flex-1 md:w-[55%]  bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col">
+            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col">
               <CardHeader className="pb-6">
                 <CardTitle className="text-xl font-normal text-primary text-left">
                   More about
@@ -133,6 +195,21 @@ export default function ReceiverInfoModal({
 
               {/* Content fills remaining height */}
               <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                {/* Email */}
+                <div className="space-y-2">
+                  <Label className="text-sm text-muted-foreground">
+                    Email Address
+                  </Label>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    placeholder="Enter email address"
+                    className="rounded-xl h-12 border-2"
+                    required
+                  />
+                </div>
+
                 {/* Phone */}
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">
@@ -174,7 +251,7 @@ export default function ReceiverInfoModal({
                       </SelectContent>
                     </Select>
                     <Input
-                      type="number"
+                      type="tel"
                       value={formData.phoneNumber}
                       onChange={(e) =>
                         handleInputChange("phoneNumber", e.target.value)
@@ -233,19 +310,28 @@ export default function ReceiverInfoModal({
                 </div>
                 <Button
                   variant="default"
-                  disabled={!isFormValid()}
+                  disabled={!isFormValid() || isProcessing}
                   className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
                   onClick={handleMakePayment}
                   type="button"
                 >
-                  <Badge className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center">
-                    {basketCount}
-                  </Badge>
-                  <span className="font-medium">Make Payment</span>
-                  <Icon
-                    icon="streamline-ultimate:shopping-basket-1"
-                    className="h-4 w-4"
-                  />
+                  {isProcessing ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span className="font-medium">Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Badge className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center">
+                        {basketCount}
+                      </Badge>
+                      <span className="font-medium">Proceed to Pay</span>
+                      <Icon
+                        icon="streamline-ultimate:shopping-basket-1"
+                        className="h-4 w-4"
+                      />
+                    </>
+                  )}
                 </Button>
               </div>
             </Card>
@@ -263,14 +349,14 @@ export default function ReceiverInfoModal({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* ADD: Payment Success Modal */}
+      {/* Payment Success Modal - Only shows after successful payment */}
       <PaymentSuccessModal
         open={showSuccessModal}
         setOpen={setShowSuccessModal}
         receiverName={receiverName}
         address={formData.address}
         deliveryDate={formatDate(formData.deliveryDate)}
-        onCloseAll={onCloseAll}
+        onCloseAll={handleSuccessClose}
       />
     </>
   );

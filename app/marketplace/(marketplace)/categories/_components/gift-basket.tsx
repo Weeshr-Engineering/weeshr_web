@@ -31,11 +31,47 @@ export function GiftBasket({
   const [loginOpen, setLoginOpen] = useState(false);
   const [receiverModalOpen, setReceiverModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [receiverName, setReceiverName] = useState("Dorcas");
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const [isProcessingCart, setIsProcessingCart] = useState(false);
 
-  const clearBasket = () => setBasket([]);
+  // Clear basket - local state or API
+  // In GiftBasket component - Clear basket function
+  const clearBasket = async () => {
+    // Store current basket for potential rollback
+    const previousBasket = [...basket];
+
+    // Clear UI immediately
+    setBasket([]);
+
+    // Sync with API in background if authenticated
+    if (isAuthenticated && userId) {
+      setIsProcessingCart(true);
+      try {
+        const cartId = cartService.getCurrentCartId();
+        if (cartId) {
+          const result = await cartService.clearCart(cartId);
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to clear cart on server");
+            // Optional: Revert local state if API fails
+            // setBasket(previousBasket);
+          } else {
+            toast.success("Cart cleared successfully");
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to clear cart on server");
+        // Optional: Revert local state if API fails
+        // setBasket(previousBasket);
+      } finally {
+        setIsProcessingCart(false);
+      }
+    } else {
+      // For guest users, just show success immediately
+      toast.success("Cart cleared successfully");
+    }
+  };
 
   // Check authentication status and handle cart submission
   const handleSendBasket = async () => {
@@ -56,37 +92,40 @@ export function GiftBasket({
 
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           setIsAuthenticated(true);
+          setUserId(profileResponse.data.data._id);
 
-          // User is authenticated - send cart to backend
-          await sendCartToBackend(profileResponse.data.data._id);
+          // User is authenticated - sync cart to backend
+          await syncCartToBackend(profileResponse.data.data._id);
         } else {
           setIsAuthenticated(false);
-          setLoginOpen(true); // Show login modal
+          setUserId(null);
+          setLoginOpen(true);
         }
       } catch (error) {
-        // Token is invalid, clear it
         localStorage.removeItem("authToken");
         localStorage.removeItem("userId");
         setIsAuthenticated(false);
-        setLoginOpen(true); // Show login modal
+        setUserId(null);
+        setLoginOpen(true);
       }
     } else {
       setIsAuthenticated(false);
-      setLoginOpen(true); // Show login modal
+      setUserId(null);
+      setLoginOpen(true);
     }
 
     setIsCheckingAuth(false);
   };
 
-  // Send cart items to backend API
-  const sendCartToBackend = async (userId: string) => {
+  // Sync cart items to backend API
+  const syncCartToBackend = async (userId: string) => {
     setIsProcessingCart(true);
 
     try {
-      // Prepare cart items for API
       const cartItems = basket.map((item) => ({
-        productId: item.id.toString(), // Ensure productId is string
+        productId: item.id.toString(),
         quantity: item.qty,
+        price: products.find((p) => p.id == item.id)?.price || 0,
       }));
 
       const cartData = {
@@ -97,20 +136,16 @@ export function GiftBasket({
       const result = await cartService.addItemsToCart(cartData);
 
       if (result.code === 200 || result.code === 201) {
-        // Success - show toast and proceed to receiver modal
-        toast.success("🎉 Basket sent successfully! Ready for payment.");
+        toast.success("🎉 Basket synced successfully! Ready for payment.");
         setReceiverModalOpen(true);
-
-        // Optional: Clear basket after successful submission
-        // setBasket([]);
       } else {
         toast.error(
-          result.message || "Failed to send basket. Please try again."
+          result.message || "Failed to sync basket. Please try again."
         );
       }
     } catch (error: any) {
-      console.error("Cart submission error:", error);
-      toast.error("Failed to process your basket. Please try again.");
+      console.error("Cart sync error:", error);
+      toast.error("Failed to sync your basket. Please try again.");
     } finally {
       setIsProcessingCart(false);
     }
@@ -122,10 +157,6 @@ export function GiftBasket({
   };
 
   const handleLoginSuccess = async () => {
-    setIsAuthenticated(true);
-    setLoginOpen(false);
-
-    // After successful login, get user profile and send cart
     try {
       const authToken = localStorage.getItem("authToken");
       if (authToken) {
@@ -139,20 +170,96 @@ export function GiftBasket({
         );
 
         if (profileResponse.status === 200 || profileResponse.status === 201) {
-          await sendCartToBackend(profileResponse.data.data._id);
+          setIsAuthenticated(true);
+          setUserId(profileResponse.data.data._id);
+          setLoginOpen(false);
+          await syncCartToBackend(profileResponse.data.data._id);
         }
       }
     } catch (error) {
       console.error("Error after login:", error);
-      toast.error("Failed to process your basket after login.");
+      toast.error("Failed to sync your basket after login.");
     }
   };
+
+  // Load user cart on authentication
+  useEffect(() => {
+    const loadUserCart = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (authToken) {
+        try {
+          const profileResponse = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
+
+          if (
+            profileResponse.status === 200 ||
+            profileResponse.status === 201
+          ) {
+            setIsAuthenticated(true);
+            setUserId(profileResponse.data.data._id);
+
+            // Load user's cart from backend
+            const cartResult = await cartService.getUserCart(
+              profileResponse.data.data._id
+            );
+
+            if (
+              cartResult.data?.items &&
+              Array.isArray(cartResult.data.items)
+            ) {
+              // Convert API cart items to local basket format
+              const apiBasket: BasketItem[] = cartResult.data.items
+                .map((item: any) => {
+                  // Handle both cases: productId as object or string
+                  const productId =
+                    typeof item.productId === "object"
+                      ? item.productId._id
+                      : item.productId;
+
+                  const productName =
+                    typeof item.productId === "object"
+                      ? item.productId.name
+                      : "Unknown Product";
+
+                  return {
+                    id: productId,
+                    qty: item.quantity,
+                    name: productName,
+                  };
+                })
+                .filter(
+                  (item): item is BasketItem =>
+                    item.id !== undefined &&
+                    item.qty !== undefined &&
+                    item.name !== undefined
+                );
+
+              setBasket(apiBasket);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load user cart:", error);
+        }
+      }
+    };
+
+    loadUserCart();
+  }, [setBasket]);
 
   return (
     <>
       <div className="border-0 rounded-2xl bg-background">
         <h3 className="font-normal pt-6 pb-2 w-full text-center">
           Gift basket
+          {isAuthenticated && (
+            <span className="pl-1 text-sm text-green-600">✓</span>
+          )}
         </h3>
         <div className="min-h-[450px] p-4">
           {basket.length === 0 ? (
@@ -165,8 +272,9 @@ export function GiftBasket({
                   variant="ghost"
                   className="text-[#6A70FF] text-xs px-2 py-1 h-6 rounded-3xl"
                   onClick={clearBasket}
+                  disabled={isProcessingCart}
                 >
-                  Clear All
+                  {isProcessingCart ? "Clearing..." : "Clear All"}
                 </Button>
               </div>
               {basket.map((b) => (
@@ -175,6 +283,8 @@ export function GiftBasket({
                   item={b}
                   products={products}
                   setBasket={setBasket}
+                  isAuthenticated={isAuthenticated}
+                  userId={userId || undefined}
                 />
               ))}
             </div>
