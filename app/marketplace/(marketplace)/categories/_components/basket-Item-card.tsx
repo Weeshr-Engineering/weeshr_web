@@ -35,7 +35,9 @@ export function BasketItemCard({
   const productPrice = product?.price || 0;
   const productImage = product?.image || "/api/placeholder/60/60";
 
+  // Don't render if product has invalid price or quantity
   if (!product && !item.name) return null;
+  if (item.qty < 1 || productPrice <= 0) return null;
 
   // Debounced API sync
   const syncQuantity = (newQty: number) => {

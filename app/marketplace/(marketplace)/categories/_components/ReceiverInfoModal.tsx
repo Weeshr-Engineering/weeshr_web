@@ -22,6 +22,7 @@ import PaymentSuccessModal from "../[vendor]/[product]/_components/PaymentSucces
 import { cartService } from "@/service/cart.service";
 import toast from "react-hot-toast";
 import { checkoutService } from "@/service/checkout.service";
+import { useSearchParams } from "next/navigation";
 
 interface ReceiverInfoModalProps {
   open: boolean;
@@ -64,6 +65,11 @@ export default function ReceiverInfoModal({
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const searchParams = useSearchParams();
+  const nameFromUrl = searchParams.get("name");
+
+  // Use name from URL if available, otherwise use the prop
+  const finalReceiverName = nameFromUrl || receiverName;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -91,10 +97,10 @@ export default function ReceiverInfoModal({
       // Prepare checkout data with lowercase frequency
       const checkoutData = {
         cartId: cartId,
-        receiverName: receiverName,
+        receiverName: finalReceiverName, // Use the final receiver name
         email:
           formData.email ||
-          `${receiverName.toLowerCase().replace(/\s+/g, "")}@example.com`,
+          `${finalReceiverName.toLowerCase().replace(/\s+/g, "")}@example.com`,
         shippingAddress: formData.address,
         deliveryDate: formData.deliveryDate,
         frequency: "once" as const,
@@ -109,7 +115,7 @@ export default function ReceiverInfoModal({
         if (result.data?.authorization_url) {
           // Redirect user to Paystack payment page
           toast.success("Redirecting to payment page...");
-          window.open(result.data.authorization_url, "_blank");
+          window.open(result.data.authorization_url, "_self");
 
           // Store payment reference for later verification
           if (result.data.reference) {
@@ -136,8 +142,6 @@ export default function ReceiverInfoModal({
   // Function to handle successful payment (to be called from payment callback)
   const handlePaymentSuccess = () => {
     setShowSuccessModal(true);
-    // Clear the cart after successful payment
-    // setBasket([]); // You might want to pass this as a prop
     cartService.clearCurrentCart();
   };
 
@@ -185,7 +189,7 @@ export default function ReceiverInfoModal({
                     className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
                     style={{ fontFamily: "Playwrite CU, sans-serif" }}
                   >
-                    {receiverName}
+                    {finalReceiverName} {/* Use final receiver name */}
                   </span>
                   <div className="text-xs lg:text-sm text-muted-foreground mt-2">
                     Fill in the details to send your gift
@@ -353,7 +357,7 @@ export default function ReceiverInfoModal({
       <PaymentSuccessModal
         open={showSuccessModal}
         setOpen={setShowSuccessModal}
-        receiverName={receiverName}
+        receiverName={finalReceiverName} 
         address={formData.address}
         deliveryDate={formatDate(formData.deliveryDate)}
         onCloseAll={handleSuccessClose}

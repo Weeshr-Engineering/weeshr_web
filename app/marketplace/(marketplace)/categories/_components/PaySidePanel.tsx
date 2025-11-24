@@ -51,7 +51,10 @@ export default function PaySidePanel({
               </div>
               <div>
                 <div className="flex items-center gap-1 text-gray-400">
-                  <Icon icon="mdi:shield-check" className="text-sm text-green-400" />
+                  <Icon
+                    icon="mdi:shield-check"
+                    className="text-sm text-green-400"
+                  />
                   <span className="text-xs">Secure</span>
                 </div>
               </div>
@@ -78,7 +81,7 @@ export default function PaySidePanel({
           </div>
 
           {/* ✅ Scrollable & Clickable items list */}
-          <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
+          <div className="flex-1  space-y-2 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 overflow-visible">
             {basket?.length ? (
               basket.map((item) => {
                 const product = products.find((p) => p.id == item.id);
@@ -90,20 +93,24 @@ export default function PaySidePanel({
                   <div
                     key={item.id}
                     onClick={() => handleItemClick(item.id)}
-                    className="cursor-pointer flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group active:scale-[0.98]"
+                    className="overflow-visible cursor-pointer flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group active:scale-[0.98]"
                   >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="relative w-12 h-12">
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          className="object-cover rounded-xl group-hover:scale-110 transition-transform duration-300"
-                        />
-                        <div className="absolute -top-2 -right-2 bg-[#4145A7] z-50 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg">
+                    <div className="flex items-center gap-4 flex-1 overflow-visible">
+                      <div className="relative overflow-visible">
+                        <div className="relative w-12 h-12 overflow-visible">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="object-cover rounded-xl group-hover:scale-110 transition-transform duration-300"
+                          />
+                        </div>
+
+                        <div className="absolute -top-2 -right-2 bg-[#4145A7] z-[999] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg">
                           {item.qty}
                         </div>
                       </div>
+
                       <div className="space-y-1 flex-1">
                         <p className="text-sm font-semibold text-gray-900 line-clamp-1">
                           {product.name}

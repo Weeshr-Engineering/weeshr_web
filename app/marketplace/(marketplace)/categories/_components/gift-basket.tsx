@@ -35,19 +35,26 @@ export function GiftBasket({
   const [receiverName, setReceiverName] = useState("Dorcas");
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const [isProcessingCart, setIsProcessingCart] = useState(false);
+  const [isClearingBasket, setIsClearingBasket] = useState(false); // New state specifically for clearing
+
+  // Filter basket to only show items with quantity >= 1 and price > 0
+  const filteredBasket = basket.filter((item) => {
+    const product = products.find((p) => p.id == item.id);
+    const price = product?.price || 0;
+    return item.qty >= 1 && price > 0;
+  });
 
   // Clear basket - local state or API
-  // In GiftBasket component - Clear basket function
   const clearBasket = async () => {
     // Store current basket for potential rollback
     const previousBasket = [...basket];
 
     // Clear UI immediately
     setBasket([]);
+    setIsClearingBasket(true); // Set clearing state
 
     // Sync with API in background if authenticated
     if (isAuthenticated && userId) {
-      setIsProcessingCart(true);
       try {
         const cartId = cartService.getCurrentCartId();
         if (cartId) {
@@ -65,11 +72,12 @@ export function GiftBasket({
         // Optional: Revert local state if API fails
         // setBasket(previousBasket);
       } finally {
-        setIsProcessingCart(false);
+        setIsClearingBasket(false); // Clear clearing state
       }
     } else {
       // For guest users, just show success immediately
       toast.success("Cart cleared successfully");
+      setIsClearingBasket(false); // Clear clearing state
     }
   };
 
@@ -122,7 +130,8 @@ export function GiftBasket({
     setIsProcessingCart(true);
 
     try {
-      const cartItems = basket.map((item) => ({
+      // Use filtered basket for sync to avoid syncing invalid items
+      const cartItems = filteredBasket.map((item) => ({
         productId: item.id.toString(),
         quantity: item.qty,
         price: products.find((p) => p.id == item.id)?.price || 0,
@@ -213,7 +222,7 @@ export function GiftBasket({
               cartResult.data?.items &&
               Array.isArray(cartResult.data.items)
             ) {
-              // Convert API cart items to local basket format
+              // Convert API cart items to local basket format and filter invalid items
               const apiBasket: BasketItem[] = cartResult.data.items
                 .map((item: any) => {
                   // Handle both cases: productId as object or string
@@ -237,7 +246,8 @@ export function GiftBasket({
                   (item): item is BasketItem =>
                     item.id !== undefined &&
                     item.qty !== undefined &&
-                    item.name !== undefined
+                    item.name !== undefined &&
+                    item.qty >= 1 // Only keep items with quantity >= 1
                 );
 
               setBasket(apiBasket);
@@ -262,7 +272,7 @@ export function GiftBasket({
           )}
         </h3>
         <div className="min-h-[450px] p-4">
-          {basket.length === 0 ? (
+          {filteredBasket.length === 0 ? ( // Use filteredBasket here
             <EmptyBasket />
           ) : (
             <div className="space-y-1 max-h-[420px] overflow-y-auto">
@@ -272,21 +282,26 @@ export function GiftBasket({
                   variant="ghost"
                   className="text-[#6A70FF] text-xs px-2 py-1 h-6 rounded-3xl"
                   onClick={clearBasket}
-                  disabled={isProcessingCart}
+                  disabled={isClearingBasket} // Use isClearingBasket here
                 >
-                  {isProcessingCart ? "Clearing..." : "Clear All"}
+                  {isClearingBasket ? "Clearing..." : "Clear All"}{" "}
+                  {/* Use isClearingBasket here */}
                 </Button>
               </div>
-              {basket.map((b) => (
-                <BasketItemCard
-                  key={b.id}
-                  item={b}
-                  products={products}
-                  setBasket={setBasket}
-                  isAuthenticated={isAuthenticated}
-                  userId={userId || undefined}
-                />
-              ))}
+              {filteredBasket.map(
+                (
+                  b // Use filteredBasket here
+                ) => (
+                  <BasketItemCard
+                    key={b.id}
+                    item={b}
+                    products={products}
+                    setBasket={setBasket}
+                    isAuthenticated={isAuthenticated}
+                    userId={userId || undefined}
+                  />
+                )
+              )}
             </div>
           )}
         </div>
@@ -304,7 +319,9 @@ export function GiftBasket({
               <Button
                 variant="default"
                 disabled={
-                  basket.length === 0 || isCheckingAuth || isProcessingCart
+                  filteredBasket.length === 0 ||
+                  isCheckingAuth ||
+                  isProcessingCart // Use filteredBasket here
                 }
                 className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
                 onClick={handleSendBasket}
@@ -312,9 +329,9 @@ export function GiftBasket({
                 <>
                   <Badge
                     className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center"
-                    title={`${basket.length} items`}
+                    title={`${filteredBasket.length} items`} // Use filteredBasket here
                   >
-                    {basket.length}
+                    {filteredBasket.length} {/* Use filteredBasket here */}
                   </Badge>
 
                   <span className="font-medium">Send basket</span>
@@ -339,8 +356,8 @@ export function GiftBasket({
         open={loginOpen && !isAuthenticated}
         setOpen={setLoginOpen}
         basketTotal={getBasketTotal()}
-        basketCount={basket.length}
-        basket={basket}
+        basketCount={filteredBasket.length} // Use filteredBasket here
+        basket={filteredBasket} // Use filteredBasket here
         products={products}
         onLoginSuccess={handleLoginSuccess}
       />
@@ -350,9 +367,9 @@ export function GiftBasket({
         open={receiverModalOpen && isAuthenticated}
         setOpen={setReceiverModalOpen}
         basketTotal={getBasketTotal()}
-        basketCount={basket.length}
+        basketCount={filteredBasket.length} // Use filteredBasket here
         receiverName={receiverName}
-        basket={basket}
+        basket={filteredBasket} // Use filteredBasket here
         products={products}
         onCloseAll={closeAllModals}
       />

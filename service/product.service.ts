@@ -55,7 +55,7 @@ export class ProductService {
         image:
           product.image?.secure_url ||
           this.getDefaultProductImage(product.name),
-        price: product.amount / 100, // Convert from kobo to naira
+        price: product.amount, // Convert from kobo to naira
         vendorId: product.vendorId,
         category: product.tag[0]?.name || "Food",
         isAvailable:
