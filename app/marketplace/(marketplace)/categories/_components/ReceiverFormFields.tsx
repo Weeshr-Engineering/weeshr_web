@@ -1,7 +1,14 @@
-import { Label } from '../../../../../components/ui/label';
+import { Label } from "../../../../../components/ui/label";
 import { Input } from "../../../../../components/ui/input";
+import {
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  Select,
+  SelectItem,
+} from "@/components/ui/select";
 
-"use client";
+("use client");
 
 interface ReceiverFormFieldsProps {
   formData: {

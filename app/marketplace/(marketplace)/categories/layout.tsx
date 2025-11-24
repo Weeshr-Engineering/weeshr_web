@@ -6,11 +6,12 @@ import HeaderMobile from "@/components/commons/header-mobile";
 import WidthLayout from "@/components/commons/width-layout";
 import { marketplaceLinks } from "@/lib/constants/navigation-items";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { fetchCategories } from "@/lib/api";
 import RedirectGuard from "./_components/redirect-guard";
 
-const LandingLayout = ({ children }: { children: React.ReactNode }) => {
+// Create a separate component that uses useSearchParams
+const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [categories, setCategories] = useState<any[]>([]);
@@ -107,6 +108,26 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
         <Footer />
       </WidthLayout>
     </main>
+  );
+};
+
+// Main component with Suspense boundary
+const LandingLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Suspense
+      fallback={
+        <main className="relative flex flex-col min-h-screen bg-cover bg-top bg-no-repeat bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]">
+          <WidthLayout>
+            <div className="flex-grow pt-0 lg:pt-10 py-10">
+              <div>Loading...</div>
+            </div>
+            <Footer />
+          </WidthLayout>
+        </main>
+      }
+    >
+      <LandingLayoutContent>{children}</LandingLayoutContent>
+    </Suspense>
   );
 };
 

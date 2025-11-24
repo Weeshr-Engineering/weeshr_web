@@ -10,7 +10,7 @@ export default function CategorySkeletonGrid({
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl pt-14 md:pt-10">
       {Array.from({ length: count }).map((_, i) => (
-<TiltedCard key={i} className="pointer-events-none">
+        <TiltedCard key={i}>
           <motion.div
             className="rounded-3xl overflow-hidden shadow-lg relative h-80 lg:h-full bg-muted/40 animate-pulse"
             initial={{ opacity: 0, y: 20 }} // Initial animation state

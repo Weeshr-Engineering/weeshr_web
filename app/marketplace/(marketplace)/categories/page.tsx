@@ -113,7 +113,7 @@ export default function Page() {
               >
                 {/* Background Image */}
                 <Image
-                  src={cat.image?.secure_url || "/placeholder.jpg"}
+                  src={cat.image?.secure_url}
                   alt={cat.name}
                   fill
                   className="object-cover z-0 pointer-events-none"
