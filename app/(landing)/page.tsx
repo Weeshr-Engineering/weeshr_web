@@ -5,6 +5,7 @@ import { LandingPageSectionThree } from "./_components/landing-page-section-thre
 const LandingPage = () => {
   return (
     <div>
+      
       <LandingPageSectionOne />
       <LandingPageSectionTwo />
       <LandingPageSectionThree />

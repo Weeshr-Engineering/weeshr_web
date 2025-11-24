@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="pb-10 lg:pb-16">
+    <div className="pb-10 ">
       <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl">
         <div className="flex flex-col items-center justify-between p-4 py-6 md:flex-row md:space-x-4 lg:space-x-6">
           <div className="flex flex-col items-center md:items-start">

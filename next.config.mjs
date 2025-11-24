@@ -10,7 +10,32 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "img.freepik.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "freepik.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.freepik.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "img.freepik.com",
         pathname: "/**",
       },
     ],

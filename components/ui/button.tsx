@@ -18,13 +18,17 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
+        marketplace: "hover:text-accent-foreground bg-marketplace-primary",
         link: "text-black underline-offset-4 hover:underline",
         white_btn: "bg-white hover:bg-white/80 border-black border-[1px]",
+        google:
+          "bg-[#E9F4D1] text-black border border-[#E9F4D1] hover:bg-[#dbeac2]",
       },
       size: {
         customSec: "h-10 w-32 px-1 py-2",
         customTet: "h-10 w-72 px-1 py-2",
         xl: "h-12 rounded-md px-8",
+        xl2: "h-9 px-3 py-2 rounded-2xl",
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
