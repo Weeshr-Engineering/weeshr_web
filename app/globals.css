@@ -79,6 +79,36 @@ body {
   }
 }
 
+/* globals.css */
+
+/* Prevent zoom on input focus in iOS */
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* Ensure inputs don't cause zoom on focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"] {
+    font-size: 16px;
+    transform: scale(1);
+    transform-origin: left center;
+  }
+
+  /* Ensure form elements are easily tappable without zoom */
+  input,
+  button,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -156,4 +186,10 @@ html {
 
 .text-rotate-space {
   white-space: pre;
+}
+
+input::placeholder {
+  color: --foreground !important;
+  opacity: 1 !important;
+  font-weight: 300 !important;
 }

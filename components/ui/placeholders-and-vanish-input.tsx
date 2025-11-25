@@ -203,8 +203,11 @@ export function PlaceholdersAndVanishInput({
         type="text"
         placeholder={placeholders[currentPlaceholder]}
         className={cn(
-          "w-full relative text-sm sm:text-base  font-thin  z-50 border-none dark:text-white bg-transparent text-black h-full rounded-3xl focus:outline-none focus:ring-0 pl-3 sm:pl-4 pr-20",
-          animating && "text-transparent dark:text-transparent"
+          "w-full relative text-sm sm:text-base z-50 border-none bg-transparent h-full rounded-3xl focus:outline-none focus:ring-0 pl-3 sm:pl-4 pr-20",
+          animating
+            ? "placeholder-transparent"
+            : "placeholder-gray-400 dark:placeholder-gray-500",
+          animating && "text-primary dark:text-primary"
         )}
       />
       <button

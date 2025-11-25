@@ -38,7 +38,7 @@ export default function Home() {
             priority
           />
           {/* CARD OVER THE IMAGE */}
-          <div className="absolute bottom-[10%] left-0 right-0 px-2">
+          <div className="absolute bottom-[15%] left-0 right-0 px-2">
             <Card className="bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl bg-[#E9F4D1] border-none">
               <CardHeader className="px-5 py-4">
                 <CardTitle className="text-xl text-primary text-left p-0">
@@ -160,6 +160,14 @@ export default function Home() {
                 placeholders={[
                   "Enter receiver's name",
                   "Gift someone special 🎁",
+                  "Type a friend's name...",
+                  "Who’s the lucky person ? ✨",
+                  "Surprise someone today 🎉",
+                  "Add a name to start gifting",
+                  "Search for a loved one ❤️",
+                  "Who deserves a treat ? 🍫",
+                  "Enter a colleague’s name 👔",
+                  "Make someone smile 😊",
                 ]}
                 onChange={(e) => setReceiverName(e.target.value)}
                 onSubmit={handleSubmit}
