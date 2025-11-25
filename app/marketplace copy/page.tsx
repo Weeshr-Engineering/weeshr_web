@@ -1,20 +1,25 @@
 "use client";
+
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 export default function Home() {
   const [receiverName, setReceiverName] = useState("");
   const router = useRouter();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!receiverName.trim()) return;
+
     router.push(
       `marketplace/categories?name=${encodeURIComponent(receiverName.trim())}`
     );
   };
+
   return (
     <div className="flex flex-col justify-between overflow-hidden h-screen max-h-screen">
       {/* 📌 MOBILE TOP LOGO */}
@@ -27,6 +32,7 @@ export default function Home() {
           priority
         />
       </div>
+
       {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
       <div className="md:hidden p-2 mt-6">
         <div className="relative w-full h-[85vh] rounded-3xl overflow-hidden">
@@ -37,6 +43,7 @@ export default function Home() {
             className="object-cover rounded-3xl"
             priority
           />
+
           {/* CARD OVER THE IMAGE */}
           <div className="absolute bottom-[10%] left-0 right-0 px-2">
             <Card className="bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl bg-[#E9F4D1] border-none">
@@ -53,6 +60,7 @@ export default function Home() {
                   </span>
                 </CardTitle>
               </CardHeader>
+
               <CardContent className="p-1 rounded-xl border-none">
                 <PlaceholdersAndVanishInput
                   placeholders={[
@@ -72,6 +80,7 @@ export default function Home() {
                 />
               </CardContent>
             </Card>
+
             <div className="relative mt-0 flex items-center justify-end pr-3 md:hidden">
               <span
                 className="whitespace-nowrap text-xl mt-10"
@@ -82,6 +91,7 @@ export default function Home() {
               >
                 start here
               </span>
+
               <Image
                 src="https://res.cloudinary.com/drykej1am/image/upload/v1763995414/weeshr-marketplace/Group_317_dxmhcs.png"
                 alt="Pointer Arrow"
@@ -91,6 +101,7 @@ export default function Home() {
               />
             </div>
           </div>
+
           <div className="absolute bottom-5 w-full flex flex-col justify-start items-start px-2">
             <span
               className="relative whitespace-nowrap px-2 text-md "
@@ -101,13 +112,17 @@ export default function Home() {
             >
               Surprise
             </span>
+
             <span className="text-[#E9F4D1] mt-[5px] pl-2">
               the ones you love,
             </span>
-            <span className="text-[#E9F4D1] pl-2">send them a gift</span>
+            <span className="text-[#E9F4D1] pl-2">
+              send them a gift
+            </span>
           </div>
         </div>
       </div>
+
       {/* 📌 DESKTOP VERSION — UNCHANGED */}
       <div className="hidden md:flex min-h-screen flex-row">
         {/* Left Image Section */}
@@ -119,6 +134,7 @@ export default function Home() {
             className="object-cover rounded-3xl"
             priority
           />
+
           <div className="absolute bottom-6 left-6 right-6 text-white">
             <p className="text-3xl font-semibold">
               <span
@@ -132,6 +148,7 @@ export default function Home() {
             <p className="text-2xl">send them a gift</p>
           </div>
         </div>
+
         <div className="flex flex-1 flex-col items-center justify-center p-6 md:pb-40 relative">
           <Image
             src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
@@ -141,6 +158,7 @@ export default function Home() {
             className="mb-28"
             priority
           />
+
           <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none">
             <CardHeader className="px-5 py-4">
               <CardTitle className="text-xl text-primary text-left p-0">
@@ -155,6 +173,7 @@ export default function Home() {
                 </span>
               </CardTitle>
             </CardHeader>
+
             <CardContent className="p-1">
               <PlaceholdersAndVanishInput
                 placeholders={[
@@ -167,30 +186,9 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <div className="relative mt-4 flex items-center justify-end pr-3 hidden md:flex pl-[220px]">
-            <span
-              className="whitespace-nowrap text-xl mt-10"
-              style={{
-                fontFamily: "Playwrite CU, sans-serif",
-                color: "white",
-              }}
-            >
-              Start here
-            </span>
-            <Image
-              src="https://res.cloudinary.com/drykej1am/image/upload/v1763995414/weeshr-marketplace/Group_317_dxmhcs.png"
-              alt="Pointer Arrow"
-              width={32}
-              height={32}
-              className="ml-2"
-            />
-          </div>
-
-          {/* 📌 DESKTOP START HERE INDICATOR */}
-
           <Link
             href="/"
-            className="text-white font-medium text-2xl absolute bottom-20 hover:underline transition"
+            className="text-white absolute bottom-20 hover:underline transition"
           >
             weeshr.com
           </Link>
