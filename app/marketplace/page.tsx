@@ -102,7 +102,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="absolute bottom-5 w-full flex flex-row items-center justify-center">
+          <div className="absolute bottom-5 w-full flex flex-col justify-start items-start px-2">
             <span
               className="relative whitespace-nowrap px-2 text-md "
               style={{
@@ -113,8 +113,11 @@ export default function Home() {
               Surprise
             </span>
 
-            <span className="text-[#E9F4D1] mt-[5px]">
-              the ones you love, send them a gift
+            <span className="text-[#E9F4D1] mt-[5px] pl-2">
+              the ones you love,
+            </span>
+            <span className="text-[#E9F4D1] pl-2">
+              send them a gift
             </span>
           </div>
         </div>

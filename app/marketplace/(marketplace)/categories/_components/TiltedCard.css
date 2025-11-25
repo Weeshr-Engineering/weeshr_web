@@ -1,24 +1,23 @@
 .tilted-card-figure {
-  perspective: 1000px;
+  perspective: 800px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 100%;
 }
 
 .tilted-card-inner {
   transform-style: preserve-3d;
   transition: box-shadow 0.2s ease;
+  position: relative;
 }
 
-.tilted-card-figure {
+.tilted-card-mobile {
   position: relative;
   width: 100%;
-  /* height: 100%; */
-  perspective: 800px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px; /* Adjust to match your desktop rounded-3xl if needed */
 }
 
 .tilted-card-mobile-alert {
@@ -38,11 +37,6 @@
   }
 }
 
-.tilted-card-inner {
-  position: relative;
-  transform-style: preserve-3d;
-}
-
 .tilted-card-img {
   position: absolute;
   top: 0;
@@ -51,6 +45,8 @@
   border-radius: 15px;
   will-change: transform;
   transform: translateZ(0);
+  width: 100%;
+  height: 100%;
 }
 
 .tilted-card-overlay {
@@ -60,6 +56,8 @@
   z-index: 2;
   will-change: transform;
   transform: translateZ(30px);
+  width: 100%;
+  height: 100%;
 }
 
 .tilted-card-caption {

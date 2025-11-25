@@ -70,7 +70,7 @@ export default function TiltedCard({
   if (isMobile) {
     return (
       <div
-        className="tilted-card-figure h-[300px] "
+        className="tilted-card-mobile h-[300px]"
         style={{ width: containerWidth }}
       >
         {children}
