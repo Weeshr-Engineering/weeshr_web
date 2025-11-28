@@ -204,10 +204,22 @@ export function MenuList({
                   onClick={() => handleAdd(product.id)}
                   onMouseEnter={() => setHoverId(product.id)}
                   onMouseLeave={() => setHoverId(null)}
-                  className="rounded-3xl font-light text-xs gap-1 flex items-center py-0.5 h-7"
+                  className="rounded-full sm:rounded-3xl font-light text-xs gap-1 flex items-center py-0.5 h-7"
                   disabled={!product.isAvailable}
                 >
-                  {product.isAvailable ? "Add to basket" : "Out of stock"}
+                  {/* Text visible only on md+ screens */}
+                  {product.isAvailable && (
+                    <span className="hidden sm:inline lg:hidden xl:inline">
+                      Add to basket
+                    </span>
+                  )}
+                  {!product.isAvailable && (
+                    <span className="hidden sm:inline lg:hidden xl:inline">
+                      Out of stock
+                    </span>
+                  )}
+
+                  {/* Icon always visible */}
                   <motion.span
                     initial={{ x: 0, scale: 1, rotate: 0 }}
                     animate={{
@@ -223,7 +235,7 @@ export function MenuList({
                       scale: { duration: 0.15, ease: "easeOut" },
                       rotate: { duration: 0.18, ease: "easeOut" },
                     }}
-                    className="flex ml-2"
+                    className="flex sm:ml-2 lg:ml-0 xl:ml-2"
                   >
                     <Icon
                       icon="streamline-ultimate:shopping-basket-1"

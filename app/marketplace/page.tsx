@@ -16,7 +16,12 @@ export default function Home() {
     );
   };
   return (
-    <div className="flex flex-col justify-between overflow-hidden h-screen max-h-screen">
+    <div
+      className="flex flex-col justify-between overflow-hidden min-h-screen h-screen max-h-screen 
+                
+                pt-[env(safe-area-inset-top)] 
+                pb-[env(safe-area-inset-bottom)]"
+    >
       {/* 📌 MOBILE TOP LOGO */}
       <div className="w-full flex justify-center pt-12 md:hidden">
         <Image

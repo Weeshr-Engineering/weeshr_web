@@ -181,7 +181,6 @@ export function PlaceholdersAndVanishInput({
     }
   }, [externalValue]);
 
-
   return (
     <form
       className={cn(
@@ -219,7 +218,7 @@ export function PlaceholdersAndVanishInput({
           value && "bg-teal-700 hover:bg-teal-700" // teal when user types
         )}
       >
-        <Icon icon="mage:gift" width={24} />
+        <Icon icon="carbon:send-alt-filled" width={24} />
       </button>
     </form>
   );
