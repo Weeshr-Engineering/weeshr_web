@@ -160,8 +160,8 @@ export default function VendorPage() {
 
   return (
     <div className="flex flex-col">
-      {/* Breadcrumb */}
-      <div className="text-left text-4xl p-4 md:p-6 flex items-center font-extralight text-gray-700">
+      {/* Breadcrumb - MOBILE SIZE ADJUSTED */}
+      <div className="text-left text-xl md:text-4xl p-4 md:p-6 flex items-center font-extralight text-gray-700">
         <button
           onClick={handleCategoryClick}
           className="capitalize hover:text-blue-600 transition-colors cursor-pointer"
@@ -180,8 +180,8 @@ export default function VendorPage() {
       </div>
 
       {/* Receiver Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 mt-6">
-        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6 w-full col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 ">
+        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 w-full col-span-2">
           <div className="pl-4">
             <ChangeReceiverDialog
               open={open}
@@ -191,12 +191,13 @@ export default function VendorPage() {
               handleSubmit={handleSubmit}
             />
 
+            {/* Main question - MOBILE SIZE ADJUSTED */}
             <div>
-              <span className="inline-block text-primary text-4xl">
+              <span className="inline-block text-primary text-xl md:text-4xl leading-snug">
                 What would{" "}
                 <span className="relative whitespace-nowrap text-blue-600 pr-1">
                   <span
-                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl font-medium -ml-1.5"
+                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-lg md:text-2xl font-medium -ml-1.5"
                     style={{ fontFamily: "Playwrite CU, sans-serif" }}
                   >
                     {displayName}
@@ -207,10 +208,12 @@ export default function VendorPage() {
             </div>
           </div>
 
-          {/* Dynamic label based on category */}
-          <div className="text-muted-foreground pl-4 pt-6">{categoryLabel}</div>
+          {/* Dynamic label based on category - MOBILE SIZE ADJUSTED */}
+          <div className="text-muted-foreground pl-4 pt-4 text-sm md:text-base">
+            {categoryLabel}
+          </div>
 
-          <div className="md:max-h-[600px] max-h-96 overflow-y-auto mt-0 pr-2">
+          <div className="md:max-h-[600px] max-h-96 overflow-y-auto mt-0  md:pr-2">
             <MenuList
               vendorId={vendorId}
               addToBasket={addToBasket}
