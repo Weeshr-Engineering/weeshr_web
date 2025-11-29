@@ -180,7 +180,7 @@ export default function VendorPage() {
       </div>
 
       {/* Receiver Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 ">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6  lg:pb-0">
         <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 w-full col-span-2">
           <div className="pl-4">
             <ChangeReceiverDialog
@@ -213,7 +213,7 @@ export default function VendorPage() {
             {categoryLabel}
           </div>
 
-          <div className="md:max-h-[600px] max-h-96 overflow-y-auto mt-0  md:pr-2">
+          <div className="md:max-h-[600px] md:max-h-96 overflow-y-auto mt-0  md:pr-2">
             <MenuList
               vendorId={vendorId}
               addToBasket={addToBasket}
@@ -225,7 +225,7 @@ export default function VendorPage() {
           </div>
         </div>
 
-        <div className="mt-6 md:mt-0">
+        <div className="md:mt-0 ">
           <GiftBasket
             basket={basket}
             products={products}
