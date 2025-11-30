@@ -18,6 +18,8 @@ import { BasketItem } from "@/lib/BasketItem";
 import ChangeReceiverDialog from "../../_components/change-receiver-dialog";
 import { GiftBasket } from "../../_components/gift-basket";
 import axios from "axios";
+import { cartService } from "@/service/cart.service";
+import toast from "react-hot-toast";
 
 // Define category labels for vendor pages
 const vendorCategoryLabels: Record<string, string> = {
@@ -159,9 +161,38 @@ export default function VendorPage() {
     );
   };
 
-  // Clear basket function
-  const clearBasket = () => {
+  // Clear basket function with API sync
+  const clearBasket = async () => {
+    // Store current basket for potential rollback
+    const previousBasket = [...basket];
+
+    // Clear UI immediately
     setBasket([]);
+
+    // Sync with API in background if authenticated
+    if (isAuthenticated && userId) {
+      try {
+        const cartId = cartService.getCurrentCartId();
+        if (cartId) {
+          const result = await cartService.clearCart(cartId);
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to clear cart on server");
+            // Optional: Revert local state if API fails
+            // setBasket(previousBasket);
+          } else {
+            toast.success("Cart cleared successfully");
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to clear cart on server");
+        console.error("Clear cart error:", error);
+        // Optional: Revert local state if API fails
+        // setBasket(previousBasket);
+      }
+    } else {
+      // For guest users, just show success immediately
+      toast.success("Cart cleared successfully");
+    }
   };
 
   return (
