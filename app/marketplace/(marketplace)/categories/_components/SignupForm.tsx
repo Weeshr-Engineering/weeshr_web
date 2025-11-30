@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 interface SignupFormProps {
   onToggleMode: () => void;
   onSuccess: () => void;
+  onSignupSuccess: (email: string, phone: string) => void;
 }
 
 const countryCodes = [
@@ -35,13 +36,13 @@ const countryCodes = [
 export default function SignupForm({
   onToggleMode,
   onSuccess,
+  onSignupSuccess,
 }: SignupFormProps) {
   const [formData, setFormData] = useState<SignupFormData>({
     firstName: "",
     lastName: "",
     email: "",
     userName: "",
-    password: "",
     gender: "",
     dob: "",
     phone: {
@@ -50,7 +51,6 @@ export default function SignupForm({
     },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoadingSignup, setIsLoadingSignup] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +74,13 @@ export default function SignupForm({
     try {
       setIsLoadingSignup(true);
       await signupService.register(formData);
-      onSuccess();
+
+      // Show verification modal instead of calling onSuccess immediately
+      // Call parent handler with email and phone to start verification flow
+      onSignupSuccess(
+        formData.email,
+        `${formData.phone.countryCode} ${formData.phone.phoneNumber}`
+      );
     } catch (error) {
       // Zod and toast already handle messages in the service
       console.error("Signup failed:", error);
@@ -84,72 +90,72 @@ export default function SignupForm({
   };
 
   return (
-    <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
-      <CardHeader className="text-center pb-6 lg:pb-8 flex-shrink-0">
-        <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
-          <span className="relative text-primary pr-1">
-            Create account
-            <span
-              className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
-              style={{ fontFamily: "Playwrite CU, sans-serif" }}
-            >
-              Join us today
+    <>
+      <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
+        <CardHeader className="text-center pb-6 lg:pb-8 flex-shrink-0">
+          <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
+            <span className="relative text-primary pr-1">
+              Create account
+              <span
+                className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
+                style={{ fontFamily: "Playwrite CU, sans-serif" }}
+              >
+                Join us today
+              </span>
             </span>
-          </span>
-          <div className="text-xs lg:text-sm text-muted-foreground mt-2">
-            All fields are required
-          </div>
-        </CardTitle>
-      </CardHeader>
+            <div className="text-xs lg:text-sm text-muted-foreground mt-2">
+              All fields are required
+            </div>
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className="space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden">
-        <form
-          onSubmit={handleSignup}
-          className="flex-1 flex flex-col overflow-hidden"
-        >
-          <div className="space-y-2 flex-1 overflow-y-auto pr-2">
-            {/* First & Last name */}
-            <div className="grid grid-cols-2 gap-4">
+        <CardContent className="space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden">
+          <form
+            onSubmit={handleSignup}
+            className="flex-1 flex flex-col overflow-hidden"
+          >
+            <div className="space-y-2 flex-1 overflow-y-auto pr-2">
+              {/* First & Last name */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>First Name *</Label>
+                  <Input
+                    name="firstName"
+                    placeholder="First name"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
+                    className="rounded-xl h-12 border-2"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Last Name *</Label>
+                  <Input
+                    name="lastName"
+                    placeholder="Last name"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
+                    className="rounded-xl h-12 border-2"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
               <div className="space-y-2">
-                <Label>First Name *</Label>
+                <Label>Email *</Label>
                 <Input
-                  name="firstName"
-                  placeholder="First name"
-                  value={formData.firstName}
+                  name="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={formData.email}
                   onChange={handleInputChange}
                   required
                   className="rounded-xl h-12 border-2"
                 />
               </div>
-              <div className="space-y-2">
-                <Label>Last Name *</Label>
-                <Input
-                  name="lastName"
-                  placeholder="Last name"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-xl h-12 border-2"
-                />
-              </div>
-            </div>
 
-            {/* Email */}
-            <div className="space-y-2">
-              <Label>Email *</Label>
-              <Input
-                name="email"
-                type="email"
-                placeholder="your@email.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="rounded-xl h-12 border-2"
-              />
-            </div>
-
-            {/* Username + Password */}
-            <div className="grid grid-cols-2 gap-4">
+              {/* Username */}
               <div className="space-y-2">
                 <Label>Username *</Label>
                 <Input
@@ -161,150 +167,124 @@ export default function SignupForm({
                   className="rounded-xl h-12 border-2"
                 />
               </div>
-              <div className="space-y-2">
-                <Label>Password *</Label>
-                <div className="relative">
-                  <Input
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter 4-digit PIN"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    maxLength={20}
-                    className="rounded-xl h-12 border-2 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+
+              {/* Gender & DOB */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Gender *</Label>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, gender: value }))
+                    }
                   >
-                    <Icon
-                      icon={
-                        showPassword ? "mdi:eye-off-outline" : "mdi:eye-outline"
-                      }
-                      className="w-5 h-5"
-                    />
-                  </button>
+                    <SelectTrigger className="rounded-xl h-12 border-2">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="others">Others</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Date of Birth *</Label>
+                  <Input
+                    name="dob"
+                    type="date"
+                    value={formData.dob}
+                    onChange={handleInputChange}
+                    max={new Date().toISOString().split("T")[0]}
+                    required
+                    className="rounded-xl h-12 border-2"
+                  />
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="space-y-2">
+                <Label>Phone Number *</Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={formData.phone.countryCode}
+                    onValueChange={(value) =>
+                      handlePhoneChange("countryCode", value)
+                    }
+                  >
+                    <SelectTrigger className="w-32 rounded-xl h-12 border-2">
+                      <SelectValue>
+                        <span className="flex items-center gap-2 text-black">
+                          <span>
+                            {
+                              countryCodes.find(
+                                (c) => c.code === formData.phone.countryCode
+                              )?.flag
+                            }
+                          </span>
+                          <span>{formData.phone.countryCode}</span>
+                        </span>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((country) => (
+                        <SelectItem key={country.code} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>{country.code}</span>
+                            <span className="text-xs text-gray-500">
+                              {country.country}
+                            </span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    name="phoneNumber"
+                    placeholder="791 643 8133"
+                    value={formData.phone.phoneNumber}
+                    onChange={(e) =>
+                      handlePhoneChange("phoneNumber", e.target.value)
+                    }
+                    required
+                    className="flex-1 rounded-xl h-12 border-2"
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Gender & DOB */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Gender *</Label>
-                <Select
-                  value={formData.gender}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, gender: value }))
-                  }
-                >
-                  <SelectTrigger className="rounded-xl h-12 border-2">
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Date of Birth *</Label>
-                <Input
-                  name="dob"
-                  type="date"
-                  value={formData.dob}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-xl h-12 border-2"
-                />
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div className="space-y-2">
-              <Label>Phone Number *</Label>
-              <div className="flex gap-2">
-                <Select
-                  value={formData.phone.countryCode}
-                  onValueChange={(value) =>
-                    handlePhoneChange("countryCode", value)
-                  }
-                >
-                  <SelectTrigger className="w-32 rounded-xl h-12 border-2">
-                    <SelectValue>
-                      <span className="flex items-center gap-2 text-black">
-                        <span>
-                          {
-                            countryCodes.find(
-                              (c) => c.code === formData.phone.countryCode
-                            )?.flag
-                          }
-                        </span>
-                        <span>{formData.phone.countryCode}</span>
-                      </span>
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryCodes.map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        <span className="flex items-center gap-2">
-                          <span>{country.flag}</span>
-                          <span>{country.code}</span>
-                          <span className="text-xs text-gray-500">
-                            {country.country}
-                          </span>
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Input
-                  name="phoneNumber"
-                  placeholder="791 643 8133"
-                  value={formData.phone.phoneNumber}
-                  onChange={(e) =>
-                    handlePhoneChange("phoneNumber", e.target.value)
-                  }
-                  required
-                  className="flex-1 rounded-xl h-12 border-2"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Submit */}
-          <div className="flex-shrink-0 space-y-4 pt-4 mt-4 border-t border-gray-200">
-            <Button
-              type="submit"
-              disabled={isLoadingSignup}
-              className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold hover:from-[#5a5fc7] hover:to-[#4145A7] shadow-lg hover:shadow-xl"
-            >
-              {isLoadingSignup ? (
-                <Icon
-                  height={20}
-                  width={70}
-                  icon="eos-icons:three-dots-loading"
-                />
-              ) : (
-                "Create Account"
-              )}
-            </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={onToggleMode}
-                className="text-sm text-[#6A70FF] hover:underline"
+            {/* Submit */}
+            <div className="flex-shrink-0 space-y-4 pt-4 mt-4 border-t border-gray-200">
+              <Button
+                type="submit"
+                disabled={isLoadingSignup}
+                className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold hover:from-[#5a5fc7] hover:to-[#4145A7] shadow-lg hover:shadow-xl"
               >
-                Already have an account? Sign in
-              </button>
+                {isLoadingSignup ? (
+                  <Icon
+                    height={20}
+                    width={70}
+                    icon="eos-icons:three-dots-loading"
+                  />
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={onToggleMode}
+                  className="text-sm text-[#6A70FF] hover:underline"
+                >
+                  Already have an account? Sign in
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </>
   );
 }

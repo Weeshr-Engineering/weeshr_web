@@ -14,6 +14,8 @@ import { BasketItem } from "@/lib/BasketItem";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import LoginDialog from "./LoginDialog";
 import ReceiverInfoModal from "./ReceiverInfoModal";
+import VerifyAccountModal from "./VerifyAccountModal";
+import SetPinModal from "./SetPinModal";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -49,6 +51,10 @@ export function GiftBasket({
   const [isClearingBasket, setIsClearingBasket] = useState(false); // New state specifically for clearing
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false); // Mobile basket sheet state
   const [showMobileBasket, setShowMobileBasket] = useState(true); // New state to control mobile basket visibility
+  const [showVerifyModal, setShowVerifyModal] = useState(false); // Verification modal state
+  const [showPinModal, setShowPinModal] = useState(false); // PIN modal state
+  const [userEmail, setUserEmail] = useState("");
+  const [userPhone, setUserPhone] = useState("");
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -117,10 +123,24 @@ export function GiftBasket({
 
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           setIsAuthenticated(true);
-          setUserId(profileResponse.data.data._id);
+          const userData = profileResponse.data.data;
+          setUserId(userData._id);
+          setUserEmail(userData.email);
+          setUserPhone(
+            `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
+          );
 
-          // User is authenticated - sync cart to backend
-          await syncCartToBackend(profileResponse.data.data._id);
+          // Check if email is verified
+          if (!userData.emailVerified) {
+            // Email not verified - show verification modal
+            toast.error("Please verify your email to continue");
+            setShowVerifyModal(true);
+            setIsCheckingAuth(false);
+            return;
+          }
+
+          // User is authenticated and verified - sync cart to backend
+          await syncCartToBackend(userData._id);
         } else {
           setIsAuthenticated(false);
           setUserId(null);
@@ -208,6 +228,18 @@ export function GiftBasket({
       console.error("Error after login:", error);
       toast.error("Failed to sync your basket after login.");
     }
+  };
+
+  const handleSignupSuccess = (email: string, phone: string) => {
+    // Close login dialog immediately
+    setLoginOpen(false);
+
+    // Set user data for verification
+    setUserEmail(email);
+    setUserPhone(phone);
+
+    // Start verification flow
+    setShowVerifyModal(true);
   };
 
   // Load user cart on authentication
@@ -470,13 +502,16 @@ export function GiftBasket({
 
       {/* Show LoginDialog only when user is NOT authenticated and loginOpen is true */}
       <LoginDialog
-        open={loginOpen && !isAuthenticated}
+        open={
+          loginOpen && !isAuthenticated && !showVerifyModal && !showPinModal
+        }
         setOpen={setLoginOpen}
         basketTotal={getBasketTotal()}
         basketCount={filteredBasket.length} // Use filteredBasket here
         basket={filteredBasket} // Use filteredBasket here
         products={products}
         onLoginSuccess={handleLoginSuccess}
+        onSignupSuccess={handleSignupSuccess}
       />
 
       {/* Show ReceiverInfoModal only when user IS authenticated and receiverModalOpen is true */}
@@ -490,6 +525,37 @@ export function GiftBasket({
         products={products}
         onCloseAll={closeAllModals}
       />
+
+      {/* Show VerifyAccountModal when user is authenticated but email not verified */}
+      {userEmail && (
+        <VerifyAccountModal
+          open={showVerifyModal}
+          onClose={() => setShowVerifyModal(false)}
+          email={userEmail}
+          phone={userPhone}
+          onVerificationSuccess={() => {
+            // After successful verification, show PIN modal
+            setShowVerifyModal(false);
+            setShowPinModal(true);
+          }}
+        />
+      )}
+
+      {/* Show SetPinModal after email verification */}
+      {userEmail && (
+        <SetPinModal
+          open={showPinModal}
+          onClose={() => setShowPinModal(false)}
+          email={userEmail}
+          onPinSetSuccess={async () => {
+            // After PIN is set, proceed with cart sync
+            setShowPinModal(false);
+            if (userId) {
+              await syncCartToBackend(userId);
+            }
+          }}
+        />
+      )}
     </>
   );
 }
