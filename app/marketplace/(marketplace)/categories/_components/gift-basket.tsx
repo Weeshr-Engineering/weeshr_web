@@ -230,13 +230,26 @@ export function GiftBasket({
     }
   };
 
-  const handleSignupSuccess = (email: string, phone: string) => {
+  const handleSignupSuccess = (
+    email: string,
+    phone: string,
+    newUserId?: string,
+    token?: string
+  ) => {
     // Close login dialog immediately
     setLoginOpen(false);
 
     // Set user data for verification
     setUserEmail(email);
     setUserPhone(phone);
+
+    // If we have token and userId, auto-login the user
+    if (token && newUserId) {
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("userId", newUserId);
+      setIsAuthenticated(true);
+      setUserId(newUserId);
+    }
 
     // Start verification flow
     setShowVerifyModal(true);

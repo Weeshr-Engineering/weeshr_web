@@ -16,7 +16,12 @@ interface LoginDialogProps {
   basket: BasketItem[];
   products: Product[];
   onLoginSuccess?: () => void; // Add this prop
-  onSignupSuccess?: (email: string, phone: string) => void;
+  onSignupSuccess?: (
+    email: string,
+    phone: string,
+    userId?: string,
+    token?: string
+  ) => void;
 }
 
 export default function LoginDialog({

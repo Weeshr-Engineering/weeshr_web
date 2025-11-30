@@ -19,7 +19,12 @@ import toast from "react-hot-toast";
 interface SignupFormProps {
   onToggleMode: () => void;
   onSuccess: () => void;
-  onSignupSuccess: (email: string, phone: string) => void;
+  onSignupSuccess: (
+    email: string,
+    phone: string,
+    userId?: string,
+    token?: string
+  ) => void;
 }
 
 const countryCodes = [
@@ -73,13 +78,16 @@ export default function SignupForm({
 
     try {
       setIsLoadingSignup(true);
-      await signupService.register(formData);
+      const response = await signupService.register(formData);
 
       // Show verification modal instead of calling onSuccess immediately
       // Call parent handler with email and phone to start verification flow
+      // Also pass userId and token if available to auto-login
       onSignupSuccess(
         formData.email,
-        `${formData.phone.countryCode} ${formData.phone.phoneNumber}`
+        `${formData.phone.countryCode} ${formData.phone.phoneNumber}`,
+        response.data?.user?._id,
+        response.data?.user?.token
       );
     } catch (error) {
       // Zod and toast already handle messages in the service
