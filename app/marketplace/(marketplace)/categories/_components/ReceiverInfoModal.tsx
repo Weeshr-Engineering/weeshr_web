@@ -87,11 +87,9 @@ export default function ReceiverInfoModal({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // EMAIL REMOVED FROM VALIDATION HERE
+  // EMAIL AND ADDRESS REMOVED FROM VALIDATION HERE
   const isFormValid = () =>
-    formData.phoneNumber.trim() &&
-    formData.address.trim() &&
-    formData.deliveryDate;
+    formData.phoneNumber.trim() && formData.deliveryDate;
 
   const handleMakePayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -274,18 +272,18 @@ export default function ReceiverInfoModal({
                 </div>
 
                 {/* Address */}
+                {/* Address (OPTIONAL) */}
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">
-                    Delivery Address
+                    Delivery Address (optional)
                   </Label>
                   <Input
                     value={formData.address}
                     onChange={(e) =>
                       handleInputChange("address", e.target.value)
                     }
-                    placeholder="Enter full delivery address"
+                    placeholder="Enter full delivery address (optional)"
                     className="rounded-xl h-12 border-2"
-                    required
                   />
                 </div>
 
