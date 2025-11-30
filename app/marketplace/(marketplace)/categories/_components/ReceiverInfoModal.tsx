@@ -44,7 +44,7 @@ interface FormData {
   phoneNumber: string;
   address: string;
   deliveryDate: string;
-  email: string;
+  email: string; // still here, but optional
 }
 
 const countryCodes = [
@@ -87,11 +87,11 @@ export default function ReceiverInfoModal({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // EMAIL REMOVED FROM VALIDATION HERE
   const isFormValid = () =>
     formData.phoneNumber.trim() &&
     formData.address.trim() &&
-    formData.deliveryDate &&
-    formData.email.trim();
+    formData.deliveryDate;
 
   const handleMakePayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -114,10 +114,13 @@ export default function ReceiverInfoModal({
       const checkoutData = {
         cartId,
         receiverName: finalReceiverName,
+
+        // FALLBACK EMAIL STILL APPLIES
         email:
           formData.email ||
           `${finalReceiverName.toLowerCase().replace(/\s+/g, "")}@example.com`,
-        phoneNumber: formData.phoneNumber, 
+
+        phoneNumber: formData.phoneNumber,
         countryCode: formData.countryCode,
         shippingAddress: formData.address,
         deliveryDate: formData.deliveryDate,
@@ -201,18 +204,17 @@ export default function ReceiverInfoModal({
               </CardHeader>
 
               <CardContent className="space-y-4 flex-1 overflow-y-auto">
-                {/* Email */}
+                {/* Email (OPTIONAL NOW) */}
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">
-                    Email Address
+                    Email Address (optional)
                   </Label>
                   <Input
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="Enter email address"
+                    placeholder="Enter email address (optional)"
                     className="rounded-xl h-12 border-2"
-                    required
                   />
                 </div>
 
