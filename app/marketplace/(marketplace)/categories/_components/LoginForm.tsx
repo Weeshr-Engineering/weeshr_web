@@ -17,7 +17,7 @@ interface LoginFormProps {
 }
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string(),
   pin: z.string().min(4, { message: "Password must be 4 characters long" }),
 });
 

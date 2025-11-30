@@ -518,7 +518,10 @@ export function GiftBasket({
         open={
           loginOpen && !isAuthenticated && !showVerifyModal && !showPinModal
         }
-        setOpen={setLoginOpen}
+        setOpen={(open) => {
+          setLoginOpen(open);
+          if (!open) setShowMobileBasket(true);
+        }}
         basketTotal={getBasketTotal()}
         basketCount={filteredBasket.length} // Use filteredBasket here
         basket={filteredBasket} // Use filteredBasket here
@@ -543,7 +546,10 @@ export function GiftBasket({
       {userEmail && (
         <VerifyAccountModal
           open={showVerifyModal}
-          onClose={() => setShowVerifyModal(false)}
+          onClose={() => {
+            setShowVerifyModal(false);
+            setShowMobileBasket(true);
+          }}
           email={userEmail}
           phone={userPhone}
           onVerificationSuccess={() => {
@@ -558,7 +564,10 @@ export function GiftBasket({
       {userEmail && (
         <SetPinModal
           open={showPinModal}
-          onClose={() => setShowPinModal(false)}
+          onClose={() => {
+            setShowPinModal(false);
+            setShowMobileBasket(true);
+          }}
           email={userEmail}
           onPinSetSuccess={async () => {
             // After PIN is set, proceed with cart sync
