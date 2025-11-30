@@ -19,6 +19,7 @@ interface MobileMenuButtonsProps {
   products: Product[];
   isAuthenticated: boolean;
   userId?: string;
+  clearBasket: () => void;
 }
 
 export function MobileMenuButtons({
@@ -29,6 +30,7 @@ export function MobileMenuButtons({
   products,
   isAuthenticated,
   userId,
+  clearBasket,
 }: MobileMenuButtonsProps) {
   const [shakeId, setShakeId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
@@ -191,101 +193,76 @@ export function MobileMenuButtons({
     );
   }
 
+  // Calculate total items in basket
+  const totalItems = basket.reduce((sum, item) => sum + item.qty, 0);
+
   return (
-    <div className="grid grid-cols-1 gap-4 py-6 pt-4">
-      {menuProducts.map((product) => {
-        const basketItem = basket.find((item) => item.id === product.id);
-        const itemCount = basketItem?.qty || 0;
+    <div className="space-y-4">
+      {/* Clear All button - only show when basket has items */}
+      <div className="h-10">
+        {totalItems > 0 && (
+          <div className="flex justify-end items-end px-2">
+            <Button
+              variant="ghost"
+              className="text-[#6A70FF] text-xs px-3 py-1 h-7 rounded-3xl hover:bg-[#6A70FF]/10"
+              onClick={clearBasket}
+            >
+              Clear All
+            </Button>
+          </div>
+        )}
+      </div>
 
-        return (
-          <Card
-            key={product.id}
-            className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 bg-white border-[1px] flex flex-row w-full p-2 gap-2 relative"
-          >
-            {/* Image */}
-            <div className="relative w-[100px] h-[100px] flex-shrink-0">
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={200}
-                height={200}
-                className="object-cover w-full h-full rounded-lg"
-                loading="lazy"
-                quality={75}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
-                    product.name
-                  )}`;
-                }}
-              />
-            </div>
+      <div className="grid grid-cols-1 gap-4 md:py-2">
+        {menuProducts.map((product) => {
+          const basketItem = basket.find((item) => item.id === product.id);
+          const itemCount = basketItem?.qty || 0;
 
-            {/* Content */}
-            <div className="flex flex-col justify-between flex-1 min-w-0">
-              <div>
-                <CardTitle className="text-sm font-normal">
-                  {product.name}
-                </CardTitle>
-                <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
-                  {product.description}
-                </CardDescription>
+          return (
+            <Card
+              key={product.id}
+              className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 bg-white border-[1px] flex flex-row w-full p-2 gap-2 relative"
+            >
+              {/* Image */}
+              <div className="relative w-[100px] h-[100px] flex-shrink-0">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={200}
+                  height={200}
+                  className="object-cover w-full h-full rounded-lg"
+                  loading="lazy"
+                  quality={75}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
+                      product.name
+                    )}`;
+                  }}
+                />
               </div>
 
-              <div className="flex justify-between items-center text-md">
-                <p className="font-semibold">
-                  ₦ {product.price.toLocaleString()}
-                </p>
+              {/* Content */}
+              <div className="flex flex-col justify-between flex-1 min-w-0">
+                <div>
+                  <CardTitle className="text-sm font-normal">
+                    {product.name}
+                  </CardTitle>
+                  <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
+                    {product.description}
+                  </CardDescription>
+                </div>
 
-                {/* BUTTON LOGIC */}
-                {product.isAvailable ? (
-                  <>
-                    {/* Show basket icon FIRST when itemCount = 0 */}
-                    {itemCount === 0 && (
-                      <Button
-                        size="sm"
-                        variant="marketplace"
-                        onClick={() => handleAdd(product.id)}
-                        className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
-                      >
-                        <motion.span
-                          initial={{ scale: 1 }}
-                          animate={{
-                            scale: shakeId === product.id ? [1, 1.2, 1] : 1,
-                          }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Icon
-                            icon="streamline-ultimate:shopping-basket-1"
-                            className="h-4 w-4 text-black"
-                          />
-                        </motion.span>
-                      </Button>
-                    )}
+                <div className="flex justify-between items-center text-md">
+                  <p className="font-semibold">
+                    ₦ {product.price.toLocaleString()}
+                  </p>
 
-                    {/* Show qty controls when itemCount > 0 */}
-                    {itemCount > 0 && (
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleRemove(product.id)}
-                          className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
-                        >
-                          <Icon icon="mdi:minus" className="h-4 w-4" />
-                        </Button>
-
-                        <motion.span
-                          initial={{ scale: 1 }}
-                          animate={{
-                            scale: shakeId === product.id ? [1, 1.2, 1] : 1,
-                          }}
-                          transition={{ duration: 0.3 }}
-                          className="font-semibold text-sm min-w-[20px] text-center"
-                        >
-                          {itemCount}
-                        </motion.span>
-
+                  {/* BUTTON LOGIC */}
+                  {product.isAvailable ? (
+                    <>
+                      {/* Show basket icon FIRST when itemCount = 0 */}
+                      {itemCount === 0 && (
                         <Button
                           size="sm"
                           variant="marketplace"
@@ -299,22 +276,67 @@ export function MobileMenuButtons({
                             }}
                             transition={{ duration: 0.3 }}
                           >
-                            <Icon icon="mdi:plus" className="h-4 w-4" />
+                            <Icon
+                              icon="streamline-ultimate:shopping-basket-1"
+                              className="h-4 w-4 text-black"
+                            />
                           </motion.span>
                         </Button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-xs text-muted-foreground">
-                    Out of stock
-                  </span>
-                )}
+                      )}
+
+                      {/* Show qty controls when itemCount > 0 */}
+                      {itemCount > 0 && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleRemove(product.id)}
+                            className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
+                          >
+                            <Icon icon="mdi:minus" className="h-4 w-4" />
+                          </Button>
+
+                          <motion.span
+                            initial={{ scale: 1 }}
+                            animate={{
+                              scale: shakeId === product.id ? [1, 1.2, 1] : 1,
+                            }}
+                            transition={{ duration: 0.3 }}
+                            className="font-semibold text-sm min-w-[20px] text-center"
+                          >
+                            {itemCount}
+                          </motion.span>
+
+                          <Button
+                            size="sm"
+                            variant="marketplace"
+                            onClick={() => handleAdd(product.id)}
+                            className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
+                          >
+                            <motion.span
+                              initial={{ scale: 1 }}
+                              animate={{
+                                scale: shakeId === product.id ? [1, 1.2, 1] : 1,
+                              }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <Icon icon="mdi:plus" className="h-4 w-4" />
+                            </motion.span>
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">
+                      Out of stock
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          </Card>
-        );
-      })}
+            </Card>
+          );
+        })}
+      </div>
     </div>
   );
 }

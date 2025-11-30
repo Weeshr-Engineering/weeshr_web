@@ -159,6 +159,11 @@ export default function VendorPage() {
     );
   };
 
+  // Clear basket function
+  const clearBasket = () => {
+    setBasket([]);
+  };
+
   return (
     <div className="flex flex-col">
       {/* Breadcrumb - MOBILE SIZE ADJUSTED */}
@@ -198,7 +203,7 @@ export default function VendorPage() {
                 What would{" "}
                 <span className="relative whitespace-nowrap text-blue-600 pr-1">
                   <span
-                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-lg md:text-2xl font-medium -ml-1.5"
+                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-lg md:text-2xl font-medium md:-ml-1.5"
                     style={{ fontFamily: "Playwrite CU, sans-serif" }}
                   >
                     {displayName}
@@ -225,6 +230,7 @@ export default function VendorPage() {
                 products={products}
                 isAuthenticated={isAuthenticated}
                 userId={userId || undefined}
+                clearBasket={clearBasket}
               />
             </div>
 
