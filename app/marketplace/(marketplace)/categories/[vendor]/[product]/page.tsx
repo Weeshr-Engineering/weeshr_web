@@ -13,10 +13,13 @@ import {
 } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MenuList } from "../../_components/menu-list";
+import { MobileMenuButtons } from "../../_components/mobile-menu-buttons";
 import { BasketItem } from "@/lib/BasketItem";
 import ChangeReceiverDialog from "../../_components/change-receiver-dialog";
 import { GiftBasket } from "../../_components/gift-basket";
 import axios from "axios";
+import { cartService } from "@/service/cart.service";
+import toast from "react-hot-toast";
 
 // Define category labels for vendor pages
 const vendorCategoryLabels: Record<string, string> = {
@@ -158,10 +161,44 @@ export default function VendorPage() {
     );
   };
 
+  // Clear basket function with API sync
+  const clearBasket = async () => {
+    // Store current basket for potential rollback
+    const previousBasket = [...basket];
+
+    // Clear UI immediately
+    setBasket([]);
+
+    // Sync with API in background if authenticated
+    if (isAuthenticated && userId) {
+      try {
+        const cartId = cartService.getCurrentCartId();
+        if (cartId) {
+          const result = await cartService.clearCart(cartId);
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to clear cart on server");
+            // Optional: Revert local state if API fails
+            // setBasket(previousBasket);
+          } else {
+            toast.success("Cart cleared successfully");
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to clear cart on server");
+        console.error("Clear cart error:", error);
+        // Optional: Revert local state if API fails
+        // setBasket(previousBasket);
+      }
+    } else {
+      // For guest users, just show success immediately
+      toast.success("Cart cleared successfully");
+    }
+  };
+
   return (
     <div className="flex flex-col">
-      {/* Breadcrumb */}
-      <div className="text-left text-4xl p-4 md:p-6 flex items-center font-extralight text-gray-700">
+      {/* Breadcrumb - MOBILE SIZE ADJUSTED */}
+      <div className="text-left text-xl md:text-4xl p-4 md:p-6 flex items-center font-extralight text-gray-700">
         <button
           onClick={handleCategoryClick}
           className="capitalize hover:text-blue-600 transition-colors cursor-pointer"
@@ -180,8 +217,8 @@ export default function VendorPage() {
       </div>
 
       {/* Receiver Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 mt-6">
-        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-6 w-full col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6  lg:pb-0">
+        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 w-full col-span-2">
           <div className="pl-4">
             <ChangeReceiverDialog
               open={open}
@@ -191,12 +228,13 @@ export default function VendorPage() {
               handleSubmit={handleSubmit}
             />
 
+            {/* Main question - MOBILE SIZE ADJUSTED */}
             <div>
-              <span className="inline-block text-primary text-4xl">
+              <span className="inline-block text-primary text-xl md:text-4xl leading-snug">
                 What would{" "}
                 <span className="relative whitespace-nowrap text-blue-600 pr-1">
                   <span
-                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl font-medium -ml-1.5"
+                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-lg md:text-2xl font-medium md:-ml-1.5"
                     style={{ fontFamily: "Playwrite CU, sans-serif" }}
                   >
                     {displayName}
@@ -207,22 +245,41 @@ export default function VendorPage() {
             </div>
           </div>
 
-          {/* Dynamic label based on category */}
-          <div className="text-muted-foreground pl-4 pt-6">{categoryLabel}</div>
+          {/* Dynamic label based on category - MOBILE SIZE ADJUSTED */}
+          <div className="text-muted-foreground pl-4 pt-4 text-sm md:text-base">
+            {categoryLabel}
+          </div>
 
-          <div className="md:max-h-[600px] max-h-96 overflow-y-auto mt-0 pr-2">
-            <MenuList
-              vendorId={vendorId}
-              addToBasket={addToBasket}
-              basket={basket}
-              products={products}
-              isAuthenticated={isAuthenticated}
-              userId={userId || undefined}
-            />
+          <div className="md:max-h-[600px] md:max-h-96 overflow-y-auto mt-0  md:pr-2">
+            {/* Mobile version with quantity buttons */}
+            <div className="md:hidden">
+              <MobileMenuButtons
+                vendorId={vendorId}
+                addToBasket={addToBasket}
+                basket={basket}
+                setBasket={setBasket}
+                products={products}
+                isAuthenticated={isAuthenticated}
+                userId={userId || undefined}
+                clearBasket={clearBasket}
+              />
+            </div>
+
+            {/* Desktop version with add to basket button */}
+            <div className="hidden md:block">
+              <MenuList
+                vendorId={vendorId}
+                addToBasket={addToBasket}
+                basket={basket}
+                products={products}
+                isAuthenticated={isAuthenticated}
+                userId={userId || undefined}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="mt-6 md:mt-0">
+        <div className="md:mt-0 ">
           <GiftBasket
             basket={basket}
             products={products}

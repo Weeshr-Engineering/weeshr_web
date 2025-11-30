@@ -37,6 +37,7 @@ export default function PaymentSuccess({
       origin: { y: 0.7 },
       zIndex: 1000,
     };
+
     function fire(particleRatio: number, opts: confetti.Options) {
       confetti({
         ...defaults,
@@ -44,6 +45,7 @@ export default function PaymentSuccess({
         particleCount: Math.floor(count * particleRatio),
       });
     }
+
     fire(0.25, {
       spread: 26,
       startVelocity: 55,
@@ -83,6 +85,7 @@ export default function PaymentSuccess({
       <Card className="w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-[32px] shadow-xl border-none overflow-hidden flex flex-col items-center justify-center py-10 relative">
         {/* Confetti container */}
         <div className="absolute inset-0 pointer-events-none z-0" />
+
         {/* Illustration */}
         <div className="flex justify-center mb-6 relative z-10">
           <Image
@@ -94,6 +97,7 @@ export default function PaymentSuccess({
             priority
           />
         </div>
+
         {/* Heading */}
         <CardHeader className="text-center space-y-1 px-6 relative z-10">
           <h1 className="text-lg text-primary">
@@ -106,8 +110,9 @@ export default function PaymentSuccess({
             {receiverName}
           </p>
         </CardHeader>
+
         <CardContent className="px-6 pb-6 w-full space-y-6 relative z-10">
-          {/* Address and Date */}
+          {/* Address + Date */}
           <div className="space-y-3 text-center">
             <div className="space-y-0.5">
               <div className="bg-[#F6F7FF] rounded-t-xl py-3 text-gray-700 text-sm font-normal">
@@ -117,6 +122,7 @@ export default function PaymentSuccess({
                 {formattedDeliveryDate}
               </div>
             </div>
+
             <button
               className="text-sm text-[#3E68FF] font-medium hover:underline"
               onClick={() => window.history.back()}
@@ -124,37 +130,45 @@ export default function PaymentSuccess({
               Edit details
             </button>
           </div>
+
           {/* Tracking Info */}
           <div className="text-center space-y-5">
             <p className="text-sm text-gray-500">
               Login to app or check email to track
             </p>
-            {/* App Store Buttons */}
-            <div className="flex flex-row gap-3 justify-center w-full">
+
+            {/* ⭐ FIXED MOBILE DOWNLOAD BUTTONS ⭐ */}
+            {/* App Store Buttons - Side by Side */}
+            <div className="flex flex-row gap-2 justify-center w-full">
               <Button
                 variant="outline"
-                className="h-14 rounded-xl bg-black text-white border-none flex items-center justify-center gap-3 transition w-full"
+                className="h-11 rounded-xl bg-black text-white border-none flex items-center justify-center gap-2 transition flex-1 px-3"
                 onClick={() => console.log("App Store")}
               >
-                <Icon icon="mdi:apple" className="w-6 h-6" />
+                <Icon icon="mdi:apple" className="w-5 h-5 flex-shrink-0" />
                 <div className="text-left leading-tight">
-                  <div className="text-xs">Download on the</div>
-                  <div className="text-sm font-semibold">App Store</div>
+                  <div className="text-[10px]">Download on the</div>
+                  <div className="text-xs font-semibold">App Store</div>
                 </div>
               </Button>
+
               <Button
                 variant="outline"
-                className="h-14 rounded-xl bg-black text-white border-none flex items-center justify-center gap-3 transition w-full"
+                className="h-11 rounded-xl bg-black text-white border-none flex items-center justify-center gap-2 transition flex-1 px-3"
                 onClick={() => console.log("Google Play")}
               >
-                <Icon icon="mdi:google-play" className="w-6 h-6" />
+                <Icon
+                  icon="mdi:google-play"
+                  className="w-5 h-5 flex-shrink-0"
+                />
                 <div className="text-left leading-tight">
-                  <div className="text-xs">Get it on</div>
-                  <div className="text-sm font-semibold">Google Play</div>
+                  <div className="text-[10px]">Get it on</div>
+                  <div className="text-xs font-semibold">Google Play</div>
                 </div>
               </Button>
             </div>
-            {/* Continue Shopping Button */}
+
+            {/* Continue Shopping */}
             <Button
               variant={"marketplace"}
               className="rounded-xl transition h-12 font-medium w-full"

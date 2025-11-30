@@ -115,7 +115,7 @@ export default function CategoryDisplayList() {
         </div>
 
         {/* Badges */}
-        <div className="py-2 px-0">
+        {/* <div className="py-2 px-0">
           <ScrollVelocityContainer className="text-4xl md:text-7xl font-bold">
             <ScrollVelocityRow
               baseVelocity={2}
@@ -133,7 +133,7 @@ export default function CategoryDisplayList() {
               )}
             </ScrollVelocityRow>
           </ScrollVelocityContainer>
-        </div>
+        </div> */}
 
         {/* Content */}
         <div className="p-4 bg-marketplace-foreground pt-2">

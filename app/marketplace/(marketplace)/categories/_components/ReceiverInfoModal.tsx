@@ -117,6 +117,8 @@ export default function ReceiverInfoModal({
         email:
           formData.email ||
           `${finalReceiverName.toLowerCase().replace(/\s+/g, "")}@example.com`,
+        phoneNumber: formData.phoneNumber, 
+        countryCode: formData.countryCode,
         shippingAddress: formData.address,
         deliveryDate: formData.deliveryDate,
         frequency: "once" as const,

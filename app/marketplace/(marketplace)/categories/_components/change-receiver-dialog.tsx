@@ -48,7 +48,7 @@ export default function ChangeReceiverDialog({
         </button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent className="border-none bg-transparent shadow-none flex items-center justify-center">
+      <AlertDialogContent className="border-none bg-transparent shadow-none flex items-center justify-center px-2">
         <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none">
           <CardHeader className="px-5 py-4">
             <CardTitle className="text-xl text-primary text-left p-0">

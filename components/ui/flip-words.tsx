@@ -41,38 +41,26 @@ export const FlipWords = ({
   return (
     <div
       ref={containerRef}
-      className="inline-block relative"
+      className="inline-block relative min-w-max overflow-visible"
       style={{ height: containerHeight }}
     >
-      <AnimatePresence
-        onExitComplete={() => {
-          setIsAnimating(false);
-        }}
-      >
+      <AnimatePresence onExitComplete={() => setIsAnimating(false)}>
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 10,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 10,
-          }}
+          key={currentWord}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           exit={{
             opacity: 0,
             y: -40,
             x: 40,
             filter: "blur(8px)",
-            scale: 2,
+            scale: 1.2,
             position: "absolute",
           }}
-          className={cn("z-10 inline-block relative text-left px-2", className)}
-          key={currentWord}
+          className={cn(
+            "z-10 relative inline-block whitespace-nowrap px-2",
+            className
+          )}
         >
           {currentWord.split(" ").map((word, wordIndex) => (
             <motion.span

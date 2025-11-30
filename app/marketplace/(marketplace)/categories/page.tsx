@@ -62,7 +62,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 max-h-max min-h-screen">
+    <div className="flex flex-col items-center p-2 md:p-6 max-h-max min-h-screen">
       {/* Header Section */}
       <div className="pt-10 md:pt-20 text-center lg:pt-28">
         <h1 className="mx-auto max-w-4xl text-3xl tracking-normal text-slate-900 sm:text-5xl font-normal">
@@ -71,16 +71,16 @@ export default function Page() {
             className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-3xl sm:text-5xl inline-flex items-center"
             style={{ fontFamily: "Playwrite CU, sans-serif" }}
           >
-            <span className="inline-block h-[1.9em] overflow-hidden align-middle">
+            {/* Remove the fixed height container and use min-height instead */}
+            <span className="inline-block min-h-[2em] overflow-visible align-middle">
               <FlipWords
                 words={[
-                  "Send ?",
                   "gift ?",
                   "share ?",
                   "treat ?",
                   "celebrate ?",
                   "appreciate ?",
-                  "delight?",
+                  "delight ?",
                 ]}
                 className="text-[#0CC990] mt-4"
               />
@@ -94,7 +94,6 @@ export default function Page() {
           </span>
         </p>
       </div>
-
       {/* Category Cards */}
       {loading ? (
         <CategorySkeletonGrid />
