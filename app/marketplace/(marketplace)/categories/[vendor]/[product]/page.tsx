@@ -13,6 +13,7 @@ import {
 } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MenuList } from "../../_components/menu-list";
+import { MobileMenuButtons } from "../../_components/mobile-menu-buttons";
 import { BasketItem } from "@/lib/BasketItem";
 import ChangeReceiverDialog from "../../_components/change-receiver-dialog";
 import { GiftBasket } from "../../_components/gift-basket";
@@ -214,14 +215,30 @@ export default function VendorPage() {
           </div>
 
           <div className="md:max-h-[600px] md:max-h-96 overflow-y-auto mt-0  md:pr-2">
-            <MenuList
-              vendorId={vendorId}
-              addToBasket={addToBasket}
-              basket={basket}
-              products={products}
-              isAuthenticated={isAuthenticated}
-              userId={userId || undefined}
-            />
+            {/* Mobile version with quantity buttons */}
+            <div className="md:hidden">
+              <MobileMenuButtons
+                vendorId={vendorId}
+                addToBasket={addToBasket}
+                basket={basket}
+                setBasket={setBasket}
+                products={products}
+                isAuthenticated={isAuthenticated}
+                userId={userId || undefined}
+              />
+            </div>
+
+            {/* Desktop version with add to basket button */}
+            <div className="hidden md:block">
+              <MenuList
+                vendorId={vendorId}
+                addToBasket={addToBasket}
+                basket={basket}
+                products={products}
+                isAuthenticated={isAuthenticated}
+                userId={userId || undefined}
+              />
+            </div>
           </div>
         </div>
 
