@@ -48,6 +48,7 @@ export function GiftBasket({
   const [isProcessingCart, setIsProcessingCart] = useState(false);
   const [isClearingBasket, setIsClearingBasket] = useState(false); // New state specifically for clearing
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false); // Mobile basket sheet state
+  const [showMobileBasket, setShowMobileBasket] = useState(true); // New state to control mobile basket visibility
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -96,6 +97,10 @@ export function GiftBasket({
   // Check authentication status and handle cart submission
   const handleSendBasket = async () => {
     setIsCheckingAuth(true);
+
+    // Hide mobile basket when Send Basket is clicked
+    setShowMobileBasket(false);
+
     const authToken = localStorage.getItem("authToken");
 
     if (authToken) {
@@ -175,6 +180,8 @@ export function GiftBasket({
   const closeAllModals = () => {
     setLoginOpen(false);
     setReceiverModalOpen(false);
+    // Show mobile basket again when modals are closed
+    setShowMobileBasket(true);
   };
 
   const handleLoginSuccess = async () => {
@@ -360,102 +367,106 @@ export function GiftBasket({
       </div>
 
       {/* MOBILE VIEW - Fixed bottom bar with expandable sheet */}
-      <div className="lg:hidden">
-        {/* Fixed Bottom Bar */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] shadow-lg">
-          <div className="flex justify-between items-center px-4 py-3">
-            {/* Left side - Basket info with tap to expand */}
-            <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-              <SheetTrigger asChild>
-                <button className="flex flex-col items-start">
-                  <h6 className="text-muted-foreground text-xs">Your basket</h6>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-base">
-                      ₦ {getBasketTotal().toLocaleString()}
-                    </span>
-                    {filteredBasket.length > 0 && (
-                      <Badge className="rounded-full bg-[#6A70FF] text-white text-xs h-5 px-2">
-                        {filteredBasket.length}
-                      </Badge>
+      {showMobileBasket && (
+        <div className="lg:hidden">
+          {/* Fixed Bottom Bar */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] shadow-lg">
+            <div className="flex justify-between items-center px-4 py-3">
+              {/* Left side - Basket info with tap to expand */}
+              <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
+                <SheetTrigger asChild>
+                  <button className="flex flex-col items-start">
+                    <h6 className="text-muted-foreground text-xs">
+                      Your basket
+                    </h6>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-base">
+                        ₦ {getBasketTotal().toLocaleString()}
+                      </span>
+                      {filteredBasket.length > 0 && (
+                        <Badge className="rounded-full bg-[#6A70FF] text-white text-xs h-5 px-2">
+                          {filteredBasket.length}
+                        </Badge>
+                      )}
+                    </div>
+                  </button>
+                </SheetTrigger>
+
+                <SheetContent side="bottom" className="h-[80vh] p-0">
+                  <SheetHeader className="p-4 border-b">
+                    <SheetTitle className="flex items-center justify-between">
+                      <span>
+                        Gift basket
+                        {isAuthenticated && (
+                          <span className="pl-1 text-sm text-green-600">✓</span>
+                        )}
+                      </span>
+                      {filteredBasket.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
+                          onClick={clearBasket}
+                          disabled={isClearingBasket}
+                        >
+                          {isClearingBasket ? "Clearing..." : "Clear All"}
+                        </Button>
+                      )}
+                    </SheetTitle>
+                  </SheetHeader>
+
+                  <div className="p-4 overflow-y-auto h-[calc(80vh-80px)]">
+                    {filteredBasket.length === 0 ? (
+                      <EmptyBasket />
+                    ) : (
+                      <div className="space-y-2">
+                        {filteredBasket.map((b) => (
+                          <BasketItemCard
+                            key={b.id}
+                            item={b}
+                            products={products}
+                            setBasket={setBasket}
+                            isAuthenticated={isAuthenticated}
+                            userId={userId || undefined}
+                          />
+                        ))}
+                      </div>
                     )}
                   </div>
-                </button>
-              </SheetTrigger>
+                </SheetContent>
+              </Sheet>
 
-              <SheetContent side="bottom" className="h-[80vh] p-0">
-                <SheetHeader className="p-4 border-b">
-                  <SheetTitle className="flex items-center justify-between">
-                    <span>
-                      Gift basket
-                      {isAuthenticated && (
-                        <span className="pl-1 text-sm text-green-600">✓</span>
-                      )}
-                    </span>
-                    {filteredBasket.length > 0 && (
-                      <Button
-                        variant="ghost"
-                        className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
-                        onClick={clearBasket}
-                        disabled={isClearingBasket}
-                      >
-                        {isClearingBasket ? "Clearing..." : "Clear All"}
-                      </Button>
+              {/* Right side - Send basket button */}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="default"
+                    disabled={
+                      filteredBasket.length === 0 ||
+                      isCheckingAuth ||
+                      isProcessingCart
+                    }
+                    className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                    onClick={handleSendBasket}
+                  >
+                    <span className="font-medium">Send basket</span>
+                    {isCheckingAuth || isProcessingCart ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <Icon
+                        icon="streamline-ultimate:shopping-basket-1"
+                        className="text-white h-4 w-4"
+                      />
                     )}
-                  </SheetTitle>
-                </SheetHeader>
-
-                <div className="p-4 overflow-y-auto h-[calc(80vh-80px)]">
-                  {filteredBasket.length === 0 ? (
-                    <EmptyBasket />
-                  ) : (
-                    <div className="space-y-2">
-                      {filteredBasket.map((b) => (
-                        <BasketItemCard
-                          key={b.id}
-                          item={b}
-                          products={products}
-                          setBasket={setBasket}
-                          isAuthenticated={isAuthenticated}
-                          userId={userId || undefined}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </SheetContent>
-            </Sheet>
-
-            {/* Right side - Send basket button */}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="default"
-                  disabled={
-                    filteredBasket.length === 0 ||
-                    isCheckingAuth ||
-                    isProcessingCart
-                  }
-                  className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
-                  onClick={handleSendBasket}
-                >
-                  <span className="font-medium">Send basket</span>
-                  {isCheckingAuth || isProcessingCart ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  ) : (
-                    <Icon
-                      icon="streamline-ultimate:shopping-basket-1"
-                      className="text-white h-4 w-4"
-                    />
-                  )}
-                </Button>
-              </AlertDialogTrigger>
-            </AlertDialog>
+                  </Button>
+                </AlertDialogTrigger>
+              </AlertDialog>
+            </div>
           </div>
-        </div>
 
-        {/* Spacer to prevent content from being hidden behind fixed bar */}
-        <div className="md:h-20"></div>
-      </div>
+          {/* Spacer to prevent content from being hidden behind fixed bar */}
+          <div className="h-20"></div>
+        </div>
+      )}
 
       {/* Show LoginDialog only when user is NOT authenticated and loginOpen is true */}
       <LoginDialog

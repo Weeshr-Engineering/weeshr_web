@@ -183,11 +183,12 @@ export default function ReceiverInfoModal({
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent
           onCloseRequest={handleClose}
-          className="border-none bg-transparent shadow-none flex items-center justify-center max-w-4xl w-[95%] md:mt-14 max-h-[550px]"
+          className="border-none bg-transparent shadow-none flex items-center justify-center max-w-4xl w-[95%] md:mt-14"
+          // REMOVED: max-h-[550px] - this was causing the overflow
         >
-          <div className="w-full flex flex-col md:flex-row-reverse gap-4">
+          <div className="w-full flex flex-col md:flex-row-reverse gap-4 max-h-[85vh] ">
             {/* Left Form */}
-            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col">
+            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col max-h-full">
               <CardHeader className="pb-6">
                 <CardTitle className="text-xl font-normal text-primary text-left">
                   More about

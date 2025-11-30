@@ -48,19 +48,6 @@ export function ReceiverFormFields({
 
   return (
     <div className="space-y-4 flex-1 overflow-y-auto">
-      {/* Email */}
-      <div className="space-y-2">
-        <Label className="text-sm text-muted-foreground">Email Address</Label>
-        <Input
-          type="email"
-          value={formData.email}
-          onChange={(e) => onInputChange("email", e.target.value)}
-          placeholder="Enter email address"
-          className="rounded-xl h-12 border-2"
-          required
-        />
-      </div>
-
       {/* Phone */}
       <div className="space-y-2">
         <Label className="text-sm text-muted-foreground">Phone Number</Label>
@@ -103,6 +90,18 @@ export function ReceiverFormFields({
             required
           />
         </div>
+      </div>
+      {/* Email */}
+      <div className="space-y-2">
+        <Label className="text-sm text-muted-foreground">Email Address</Label>
+        <Input
+          type="email"
+          value={formData.email}
+          onChange={(e) => onInputChange("email", e.target.value)}
+          placeholder="Enter email address"
+          className="rounded-xl h-12 border-2"
+          required
+        />
       </div>
 
       {/* Address */}
