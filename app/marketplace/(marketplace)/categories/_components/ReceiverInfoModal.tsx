@@ -78,6 +78,7 @@ export default function ReceiverInfoModal({
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [usePhoneForDelivery, setUsePhoneForDelivery] = useState(false);
 
   const searchParams = useSearchParams();
   const nameFromUrl = searchParams?.get("name") || "";
@@ -219,9 +220,15 @@ export default function ReceiverInfoModal({
 
                 {/* Phone */}
                 <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Phone Number
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm text-muted-foreground">
+                      Phone Number
+                    </Label>
+                    <span className="text-[10px] text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100 flex items-center gap-1">
+                      <Icon icon="logos:whatsapp-icon" width="12" height="12" />
+                      WhatsApp enabled
+                    </span>
+                  </div>
                   <div className="flex gap-2">
                     <Select
                       value={formData.countryCode}
@@ -271,20 +278,96 @@ export default function ReceiverInfoModal({
                   </div>
                 </div>
 
-                {/* Address */}
-                {/* Address (OPTIONAL) */}
+                {/* Address or Phone Toggle */}
                 <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Delivery Address (optional)
-                  </Label>
-                  <Input
-                    value={formData.address}
-                    onChange={(e) =>
-                      handleInputChange("address", e.target.value)
-                    }
-                    placeholder="Enter full delivery address (optional)"
-                    className="rounded-xl h-12 border-2"
-                  />
+                  {!usePhoneForDelivery ? (
+                    <>
+                      <Label className="text-sm text-muted-foreground">
+                        Delivery Address
+                      </Label>
+                      <Input
+                        value={formData.address}
+                        onChange={(e) =>
+                          handleInputChange("address", e.target.value)
+                        }
+                        placeholder="Enter full delivery address"
+                        className="rounded-xl h-12 border-2"
+                      />
+                      <p
+                        className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
+                        onClick={() => setUsePhoneForDelivery(true)}
+                      >
+                        <span className="text-muted-foreground mr-1">
+                          Don't have the address?
+                        </span>
+                        Send with WhatsApp enabled phone number
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Label className="text-sm text-muted-foreground">
+                        WhatsApp enabled Phone Number
+                      </Label>
+                      <div className="flex gap-2">
+                        <Select
+                          value={formData.countryCode}
+                          onValueChange={(v) =>
+                            handleInputChange("countryCode", v)
+                          }
+                        >
+                          <SelectTrigger className="w-24 rounded-xl h-12 border-2">
+                            <SelectValue>
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  {
+                                    countryCodes.find(
+                                      (c) => c.code === formData.countryCode
+                                    )?.flag
+                                  }
+                                </span>
+                                <span className="text-xs">
+                                  {formData.countryCode}
+                                </span>
+                              </span>
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countryCodes.map((c) => (
+                              <SelectItem key={c.code} value={c.code}>
+                                <span className="flex items-center gap-2">
+                                  <span>{c.flag}</span>
+                                  <span>{c.code}</span>
+                                  <span className="text-xs text-gray-500">
+                                    {c.country}
+                                  </span>
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Input
+                          type="tel"
+                          value={formData.phoneNumber}
+                          onChange={(e) =>
+                            handleInputChange("phoneNumber", e.target.value)
+                          }
+                          placeholder="Enter phone number"
+                          className="flex-1 rounded-xl h-12 border-2"
+                          required
+                        />
+                      </div>
+                      <p
+                        className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
+                        onClick={() => setUsePhoneForDelivery(false)}
+                      >
+                        <span className="text-muted-foreground mr-1">
+                          I have the address?
+                        </span>
+                        Send with address
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {/* Delivery Date */}
