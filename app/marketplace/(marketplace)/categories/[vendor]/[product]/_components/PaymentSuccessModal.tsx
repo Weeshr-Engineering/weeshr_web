@@ -136,12 +136,6 @@ export default function PaymentSuccessModal({
               <div className="bg-[#F6F7FF] rounded-xl py-3 text-gray-800 text-sm ">
                 {deliveryDate}
               </div>
-              <button
-                className="text-sm text-[#3E68FF] font-medium hover:underline"
-                onClick={() => setOpen(false)}
-              >
-                Edit details
-              </button>
             </div>
 
             {/* Tracking Info */}

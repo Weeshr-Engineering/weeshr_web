@@ -122,13 +122,6 @@ export default function PaymentSuccess({
                 {formattedDeliveryDate}
               </div>
             </div>
-
-            <button
-              className="text-sm text-[#3E68FF] font-medium hover:underline"
-              onClick={() => window.history.back()}
-            >
-              Edit details
-            </button>
           </div>
 
           {/* Tracking Info */}
