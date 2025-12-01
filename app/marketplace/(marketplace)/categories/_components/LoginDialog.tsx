@@ -16,6 +16,12 @@ interface LoginDialogProps {
   basket: BasketItem[];
   products: Product[];
   onLoginSuccess?: () => void; // Add this prop
+  onSignupSuccess?: (
+    email: string,
+    phone: string,
+    userId?: string,
+    token?: string
+  ) => void;
 }
 
 export default function LoginDialog({
@@ -26,6 +32,7 @@ export default function LoginDialog({
   basket,
   products,
   onLoginSuccess,
+  onSignupSuccess,
 }: LoginDialogProps) {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -55,6 +62,7 @@ export default function LoginDialog({
               <SignupForm
                 onToggleMode={handleToggleMode}
                 onSuccess={handleSuccess} // Pass the success handler
+                onSignupSuccess={onSignupSuccess!}
               />
             )}
           </div>

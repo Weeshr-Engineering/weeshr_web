@@ -5,12 +5,24 @@ import { useState } from "react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 export default function Home() {
   const [receiverName, setReceiverName] = useState("");
   const router = useRouter();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!receiverName.trim()) return;
+
+    if (receiverName.trim().length < 2) {
+      toast.error("Name must be at least 2 characters long");
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9\s]+$/.test(receiverName.trim())) {
+      toast.error("Name can only contain letters and numbers");
+      return;
+    }
+
     router.push(
       `marketplace/categories?name=${encodeURIComponent(receiverName.trim())}`
     );

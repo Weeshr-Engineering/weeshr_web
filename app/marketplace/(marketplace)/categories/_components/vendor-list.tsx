@@ -124,7 +124,7 @@ const VendorList: React.FC<VendorListProps> = ({
               </div>
 
               {/* Badges Section */}
-              {vendor.badges.length > 0 && (
+              {/* {vendor.badges.length > 0 && (
                 <div className="py-2 px-0">
                   <ScrollVelocityContainer className="text-4xl md:text-7xl font-bold">
                     <ScrollVelocityRow
@@ -145,7 +145,7 @@ const VendorList: React.FC<VendorListProps> = ({
                     </ScrollVelocityRow>
                   </ScrollVelocityContainer>
                 </div>
-              )}
+              )} */}
 
               {/* Content Section */}
               <div className="p-4 bg-marketplace-foreground rounded-b-3xl">

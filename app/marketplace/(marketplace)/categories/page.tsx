@@ -75,12 +75,12 @@ export default function Page() {
             <span className="inline-block min-h-[2em] overflow-visible align-middle">
               <FlipWords
                 words={[
-                  "gift ?",
-                  "share ?",
-                  "treat ?",
-                  "celebrate ?",
-                  "appreciate ?",
-                  "delight ?",
+                  "gift ? ",
+                  "share ? ",
+                  "treat ? ",
+                  "celebrate ? ",
+                  "appreciate ? ",
+                  "delight ? ",
                 ]}
                 className="text-[#0CC990] mt-4"
               />

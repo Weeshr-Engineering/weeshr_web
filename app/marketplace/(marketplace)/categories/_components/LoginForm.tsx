@@ -17,7 +17,7 @@ interface LoginFormProps {
 }
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string(),
   pin: z.string().min(4, { message: "Password must be 4 characters long" }),
 });
 
@@ -123,7 +123,7 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
 
       <CardContent className="space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden">
         {/* Google Login Button */}
-        <div className="space-y-4 flex-shrink-0">
+        {/* <div className="space-y-4 flex-shrink-0">
           <div className="space-y-2 text-center">
             <div className="text-sm font-normal">Sign in with</div>
             <Button
@@ -151,12 +151,13 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
           </div>
 
           {/* Divider */}
-          <div className="flex items-center justify-center space-x-4 my-4">
-            <div className="h-px bg-gray-300 flex-1"></div>
-            <span className="text-sm text-black">or</span>
-            <div className="h-px bg-gray-300 flex-1"></div>
-          </div>
-        </div>
+        {/* <div className="flex items-center justify-center space-x-4 my-4">
+          <div className="h-px bg-gray-300 flex-1"></div>
+          <span className="text-sm text-black">or</span>
+          <div className="h-px bg-gray-300 flex-1"></div>
+        </div> */}
+        {/* </div> */}
+        {/* */}
 
         {/* Login Form */}
         <form onSubmit={handleLogin} className="space-y-4 flex-1 flex flex-col">

@@ -44,7 +44,7 @@ interface FormData {
   phoneNumber: string;
   address: string;
   deliveryDate: string;
-  email: string;
+  email: string; // still here, but optional
 }
 
 const countryCodes = [
@@ -78,6 +78,7 @@ export default function ReceiverInfoModal({
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [usePhoneForDelivery, setUsePhoneForDelivery] = useState(false);
 
   const searchParams = useSearchParams();
   const nameFromUrl = searchParams?.get("name") || "";
@@ -87,11 +88,9 @@ export default function ReceiverInfoModal({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // EMAIL AND ADDRESS REMOVED FROM VALIDATION HERE
   const isFormValid = () =>
-    formData.phoneNumber.trim() &&
-    formData.address.trim() &&
-    formData.deliveryDate &&
-    formData.email.trim();
+    formData.phoneNumber.trim() && formData.deliveryDate;
 
   const handleMakePayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -114,10 +113,13 @@ export default function ReceiverInfoModal({
       const checkoutData = {
         cartId,
         receiverName: finalReceiverName,
+
+        // FALLBACK EMAIL STILL APPLIES
         email:
           formData.email ||
           `${finalReceiverName.toLowerCase().replace(/\s+/g, "")}@example.com`,
-        phoneNumber: formData.phoneNumber, 
+
+        phoneNumber: formData.phoneNumber,
         countryCode: formData.countryCode,
         shippingAddress: formData.address,
         deliveryDate: formData.deliveryDate,
@@ -180,11 +182,12 @@ export default function ReceiverInfoModal({
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent
           onCloseRequest={handleClose}
-          className="border-none bg-transparent shadow-none flex items-center justify-center max-w-4xl w-[95%] md:mt-14 max-h-[550px]"
+          className="border-none bg-transparent shadow-none flex items-center justify-center max-w-4xl w-[95%] md:mt-14"
+          // REMOVED: max-h-[550px] - this was causing the overflow
         >
-          <div className="w-full flex flex-col md:flex-row-reverse gap-4">
+          <div className="w-full flex flex-col md:flex-row-reverse gap-4 max-h-[85vh] ">
             {/* Left Form */}
-            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col">
+            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col max-h-full">
               <CardHeader className="pb-6">
                 <CardTitle className="text-xl font-normal text-primary text-left">
                   More about
@@ -201,26 +204,31 @@ export default function ReceiverInfoModal({
               </CardHeader>
 
               <CardContent className="space-y-4 flex-1 overflow-y-auto">
-                {/* Email */}
+                {/* Email (OPTIONAL NOW) */}
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">
-                    Email Address
+                    Email Address (optional)
                   </Label>
                   <Input
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="Enter email address"
+                    placeholder="Enter email address (optional)"
                     className="rounded-xl h-12 border-2"
-                    required
                   />
                 </div>
 
                 {/* Phone */}
                 <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Phone Number
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm text-muted-foreground">
+                      Phone Number
+                    </Label>
+                    <span className="text-[10px] text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100 flex items-center gap-1">
+                      <Icon icon="logos:whatsapp-icon" width="12" height="12" />
+                      WhatsApp enabled
+                    </span>
+                  </div>
                   <div className="flex gap-2">
                     <Select
                       value={formData.countryCode}
@@ -270,20 +278,96 @@ export default function ReceiverInfoModal({
                   </div>
                 </div>
 
-                {/* Address */}
+                {/* Address or Phone Toggle */}
                 <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Delivery Address
-                  </Label>
-                  <Input
-                    value={formData.address}
-                    onChange={(e) =>
-                      handleInputChange("address", e.target.value)
-                    }
-                    placeholder="Enter full delivery address"
-                    className="rounded-xl h-12 border-2"
-                    required
-                  />
+                  {!usePhoneForDelivery ? (
+                    <>
+                      <Label className="text-sm text-muted-foreground">
+                        Delivery Address
+                      </Label>
+                      <Input
+                        value={formData.address}
+                        onChange={(e) =>
+                          handleInputChange("address", e.target.value)
+                        }
+                        placeholder="Enter full delivery address"
+                        className="rounded-xl h-12 border-2"
+                      />
+                      <p
+                        className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
+                        onClick={() => setUsePhoneForDelivery(true)}
+                      >
+                        <span className="text-muted-foreground mr-1">
+                          Don't have the address?
+                        </span>
+                        Send with WhatsApp enabled phone number
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Label className="text-sm text-muted-foreground">
+                        WhatsApp enabled Phone Number
+                      </Label>
+                      <div className="flex gap-2">
+                        <Select
+                          value={formData.countryCode}
+                          onValueChange={(v) =>
+                            handleInputChange("countryCode", v)
+                          }
+                        >
+                          <SelectTrigger className="w-24 rounded-xl h-12 border-2">
+                            <SelectValue>
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  {
+                                    countryCodes.find(
+                                      (c) => c.code === formData.countryCode
+                                    )?.flag
+                                  }
+                                </span>
+                                <span className="text-xs">
+                                  {formData.countryCode}
+                                </span>
+                              </span>
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countryCodes.map((c) => (
+                              <SelectItem key={c.code} value={c.code}>
+                                <span className="flex items-center gap-2">
+                                  <span>{c.flag}</span>
+                                  <span>{c.code}</span>
+                                  <span className="text-xs text-gray-500">
+                                    {c.country}
+                                  </span>
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Input
+                          type="tel"
+                          value={formData.phoneNumber}
+                          onChange={(e) =>
+                            handleInputChange("phoneNumber", e.target.value)
+                          }
+                          placeholder="Enter phone number"
+                          className="flex-1 rounded-xl h-12 border-2"
+                          required
+                        />
+                      </div>
+                      <p
+                        className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
+                        onClick={() => setUsePhoneForDelivery(false)}
+                      >
+                        <span className="text-muted-foreground mr-1">
+                          I have the address?
+                        </span>
+                        Send with address
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {/* Delivery Date */}
@@ -364,6 +448,7 @@ export default function ReceiverInfoModal({
         address={formData.address}
         deliveryDate={formatDate(formData.deliveryDate)}
         onCloseAll={handleSuccessClose}
+        phoneNumber={`${formData.countryCode} ${formData.phoneNumber}`}
       />
     </>
   );

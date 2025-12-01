@@ -108,13 +108,11 @@ const Footer: React.FC = () => {
 
         <div className="flex flex-col items-center px-4  md:flex-row md:justify-between md:pb-10">
           <div className="text-sm text-[#020721] flex items-center">
-            <Icon
-              icon="mingcute:love-fill"
-              width="24px"
-              height="24px"
-              color="#4145A7"
-            />
-            <p className="mx-2">Powered by Weeshr App Limited</p>
+           
+            <p className="mx-2 text-sm flex items-center gap-1">
+              <Icon icon="mdi:copyright" width="14px" height="14px" />
+              Weeshr Technologies
+            </p>
           </div>
           <div className="flex items-center mt-4 space-x-2 md:mt-0">
             {socialMediaLinks.map((link) => (

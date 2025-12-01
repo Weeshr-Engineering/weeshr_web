@@ -8,12 +8,15 @@ export const SignupSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
   userName: z.string().min(1, "Username is required"),
-  password: z
-    .string()
-    .min(4, "Password must be at least 4 characters long")
-    .max(20, "Password cannot exceed 20 characters"),
   gender: z.string().min(1, "Gender is required"),
-  dob: z.string().min(1, "Date of birth is required"),
+  dob: z
+    .string()
+    .min(1, "Date of birth is required")
+    .refine((date) => {
+      const selectedDate = new Date(date);
+      const today = new Date();
+      return selectedDate < today;
+    }, "Date of birth must be in the past"),
   phone: z.object({
     countryCode: z.string().min(1, "Country code is required"),
     phoneNumber: z.string().min(1, "Phone number is required"),

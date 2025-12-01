@@ -24,7 +24,7 @@ const AlertDialogOverlay = React.forwardRef<
       if (e.target === e.currentTarget) onCloseRequest?.();
     }}
     className={cn(
-      "fixed inset-0 z-auto bg-white/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out",
+      "fixed inset-0 z-auto bg-white/10 backdrop-blur-lg data-[state=open]:animate-in data-[state=closed]:animate-out",
       className
     )}
     {...props}

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+import toast from "react-hot-toast";
 
 interface ChangeReceiverDialogProps {
   open: boolean;
@@ -36,6 +37,15 @@ export default function ChangeReceiverDialog({
     "Enter a colleague’s name 👔",
     "Make someone smile 😊",
   ];
+
+  const onFormSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (receiverName.trim().length < 2) {
+      toast.error("Name must be at least 2 characters long");
+      return;
+    }
+    handleSubmit();
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -67,8 +77,8 @@ export default function ChangeReceiverDialog({
             <PlaceholdersAndVanishInput
               placeholders={placeholders}
               onChange={(e) => setReceiverName(e.target.value)}
-              onSubmit={handleSubmit}
-              value={receiverName} // 👈 add this line
+              onSubmit={onFormSubmit}
+              value={receiverName}
             />
           </CardContent>
         </Card>
