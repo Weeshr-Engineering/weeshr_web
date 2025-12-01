@@ -448,6 +448,7 @@ export default function ReceiverInfoModal({
         address={formData.address}
         deliveryDate={formatDate(formData.deliveryDate)}
         onCloseAll={handleSuccessClose}
+        phoneNumber={`${formData.countryCode} ${formData.phoneNumber}`}
       />
     </>
   );

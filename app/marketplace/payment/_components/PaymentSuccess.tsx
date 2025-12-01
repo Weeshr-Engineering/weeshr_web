@@ -11,6 +11,7 @@ interface PaymentSuccessProps {
   receiverName: string;
   address: string;
   deliveryDate: string;
+  phoneNumber?: string;
 }
 
 export default function PaymentSuccess({
@@ -18,6 +19,7 @@ export default function PaymentSuccess({
   receiverName,
   address,
   deliveryDate,
+  phoneNumber,
 }: PaymentSuccessProps) {
   const [confettiTriggered, setConfettiTriggered] = useState(false);
 
@@ -115,9 +117,24 @@ export default function PaymentSuccess({
           {/* Address + Date */}
           <div className="space-y-3 text-center">
             <div className="space-y-0.5">
-              <div className="bg-[#F6F7FF] rounded-t-xl py-3 text-gray-700 text-sm font-normal">
-                {address}
-              </div>
+              {address ? (
+                <div className="bg-[#F6F7FF] rounded-t-xl py-3 text-gray-700 text-sm font-normal">
+                  {address}
+                </div>
+              ) : (
+                <div className="bg-[#F6F7FF] rounded-t-xl py-4 px-4 flex flex-col items-center justify-center gap-2">
+                  <p className="text-sm text-gray-600 flex items-center gap-1.5 flex-wrap justify-center">
+                    We'll contact{" "}
+                    <span className="font-semibold text-gray-900 capitalize">
+                      {receiverName}
+                    </span>{" "}
+                    via <Icon icon="logos:whatsapp-icon" width="16" />
+                  </p>
+                  <p className="font-semibold text-gray-900 text-sm bg-white/50 px-3 py-1 rounded-full border border-gray-100">
+                    {phoneNumber}
+                  </p>
+                </div>
+              )}
               <div className="bg-[#F6F7FF] rounded-b-xl py-3 text-gray-800 text-sm">
                 {formattedDeliveryDate}
               </div>
@@ -136,7 +153,12 @@ export default function PaymentSuccess({
               <Button
                 variant="outline"
                 className="h-11 rounded-xl bg-black text-white border-none flex items-center justify-center gap-2 transition flex-1 px-3"
-                onClick={() => console.log("App Store")}
+                onClick={() =>
+                  window.open(
+                    "https://apps.apple.com/ng/app/weeshr/id6602884408",
+                    "_blank"
+                  )
+                }
               >
                 <Icon icon="mdi:apple" className="w-5 h-5 flex-shrink-0" />
                 <div className="text-left leading-tight">
@@ -148,7 +170,12 @@ export default function PaymentSuccess({
               <Button
                 variant="outline"
                 className="h-11 rounded-xl bg-black text-white border-none flex items-center justify-center gap-2 transition flex-1 px-3"
-                onClick={() => console.log("Google Play")}
+                onClick={() =>
+                  window.open(
+                    "https://play.google.com/store/apps/details?id=com.app.weeshr&pcampaignid=web_share",
+                    "_blank"
+                  )
+                }
               >
                 <Icon
                   icon="mdi:google-play"

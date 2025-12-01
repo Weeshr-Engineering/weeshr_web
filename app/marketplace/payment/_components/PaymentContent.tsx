@@ -7,7 +7,6 @@ import PaymentLoader from "./PaymentLoader";
 import PaymentError from "./PaymentError";
 import PaymentSuccess from "./PaymentSuccess";
 
-
 interface PaymentData {
   status: boolean;
   message: string;
@@ -25,6 +24,7 @@ interface PaymentData {
       cartId: string;
       receiverName: string;
       email: string;
+      phoneNumber: string;
       shippingAddress: string;
       deliveryDate: string;
       totalAmount: string;
@@ -94,6 +94,7 @@ export default function PaymentContent() {
       receiverName={paymentData.data.metadata.receiverName}
       address={paymentData.data.metadata.shippingAddress}
       deliveryDate={paymentData.data.metadata.deliveryDate}
+      phoneNumber={paymentData.data.metadata.phoneNumber}
     />
   );
 }
