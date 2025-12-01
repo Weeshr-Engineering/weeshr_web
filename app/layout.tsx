@@ -1,3 +1,5 @@
+"use client";
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { Outfit } from "next/font/google";
@@ -5,49 +7,18 @@ import { Toaster } from "react-hot-toast";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import RuutChat from "@/components/commons/RuutChat";
+import { usePathname } from "next/navigation";
 
 const outfit = Outfit({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Weeshr",
-  description: "Make a Weesh!! ",
-  openGraph: {
-    title: "Weeshr",
-    description: "Make a Weesh!!",
-    url: "https://weeshr.com",
-    images: [
-      {
-        url: "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
-        width: 800,
-        height: 600,
-      },
-      {
-        url: "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
-        width: 1800,
-        height: 1600,
-        alt: "Weeshr alt",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    title: "Weeshr",
-    description: "Make a Weesh",
-    images: [
-      "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png",
-    ],
-  },
-  other: {
-    "google-site-verification": "Tpygm8ffQSGqRVivwFb15HdAmCgdfeGYNQ49vxTZKt4",
-  },
-};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isMarketplacePath = pathname?.startsWith("/marketplace");
+
   return (
     <html lang="en" className="h-full">
       <GoogleTagManager gtmId="G-2W2JYJPBXZ" />
@@ -59,12 +30,15 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
-        
+
         {/* iOS specific meta tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <meta name="apple-mobile-web-app-title" content="Weeshr" />
-        
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -80,8 +54,8 @@ export default function RootLayout({
         {children}
         <Toaster position="bottom-right" reverseOrder={false} />
 
-        {/* Ruut Chat Integration */}
-        <RuutChat />
+        {/* Ruut Chat Integration - Hidden on marketplace paths */}
+        {!isMarketplacePath && <RuutChat />}
       </body>
     </html>
   );
