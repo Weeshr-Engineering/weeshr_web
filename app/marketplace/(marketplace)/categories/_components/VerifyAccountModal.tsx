@@ -190,7 +190,9 @@ export default function VerifyAccountModal({
             {code.map((digit, index) => (
               <Input
                 key={index}
-                ref={(el) => (inputRefs.current[index] = el)}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
                 type="text"
                 inputMode="text"
                 maxLength={1}

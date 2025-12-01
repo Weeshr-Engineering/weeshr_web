@@ -139,7 +139,9 @@ export default function SetPinModal({
             {pin.map((digit, index) => (
               <Input
                 key={index}
-                ref={(el) => (inputRefs.current[index] = el)}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
                 type="password"
                 inputMode="numeric"
                 maxLength={1}
