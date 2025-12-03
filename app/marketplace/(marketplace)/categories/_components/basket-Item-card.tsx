@@ -62,18 +62,31 @@ export function BasketItemCard({
             toast.error("Failed to sync removal with server");
           }
         } else {
-          const result = await cartService.addItemsToCart({
-            userId,
-            items: [
-              {
-                productId: item.id.toString(),
-                quantity: clicksToSend, // Send accumulated clicks
-                price: productPrice,
-              },
-            ],
-          });
-          if (!(result.code === 200 || result.code === 201)) {
-            toast.error("Failed to sync quantity with server");
+          if (clicksToSend < 0) {
+            // Handle decrement
+            const result = await cartService.removeItemFromCart(
+              userId,
+              item.id.toString(),
+              Math.abs(clicksToSend)
+            );
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync quantity with server");
+            }
+          } else if (clicksToSend > 0) {
+            // Handle increment
+            const result = await cartService.addItemsToCart({
+              userId,
+              items: [
+                {
+                  productId: item.id.toString(),
+                  quantity: clicksToSend, // Send accumulated clicks
+                  price: productPrice,
+                },
+              ],
+            });
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync quantity with server");
+            }
           }
         }
       } catch (err) {

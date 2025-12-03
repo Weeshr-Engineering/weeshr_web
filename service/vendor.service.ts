@@ -107,7 +107,7 @@ export class VendorService {
           currentPage: 1,
           totalPages: 1,
           totalItems: 0,
-          perPage: 25,
+          perPage: 2,
         },
       };
     }

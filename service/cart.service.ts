@@ -73,7 +73,8 @@ class CartService {
   // Remove item from cart
   async removeItemFromCart(
     userId: string,
-    productId: string
+    productId: string,
+    quantityToRemove?: number
   ): Promise<CartResponse> {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -82,12 +83,18 @@ class CartService {
         throw new Error("User not authenticated");
       }
 
+      const payload: any = {
+        userId,
+        productId,
+      };
+
+      if (quantityToRemove) {
+        payload.quantityToRemove = quantityToRemove;
+      }
+
       const response = await axios.post(
         `${this.baseURL}/market/carts/remove-item`,
-        {
-          userId,
-          productId,
-        },
+        payload,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

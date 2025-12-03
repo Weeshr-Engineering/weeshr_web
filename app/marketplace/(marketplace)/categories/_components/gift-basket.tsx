@@ -518,21 +518,34 @@ export function GiftBasket({
               {/* Left side - Basket info with tap to expand */}
               <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
                 <SheetTrigger asChild>
-                  <button className="flex flex-col items-start">
-                    <h6 className="text-muted-foreground text-xs">
-                      Your basket
-                    </h6>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-base">
-                        ₦ {getBasketTotal().toLocaleString()}
-                      </span>
+                  <div className="flex items-center gap-2">
+                    <button className="flex flex-col items-start">
+                      <h6 className="text-muted-foreground text-xs">
+                        Your basket
+                      </h6>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-base">
+                          ₦ {getBasketTotal().toLocaleString()}
+                        </span>
+                      </div>
+                    </button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="relative h-9 px-3 text-xs rounded-3xl border-[#6A70FF]/50 text-[#6A70FF] hover:bg-[#6A70FF]/10 flex items-center gap-2"
+                      onClick={() => setViewCartOpen(true)}
+                    >
+                      <Icon icon="mdi:cart-outline" className="h-4 w-4" />
+
+                      <span>View Cart</span>
+
                       {filteredBasket.length > 0 && (
-                        <Badge className="rounded-full bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center font-semibold">
+                        <Badge className="absolute -top-2 -right-2 bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center rounded-full font-semibold">
                           {filteredBasket.length}
                         </Badge>
                       )}
-                    </div>
-                  </button>
+                    </Button>
+                  </div>
                 </SheetTrigger>
                 <SheetContent side="bottom" className="h-[80vh] p-0">
                   <SheetHeader className="p-4 border-b">
@@ -544,22 +557,10 @@ export function GiftBasket({
                         )}
                       </span>
                       <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
-                          onClick={() => setViewCartOpen(true)}
-                          disabled={filteredBasket.length === 0}
-                        >
-                          <Icon
-                            icon="mdi:eye-outline"
-                            className="h-3 w-3 mr-1"
-                          />
-                          Full View
-                        </Button>
                         {filteredBasket.length > 0 && (
                           <Button
                             variant="ghost"
-                            className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
+                            className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl mr-10"
                             onClick={clearBasket}
                             disabled={isClearingBasket}
                           >
@@ -591,15 +592,6 @@ export function GiftBasket({
               </Sheet>
               {/* Right side - Send basket button with View button */}
               <div className="flex gap-1 items-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-9 px-2 text-xs rounded-3xl border-[#6A70FF]/50 text-[#6A70FF] hover:bg-[#6A70FF]/10 min-w-0 flex-shrink-0"
-                  onClick={() => setViewCartOpen(true)}
-                  disabled={filteredBasket.length === 0}
-                >
-                  <Icon icon="mdi:eye-outline" className="h-3 w-3" />
-                </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button

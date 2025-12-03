@@ -86,19 +86,31 @@ export function MobileMenuButtons({
         const product = products.find((p) => p.id === productId);
 
         // Send accumulated clicks
-        const result = await cartService.addItemsToCart({
-          userId,
-          items: [
-            {
-              productId: productId.toString(),
-              quantity: clicksToSend, // Send accumulated clicks
-              price: product?.price || 0,
-            },
-          ],
-        });
+        if (clicksToSend < 0) {
+          // Handle decrement (unlikely in handleAdd but possible with mixed clicks)
+          const result = await cartService.removeItemFromCart(
+            userId,
+            productId.toString(),
+            Math.abs(clicksToSend)
+          );
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to sync removal with server");
+          }
+        } else if (clicksToSend > 0) {
+          const result = await cartService.addItemsToCart({
+            userId,
+            items: [
+              {
+                productId: productId.toString(),
+                quantity: clicksToSend, // Send accumulated clicks
+                price: product?.price || 0,
+              },
+            ],
+          });
 
-        if (!(result.code === 200 || result.code === 201)) {
-          toast.error("Failed to sync with server");
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to sync with server");
+          }
         }
       } catch (error) {
         toast.error("Failed to sync with server");
@@ -166,20 +178,32 @@ export function MobileMenuButtons({
         try {
           const product = products.find((p) => p.id === productId);
 
-          // Send accumulated clicks (negative for decrement)
-          const result = await cartService.addItemsToCart({
-            userId,
-            items: [
-              {
-                productId: productId.toString(),
-                quantity: clicksToSend, // Send accumulated clicks
-                price: product?.price || 0,
-              },
-            ],
-          });
-
-          if (!(result.code === 200 || result.code === 201)) {
-            toast.error("Failed to sync with server");
+          // Send accumulated clicks
+          if (clicksToSend < 0) {
+            // Handle decrement
+            const result = await cartService.removeItemFromCart(
+              userId,
+              productId.toString(),
+              Math.abs(clicksToSend)
+            );
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync removal with server");
+            }
+          } else if (clicksToSend > 0) {
+            // Handle increment
+            const result = await cartService.addItemsToCart({
+              userId,
+              items: [
+                {
+                  productId: productId.toString(),
+                  quantity: clicksToSend, // Send accumulated clicks
+                  price: product?.price || 0,
+                },
+              ],
+            });
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync quantity with server");
+            }
           }
         } catch (error) {
           toast.error("Failed to sync with server");

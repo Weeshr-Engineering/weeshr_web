@@ -49,7 +49,7 @@ export async function fetchAllVendors(page: number = 1) {
       currentPage: json.data?.currentPage || 1,
       totalPages: json.data?.totalPages || 1,
       totalItems: json.data?.totalItems || 0,
-      perPage: json.data?.perPage || 25,
+      perPage: json.data?.perPage || 2,
     },
   };
 }

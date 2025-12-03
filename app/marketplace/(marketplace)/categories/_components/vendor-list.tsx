@@ -6,10 +6,7 @@ import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { VendorCardSkeleton } from "./vendor-card-skeleton";
-import {
-  ScrollVelocityContainer,
-  ScrollVelocityRow,
-} from "@/components/ui/scroll-based-velocity";
+
 import { Vendor } from "@/service/vendor.service";
 import { motion } from "framer-motion";
 
