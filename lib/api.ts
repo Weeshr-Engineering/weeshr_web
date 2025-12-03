@@ -34,9 +34,12 @@ export async function fetchVendorsByCategory(categoryId: string) {
 
 // Fetch all vendors with pagination
 export async function fetchAllVendors(page: number = 1) {
-  const res = await fetch(`${API_BASE_URL}/market/vendors?page=${page}`, {
-    next: { revalidate: 60 },
-  });
+  const res = await fetch(
+    `${API_BASE_URL}/market/vendors?page=${page}&per_page=10&sortOrder=desc`,
+    {
+      next: { revalidate: 60 },
+    }
+  );
 
   if (!res.ok) {
     throw new Error(`Failed to fetch vendors: ${res.status}`);
