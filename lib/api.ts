@@ -15,12 +15,14 @@ export async function fetchCategories() {
   return json.data || [];
 }
 
-
 // Fetch vendors by category ID
 export async function fetchVendorsByCategory(categoryId: string) {
-  const res = await fetch(`${API_BASE_URL}/market/vendors/category/${categoryId}`, {
-    next: { revalidate: 60 },
-  });
+  const res = await fetch(
+    `${API_BASE_URL}/market/vendors/category/${categoryId}`,
+    {
+      next: { revalidate: 60 },
+    }
+  );
 
   if (!res.ok) {
     throw new Error(`Failed to fetch vendors: ${res.status}`);
@@ -30,11 +32,36 @@ export async function fetchVendorsByCategory(categoryId: string) {
   return json.data?.data || [];
 }
 
-// Fetch products by vendor ID
-export async function fetchProductsByVendor(vendorId: string) {
-  const res = await fetch(`${API_BASE_URL}/market/products/?vendorId=${vendorId}`, {
+// Fetch all vendors with pagination
+export async function fetchAllVendors(page: number = 1) {
+  const res = await fetch(`${API_BASE_URL}/market/vendors?page=${page}`, {
     next: { revalidate: 60 },
   });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch vendors: ${res.status}`);
+  }
+
+  const json = await res.json();
+  return {
+    vendors: json.data?.data || [],
+    pagination: {
+      currentPage: json.data?.currentPage || 1,
+      totalPages: json.data?.totalPages || 1,
+      totalItems: json.data?.totalItems || 0,
+      perPage: json.data?.perPage || 25,
+    },
+  };
+}
+
+// Fetch products by vendor ID
+export async function fetchProductsByVendor(vendorId: string) {
+  const res = await fetch(
+    `${API_BASE_URL}/market/products/?vendorId=${vendorId}`,
+    {
+      next: { revalidate: 60 },
+    }
+  );
 
   if (!res.ok) {
     throw new Error(`Failed to fetch products: ${res.status}`);

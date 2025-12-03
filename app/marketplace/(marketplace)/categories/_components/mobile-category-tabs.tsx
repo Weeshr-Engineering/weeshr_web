@@ -30,13 +30,13 @@ export default function MobileCategoryTabs({
     // For specific category routes (e.g., /marketplace/categories/food)
     if (
       baseLink.startsWith("/marketplace/categories/") &&
-      baseLink !== "/marketplace/categories"
+      baseLink !== "/marketplace/categories/all"
     ) {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
 
-    // For "All" category, only match exact path (not subroutes)
-    if (baseLink === "/marketplace/categories") {
+    // For "All" category, match /marketplace/categories/all
+    if (baseLink === "/marketplace/categories/all") {
       return currentPath === baseLink;
     }
 
@@ -46,15 +46,14 @@ export default function MobileCategoryTabs({
 
   const handleTabClick = (category: Category) => {
     if (category.value === "all") {
-      // Navigate to main marketplace categories page
-      router.push(`/marketplace/categories?name=${nameParam}`);
+      // Navigate to all vendors page
+      router.push(`/marketplace/categories/all?name=${nameParam}`);
     } else {
       // Navigate to specific category page with name param
       router.push(
         `/marketplace/categories/${category.value}?id=${category.id}&name=${nameParam}`
       );
     }
-    ``;
   };
 
   return (

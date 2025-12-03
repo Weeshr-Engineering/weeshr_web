@@ -92,8 +92,8 @@ export const FloatingNav = ({
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
 
-    // For "All" category, only match exact path (not subroutes)
-    if (baseLink === "/marketplace/categories") {
+    // For "All" category, match /marketplace/categories/all
+    if (baseLink === "/marketplace/categories/all") {
       return currentPath === baseLink;
     }
 

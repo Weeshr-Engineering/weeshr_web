@@ -1,4 +1,8 @@
-import { fetchVendorsByCategory, fetchProductsByVendor } from "@/lib/api";
+import {
+  fetchVendorsByCategory,
+  fetchProductsByVendor,
+  fetchAllVendors,
+} from "@/lib/api";
 
 export interface ApiVendor {
   _id: string;
@@ -63,6 +67,49 @@ export class VendorService {
     } catch (error) {
       console.error("Error fetching vendors:", error);
       return [];
+    }
+  }
+
+  /**
+   * Fetch all vendors with pagination
+   */
+  static async getAllVendors(page: number = 1): Promise<{
+    vendors: Vendor[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      perPage: number;
+    };
+  }> {
+    try {
+      console.log(`Fetching all vendors - page: ${page}`);
+      const { vendors: apiVendors, pagination } = await fetchAllVendors(page);
+
+      console.log(`Found ${apiVendors.length} vendors on page ${page}`);
+
+      // Fetch vendors with their product images
+      const vendorsWithImages = await Promise.all(
+        apiVendors.map((vendor: ApiVendor) =>
+          this.enrichVendorWithProductImages(vendor)
+        )
+      );
+
+      return {
+        vendors: vendorsWithImages,
+        pagination,
+      };
+    } catch (error) {
+      console.error("Error fetching all vendors:", error);
+      return {
+        vendors: [],
+        pagination: {
+          currentPage: 1,
+          totalPages: 1,
+          totalItems: 0,
+          perPage: 25,
+        },
+      };
     }
   }
 
