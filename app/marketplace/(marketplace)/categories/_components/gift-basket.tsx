@@ -1,9 +1,7 @@
 // @ts-ignore
 // @ts-nocheck
 // @ts-expect-error
-
 "use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
@@ -11,7 +9,15 @@ import EmptyBasket from "./empty-basket";
 import { BasketItemCard } from "./basket-Item-card";
 import { Product } from "@/service/product.service";
 import { BasketItem } from "@/lib/BasketItem";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
 import LoginDialog from "./LoginDialog";
 import ReceiverInfoModal from "./ReceiverInfoModal";
 import VerifyAccountModal from "./VerifyAccountModal";
@@ -55,6 +61,7 @@ export function GiftBasket({
   const [showPinModal, setShowPinModal] = useState(false); // PIN modal state
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
+  const [viewCartOpen, setViewCartOpen] = useState(false); // New state for full cart view modal
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -67,11 +74,9 @@ export function GiftBasket({
   const clearBasket = async () => {
     // Store current basket for potential rollback
     const previousBasket = [...basket];
-
     // Clear UI immediately
     setBasket([]);
     setIsClearingBasket(true); // Set clearing state
-
     // Sync with API in background if authenticated
     if (isAuthenticated && userId) {
       try {
@@ -103,12 +108,9 @@ export function GiftBasket({
   // Check authentication status and handle cart submission
   const handleSendBasket = async () => {
     setIsCheckingAuth(true);
-
     // Hide mobile basket when Send Basket is clicked
     setShowMobileBasket(false);
-
     const authToken = localStorage.getItem("authToken");
-
     if (authToken) {
       try {
         // Verify token and get user profile
@@ -120,7 +122,6 @@ export function GiftBasket({
             },
           }
         );
-
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           setIsAuthenticated(true);
           const userData = profileResponse.data.data;
@@ -129,7 +130,6 @@ export function GiftBasket({
           setUserPhone(
             `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
           );
-
           // Check if email is verified
           if (!userData.emailVerified) {
             // Email not verified - show verification modal
@@ -138,7 +138,6 @@ export function GiftBasket({
             setIsCheckingAuth(false);
             return;
           }
-
           // User is authenticated and verified - sync cart to backend
           await syncCartToBackend(userData._id);
         } else {
@@ -158,14 +157,12 @@ export function GiftBasket({
       setUserId(null);
       setLoginOpen(true);
     }
-
     setIsCheckingAuth(false);
   };
 
   // Sync cart items to backend API
   const syncCartToBackend = async (userId: string) => {
     setIsProcessingCart(true);
-
     try {
       // Use filtered basket for sync to avoid syncing invalid items
       const cartItems = filteredBasket.map((item) => ({
@@ -173,14 +170,11 @@ export function GiftBasket({
         quantity: item.qty,
         price: products.find((p) => p.id == item.id)?.price || 0,
       }));
-
       const cartData = {
         userId: userId,
         items: cartItems,
       };
-
       const result = await cartService.addItemsToCart(cartData);
-
       if (result.code === 200 || result.code === 201) {
         toast.success("🎉 Basket synced successfully! Ready for payment.");
         setReceiverModalOpen(true);
@@ -216,7 +210,6 @@ export function GiftBasket({
             },
           }
         );
-
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           setIsAuthenticated(true);
           setUserId(profileResponse.data.data._id);
@@ -238,11 +231,9 @@ export function GiftBasket({
   ) => {
     // Close login dialog immediately
     setLoginOpen(false);
-
     // Set user data for verification
     setUserEmail(email);
     setUserPhone(phone);
-
     // If we have token and userId, auto-login the user
     if (token && newUserId) {
       localStorage.setItem("authToken", token);
@@ -250,7 +241,6 @@ export function GiftBasket({
       setIsAuthenticated(true);
       setUserId(newUserId);
     }
-
     // Start verification flow
     setShowVerifyModal(true);
   };
@@ -269,19 +259,16 @@ export function GiftBasket({
               },
             }
           );
-
           if (
             profileResponse.status === 200 ||
             profileResponse.status === 201
           ) {
             setIsAuthenticated(true);
             setUserId(profileResponse.data.data._id);
-
             // Load user's cart from backend
             const cartResult = await cartService.getUserCart(
               profileResponse.data.data._id
             );
-
             if (
               cartResult.data?.items &&
               Array.isArray(cartResult.data.items)
@@ -294,12 +281,10 @@ export function GiftBasket({
                     typeof item.productId === "object"
                       ? item.productId._id
                       : item.productId;
-
                   const productName =
                     typeof item.productId === "object"
                       ? item.productId.name
                       : "Unknown Product";
-
                   return {
                     id: productId,
                     qty: item.quantity,
@@ -313,7 +298,6 @@ export function GiftBasket({
                     item.name !== undefined &&
                     item.qty >= 1 // Only keep items with quantity >= 1
                 );
-
               setBasket(apiBasket);
             }
           }
@@ -322,7 +306,6 @@ export function GiftBasket({
         }
       }
     };
-
     loadUserCart();
   }, [setBasket]);
 
@@ -365,7 +348,6 @@ export function GiftBasket({
             </div>
           )}
         </div>
-
         <div className="border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex justify-between items-center px-4 py-3">
           <div>
             <h6 className="text-muted-foreground text-xs">Your basket</h6>
@@ -373,43 +355,159 @@ export function GiftBasket({
               ₦ {getBasketTotal().toLocaleString()}
             </span>
           </div>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="default"
-                disabled={
-                  filteredBasket.length === 0 ||
-                  isCheckingAuth ||
-                  isProcessingCart
-                }
-                className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
-                onClick={handleSendBasket}
-              >
-                <>
-                  <Badge
-                    className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center"
-                    title={`${filteredBasket.length} items`}
-                  >
-                    {filteredBasket.length}
-                  </Badge>
-
-                  <span className="font-medium">Send basket</span>
-
-                  {isCheckingAuth || isProcessingCart ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  ) : (
-                    <Icon
-                      icon="streamline-ultimate:shopping-basket-1"
-                      className="text-white h-4 w-4"
-                    />
-                  )}
-                </>
-              </Button>
-            </AlertDialogTrigger>
-          </AlertDialog>
+          <div className="flex gap-2 items-center">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="default"
+                  disabled={
+                    filteredBasket.length === 0 ||
+                    isCheckingAuth ||
+                    isProcessingCart
+                  }
+                  className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                  onClick={handleSendBasket}
+                >
+                  <>
+                    <Badge
+                      className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center"
+                      title={`${filteredBasket.length} items`}
+                    >
+                      {filteredBasket.length}
+                    </Badge>
+                    <span className="font-medium">Send basket</span>
+                    {isCheckingAuth || isProcessingCart ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <Icon
+                        icon="streamline-ultimate:shopping-basket-1"
+                        className="text-white h-4 w-4"
+                      />
+                    )}
+                  </>
+                </Button>
+              </AlertDialogTrigger>
+            </AlertDialog>
+          </div>
         </div>
       </div>
+
+      {/* Full Cart View Modal - Shared for desktop and mobile */}
+      <AlertDialog open={viewCartOpen} onOpenChange={setViewCartOpen}>
+        <AlertDialogContent className="max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+          <AlertDialogHeader className="flex flex-row items-center justify-between p-4 border-b">
+            <AlertDialogTitle className="text-lg font-semibold">
+              Full Gift Basket Details
+              {isAuthenticated && (
+                <span className="pl-2 text-sm text-green-600">✓ Synced</span>
+              )}
+            </AlertDialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-full"
+              onClick={() => setViewCartOpen(false)}
+            >
+              <Icon icon="lucide:x" className="h-4 w-4" />
+            </Button>
+          </AlertDialogHeader>
+          <AlertDialogDescription className="p-0 flex-1 overflow-y-auto">
+            {filteredBasket.length === 0 ? (
+              <div className="p-8 text-center">
+                <EmptyBasket />
+              </div>
+            ) : (
+              <div className="p-4 space-y-4">
+                {filteredBasket.map((item) => {
+                  const product = products.find((p) => p.id == item.id);
+                  if (!product) return null;
+                  const subtotal = (product.price || 0) * item.qty;
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex space-x-4 p-4 bg-card rounded-xl shadow-sm border"
+                    >
+                      {product.image && (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                          loading="lazy"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-base mb-1 truncate">
+                          {product.name}
+                        </h4>
+                        {product.description && (
+                          <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
+                            {product.description}
+                          </p>
+                        )}
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>Qty: {item.qty}</span>
+                          <span>Unit: ₦{product.price?.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0 space-y-1">
+                        <p className="text-lg font-bold text-foreground">
+                          ₦{subtotal.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          per item: ₦{product.price?.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="pt-4 mt-4 border-t bg-muted/50 p-4 rounded-xl">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-medium">
+                      Subtotal ({filteredBasket.length} items)
+                    </span>
+                    <span className="text-lg font-bold">
+                      ₦ {getBasketTotal().toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
+                    <span>Includes all selected gifts</span>
+                    <span className="font-medium">Ready to send!</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </AlertDialogDescription>
+          <AlertDialogFooter className="p-4 border-t flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setViewCartOpen(false)}
+              className="flex-1 mr-2"
+            >
+              Close
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleSendBasket}
+              disabled={
+                filteredBasket.length === 0 ||
+                isCheckingAuth ||
+                isProcessingCart
+              }
+              className="flex-1 ml-2 rounded-3xl"
+            >
+              {isCheckingAuth || isProcessingCart ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              ) : (
+                <Icon
+                  icon="streamline-ultimate:shopping-basket-1"
+                  className="h-4 w-4 mr-2"
+                />
+              )}
+              Proceed to Send
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* MOBILE VIEW - Fixed bottom bar with expandable sheet */}
       {showMobileBasket && (
@@ -429,14 +527,13 @@ export function GiftBasket({
                         ₦ {getBasketTotal().toLocaleString()}
                       </span>
                       {filteredBasket.length > 0 && (
-                        <Badge className="rounded-full bg-[#6A70FF] text-white text-xs h-5 px-2">
+                        <Badge className="rounded-full bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center font-semibold">
                           {filteredBasket.length}
                         </Badge>
                       )}
                     </div>
                   </button>
                 </SheetTrigger>
-
                 <SheetContent side="bottom" className="h-[80vh] p-0">
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle className="flex items-center justify-between">
@@ -446,19 +543,32 @@ export function GiftBasket({
                           <span className="pl-1 text-sm text-green-600">✓</span>
                         )}
                       </span>
-                      {filteredBasket.length > 0 && (
+                      <div className="flex gap-2">
                         <Button
                           variant="ghost"
                           className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
-                          onClick={clearBasket}
-                          disabled={isClearingBasket}
+                          onClick={() => setViewCartOpen(true)}
+                          disabled={filteredBasket.length === 0}
                         >
-                          {isClearingBasket ? "Clearing..." : "Clear All"}
+                          <Icon
+                            icon="mdi:eye-outline"
+                            className="h-3 w-3 mr-1"
+                          />
+                          Full View
                         </Button>
-                      )}
+                        {filteredBasket.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
+                            onClick={clearBasket}
+                            disabled={isClearingBasket}
+                          >
+                            {isClearingBasket ? "Clearing..." : "Clear All"}
+                          </Button>
+                        )}
+                      </div>
                     </SheetTitle>
                   </SheetHeader>
-
                   <div className="p-4 overflow-y-auto h-[calc(80vh-80px)]">
                     {filteredBasket.length === 0 ? (
                       <EmptyBasket />
@@ -479,35 +589,44 @@ export function GiftBasket({
                   </div>
                 </SheetContent>
               </Sheet>
-
-              {/* Right side - Send basket button */}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="default"
-                    disabled={
-                      filteredBasket.length === 0 ||
-                      isCheckingAuth ||
-                      isProcessingCart
-                    }
-                    className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
-                    onClick={handleSendBasket}
-                  >
-                    <span className="font-medium">Send basket</span>
-                    {isCheckingAuth || isProcessingCart ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    ) : (
-                      <Icon
-                        icon="streamline-ultimate:shopping-basket-1"
-                        className="text-white h-4 w-4"
-                      />
-                    )}
-                  </Button>
-                </AlertDialogTrigger>
-              </AlertDialog>
+              {/* Right side - Send basket button with View button */}
+              <div className="flex gap-1 items-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-2 text-xs rounded-3xl border-[#6A70FF]/50 text-[#6A70FF] hover:bg-[#6A70FF]/10 min-w-0 flex-shrink-0"
+                  onClick={() => setViewCartOpen(true)}
+                  disabled={filteredBasket.length === 0}
+                >
+                  <Icon icon="mdi:eye-outline" className="h-3 w-3" />
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="default"
+                      disabled={
+                        filteredBasket.length === 0 ||
+                        isCheckingAuth ||
+                        isProcessingCart
+                      }
+                      className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                      onClick={handleSendBasket}
+                    >
+                      <span className="font-medium">Send basket</span>
+                      {isCheckingAuth || isProcessingCart ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      ) : (
+                        <Icon
+                          icon="streamline-ultimate:shopping-basket-1"
+                          className="text-white h-4 w-4"
+                        />
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                </AlertDialog>
+              </div>
             </div>
           </div>
-
           {/* Spacer to prevent content from being hidden behind fixed bar */}
           <div className="h-20"></div>
         </div>
@@ -529,7 +648,6 @@ export function GiftBasket({
         onLoginSuccess={handleLoginSuccess}
         onSignupSuccess={handleSignupSuccess}
       />
-
       {/* Show ReceiverInfoModal only when user IS authenticated and receiverModalOpen is true */}
       <ReceiverInfoModal
         open={receiverModalOpen && isAuthenticated}
@@ -541,7 +659,6 @@ export function GiftBasket({
         products={products}
         onCloseAll={closeAllModals}
       />
-
       {/* Show VerifyAccountModal when user is authenticated but email not verified */}
       {userEmail && (
         <VerifyAccountModal
@@ -559,7 +676,6 @@ export function GiftBasket({
           }}
         />
       )}
-
       {/* Show SetPinModal after email verification */}
       {userEmail && (
         <SetPinModal
