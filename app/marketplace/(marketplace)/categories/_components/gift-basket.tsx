@@ -160,8 +160,8 @@ export function GiftBasket({
     setIsCheckingAuth(false);
   };
 
-  // Sync cart items to backend API
-  const syncCartToBackend = async (userId: string) => {
+  // Push local cart items to backend API (for login/signup)
+  const pushLocalCartToBackend = async (userId: string) => {
     setIsProcessingCart(true);
     try {
       // Use filtered basket for sync to avoid syncing invalid items
@@ -191,6 +191,27 @@ export function GiftBasket({
     }
   };
 
+  // Verify/Fetch active cart from backend (for Send Basket)
+  const syncCartToBackend = async (userId: string) => {
+    setIsProcessingCart(true);
+    try {
+      const result = await cartService.getUserCart(userId);
+      if (result.code === 200 || result.code === 201) {
+        toast.success("🎉 Basket verified! Ready for payment.");
+        setReceiverModalOpen(true);
+      } else {
+        toast.error(
+          result.message || "Failed to verify basket. Please try again."
+        );
+      }
+    } catch (error: any) {
+      console.error("Cart verification error:", error);
+      toast.error("Failed to verify your basket. Please try again.");
+    } finally {
+      setIsProcessingCart(false);
+    }
+  };
+
   const closeAllModals = () => {
     setLoginOpen(false);
     setReceiverModalOpen(false);
@@ -214,7 +235,7 @@ export function GiftBasket({
           setIsAuthenticated(true);
           setUserId(profileResponse.data.data._id);
           setLoginOpen(false);
-          await syncCartToBackend(profileResponse.data.data._id);
+          await pushLocalCartToBackend(profileResponse.data.data._id);
         }
       }
     } catch (error) {
@@ -240,6 +261,7 @@ export function GiftBasket({
       localStorage.setItem("userId", newUserId);
       setIsAuthenticated(true);
       setUserId(newUserId);
+      pushLocalCartToBackend(newUserId);
     }
     // Start verification flow
     setShowVerifyModal(true);
@@ -533,6 +555,9 @@ export function GiftBasket({
         basket={filteredBasket} // Use filteredBasket here
         products={products}
         onCloseAll={closeAllModals}
+        totalPrice={getBasketTotal()}
+        deliveryFee={getBasketTotal()}
+        serviceCharge={getBasketTotal()}
       />
       {/* Show VerifyAccountModal when user is authenticated but email not verified */}
       {userEmail && (

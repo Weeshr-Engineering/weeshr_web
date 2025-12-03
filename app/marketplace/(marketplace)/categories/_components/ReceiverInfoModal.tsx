@@ -36,6 +36,9 @@ interface ReceiverInfoModalProps {
   receiverName?: string;
   basket: BasketItem[];
   products: Product[];
+  totalPrice: number;
+  deliveryFee: number;
+  serviceCharge: number;
   onCloseAll?: () => void;
 }
 
@@ -66,6 +69,9 @@ export default function ReceiverInfoModal({
   receiverName = "Receiver",
   basket,
   products,
+  totalPrice,
+  deliveryFee,
+  serviceCharge,
   onCloseAll,
 }: ReceiverInfoModalProps) {
   const [formData, setFormData] = useState<FormData>({
@@ -434,6 +440,9 @@ export default function ReceiverInfoModal({
                 basketCount={basketCount}
                 basket={basket}
                 products={products}
+                deliveryFee={deliveryFee}
+                serviceCharge={serviceCharge}
+                totalPrice={totalPrice}
               />
             </div>
           </div>

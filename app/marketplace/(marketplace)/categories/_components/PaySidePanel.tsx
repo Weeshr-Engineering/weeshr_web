@@ -7,19 +7,34 @@ import { BasketItem } from "@/lib/BasketItem";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@iconify/react";
 
-interface PaySidePanelProps {
-  basket: BasketItem[];
-  products: Product[];
+interface ReceiverInfoModalProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
   basketTotal: number;
   basketCount: number;
+  receiverName?: string;
+  basket: BasketItem[];
+  products: Product[];
+  onCloseAll?: () => void;
+  deliveryFee: number;  // Add this
+  serviceCharge: number; // Add this
+  totalPrice: number;   // Add this
 }
 
-export default function PaySidePanel({
-  basket,
-  products,
+// In ReceiverInfoModal component
+export default function ReceiverInfoModal({
+  open,
+  setOpen,
   basketTotal,
   basketCount,
-}: PaySidePanelProps) {
+  receiverName = "Receiver",
+  basket,
+  products,
+  onCloseAll,
+  deliveryFee = 0,      // Add this with default
+  serviceCharge = 0,    // Add this with default
+  totalPrice,           // Add this
+}: ReceiverInfoModalProps) {
   const handleItemClick = (id: string | number) => {
     console.log("Clicked item:", id);
     // Optionally: open modal, navigate to product detail, etc.
@@ -148,35 +163,47 @@ export default function PaySidePanel({
           </div>
 
           {/* Enhanced total section */}
-          <div className="mt-4">
-            {/* Compact cost breakdown */}
-            <div className="bg-white/50 rounded-xl p-3 border border-gray-100">
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">
-                    ₦ {basketTotal.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">Delivery</span>
-                  <span className="text-green-600 font-medium">FREE</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">Service fee</span>
-                  <span className="text-gray-900">₦ 0</span>
-                </div>
-              </div>
-              <div className="border-t border-gray-200 mt-2 pt-2">
-                <div className="flex justify-between items-center text-sm font-semibold">
-                  <span className="text-gray-900">Total</span>
-                  <span className="text-[#4145A7]">
-                    ₦ {basketTotal.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+       <div className="mt-4">
+  {/* Compact cost breakdown */}
+  <div className="bg-white/50 rounded-xl p-3 border border-gray-100">
+    <div className="space-y-1.5">
+      <div className="flex justify-between items-center text-xs">
+        <span className="text-gray-600">Subtotal</span>
+        <span className="text-gray-900">
+          ₦ {basketTotal.toLocaleString()}  {/* This is subTotal: 300000 */}
+        </span>
+      </div>
+      <div className="flex justify-between items-center text-xs">
+        <span className="text-gray-600">Delivery</span>
+        <span
+          className={`font-medium ${
+            deliveryFee === 0 ? "text-green-600" : "text-gray-900"
+          }`}
+        >
+          {deliveryFee === 0
+            ? "FREE"  {/* This shows FREE when deliveryFee is 0 */}
+            : `₦ ${deliveryFee.toLocaleString()}`}
+        </span>
+      </div>
+      <div className="flex justify-between items-center text-xs">
+        <span className="text-gray-600">Service fee</span>
+        <span className="text-gray-900">
+          {serviceCharge > 0
+            ? `₦ ${serviceCharge.toLocaleString()}` 
+            : "₦ 0"}
+        </span>
+      </div>
+    </div>
+    <div className="border-t border-gray-200 mt-2 pt-2">
+      <div className="flex justify-between items-center text-sm font-semibold">
+        <span className="text-gray-900">Total</span>
+        <span className="text-[#4145A7]">
+          ₦ {totalPrice.toLocaleString()}  {/* This should be 303,000 */}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
         </CardContent>
       </Card>
 
