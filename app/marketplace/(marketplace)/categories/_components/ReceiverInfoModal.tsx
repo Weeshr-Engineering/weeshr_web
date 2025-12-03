@@ -22,6 +22,12 @@ import {
 
 import PaySidePanel from "./PaySidePanel";
 import PaymentSuccessModal from "../[vendor]/[product]/_components/PaymentSuccessModal";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 import { BasketItem } from "@/lib/BasketItem";
 import { Product } from "@/service/product.service";
@@ -85,6 +91,7 @@ export default function ReceiverInfoModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [usePhoneForDelivery, setUsePhoneForDelivery] = useState(false);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
 
   const searchParams = useSearchParams();
   const nameFromUrl = searchParams?.get("name") || "";
@@ -397,8 +404,27 @@ export default function ReceiverInfoModal({
                 </div>
               </CardContent>
 
-              {/* Footer */}
-              <div className="mt-auto border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex justify-between items-center px-4 py-3">
+              {/* Mobile View Order Details Button */}
+              <div className="md:hidden border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex justify-between items-center px-4 py-3">
+                <div>
+                  <h6 className="text-muted-foreground text-xs">Your basket</h6>
+                  <span className="font-semibold">
+                    ₦ {totalPrice.toLocaleString()}
+                  </span>
+                </div>
+                <Button
+                  variant="default"
+                  disabled={!isFormValid()}
+                  className="disabled:opacity-50 rounded-3xl px-3 text-xs py-2 h-9 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                  onClick={() => setShowOrderDetails(true)}
+                  type="button"
+                >
+                  <span className="font-medium">View Order Details</span>
+                </Button>
+              </div>
+
+              {/* Footer - Desktop only */}
+              <div className="mt-auto border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:flex justify-between items-center px-4 py-3 hidden">
                 <div>
                   <h6 className="text-muted-foreground text-xs">Your basket</h6>
                   <span className="font-semibold">
@@ -409,7 +435,7 @@ export default function ReceiverInfoModal({
                 <Button
                   variant="default"
                   disabled={!isFormValid() || isProcessing}
-                  className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                  className="disabled:opacity-50 rounded-3xl px-1.5 text-xs md:flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
                   onClick={handleMakePayment}
                   type="button"
                 >
@@ -420,22 +446,26 @@ export default function ReceiverInfoModal({
                     </>
                   ) : (
                     <>
-                      <Badge className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center">
-                        {basketCount}
-                      </Badge>
-                      <span className="font-medium">Proceed to Pay</span>
-                      <Icon
-                        icon="streamline-ultimate:shopping-basket-1"
-                        className="h-4 w-4"
-                      />
+                      <span
+                        className="font-medium md:hidden"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowOrderDetails(true);
+                        }}
+                      >
+                        View Order Details
+                      </span>
+                      <span className="font-medium hidden md:inline">
+                        Proceed to Pay
+                      </span>
                     </>
                   )}
                 </Button>
               </div>
             </Card>
 
-            {/* Right: PaySidePanel */}
-            <div className="w-[45%] flex">
+            {/* Right: PaySidePanel - Desktop only */}
+            <div className="w-[45%] hidden md:flex">
               <PaySidePanel
                 basket={basket}
                 products={products}
@@ -448,6 +478,28 @@ export default function ReceiverInfoModal({
           </div>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Mobile Order Details Sheet */}
+      <Sheet open={showOrderDetails} onOpenChange={setShowOrderDetails}>
+        <SheetContent side="bottom" className="h-[90vh] p-0">
+          <SheetHeader className="p-4 border-b">
+            <SheetTitle>Order Details</SheetTitle>
+          </SheetHeader>
+          <div className="h-[calc(90vh-60px)] overflow-y-auto p-4">
+            <PaySidePanel
+              basket={basket}
+              products={products}
+              subTotal={basketTotal}
+              deliveryFee={deliveryFee}
+              serviceCharge={serviceCharge}
+              totalPrice={totalPrice}
+              basketCount={basketCount}
+              onProceedToPay={handleMakePayment}
+              isProcessing={isProcessing}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Payment Success Modal */}
       <PaymentSuccessModal

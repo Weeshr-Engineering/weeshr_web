@@ -438,7 +438,7 @@ export function GiftBasket({
           <div>
             <h6 className="text-muted-foreground text-xs">Your basket</h6>
             <span className="font-semibold">
-              ₦ {getDisplayTotal().toLocaleString()}
+              ₦ {getBasketTotal().toLocaleString()}
             </span>
           </div>
           <div className="flex gap-2 items-center">
