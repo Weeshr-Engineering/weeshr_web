@@ -1,6 +1,4 @@
-// @ts-ignore
 // @ts-nocheck
-// @ts-expect-error
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,6 +39,13 @@ interface GiftBasketProps {
   setBasket: React.Dispatch<React.SetStateAction<BasketItem[]>>;
 }
 
+interface CartDetails {
+  subTotal: number;
+  serviceCharge: number;
+  deliveryFee: number;
+  totalPrice: number;
+}
+
 export function GiftBasket({
   basket,
   products,
@@ -54,14 +59,15 @@ export function GiftBasket({
   const [receiverName, setReceiverName] = useState("Dorcas");
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const [isProcessingCart, setIsProcessingCart] = useState(false);
-  const [isClearingBasket, setIsClearingBasket] = useState(false); // New state specifically for clearing
-  const [mobileSheetOpen, setMobileSheetOpen] = useState(false); // Mobile basket sheet state
-  const [showMobileBasket, setShowMobileBasket] = useState(true); // New state to control mobile basket visibility
-  const [showVerifyModal, setShowVerifyModal] = useState(false); // Verification modal state
-  const [showPinModal, setShowPinModal] = useState(false); // PIN modal state
+  const [isClearingBasket, setIsClearingBasket] = useState(false);
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [showMobileBasket, setShowMobileBasket] = useState(true);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [showPinModal, setShowPinModal] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
-  const [viewCartOpen, setViewCartOpen] = useState(false); // New state for full cart view modal
+  const [viewCartOpen, setViewCartOpen] = useState(false);
+  const [cartDetails, setCartDetails] = useState<CartDetails | null>(null);
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -70,14 +76,56 @@ export function GiftBasket({
     return item.qty >= 1 && price > 0;
   });
 
+  // Fetch cart details from API
+  const fetchCartDetails = async () => {
+    if (!isAuthenticated || !userId) return;
+
+    try {
+      const result = await cartService.getUserCart(userId);
+      if (result.code === 200 || result.code === 201) {
+        setCartDetails({
+          subTotal: result.data?.subTotal || 0,
+          serviceCharge: result.data?.serviceCharge || 0,
+          deliveryFee: result.data?.deliveryFee || 0,
+          totalPrice: result.data?.totalPrice || 0,
+        });
+      } else {
+        // If API fails, use local calculation as fallback
+        const subTotal = getBasketTotal();
+        const serviceCharge = Math.round(subTotal * 0.01); // 1% service charge
+        const deliveryFee = 0; // Free delivery for now
+        const totalPrice = subTotal + serviceCharge + deliveryFee;
+
+        setCartDetails({
+          subTotal,
+          serviceCharge,
+          deliveryFee,
+          totalPrice,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch cart details:", error);
+      // Fallback to local calculation
+      const subTotal = getBasketTotal();
+      const serviceCharge = Math.round(subTotal * 0.01);
+      const deliveryFee = 0;
+      const totalPrice = subTotal + serviceCharge + deliveryFee;
+
+      setCartDetails({
+        subTotal,
+        serviceCharge,
+        deliveryFee,
+        totalPrice,
+      });
+    }
+  };
+
   // Clear basket - local state or API
   const clearBasket = async () => {
-    // Store current basket for potential rollback
     const previousBasket = [...basket];
-    // Clear UI immediately
     setBasket([]);
-    setIsClearingBasket(true); // Set clearing state
-    // Sync with API in background if authenticated
+    setIsClearingBasket(true);
+
     if (isAuthenticated && userId) {
       try {
         const cartId = cartService.getCurrentCartId();
@@ -85,35 +133,32 @@ export function GiftBasket({
           const result = await cartService.clearCart(cartId);
           if (!(result.code === 200 || result.code === 201)) {
             toast.error("Failed to clear cart on server");
-            // Optional: Revert local state if API fails
-            // setBasket(previousBasket);
           } else {
             toast.success("Cart cleared successfully");
+            // Reset cart details when basket is cleared
+            setCartDetails(null);
           }
         }
       } catch (error) {
         toast.error("Failed to clear cart on server");
-        // Optional: Revert local state if API fails
-        // setBasket(previousBasket);
       } finally {
-        setIsClearingBasket(false); // Clear clearing state
+        setIsClearingBasket(false);
       }
     } else {
-      // For guest users, just show success immediately
       toast.success("Cart cleared successfully");
-      setIsClearingBasket(false); // Clear clearing state
+      setCartDetails(null);
+      setIsClearingBasket(false);
     }
   };
 
   // Check authentication status and handle cart submission
   const handleSendBasket = async () => {
     setIsCheckingAuth(true);
-    // Hide mobile basket when Send Basket is clicked
     setShowMobileBasket(false);
     const authToken = localStorage.getItem("authToken");
+
     if (authToken) {
       try {
-        // Verify token and get user profile
         const profileResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
           {
@@ -122,6 +167,7 @@ export function GiftBasket({
             },
           }
         );
+
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           setIsAuthenticated(true);
           const userData = profileResponse.data.data;
@@ -130,16 +176,17 @@ export function GiftBasket({
           setUserPhone(
             `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
           );
-          // Check if email is verified
+
           if (!userData.emailVerified) {
-            // Email not verified - show verification modal
             toast.error("Please verify your email to continue");
             setShowVerifyModal(true);
             setIsCheckingAuth(false);
             return;
           }
-          // User is authenticated and verified - sync cart to backend
-          await syncCartToBackend(userData._id);
+
+          // Fetch cart details before opening receiver modal
+          await fetchCartDetails();
+          setReceiverModalOpen(true);
         } else {
           setIsAuthenticated(false);
           setUserId(null);
@@ -164,19 +211,22 @@ export function GiftBasket({
   const pushLocalCartToBackend = async (userId: string) => {
     setIsProcessingCart(true);
     try {
-      // Use filtered basket for sync to avoid syncing invalid items
       const cartItems = filteredBasket.map((item) => ({
         productId: item.id.toString(),
         quantity: item.qty,
         price: products.find((p) => p.id == item.id)?.price || 0,
       }));
+
       const cartData = {
         userId: userId,
         items: cartItems,
       };
+
       const result = await cartService.addItemsToCart(cartData);
       if (result.code === 200 || result.code === 201) {
         toast.success("🎉 Basket synced successfully! Ready for payment.");
+        // Fetch cart details after syncing
+        await fetchCartDetails();
         setReceiverModalOpen(true);
       } else {
         toast.error(
@@ -197,6 +247,8 @@ export function GiftBasket({
     try {
       const result = await cartService.getUserCart(userId);
       if (result.code === 200 || result.code === 201) {
+        // Fetch cart details after verification
+        await fetchCartDetails();
         toast.success("🎉 Basket verified! Ready for payment.");
         setReceiverModalOpen(true);
       } else {
@@ -215,7 +267,6 @@ export function GiftBasket({
   const closeAllModals = () => {
     setLoginOpen(false);
     setReceiverModalOpen(false);
-    // Show mobile basket again when modals are closed
     setShowMobileBasket(true);
   };
 
@@ -250,12 +301,10 @@ export function GiftBasket({
     newUserId?: string,
     token?: string
   ) => {
-    // Close login dialog immediately
     setLoginOpen(false);
-    // Set user data for verification
     setUserEmail(email);
     setUserPhone(phone);
-    // If we have token and userId, auto-login the user
+
     if (token && newUserId) {
       localStorage.setItem("authToken", token);
       localStorage.setItem("userId", newUserId);
@@ -263,7 +312,6 @@ export function GiftBasket({
       setUserId(newUserId);
       pushLocalCartToBackend(newUserId);
     }
-    // Start verification flow
     setShowVerifyModal(true);
   };
 
@@ -295,10 +343,8 @@ export function GiftBasket({
               cartResult.data?.items &&
               Array.isArray(cartResult.data.items)
             ) {
-              // Convert API cart items to local basket format and filter invalid items
               const apiBasket: BasketItem[] = cartResult.data.items
                 .map((item: any) => {
-                  // Handle both cases: productId as object or string
                   const productId =
                     typeof item.productId === "object"
                       ? item.productId._id
@@ -318,9 +364,19 @@ export function GiftBasket({
                     item.id !== undefined &&
                     item.qty !== undefined &&
                     item.name !== undefined &&
-                    item.qty >= 1 // Only keep items with quantity >= 1
+                    item.qty >= 1
                 );
               setBasket(apiBasket);
+
+              // Set cart details from API response
+              if (cartResult.data) {
+                setCartDetails({
+                  subTotal: cartResult.data.subTotal || 0,
+                  serviceCharge: cartResult.data.serviceCharge || 0,
+                  deliveryFee: cartResult.data.deliveryFee || 0,
+                  totalPrice: cartResult.data.totalPrice || 0,
+                });
+              }
             }
           }
         } catch (error) {
@@ -331,9 +387,17 @@ export function GiftBasket({
     loadUserCart();
   }, [setBasket]);
 
+  // Calculate display total - use API data when available, fallback to local calculation
+  const getDisplayTotal = () => {
+    if (cartDetails) {
+      return cartDetails.totalPrice;
+    }
+    return getBasketTotal();
+  };
+
   return (
     <>
-      {/* DESKTOP VIEW - Hidden on mobile */}
+      {/* DESKTOP VIEW */}
       <div className="hidden lg:block border-0 rounded-2xl bg-background">
         <h3 className="font-normal pt-6 pb-2 w-full text-center">
           Gift basket
@@ -374,7 +438,7 @@ export function GiftBasket({
           <div>
             <h6 className="text-muted-foreground text-xs">Your basket</h6>
             <span className="font-semibold">
-              ₦ {getBasketTotal().toLocaleString()}
+              ₦ {getDisplayTotal().toLocaleString()}
             </span>
           </div>
           <div className="flex gap-2 items-center">
@@ -414,13 +478,11 @@ export function GiftBasket({
         </div>
       </div>
 
-      {/* MOBILE VIEW - Fixed bottom bar with expandable sheet */}
+      {/* MOBILE VIEW */}
       {showMobileBasket && (
         <div className="lg:hidden">
-          {/* Fixed Bottom Bar */}
           <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] shadow-lg">
             <div className="flex justify-between items-center px-4 py-3">
-              {/* Left side - Basket info with tap to expand */}
               <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
                 <SheetTrigger asChild>
                   <div className="flex items-center gap-2">
@@ -430,7 +492,7 @@ export function GiftBasket({
                       </h6>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">
-                          ₦ {getBasketTotal().toLocaleString()}
+                          ₦ {getDisplayTotal().toLocaleString()}
                         </span>
                       </div>
                     </button>
@@ -441,9 +503,7 @@ export function GiftBasket({
                       onClick={() => setViewCartOpen(true)}
                     >
                       <Icon icon="mdi:cart-outline" className="h-4 w-4" />
-
                       <span>View Cart</span>
-
                       {filteredBasket.length > 0 && (
                         <Badge className="absolute -top-2 -right-2 bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center rounded-full font-semibold">
                           {filteredBasket.length}
@@ -495,7 +555,6 @@ export function GiftBasket({
                   </div>
                 </SheetContent>
               </Sheet>
-              {/* Right side - Send basket button with View button */}
               <div className="flex gap-1 items-center">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -524,12 +583,11 @@ export function GiftBasket({
               </div>
             </div>
           </div>
-          {/* Spacer to prevent content from being hidden behind fixed bar */}
           <div className="h-20"></div>
         </div>
       )}
 
-      {/* Show LoginDialog only when user is NOT authenticated and loginOpen is true */}
+      {/* Modals */}
       <LoginDialog
         open={
           loginOpen && !isAuthenticated && !showVerifyModal && !showPinModal
@@ -539,27 +597,28 @@ export function GiftBasket({
           if (!open) setShowMobileBasket(true);
         }}
         basketTotal={getBasketTotal()}
-        basketCount={filteredBasket.length} // Use filteredBasket here
-        basket={filteredBasket} // Use filteredBasket here
+        basketCount={filteredBasket.length}
+        basket={filteredBasket}
         products={products}
         onLoginSuccess={handleLoginSuccess}
         onSignupSuccess={handleSignupSuccess}
       />
-      {/* Show ReceiverInfoModal only when user IS authenticated and receiverModalOpen is true */}
+
       <ReceiverInfoModal
         open={receiverModalOpen && isAuthenticated}
         setOpen={setReceiverModalOpen}
-        basketTotal={getBasketTotal()}
-        basketCount={filteredBasket.length} // Use filteredBasket here
+        basketTotal={cartDetails?.subTotal || getBasketTotal()}
+        basketCount={filteredBasket.length}
         receiverName={receiverName}
-        basket={filteredBasket} // Use filteredBasket here
+        basket={filteredBasket}
         products={products}
         onCloseAll={closeAllModals}
-        totalPrice={getBasketTotal()}
-        deliveryFee={getBasketTotal()}
-        serviceCharge={getBasketTotal()}
+        totalPrice={cartDetails?.totalPrice || getBasketTotal()}
+        subTotal={cartDetails?.subTotal || getBasketTotal()}
+        deliveryFee={cartDetails?.deliveryFee || 0}
+        serviceCharge={cartDetails?.serviceCharge || 0}
       />
-      {/* Show VerifyAccountModal when user is authenticated but email not verified */}
+
       {userEmail && (
         <VerifyAccountModal
           open={showVerifyModal}
@@ -570,13 +629,12 @@ export function GiftBasket({
           email={userEmail}
           phone={userPhone}
           onVerificationSuccess={() => {
-            // After successful verification, show PIN modal
             setShowVerifyModal(false);
             setShowPinModal(true);
           }}
         />
       )}
-      {/* Show SetPinModal after email verification */}
+
       {userEmail && (
         <SetPinModal
           open={showPinModal}
@@ -586,7 +644,6 @@ export function GiftBasket({
           }}
           email={userEmail}
           onPinSetSuccess={async () => {
-            // After PIN is set, proceed with cart sync
             setShowPinModal(false);
             if (userId) {
               await syncCartToBackend(userId);

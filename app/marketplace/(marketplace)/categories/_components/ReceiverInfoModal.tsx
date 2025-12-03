@@ -402,7 +402,8 @@ export default function ReceiverInfoModal({
                 <div>
                   <h6 className="text-muted-foreground text-xs">Your basket</h6>
                   <span className="font-semibold">
-                    ₦ {basketTotal.toLocaleString()}
+                    ₦ {totalPrice.toLocaleString()}{" "}
+                    {/* Change basketTotal to totalPrice */}
                   </span>
                 </div>
                 <Button
@@ -436,10 +437,9 @@ export default function ReceiverInfoModal({
             {/* Right: PaySidePanel */}
             <div className="w-[45%] flex">
               <PaySidePanel
-                basketTotal={basketTotal}
-                basketCount={basketCount}
                 basket={basket}
                 products={products}
+                subTotal={basketTotal} // Change this from basketTotal to subTotal prop
                 deliveryFee={deliveryFee}
                 serviceCharge={serviceCharge}
                 totalPrice={totalPrice}
