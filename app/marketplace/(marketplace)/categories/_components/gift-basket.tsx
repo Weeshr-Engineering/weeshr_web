@@ -395,6 +395,28 @@ export function GiftBasket({
     return getBasketTotal();
   };
 
+  // Optimistically update cart details when basket changes (before API responds)
+  useEffect(() => {
+    if (isAuthenticated && filteredBasket.length > 0) {
+      const subTotal = getBasketTotal();
+      const serviceCharge = Math.round(subTotal * 0.01); // 1% service charge
+      const deliveryFee = 0;
+      const totalPrice = subTotal + serviceCharge + deliveryFee;
+
+      // Only update if different from current (avoid infinite loops)
+      if (!cartDetails || cartDetails.subTotal !== subTotal) {
+        setCartDetails({
+          subTotal,
+          serviceCharge,
+          deliveryFee,
+          totalPrice,
+        });
+      }
+    } else if (filteredBasket.length === 0) {
+      setCartDetails(null);
+    }
+  }, [filteredBasket, isAuthenticated]);
+
   return (
     <>
       {/* DESKTOP VIEW */}
