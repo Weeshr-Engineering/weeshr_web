@@ -313,7 +313,7 @@ export default function ReceiverInfoModal({
                         <span className="text-muted-foreground mr-1">
                           Don't have the address?
                         </span>
-                        Send with WhatsApp enabled phone number
+                        Click here to send with phone number.
                       </p>
                     </>
                   ) : (
@@ -481,11 +481,15 @@ export default function ReceiverInfoModal({
 
       {/* Mobile Order Details Sheet */}
       <Sheet open={showOrderDetails} onOpenChange={setShowOrderDetails}>
-        <SheetContent side="bottom" className="h-[90vh] p-0">
+        <SheetContent
+          side="bottom"
+          className=" p-0 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+        >
           <SheetHeader className="p-4 border-b">
             <SheetTitle>Order Details</SheetTitle>
           </SheetHeader>
-          <div className="h-[calc(90vh-60px)] overflow-y-auto p-4">
+
+          <div className="overflow-y-auto p-4">
             <PaySidePanel
               basket={basket}
               products={products}
