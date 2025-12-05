@@ -153,7 +153,7 @@ const VendorList: React.FC<VendorListProps> = ({
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-muted-foreground text-sm">Gift Ideas</p>
-               and 
+                    {vendor.giftIdeas}
                   </div>
 
                   <div className="flex gap-1">
