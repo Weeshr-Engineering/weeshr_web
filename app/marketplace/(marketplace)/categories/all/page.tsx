@@ -22,6 +22,9 @@ export default function AllVendorsPage() {
   const [apiCategories, setApiCategories] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [observerTarget, setObserverTarget] = useState<HTMLDivElement | null>(
+    null
+  );
 
   const nameParam = searchParams.get("name");
 
@@ -69,7 +72,11 @@ export default function AllVendorsPage() {
       const { vendors: newVendors, pagination } =
         await VendorService.getAllVendors(nextPage);
 
-      setVendors((prev) => [...prev, ...newVendors]);
+      // Only append vendors if we actually got new data
+      if (newVendors && newVendors.length > 0) {
+        setVendors((prev) => [...prev, ...newVendors]);
+      }
+
       setCurrentPage(pagination.currentPage);
       setTotalPages(pagination.totalPages);
     } catch (error) {
@@ -78,6 +85,32 @@ export default function AllVendorsPage() {
       setLoadingMore(false);
     }
   };
+
+  // Infinite scroll with Intersection Observer
+  useEffect(() => {
+    if (!observerTarget) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          !loadingMore &&
+          currentPage < totalPages
+        ) {
+          handleLoadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: "100px" }
+    );
+
+    observer.observe(observerTarget);
+
+    return () => {
+      if (observerTarget) {
+        observer.unobserve(observerTarget);
+      }
+    };
+  }, [observerTarget, loadingMore, currentPage, totalPages]);
 
   useEffect(() => {
     if (!nameParam) {
@@ -157,36 +190,56 @@ export default function AllVendorsPage() {
         <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
           <VendorList vendors={vendors} loading={loading} />
 
-          {/* Load More Button */}
-          {!loading && hasMoreVendors && (
-            <div className="flex justify-center py-8">
-              <Button
-                onClick={handleLoadMore}
-                disabled={loadingMore}
-                className="px-8 py-6 text-base font-medium rounded-full bg-marketplace-primary hover:bg-marketplace-primary/80 transition-colors"
-              >
-                {loadingMore ? (
-                  <>
-                    <Icon
-                      icon="eos-icons:loading"
-                      className="mr-2"
-                      height={20}
-                      width={20}
-                    />
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    <Icon
-                      icon="material-symbols:expand-more"
-                      className="mr-2"
-                      height={20}
-                      width={20}
-                    />
-                    Load More
-                  </>
-                )}
-              </Button>
+          {/* Infinite Scroll Trigger & Status Messages */}
+          {!loading && (
+            <div className="py-8">
+              {hasMoreVendors ? (
+                <>
+                  {/* Invisible trigger for infinite scroll */}
+                  <div
+                    ref={setObserverTarget}
+                    className="flex justify-center items-center"
+                  >
+                    {loadingMore && (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Icon icon="eos-icons:loading" height={24} width={24} />
+                        <span className="text-sm">Loading more vendors...</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Optional: Keep button for manual trigger */}
+                  {!loadingMore && (
+                    <div className="flex justify-center">
+                      <Button
+                        onClick={handleLoadMore}
+                        variant="ghost"
+                        className="px-6 py-3 text-sm font-medium rounded-full text-muted-foreground hover:text-marketplace-primary transition-colors"
+                      >
+                        <Icon
+                          icon="material-symbols:expand-more"
+                          className="mr-2"
+                          height={20}
+                          width={20}
+                        />
+                        Load More
+                      </Button>
+                    </div>
+                  )}
+                </>
+              ) : vendors.length > 0 ? (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <Icon
+                    icon="material-symbols:check-circle-outline"
+                    height={32}
+                    width={32}
+                    className="text-marketplace-primary"
+                  />
+                  <p className="text-sm font-medium">
+                    You've reached the end! All {vendors.length} vendors loaded.
+                  </p>
+                </div>
+              ) : null}
             </div>
           )}
         </div>
