@@ -4,14 +4,13 @@ import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import Script from "next/script";
 import RuutChat from "@/components/commons/RuutChat";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Weeshr",
-  description: "Make a Weesh!! ",
+  description: "Make a Weesh!!",
   openGraph: {
     title: "Weeshr",
     description: "Make a Weesh!!",
@@ -41,6 +40,7 @@ export const metadata: Metadata = {
   },
   other: {
     "google-site-verification": "Tpygm8ffQSGqRVivwFb15HdAmCgdfeGYNQ49vxTZKt4",
+    "fb:app_id": "1323012452458565", // ✅ Facebook App ID
   },
 };
 
@@ -61,13 +61,15 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* Add other fonts if necessary, using next/font/google */}
-        {/* Example for the Dancing Script font */}
         <link
           href="https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap"
           rel="stylesheet"
         />
+
+        {/* Optional: If you want to manually inject Facebook App ID */}
+        {/* <meta property="fb:app_id" content="1323012452458565" /> */}
       </head>
+
       <body className={outfit.className}>
         {children}
         <Toaster position="bottom-right" reverseOrder={false} />
