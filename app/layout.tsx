@@ -40,7 +40,6 @@ export const metadata: Metadata = {
   },
   other: {
     "google-site-verification": "Tpygm8ffQSGqRVivwFb15HdAmCgdfeGYNQ49vxTZKt4",
-    "fb:app_id": "1323012452458565", // ✅ Facebook App ID
   },
 };
 
@@ -65,6 +64,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap"
           rel="stylesheet"
         />
+        <meta property="fb:app_id" content="1323012452458565" />
 
         {/* Optional: If you want to manually inject Facebook App ID */}
         {/* <meta property="fb:app_id" content="1323012452458565" /> */}
