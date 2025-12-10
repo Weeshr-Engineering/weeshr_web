@@ -81,10 +81,9 @@ export class VendorService {
         })
       );
 
-      // Filter out null values and vendors without product images
+      // Filter out null values and vendors without products
       return validVendors.filter(
-        (vendor): vendor is Vendor =>
-          vendor !== null && vendor.productImages.length > 0
+        (vendor): vendor is Vendor => vendor !== null && vendor.giftIdeas > 0
       );
     } catch (error) {
       console.error("Error fetching vendors:", error);
@@ -191,15 +190,17 @@ export class VendorService {
         })
       );
 
-      // Filter out null values
-      const vendorsWithImages = validVendors.filter(
-        (vendor): vendor is Vendor => vendor !== null
+      // Filter out vendors with no products (giftIdeas === 0)
+      const vendorsWithProducts = validVendors.filter(
+        (vendor): vendor is Vendor => vendor !== null && vendor.giftIdeas > 0
       );
 
-      console.log(`Returning ${vendorsWithImages.length} valid vendors`);
+      console.log(
+        `Returning ${vendorsWithProducts.length} vendors with products (filtered from ${validVendors.length} total)`
+      );
 
       return {
-        vendors: vendorsWithImages,
+        vendors: vendorsWithProducts,
         pagination,
       };
     } catch (error) {
