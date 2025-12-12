@@ -35,7 +35,7 @@ export async function fetchVendorsByCategory(categoryId: string) {
 // Fetch all vendors with pagination
 export async function fetchAllVendors(page: number = 1) {
   const res = await fetch(
-    `${API_BASE_URL}/market/vendors?page=${page}&per_page=3&sortOrder=desc`,
+    `${API_BASE_URL}/market/vendors?page=${page}&per_page=8&sortOrder=desc`,
     {
       next: { revalidate: 60 },
     }

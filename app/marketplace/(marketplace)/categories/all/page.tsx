@@ -236,7 +236,7 @@ export default function AllVendorsPage() {
                     className="text-marketplace-primary"
                   />
                   <p className="text-sm font-medium">
-                    You've reached the end! All {vendors.length} vendors loaded.
+                    hoohooo you’ve reach the end 🥰
                   </p>
                 </div>
               ) : null}
