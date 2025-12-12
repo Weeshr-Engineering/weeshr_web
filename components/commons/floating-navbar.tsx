@@ -70,8 +70,8 @@ export const FloatingNav = ({
     router.push("/login");
   };
 
-  const showLogout = pathname === "/account";
-  const showAccount = isAuthenticated && pathname !== "/account";
+  const showLogout = pathname === "/marketplace";
+  const showAccount = isAuthenticated && pathname !== "/marketplace";
 
   // Improved active link detection that handles nested routes
   const isLinkActive = (link: string) => {
@@ -92,8 +92,8 @@ export const FloatingNav = ({
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
 
-    // For "All" category, only match exact path (not subroutes)
-    if (baseLink === "/marketplace/categories") {
+    // For "All" category, match /marketplace/categories/all
+    if (baseLink === "/marketplace/categories/all") {
       return currentPath === baseLink;
     }
 
@@ -158,7 +158,7 @@ export const FloatingNav = ({
                     <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
                   </button>
                 ) : showAccount ? (
-                  <Link href="/account">
+                  <Link href="/marketplace">
                     <button
                       className={cn(
                         "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"

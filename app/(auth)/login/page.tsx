@@ -42,7 +42,7 @@ const LoginPage = () => {
 
           if (response.status === 200 || response.status === 201) {
             // Redirect to account page if the user is authenticated
-            router.push("/account");
+            router.push("/marketplace");
           } else {
             // If the token is invalid, clear it from localStorage
             localStorage.removeItem("authToken");
@@ -87,7 +87,7 @@ const LoginPage = () => {
         const userId = userData._id;
         localStorage.setItem("userId", userId);
         localStorage.setItem("authToken", userData.token);
-        router.push("/account");
+        router.push("/marketplace");
       } else {
         toast.error("Login failed. Please check your credentials.");
       }

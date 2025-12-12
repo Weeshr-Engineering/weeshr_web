@@ -36,38 +36,22 @@ class CartService {
         throw new Error("User not authenticated");
       }
 
-      let response;
-
-      if (this.currentCartId) {
-        // Update existing cart
-        response = await axios.put(
-          `${this.baseURL}/market/carts/${this.currentCartId}`,
-          cartData,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      } else {
-        // Create new cart
-        response = await axios.post(
-          `${this.baseURL}/market/carts/add`,
-          cartData,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Store cart ID for future updates
-        if (response.data.data?._id) {
-          this.currentCartId = response.data.data._id;
-          localStorage.setItem("currentCartId", response.data.data._id);
+      // Always use POST /add endpoint to avoid PUT failures
+      const response = await axios.post(
+        `${this.baseURL}/market/carts/add`,
+        cartData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      // Store cart ID for future reference
+      if (response.data.data?._id) {
+        this.currentCartId = response.data.data._id;
+        localStorage.setItem("currentCartId", response.data.data._id);
       }
 
       return {
@@ -89,7 +73,8 @@ class CartService {
   // Remove item from cart
   async removeItemFromCart(
     userId: string,
-    productId: string
+    productId: string,
+    quantityToRemove?: number
   ): Promise<CartResponse> {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -98,12 +83,18 @@ class CartService {
         throw new Error("User not authenticated");
       }
 
+      const payload: any = {
+        userId,
+        productId,
+      };
+
+      if (quantityToRemove) {
+        payload.quantityToRemove = quantityToRemove;
+      }
+
       const response = await axios.post(
         `${this.baseURL}/market/carts/remove-item`,
-        {
-          userId,
-          productId,
-        },
+        payload,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

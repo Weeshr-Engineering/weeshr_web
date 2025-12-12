@@ -38,8 +38,8 @@ export default function HeaderMobile({
     setIsAuthenticated(!!localStorage.getItem("authToken"));
   }, []);
 
-  const showLogout = pathname === "/account";
-  const showAccount = isAuthenticated && pathname !== "/account";
+  const showLogout = pathname === "/marketplace";
+  const showAccount = isAuthenticated && pathname !== "/marketplace";
   const showLogin =
     !hideLoginButton && !isAuthenticated && !showLogout && !showAccount;
 
@@ -113,7 +113,7 @@ export default function HeaderMobile({
                       <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
                     </button>
                   ) : showAccount ? (
-                    <Link href="/account">
+                    <Link href="/marketplace">
                       <button
                         className={cn(
                           "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
