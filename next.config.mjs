@@ -5,8 +5,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/marketplace",
-        destination: "/",
+        source: "/",
+        destination: "/marketplace",
         permanent: true, // 301 redirect (SEO-safe)
       },
     ];
