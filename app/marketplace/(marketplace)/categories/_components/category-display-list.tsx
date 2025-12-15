@@ -7,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { VendorCardSkeleton } from "./vendor-card-skeleton";
-import {
-  ScrollVelocityContainer,
-  ScrollVelocityRow,
-} from "@/components/ui/scroll-based-velocity";
+
 
 // --- Types ---
 interface CategoryData {

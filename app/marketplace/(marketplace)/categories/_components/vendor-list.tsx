@@ -6,10 +6,7 @@ import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { VendorCardSkeleton } from "./vendor-card-skeleton";
-import {
-  ScrollVelocityContainer,
-  ScrollVelocityRow,
-} from "@/components/ui/scroll-based-velocity";
+
 import { Vendor } from "@/service/vendor.service";
 import { motion } from "framer-motion";
 
@@ -156,9 +153,7 @@ const VendorList: React.FC<VendorListProps> = ({
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-muted-foreground text-sm">Gift Ideas</p>
-                    <p className="text-sm text-primary font-semibold">
-                      {vendor.giftIdeas}
-                    </p>
+                    {vendor.giftIdeas}
                   </div>
 
                   <div className="flex gap-1">

@@ -10,23 +10,38 @@ import { Icon } from "@iconify/react";
 interface PaySidePanelProps {
   basket: BasketItem[];
   products: Product[];
-  basketTotal: number;
-  basketCount: number;
+  subTotal: number;
+  deliveryFee: number;
+  serviceCharge: number;
+  totalPrice: number;
+  basketCount?: number;
+  onProceedToPay?: () => void;
+  isProcessing?: boolean;
 }
 
 export default function PaySidePanel({
   basket,
   products,
-  basketTotal,
-  basketCount,
+  subTotal,
+  deliveryFee = 0,
+  serviceCharge = 0,
+  totalPrice,
+  basketCount = 0,
+  onProceedToPay,
+  isProcessing = false,
 }: PaySidePanelProps) {
   const handleItemClick = (id: string | number) => {
     console.log("Clicked item:", id);
-    // Optionally: open modal, navigate to product detail, etc.
   };
 
+  // Add safe defaults for all number values
+  const safeSubTotal = subTotal || 0;
+  const safeDeliveryFee = deliveryFee || 0;
+  const safeServiceCharge = serviceCharge || 0;
+  const safeTotalPrice = totalPrice || 0;
+
   return (
-    <div className="hidden md:block flex-1 relative">
+    <div className="flex-1 relative">
       {/* Modern gradient background with subtle animation */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 rounded-3xl" />
 
@@ -60,7 +75,7 @@ export default function PaySidePanel({
               </div>
             </div>
 
-            {/* ✅ Replaced Logo */}
+            {/* Logo */}
             <Image
               alt="Weeshr"
               src="https://res.cloudinary.com/drykej1am/image/upload/v1704590604/j7aiv2jdwuksre2bpclu.png"
@@ -80,8 +95,8 @@ export default function PaySidePanel({
             </p>
           </div>
 
-          {/* ✅ Scrollable & Clickable items list */}
-          <div className="flex-1  space-y-2 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 overflow-visible">
+          {/* Items list */}
+          <div className="flex-1 space-y-2 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 overflow-visible">
             {basket?.length ? (
               basket.map((item) => {
                 const product = products.find((p) => p.id == item.id);
@@ -106,7 +121,7 @@ export default function PaySidePanel({
                           />
                         </div>
 
-                        <div className="absolute -top-2 -right-2 bg-[#4145A7] z-[999] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg">
+                        <div className="absolute -top-2 -right-2 bg-[#4145A7] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg">
                           {item.qty}
                         </div>
                       </div>
@@ -155,27 +170,64 @@ export default function PaySidePanel({
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="text-gray-900">
-                    ₦ {basketTotal.toLocaleString()}
+                    ₦ {safeSubTotal.toLocaleString()}{" "}
+                    {/* Now uses safeSubTotal */}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-gray-600">Delivery</span>
-                  <span className="text-green-600 font-medium">FREE</span>
+                  <span
+                    className={`font-medium ${
+                      safeDeliveryFee === 0 ? "text-green-600" : "text-gray-900"
+                    }`}
+                  >
+                    {safeDeliveryFee === 0
+                      ? "FREE"
+                      : `₦ ${safeDeliveryFee.toLocaleString()}`}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-gray-600">Service fee</span>
-                  <span className="text-gray-900">₦ 0</span>
+                  <span className="text-gray-900">
+                    {safeServiceCharge > 0
+                      ? `₦ ${safeServiceCharge.toLocaleString()}`
+                      : "₦ 0"}
+                  </span>
                 </div>
               </div>
               <div className="border-t border-gray-200 mt-2 pt-2">
                 <div className="flex justify-between items-center text-sm font-semibold">
                   <span className="text-gray-900">Total</span>
                   <span className="text-[#4145A7]">
-                    ₦ {basketTotal.toLocaleString()}
+                    ₦ {safeTotalPrice.toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Footer with Proceed to Pay button */}
+          <div className="mt-4 pt-4 border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:hidden">
+            <button
+              onClick={onProceedToPay}
+              disabled={isProcessing || !basketCount}
+              className="w-full bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white rounded-3xl py-3 px-4 font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isProcessing ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <span>Proceed to Pay</span>
+                  <Icon
+                    icon="streamline-ultimate:shopping-basket-1"
+                    className="h-4 w-4"
+                  />
+                </>
+              )}
+            </button>
           </div>
         </CardContent>
       </Card>

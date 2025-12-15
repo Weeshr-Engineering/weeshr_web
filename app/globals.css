@@ -14,6 +14,11 @@ body {
   }
 }
 
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
 /* In your global CSS */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
@@ -202,4 +207,3 @@ input::placeholder {
   opacity: 1 !important;
   font-weight: 300 !important;
 }
-

@@ -1,9 +1,5 @@
-// @ts-ignore
 // @ts-nocheck
-// @ts-expect-error
-
 "use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
@@ -11,7 +7,15 @@ import EmptyBasket from "./empty-basket";
 import { BasketItemCard } from "./basket-Item-card";
 import { Product } from "@/service/product.service";
 import { BasketItem } from "@/lib/BasketItem";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
 import LoginDialog from "./LoginDialog";
 import ReceiverInfoModal from "./ReceiverInfoModal";
 import VerifyAccountModal from "./VerifyAccountModal";
@@ -35,6 +39,13 @@ interface GiftBasketProps {
   setBasket: React.Dispatch<React.SetStateAction<BasketItem[]>>;
 }
 
+interface CartDetails {
+  subTotal: number;
+  serviceCharge: number;
+  deliveryFee: number;
+  totalPrice: number;
+}
+
 export function GiftBasket({
   basket,
   products,
@@ -48,13 +59,15 @@ export function GiftBasket({
   const [receiverName, setReceiverName] = useState("Dorcas");
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const [isProcessingCart, setIsProcessingCart] = useState(false);
-  const [isClearingBasket, setIsClearingBasket] = useState(false); // New state specifically for clearing
-  const [mobileSheetOpen, setMobileSheetOpen] = useState(false); // Mobile basket sheet state
-  const [showMobileBasket, setShowMobileBasket] = useState(true); // New state to control mobile basket visibility
-  const [showVerifyModal, setShowVerifyModal] = useState(false); // Verification modal state
-  const [showPinModal, setShowPinModal] = useState(false); // PIN modal state
+  const [isClearingBasket, setIsClearingBasket] = useState(false);
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [showMobileBasket, setShowMobileBasket] = useState(true);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [showPinModal, setShowPinModal] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
+  const [viewCartOpen, setViewCartOpen] = useState(false);
+  const [cartDetails, setCartDetails] = useState<CartDetails | null>(null);
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -63,16 +76,56 @@ export function GiftBasket({
     return item.qty >= 1 && price > 0;
   });
 
+  // Fetch cart details from API
+  const fetchCartDetails = async () => {
+    if (!isAuthenticated || !userId) return;
+
+    try {
+      const result = await cartService.getUserCart(userId);
+      if (result.code === 200 || result.code === 201) {
+        setCartDetails({
+          subTotal: result.data?.subTotal || 0,
+          serviceCharge: result.data?.serviceCharge || 0,
+          deliveryFee: result.data?.deliveryFee || 0,
+          totalPrice: result.data?.totalPrice || 0,
+        });
+      } else {
+        // If API fails, use local calculation as fallback
+        const subTotal = getBasketTotal();
+        const serviceCharge = Math.round(subTotal * 0.01); // 1% service charge
+        const deliveryFee = 0; // Free delivery for now
+        const totalPrice = subTotal + serviceCharge + deliveryFee;
+
+        setCartDetails({
+          subTotal,
+          serviceCharge,
+          deliveryFee,
+          totalPrice,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch cart details:", error);
+      // Fallback to local calculation
+      const subTotal = getBasketTotal();
+      const serviceCharge = Math.round(subTotal * 0.01);
+      const deliveryFee = 0;
+      const totalPrice = subTotal + serviceCharge + deliveryFee;
+
+      setCartDetails({
+        subTotal,
+        serviceCharge,
+        deliveryFee,
+        totalPrice,
+      });
+    }
+  };
+
   // Clear basket - local state or API
   const clearBasket = async () => {
-    // Store current basket for potential rollback
     const previousBasket = [...basket];
-
-    // Clear UI immediately
     setBasket([]);
-    setIsClearingBasket(true); // Set clearing state
+    setIsClearingBasket(true);
 
-    // Sync with API in background if authenticated
     if (isAuthenticated && userId) {
       try {
         const cartId = cartService.getCurrentCartId();
@@ -80,38 +133,32 @@ export function GiftBasket({
           const result = await cartService.clearCart(cartId);
           if (!(result.code === 200 || result.code === 201)) {
             toast.error("Failed to clear cart on server");
-            // Optional: Revert local state if API fails
-            // setBasket(previousBasket);
           } else {
             toast.success("Cart cleared successfully");
+            // Reset cart details when basket is cleared
+            setCartDetails(null);
           }
         }
       } catch (error) {
         toast.error("Failed to clear cart on server");
-        // Optional: Revert local state if API fails
-        // setBasket(previousBasket);
       } finally {
-        setIsClearingBasket(false); // Clear clearing state
+        setIsClearingBasket(false);
       }
     } else {
-      // For guest users, just show success immediately
       toast.success("Cart cleared successfully");
-      setIsClearingBasket(false); // Clear clearing state
+      setCartDetails(null);
+      setIsClearingBasket(false);
     }
   };
 
   // Check authentication status and handle cart submission
   const handleSendBasket = async () => {
     setIsCheckingAuth(true);
-
-    // Hide mobile basket when Send Basket is clicked
     setShowMobileBasket(false);
-
     const authToken = localStorage.getItem("authToken");
 
     if (authToken) {
       try {
-        // Verify token and get user profile
         const profileResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
           {
@@ -130,17 +177,16 @@ export function GiftBasket({
             `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
           );
 
-          // Check if email is verified
           if (!userData.emailVerified) {
-            // Email not verified - show verification modal
             toast.error("Please verify your email to continue");
             setShowVerifyModal(true);
             setIsCheckingAuth(false);
             return;
           }
 
-          // User is authenticated and verified - sync cart to backend
-          await syncCartToBackend(userData._id);
+          // Fetch cart details before opening receiver modal
+          await fetchCartDetails();
+          setReceiverModalOpen(true);
         } else {
           setIsAuthenticated(false);
           setUserId(null);
@@ -158,16 +204,13 @@ export function GiftBasket({
       setUserId(null);
       setLoginOpen(true);
     }
-
     setIsCheckingAuth(false);
   };
 
-  // Sync cart items to backend API
-  const syncCartToBackend = async (userId: string) => {
+  // Push local cart items to backend API (for login/signup)
+  const pushLocalCartToBackend = async (userId: string) => {
     setIsProcessingCart(true);
-
     try {
-      // Use filtered basket for sync to avoid syncing invalid items
       const cartItems = filteredBasket.map((item) => ({
         productId: item.id.toString(),
         quantity: item.qty,
@@ -180,9 +223,10 @@ export function GiftBasket({
       };
 
       const result = await cartService.addItemsToCart(cartData);
-
       if (result.code === 200 || result.code === 201) {
         toast.success("🎉 Basket synced successfully! Ready for payment.");
+        // Fetch cart details after syncing
+        await fetchCartDetails();
         setReceiverModalOpen(true);
       } else {
         toast.error(
@@ -197,10 +241,32 @@ export function GiftBasket({
     }
   };
 
+  // Verify/Fetch active cart from backend (for Send Basket)
+  const syncCartToBackend = async (userId: string) => {
+    setIsProcessingCart(true);
+    try {
+      const result = await cartService.getUserCart(userId);
+      if (result.code === 200 || result.code === 201) {
+        // Fetch cart details after verification
+        await fetchCartDetails();
+        toast.success("🎉 Basket verified! Ready for payment.");
+        setReceiverModalOpen(true);
+      } else {
+        toast.error(
+          result.message || "Failed to verify basket. Please try again."
+        );
+      }
+    } catch (error: any) {
+      console.error("Cart verification error:", error);
+      toast.error("Failed to verify your basket. Please try again.");
+    } finally {
+      setIsProcessingCart(false);
+    }
+  };
+
   const closeAllModals = () => {
     setLoginOpen(false);
     setReceiverModalOpen(false);
-    // Show mobile basket again when modals are closed
     setShowMobileBasket(true);
   };
 
@@ -216,12 +282,11 @@ export function GiftBasket({
             },
           }
         );
-
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           setIsAuthenticated(true);
           setUserId(profileResponse.data.data._id);
           setLoginOpen(false);
-          await syncCartToBackend(profileResponse.data.data._id);
+          await pushLocalCartToBackend(profileResponse.data.data._id);
         }
       }
     } catch (error) {
@@ -236,22 +301,17 @@ export function GiftBasket({
     newUserId?: string,
     token?: string
   ) => {
-    // Close login dialog immediately
     setLoginOpen(false);
-
-    // Set user data for verification
     setUserEmail(email);
     setUserPhone(phone);
 
-    // If we have token and userId, auto-login the user
     if (token && newUserId) {
       localStorage.setItem("authToken", token);
       localStorage.setItem("userId", newUserId);
       setIsAuthenticated(true);
       setUserId(newUserId);
+      pushLocalCartToBackend(newUserId);
     }
-
-    // Start verification flow
     setShowVerifyModal(true);
   };
 
@@ -269,37 +329,30 @@ export function GiftBasket({
               },
             }
           );
-
           if (
             profileResponse.status === 200 ||
             profileResponse.status === 201
           ) {
             setIsAuthenticated(true);
             setUserId(profileResponse.data.data._id);
-
             // Load user's cart from backend
             const cartResult = await cartService.getUserCart(
               profileResponse.data.data._id
             );
-
             if (
               cartResult.data?.items &&
               Array.isArray(cartResult.data.items)
             ) {
-              // Convert API cart items to local basket format and filter invalid items
               const apiBasket: BasketItem[] = cartResult.data.items
                 .map((item: any) => {
-                  // Handle both cases: productId as object or string
                   const productId =
                     typeof item.productId === "object"
                       ? item.productId._id
                       : item.productId;
-
                   const productName =
                     typeof item.productId === "object"
                       ? item.productId.name
                       : "Unknown Product";
-
                   return {
                     id: productId,
                     qty: item.quantity,
@@ -311,10 +364,19 @@ export function GiftBasket({
                     item.id !== undefined &&
                     item.qty !== undefined &&
                     item.name !== undefined &&
-                    item.qty >= 1 // Only keep items with quantity >= 1
+                    item.qty >= 1
                 );
-
               setBasket(apiBasket);
+
+              // Set cart details from API response
+              if (cartResult.data) {
+                setCartDetails({
+                  subTotal: cartResult.data.subTotal || 0,
+                  serviceCharge: cartResult.data.serviceCharge || 0,
+                  deliveryFee: cartResult.data.deliveryFee || 0,
+                  totalPrice: cartResult.data.totalPrice || 0,
+                });
+              }
             }
           }
         } catch (error) {
@@ -322,13 +384,42 @@ export function GiftBasket({
         }
       }
     };
-
     loadUserCart();
   }, [setBasket]);
 
+  // Calculate display total - use API data when available, fallback to local calculation
+  const getDisplayTotal = () => {
+    if (cartDetails) {
+      return cartDetails.totalPrice;
+    }
+    return getBasketTotal();
+  };
+
+  // Optimistically update cart details when basket changes (before API responds)
+  useEffect(() => {
+    if (isAuthenticated && filteredBasket.length > 0) {
+      const subTotal = getBasketTotal();
+      const serviceCharge = Math.round(subTotal * 0.01); // 1% service charge
+      const deliveryFee = 0;
+      const totalPrice = subTotal + serviceCharge + deliveryFee;
+
+      // Only update if different from current (avoid infinite loops)
+      if (!cartDetails || cartDetails.subTotal !== subTotal) {
+        setCartDetails({
+          subTotal,
+          serviceCharge,
+          deliveryFee,
+          totalPrice,
+        });
+      }
+    } else if (filteredBasket.length === 0) {
+      setCartDetails(null);
+    }
+  }, [filteredBasket, isAuthenticated]);
+
   return (
     <>
-      {/* DESKTOP VIEW - Hidden on mobile */}
+      {/* DESKTOP VIEW */}
       <div className="hidden lg:block border-0 rounded-2xl bg-background">
         <h3 className="font-normal pt-6 pb-2 w-full text-center">
           Gift basket
@@ -365,7 +456,6 @@ export function GiftBasket({
             </div>
           )}
         </div>
-
         <div className="border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex justify-between items-center px-4 py-3">
           <div>
             <h6 className="text-muted-foreground text-xs">Your basket</h6>
@@ -373,70 +463,77 @@ export function GiftBasket({
               ₦ {getBasketTotal().toLocaleString()}
             </span>
           </div>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="default"
-                disabled={
-                  filteredBasket.length === 0 ||
-                  isCheckingAuth ||
-                  isProcessingCart
-                }
-                className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
-                onClick={handleSendBasket}
-              >
-                <>
-                  <Badge
-                    className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center"
-                    title={`${filteredBasket.length} items`}
-                  >
-                    {filteredBasket.length}
-                  </Badge>
-
-                  <span className="font-medium">Send basket</span>
-
-                  {isCheckingAuth || isProcessingCart ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  ) : (
-                    <Icon
-                      icon="streamline-ultimate:shopping-basket-1"
-                      className="text-white h-4 w-4"
-                    />
-                  )}
-                </>
-              </Button>
-            </AlertDialogTrigger>
-          </AlertDialog>
+          <div className="flex gap-2 items-center">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="default"
+                  disabled={
+                    filteredBasket.length === 0 ||
+                    isCheckingAuth ||
+                    isProcessingCart
+                  }
+                  className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                  onClick={handleSendBasket}
+                >
+                  <>
+                    <Badge
+                      className="rounded-full bg-[#4145A7] p-0.5 text-sm w-5 h-5 flex justify-center"
+                      title={`${filteredBasket.length} items`}
+                    >
+                      {filteredBasket.length}
+                    </Badge>
+                    <span className="font-medium">Send basket</span>
+                    {isCheckingAuth || isProcessingCart ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <Icon
+                        icon="streamline-ultimate:shopping-basket-1"
+                        className="text-white h-4 w-4"
+                      />
+                    )}
+                  </>
+                </Button>
+              </AlertDialogTrigger>
+            </AlertDialog>
+          </div>
         </div>
       </div>
 
-      {/* MOBILE VIEW - Fixed bottom bar with expandable sheet */}
+      {/* MOBILE VIEW */}
       {showMobileBasket && (
         <div className="lg:hidden">
-          {/* Fixed Bottom Bar */}
           <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] shadow-lg">
             <div className="flex justify-between items-center px-4 py-3">
-              {/* Left side - Basket info with tap to expand */}
               <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
                 <SheetTrigger asChild>
-                  <button className="flex flex-col items-start">
-                    <h6 className="text-muted-foreground text-xs">
-                      Your basket
-                    </h6>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-base">
-                        ₦ {getBasketTotal().toLocaleString()}
-                      </span>
+                  <div className="flex items-center gap-2">
+                    <button className="flex flex-col items-start">
+                      <h6 className="text-muted-foreground text-xs">
+                        Your basket
+                      </h6>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-base">
+                          ₦ {getDisplayTotal().toLocaleString()}
+                        </span>
+                      </div>
+                    </button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="relative h-9 px-3 text-xs rounded-3xl border-[#6A70FF]/50 text-[#6A70FF] hover:bg-[#6A70FF]/10 flex items-center gap-2"
+                      onClick={() => setViewCartOpen(true)}
+                    >
+                      <Icon icon="mdi:cart-outline" className="h-4 w-4" />
+                      <span>View Cart</span>
                       {filteredBasket.length > 0 && (
-                        <Badge className="rounded-full bg-[#6A70FF] text-white text-xs h-5 px-2">
+                        <Badge className="absolute -top-2 -right-2 bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center rounded-full font-semibold">
                           {filteredBasket.length}
                         </Badge>
                       )}
-                    </div>
-                  </button>
+                    </Button>
+                  </div>
                 </SheetTrigger>
-
                 <SheetContent side="bottom" className="h-[80vh] p-0">
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle className="flex items-center justify-between">
@@ -446,19 +543,20 @@ export function GiftBasket({
                           <span className="pl-1 text-sm text-green-600">✓</span>
                         )}
                       </span>
-                      {filteredBasket.length > 0 && (
-                        <Button
-                          variant="ghost"
-                          className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl"
-                          onClick={clearBasket}
-                          disabled={isClearingBasket}
-                        >
-                          {isClearingBasket ? "Clearing..." : "Clear All"}
-                        </Button>
-                      )}
+                      <div className="flex gap-2">
+                        {filteredBasket.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            className="text-[#6A70FF] text-xs px-2 py-1 h-7 rounded-3xl mr-10"
+                            onClick={clearBasket}
+                            disabled={isClearingBasket}
+                          >
+                            {isClearingBasket ? "Clearing..." : "Clear All"}
+                          </Button>
+                        )}
+                      </div>
                     </SheetTitle>
                   </SheetHeader>
-
                   <div className="p-4 overflow-y-auto h-[calc(80vh-80px)]">
                     {filteredBasket.length === 0 ? (
                       <EmptyBasket />
@@ -479,41 +577,39 @@ export function GiftBasket({
                   </div>
                 </SheetContent>
               </Sheet>
-
-              {/* Right side - Send basket button */}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="default"
-                    disabled={
-                      filteredBasket.length === 0 ||
-                      isCheckingAuth ||
-                      isProcessingCart
-                    }
-                    className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
-                    onClick={handleSendBasket}
-                  >
-                    <span className="font-medium">Send basket</span>
-                    {isCheckingAuth || isProcessingCart ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    ) : (
-                      <Icon
-                        icon="streamline-ultimate:shopping-basket-1"
-                        className="text-white h-4 w-4"
-                      />
-                    )}
-                  </Button>
-                </AlertDialogTrigger>
-              </AlertDialog>
+              <div className="flex gap-1 items-center">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="default"
+                      disabled={
+                        filteredBasket.length === 0 ||
+                        isCheckingAuth ||
+                        isProcessingCart
+                      }
+                      className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                      onClick={handleSendBasket}
+                    >
+                      <span className="font-medium">Send basket</span>
+                      {isCheckingAuth || isProcessingCart ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      ) : (
+                        <Icon
+                          icon="streamline-ultimate:shopping-basket-1"
+                          className="text-white h-4 w-4"
+                        />
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                </AlertDialog>
+              </div>
             </div>
           </div>
-
-          {/* Spacer to prevent content from being hidden behind fixed bar */}
           <div className="h-20"></div>
         </div>
       )}
 
-      {/* Show LoginDialog only when user is NOT authenticated and loginOpen is true */}
+      {/* Modals */}
       <LoginDialog
         open={
           loginOpen && !isAuthenticated && !showVerifyModal && !showPinModal
@@ -523,26 +619,28 @@ export function GiftBasket({
           if (!open) setShowMobileBasket(true);
         }}
         basketTotal={getBasketTotal()}
-        basketCount={filteredBasket.length} // Use filteredBasket here
-        basket={filteredBasket} // Use filteredBasket here
+        basketCount={filteredBasket.length}
+        basket={filteredBasket}
         products={products}
         onLoginSuccess={handleLoginSuccess}
         onSignupSuccess={handleSignupSuccess}
       />
 
-      {/* Show ReceiverInfoModal only when user IS authenticated and receiverModalOpen is true */}
       <ReceiverInfoModal
         open={receiverModalOpen && isAuthenticated}
         setOpen={setReceiverModalOpen}
-        basketTotal={getBasketTotal()}
-        basketCount={filteredBasket.length} // Use filteredBasket here
+        basketTotal={cartDetails?.subTotal || getBasketTotal()}
+        basketCount={filteredBasket.length}
         receiverName={receiverName}
-        basket={filteredBasket} // Use filteredBasket here
+        basket={filteredBasket}
         products={products}
         onCloseAll={closeAllModals}
+        totalPrice={cartDetails?.totalPrice || getBasketTotal()}
+        subTotal={cartDetails?.subTotal || getBasketTotal()}
+        deliveryFee={cartDetails?.deliveryFee || 0}
+        serviceCharge={cartDetails?.serviceCharge || 0}
       />
 
-      {/* Show VerifyAccountModal when user is authenticated but email not verified */}
       {userEmail && (
         <VerifyAccountModal
           open={showVerifyModal}
@@ -553,14 +651,12 @@ export function GiftBasket({
           email={userEmail}
           phone={userPhone}
           onVerificationSuccess={() => {
-            // After successful verification, show PIN modal
             setShowVerifyModal(false);
             setShowPinModal(true);
           }}
         />
       )}
 
-      {/* Show SetPinModal after email verification */}
       {userEmail && (
         <SetPinModal
           open={showPinModal}
@@ -570,7 +666,6 @@ export function GiftBasket({
           }}
           email={userEmail}
           onPinSetSuccess={async () => {
-            // After PIN is set, proceed with cart sync
             setShowPinModal(false);
             if (userId) {
               await syncCartToBackend(userId);

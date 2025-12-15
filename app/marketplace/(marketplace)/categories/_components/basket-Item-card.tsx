@@ -29,6 +29,8 @@ export function BasketItemCard({
 
   // Store a ref to debounce timer to avoid recreating it on each render
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  // Track accumulated clicks during debounce period
+  const clickCountRef = useRef<number>(0);
 
   // Use product name from products array or fallback to item name
   const productName = product?.name || item.name || "Unknown Product";
@@ -47,6 +49,9 @@ export function BasketItemCard({
 
     debounceRef.current = setTimeout(async () => {
       setIsUpdating(true);
+      const clicksToSend = clickCountRef.current;
+      clickCountRef.current = 0; // Reset click count after sending
+
       try {
         if (newQty === 0) {
           const result = await cartService.removeItemFromCart(
@@ -57,18 +62,31 @@ export function BasketItemCard({
             toast.error("Failed to sync removal with server");
           }
         } else {
-          const result = await cartService.addItemsToCart({
-            userId,
-            items: [
-              {
-                productId: item.id.toString(),
-                quantity: newQty,
-                price: productPrice,
-              },
-            ],
-          });
-          if (!(result.code === 200 || result.code === 201)) {
-            toast.error("Failed to sync quantity with server");
+          if (clicksToSend < 0) {
+            // Handle decrement
+            const result = await cartService.removeItemFromCart(
+              userId,
+              item.id.toString(),
+              Math.abs(clicksToSend)
+            );
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync quantity with server");
+            }
+          } else if (clicksToSend > 0) {
+            // Handle increment
+            const result = await cartService.addItemsToCart({
+              userId,
+              items: [
+                {
+                  productId: item.id.toString(),
+                  quantity: clicksToSend, // Send accumulated clicks
+                  price: productPrice,
+                },
+              ],
+            });
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync quantity with server");
+            }
           }
         }
       } catch (err) {
@@ -88,6 +106,8 @@ export function BasketItemCard({
       prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i))
     );
 
+    // Accumulate clicks
+    clickCountRef.current += 1;
     syncQuantity(newQty);
   };
 
@@ -98,13 +118,16 @@ export function BasketItemCard({
     if (newQty <= 0) {
       // Remove from UI immediately
       setBasket((prev) => prev.filter((i) => i.id !== item.id));
+      clickCountRef.current = -1; // Track removal
+      syncQuantity(newQty);
     } else {
       setBasket((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i))
       );
+      // Accumulate clicks (negative for decrement)
+      clickCountRef.current -= 1;
+      syncQuantity(newQty);
     }
-
-    syncQuantity(newQty);
   };
 
   return (

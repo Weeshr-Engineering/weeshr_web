@@ -36,6 +36,8 @@ export function MobileMenuButtons({
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
+  // Track accumulated clicks per product during debounce period
+  const clickCountRefs = useRef<{ [key: string]: number }>({});
 
   // Fetch products when vendorId changes
   useEffect(() => {
@@ -55,31 +57,6 @@ export function MobileMenuButtons({
     if (vendorId) fetchProducts();
   }, [vendorId]);
 
-  const syncToServer = async (updatedBasket: BasketItem[]) => {
-    if (!isAuthenticated || !userId) return;
-
-    try {
-      const cartItems = updatedBasket.map((basketItem: BasketItem) => {
-        const product = products.find((p) => p.id == basketItem.id);
-        return {
-          productId: basketItem.id.toString(),
-          quantity: basketItem.qty,
-          price: product?.price || 0,
-        };
-      });
-
-      const cartData = { userId, items: cartItems };
-      const result = await cartService.addItemsToCart(cartData);
-
-      if (!(result.code === 200 || result.code === 201)) {
-        toast.error("Failed to sync with server");
-      }
-    } catch (error) {
-      toast.error("Failed to sync with server");
-      console.error("Sync error:", error);
-    }
-  };
-
   const handleAdd = (productId: string) => {
     // Update UI immediately
     addToBasket(productId);
@@ -88,34 +65,57 @@ export function MobileMenuButtons({
     setShakeId(productId);
     setTimeout(() => setShakeId(null), 500);
 
+    // Accumulate clicks
+    if (!clickCountRefs.current[productId]) {
+      clickCountRefs.current[productId] = 0;
+    }
+    clickCountRefs.current[productId] += 1;
+
     // Debounce API sync
     if (debounceRefs.current[productId]) {
       clearTimeout(debounceRefs.current[productId]!);
     }
 
     debounceRefs.current[productId] = setTimeout(async () => {
-      const updatedBasket = [...basket];
-      const existingItem = updatedBasket.find((item) => item.id === productId);
+      if (!isAuthenticated || !userId) return;
 
-      let updatedBasketWithNewItem;
-      if (existingItem) {
-        updatedBasketWithNewItem = updatedBasket.map((item) =>
-          item.id === productId ? { ...item, qty: item.qty + 1 } : item
-        );
-      } else {
-        updatedBasketWithNewItem = [
-          ...updatedBasket,
-          {
-            id: productId,
-            qty: 1,
-            name:
-              menuProducts.find((p) => p.id === productId)?.name ||
-              "Unknown Product",
-          },
-        ];
+      const clicksToSend = clickCountRefs.current[productId];
+      clickCountRefs.current[productId] = 0; // Reset after sending
+
+      try {
+        const product = products.find((p) => p.id === productId);
+
+        // Send accumulated clicks
+        if (clicksToSend < 0) {
+          // Handle decrement (unlikely in handleAdd but possible with mixed clicks)
+          const result = await cartService.removeItemFromCart(
+            userId,
+            productId.toString(),
+            Math.abs(clicksToSend)
+          );
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to sync removal with server");
+          }
+        } else if (clicksToSend > 0) {
+          const result = await cartService.addItemsToCart({
+            userId,
+            items: [
+              {
+                productId: productId.toString(),
+                quantity: clicksToSend, // Send accumulated clicks
+                price: product?.price || 0,
+              },
+            ],
+          });
+
+          if (!(result.code === 200 || result.code === 201)) {
+            toast.error("Failed to sync with server");
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to sync with server");
+        console.error("Sync error:", error);
       }
-
-      await syncToServer(updatedBasketWithNewItem);
     }, 600);
   };
 
@@ -128,13 +128,26 @@ export function MobileMenuButtons({
       if (exists.qty === 1) {
         const updated = prev.filter((i) => i.id !== productId);
 
-        // Debounce API sync
+        // Debounce API sync - remove item from cart
         if (debounceRefs.current[productId]) {
           clearTimeout(debounceRefs.current[productId]!);
         }
 
         debounceRefs.current[productId] = setTimeout(async () => {
-          await syncToServer(updated);
+          if (!isAuthenticated || !userId) return;
+
+          try {
+            const result = await cartService.removeItemFromCart(
+              userId,
+              productId.toString()
+            );
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync removal with server");
+            }
+          } catch (error) {
+            toast.error("Failed to sync removal with server");
+            console.error("Sync error:", error);
+          }
         }, 600);
 
         return updated;
@@ -145,13 +158,57 @@ export function MobileMenuButtons({
         i.id === productId ? { ...i, qty: i.qty - 1 } : i
       );
 
+      // Accumulate clicks (negative for decrement)
+      if (!clickCountRefs.current[productId]) {
+        clickCountRefs.current[productId] = 0;
+      }
+      clickCountRefs.current[productId] -= 1;
+
       // Debounce API sync
       if (debounceRefs.current[productId]) {
         clearTimeout(debounceRefs.current[productId]!);
       }
 
       debounceRefs.current[productId] = setTimeout(async () => {
-        await syncToServer(updated);
+        if (!isAuthenticated || !userId) return;
+
+        const clicksToSend = clickCountRefs.current[productId];
+        clickCountRefs.current[productId] = 0; // Reset after sending
+
+        try {
+          const product = products.find((p) => p.id === productId);
+
+          // Send accumulated clicks
+          if (clicksToSend < 0) {
+            // Handle decrement
+            const result = await cartService.removeItemFromCart(
+              userId,
+              productId.toString(),
+              Math.abs(clicksToSend)
+            );
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync removal with server");
+            }
+          } else if (clicksToSend > 0) {
+            // Handle increment
+            const result = await cartService.addItemsToCart({
+              userId,
+              items: [
+                {
+                  productId: productId.toString(),
+                  quantity: clicksToSend, // Send accumulated clicks
+                  price: product?.price || 0,
+                },
+              ],
+            });
+            if (!(result.code === 200 || result.code === 201)) {
+              toast.error("Failed to sync quantity with server");
+            }
+          }
+        } catch (error) {
+          toast.error("Failed to sync with server");
+          console.error("Sync error:", error);
+        }
       }, 600);
 
       return updated;
