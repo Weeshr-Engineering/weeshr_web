@@ -1,6 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false, // Disable Strict Mode
+
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/marketplace",
+        permanent: true, // 301 redirect (SEO-safe)
+      },
+    ];
+  },
+
   images: {
     remotePatterns: [
       {
@@ -31,11 +42,6 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "img.freepik.com",
         pathname: "/**",
       },
     ],
