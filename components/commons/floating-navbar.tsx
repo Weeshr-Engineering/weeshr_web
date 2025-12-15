@@ -9,25 +9,21 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 
 export const FloatingNav = ({
   navItems,
   className,
+  showLoginButton = true,
 }: {
   navItems: {
     name: string;
     link: string;
     icon?: JSX.Element;
-    disabled?: boolean; // Add disabled prop
+    disabled?: boolean;
   }[];
   className?: string;
+  showLoginButton?: boolean;
 }) => {
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
@@ -60,7 +56,6 @@ export const FloatingNav = ({
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number" && isScrollable) {
       let direction = current - scrollYProgress.getPrevious()!;
-
       setVisible(true);
     }
   });
@@ -75,12 +70,40 @@ export const FloatingNav = ({
     router.push("/login");
   };
 
-  const showLogout = pathname === "/account";
-  const showAccount = isAuthenticated && pathname !== "/account";
+  const showLogout = pathname === "/marketplace";
+  const showAccount = isAuthenticated && pathname !== "/marketplace";
+
+  // Improved active link detection that handles nested routes
+  const isLinkActive = (link: string) => {
+    const baseLink = link.split("?")[0]; // Remove query params for comparison
+    const currentPath = pathname;
+
+    // Special cases for marketplace category routes
+    if (baseLink === "/marketplace/categories/food") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+    if (baseLink === "/marketplace/categories/fashion") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+    if (baseLink === "/marketplace/categories/gadget") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+    if (baseLink === "/marketplace/categories/lifestyle") {
+      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
+    }
+
+    // For "All" category, match /marketplace/categories/all
+    if (baseLink === "/marketplace/categories/all") {
+      return currentPath === baseLink;
+    }
+
+    // Default exact match for other links
+    return currentPath === baseLink;
+  };
 
   return (
     <AnimatePresence mode="wait">
-      <div className=" justify-around hidden lg:flex">
+      <div className="justify-around hidden lg:flex">
         <motion.div
           initial={{
             opacity: 1,
@@ -94,19 +117,24 @@ export const FloatingNav = ({
             duration: 0.2,
           }}
           className={cn(
-            "flex md:w-[40%] max-w-md  fixed top-10 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-black bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-6 py-2 items-center justify-between space-x-4",
+            "flex md:w-[40%] max-w-lg fixed top-10 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-black bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-6 py-2 items-center justify-between space-x-4",
             className
           )}
         >
-          <div className="flex gap-4 w-full  justify-between">
+          <div
+            className={cn(
+              "flex gap-4 w-full justify-between",
+              !showLoginButton && "px-4 py-1"
+            )}
+          >
             {navItems.map((navItem, idx) => (
               <Link
                 key={`link=${idx}`}
                 href={navItem.link}
                 className={cn(
-                  "relative items-center flex space-x-1 ",
-                  pathname === navItem.link
-                    ? "text-black"
+                  "relative items-center flex space-x-1 transition-colors duration-200",
+                  isLinkActive(navItem.link)
+                    ? "text-black font-semibold" // active style
                     : "text-neutral-500 hover:text-black"
                 )}
               >
@@ -115,40 +143,43 @@ export const FloatingNav = ({
               </Link>
             ))}
 
-            {/* Disable Login and Account Buttons */}
-
-            {showLogout ? (
-              <button
-                onClick={handleLogout}
-                className={cn(
-                  "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
-                  "bg-red-100 text-red-800"
+            {/* Conditionally render login/account/logout buttons */}
+            {showLoginButton && (
+              <>
+                {showLogout ? (
+                  <button
+                    onClick={handleLogout}
+                    className={cn(
+                      "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full",
+                      "bg-red-100 text-red-800"
+                    )}
+                  >
+                    <span>Logout</span>
+                    <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
+                  </button>
+                ) : showAccount ? (
+                  <Link href="/marketplace">
+                    <button
+                      className={cn(
+                        "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                      )}
+                    >
+                      <span>Account</span>
+                      <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                    </button>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleLogin}
+                    className={cn(
+                      "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
+                    )}
+                  >
+                    <span>Login</span>
+                    <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                  </button>
                 )}
-              >
-                <span>Logout</span>
-                <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
-              </button>
-            ) : showAccount ? (
-              <Link href="/account">
-                <button
-                  className={cn(
-                    "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
-                  )}
-                >
-                  <span>Account</span>
-                  <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                </button>
-              </Link>
-            ) : (
-              <button
-                onClick={handleLogin}
-                className={cn(
-                  "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
-                )}
-              >
-                <span>Login</span>
-                <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-              </button>
+              </>
             )}
           </div>
         </motion.div>

@@ -6,39 +6,45 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
-import { navigationLinks } from "@/lib/constants/navigation-items"; // Import the navigation links
+import { navigationLinks } from "@/lib/constants/navigation-items";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function HeaderMobile() {
+interface HeaderMobileProps {
+  hideLoginButton?: boolean;
+  customLinks?: { name: string; link: string; disabled?: boolean }[];
+}
+
+export default function HeaderMobile({
+  hideLoginButton = false,
+  customLinks = navigationLinks, // fallback to default navigation
+}: HeaderMobileProps) {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setIsAuthenticated(false);
     router.push("/login");
   };
+
   const handleLogin = () => {
     router.push("/login");
   };
 
   useEffect(() => {
-    const checkAuthentication = () => {
-      setIsAuthenticated(!!localStorage.getItem("authToken"));
-    };
-
-    checkAuthentication();
+    setIsAuthenticated(!!localStorage.getItem("authToken"));
   }, []);
 
-  const showLogout = pathname === "/account";
-  const showAccount = isAuthenticated && pathname !== "/account";
+  const showLogout = pathname === "/marketplace";
+  const showAccount = isAuthenticated && pathname !== "/marketplace";
+  const showLogin =
+    !hideLoginButton && !isAuthenticated && !showLogout && !showAccount;
 
   return (
-    <div className="flex items-center justify-between border-gray-400 py-8 lg:py-0">
+    <div className="flex items-center justify-between border-gray-400 py-6 lg:py-0">
       <a href="/">
         <Image
           alt="Weeshr Logo"
@@ -68,7 +74,7 @@ export default function HeaderMobile() {
                   <Hamburger toggled={isNavOpen} toggle={setIsNavOpen} />
                 </div>
                 <ul className="MENU-LINK-MOBILE-OPEN flex flex-col items-center justify-between min-h-[250px] -mt-52">
-                  {navigationLinks.map((link) => (
+                  {customLinks.map((link) => (
                     <li
                       key={link.link}
                       className={`mb-10 border-b border-gray-400 my-6 uppercase ${
@@ -77,15 +83,15 @@ export default function HeaderMobile() {
                     >
                       <Button
                         asChild
-                        variant={"link"}
-                        size={"lg"}
+                        variant="link"
+                        size="lg"
                         className="hover:no-underline"
                       >
                         {link.disabled ? (
-                          <span>{link.name}</span> // Render as text if disabled
+                          <span>{link.name}</span>
                         ) : (
                           <Link
-                            href={link.link} // Correct the prop from 'link' to 'href'
+                            href={link.link}
                             onClick={() => setIsNavOpen(false)}
                           >
                             {link.name}
@@ -95,7 +101,6 @@ export default function HeaderMobile() {
                     </li>
                   ))}
 
-                  {/* Show different options based on login status */}
                   {showLogout ? (
                     <button
                       onClick={handleLogout}
@@ -108,7 +113,7 @@ export default function HeaderMobile() {
                       <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
                     </button>
                   ) : showAccount ? (
-                    <Link href="/account">
+                    <Link href="/marketplace">
                       <button
                         className={cn(
                           "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"
@@ -118,7 +123,7 @@ export default function HeaderMobile() {
                         <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                       </button>
                     </Link>
-                  ) : (
+                  ) : showLogin ? (
                     <button
                       onClick={handleLogin}
                       className={cn(
@@ -128,7 +133,7 @@ export default function HeaderMobile() {
                       <span>Login</span>
                       <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                     </button>
-                  )}
+                  ) : null}
                 </ul>
               </motion.div>
             )}

@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="pb-10 lg:pb-16">
+    <div className="pb-10 ">
       <footer className="px-4 pt-4 pb-6 lg:px-9 bg-[#F6F9FF] rounded-xl">
         <div className="flex flex-col items-center justify-between p-4 py-6 md:flex-row md:space-x-4 lg:space-x-6">
           <div className="flex flex-col items-center md:items-start">
@@ -108,13 +108,11 @@ const Footer: React.FC = () => {
 
         <div className="flex flex-col items-center px-4  md:flex-row md:justify-between md:pb-10">
           <div className="text-sm text-[#020721] flex items-center">
-            <Icon
-              icon="mingcute:love-fill"
-              width="24px"
-              height="24px"
-              color="#4145A7"
-            />
-            <p className="mx-2">Powered by Weeshr App Limited</p>
+           
+            <p className="mx-2 text-sm flex items-center gap-1">
+              <Icon icon="mdi:copyright" width="14px" height="14px" />
+              Weeshr Technologies
+            </p>
           </div>
           <div className="flex items-center mt-4 space-x-2 md:mt-0">
             {socialMediaLinks.map((link) => (

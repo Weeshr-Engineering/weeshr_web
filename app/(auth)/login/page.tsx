@@ -17,6 +17,8 @@ const loginSchema = z.object({
   pin: z.string().min(4, { message: "Password must be  4 characters long" }),
 });
 
+
+
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignInLoading, setIsSignInLoading] = useState(false); // New state for Sign in button loading
@@ -40,7 +42,7 @@ const LoginPage = () => {
 
           if (response.status === 200 || response.status === 201) {
             // Redirect to account page if the user is authenticated
-            router.push("/account");
+            router.push("/marketplace");
           } else {
             // If the token is invalid, clear it from localStorage
             localStorage.removeItem("authToken");
@@ -85,7 +87,7 @@ const LoginPage = () => {
         const userId = userData._id;
         localStorage.setItem("userId", userId);
         localStorage.setItem("authToken", userData.token);
-        router.push("/account");
+        router.push("/marketplace");
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
@@ -301,7 +303,7 @@ const LoginPage = () => {
               </div>
             </form>
             <h6 className="w-full text-sm font-semibold text-center text-[#020721]">
-              Powered by Weeshr App Limited{" "}
+             (c) Weeshr Technologies
             </h6>
 
             {/* <div className="text-sm text-center">
