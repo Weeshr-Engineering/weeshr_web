@@ -55,6 +55,10 @@ export default function RootLayout({
           content="black-translucent"
         />
         <meta name="apple-mobile-web-app-title" content="Weeshr" />
+        <meta
+          name="twilio-domain-verification"
+          content="42870666a6fda3c6f1aae9bbbd428b1f"
+        />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

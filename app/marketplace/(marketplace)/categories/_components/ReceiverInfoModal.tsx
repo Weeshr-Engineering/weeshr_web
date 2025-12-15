@@ -305,10 +305,7 @@ export default function ReceiverInfoModal({
                     <Label className="text-sm text-muted-foreground">
                       Phone Number
                     </Label>
-                    <span className="text-[10px] text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100 flex items-center gap-1">
-                      <Icon icon="logos:whatsapp-icon" width="12" height="12" />
-                      WhatsApp enabled
-                    </span>
+                
                   </div>
                   <div className="flex gap-2">
                     <Select
@@ -460,7 +457,7 @@ export default function ReceiverInfoModal({
                   ) : (
                     <>
                       <Label className="text-sm text-muted-foreground">
-                        WhatsApp enabled Phone Number
+                        Phone Number
                       </Label>
                       <div className="flex gap-2">
                         <Select
