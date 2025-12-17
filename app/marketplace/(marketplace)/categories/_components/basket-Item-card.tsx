@@ -7,6 +7,7 @@ import { BasketItem } from "@/lib/BasketItem";
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { cartService } from "@/service/cart.service";
+import { MinusIcon, PlusIcon } from "lucide-react";
 
 interface BasketItemCardProps {
   item: BasketItem;
@@ -174,7 +175,7 @@ export function BasketItemCard({
             onClick={decrement}
             className="rounded-full h-6 w-6 p-0 text-primary hover:bg-primary/10 hover:scale-110 transition-all duration-150"
           >
-            -
+            <MinusIcon className="h-4 w-4" />
           </Button>
 
           <span className="text-xs p-1 bg-white rounded-full text-primary h-6 w-6 flex items-center justify-center font-light">
@@ -187,7 +188,7 @@ export function BasketItemCard({
             onClick={increment}
             className="rounded-full h-6 w-6 p-0 text-primary hover:bg-primary/10 hover:scale-110 transition-all duration-150"
           >
-            +
+            <PlusIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>

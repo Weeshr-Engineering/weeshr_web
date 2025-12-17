@@ -8,8 +8,10 @@ import { Icon } from "@iconify/react";
 import AddressModal from "./AddressModal";
 import ResultModal from "./ResultModal";
 import Header from "@/app/payment/_component/header_payment";
+import { useRouter } from "next/navigation";
 
 export default function AcceptGiftContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState<string>("");
   const [receiver, setReceiver] = useState<string>("");
@@ -37,11 +39,20 @@ export default function AcceptGiftContent() {
     setShowResultModal(true);
   };
 
+  const handleResultClose = () => {
+    setShowResultModal(false);
+
+    // Redirect only on success
+    if (isSuccess) {
+      router.push("/marketplace");
+    }
+  };
+
+
   return (
     <div className="min-h-screen w-full p-0 md:p-6 md:flex md:items-center md:justify-center bg-white/10 backdrop-blur-lg">
       <div className="w-full md:max-w-lg md:bg-white md:rounded-3xl md:shadow-2xl md:border md:border-gray-100 overflow-hidden">
         <div className="max-w-md mx-auto h-full flex flex-col p-4 md:p-8">
-
           <div className="md:hidden">
             <Header />
           </div>
@@ -95,7 +106,8 @@ export default function AcceptGiftContent() {
               </Button>
 
               <p className="text-center text-gray-500 text-sm mt-4 px-2">
-                You'll be asked to provide your shipping address to receive the gift
+                You'll be asked to provide your shipping address to receive the
+                gift
               </p>
             </div>
           </main>
@@ -111,7 +123,7 @@ export default function AcceptGiftContent() {
 
       <ResultModal
         open={showResultModal}
-        onClose={() => setShowResultModal(false)}
+        onClose={handleResultClose}
         isSuccess={isSuccess}
         message={resultMessage}
       />

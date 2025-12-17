@@ -32,7 +32,11 @@ export function MenuList({
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Use a single debounce ref per product for better consistency
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
+  // Track accumulated clicks for each product
+  const clickCountRefs = useRef<{ [key: string]: number }>({});
 
   // Fetch products when vendorId changes
   useEffect(() => {
@@ -52,6 +56,51 @@ export function MenuList({
     if (vendorId) fetchProducts();
   }, [vendorId]);
 
+  // Sync function - similar to BasketItemCard
+  const syncAddToCart = (productId: string) => {
+    if (!isAuthenticated || !userId) return;
+
+    // Clear existing debounce timer
+    if (debounceRefs.current[productId]) {
+      clearTimeout(debounceRefs.current[productId]!);
+    }
+
+    // Get the product details
+    const product = menuProducts.find((p) => p.id === productId);
+    if (!product) return;
+
+    // Accumulate clicks (in this case, always +1 for add button)
+    clickCountRefs.current[productId] =
+      (clickCountRefs.current[productId] || 0) + 1;
+    const clicksToSend = clickCountRefs.current[productId];
+
+    debounceRefs.current[productId] = setTimeout(async () => {
+      try {
+        // Send only the incremental change, not the entire basket
+        const result = await cartService.addItemsToCart({
+          userId,
+          items: [
+            {
+              productId: productId.toString(),
+              quantity: clicksToSend, // Send accumulated clicks
+              price: product.price || 0,
+            },
+          ],
+        });
+
+        if (!(result.code === 200 || result.code === 201)) {
+          toast.error("Failed to sync with server");
+        } else {
+          // Reset click count after successful sync
+          clickCountRefs.current[productId] = 0;
+        }
+      } catch (error) {
+        toast.error("Failed to sync with server");
+        console.error("Sync error:", error);
+      }
+    }, 600); // 600ms debounce (same as BasketItemCard)
+  };
+
   const handleAdd = (productId: string) => {
     // Update UI immediately
     addToBasket(productId);
@@ -60,61 +109,8 @@ export function MenuList({
     setShakeId(productId);
     setTimeout(() => setShakeId(null), 500);
 
-    // Debounce API sync
-    if (!isAuthenticated || !userId) return;
-
-    if (debounceRefs.current[productId]) {
-      clearTimeout(debounceRefs.current[productId]!);
-    }
-
-    debounceRefs.current[productId] = setTimeout(async () => {
-      try {
-        // Get updated basket state for this product
-        const updatedBasket = [...basket];
-        const existingItem = updatedBasket.find(
-          (item) => item.id === productId
-        );
-
-        let updatedBasketWithNewItem;
-        if (existingItem) {
-          updatedBasketWithNewItem = updatedBasket.map((item) =>
-            item.id === productId ? { ...item, qty: item.qty + 1 } : item
-          );
-        } else {
-          updatedBasketWithNewItem = [
-            ...updatedBasket,
-            {
-              id: productId,
-              qty: 1,
-              name:
-                menuProducts.find((p) => p.id === productId)?.name ||
-                "Unknown Product",
-            },
-          ];
-        }
-
-        const cartItems = updatedBasketWithNewItem.map(
-          (basketItem: BasketItem) => {
-            const product = products.find((p) => p.id == basketItem.id);
-            return {
-              productId: basketItem.id.toString(),
-              quantity: basketItem.qty,
-              price: product?.price || 0,
-            };
-          }
-        );
-
-        const cartData = { userId, items: cartItems };
-
-        const result = await cartService.addItemsToCart(cartData);
-        if (!(result.code === 200 || result.code === 201)) {
-          toast.error("Failed to sync with server");
-        }
-      } catch (error) {
-        toast.error("Failed to sync with server");
-        console.error("Sync error:", error);
-      }
-    }, 600); // 600ms debounce
+    // Sync with API (debounced)
+    syncAddToCart(productId);
   };
 
   if (loading) {
