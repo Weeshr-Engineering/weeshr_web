@@ -208,7 +208,10 @@ export function GiftBasket({
   };
 
   // Push local cart items to backend API (for login/signup)
-  const pushLocalCartToBackend = async (userId: string) => {
+  const pushLocalCartToBackend = async (
+    userId: string,
+    shouldOpenReceiverModal: boolean = true
+  ) => {
     setIsProcessingCart(true);
     try {
       const cartItems = filteredBasket.map((item) => ({
@@ -227,7 +230,9 @@ export function GiftBasket({
         toast.success("🎉 Basket synced successfully! Ready for payment.");
         // Fetch cart details after syncing
         await fetchCartDetails();
-        setReceiverModalOpen(true);
+        if (shouldOpenReceiverModal) {
+          setReceiverModalOpen(true);
+        }
       } else {
         toast.error(
           result.message || "Failed to sync basket. Please try again."
@@ -283,10 +288,22 @@ export function GiftBasket({
           }
         );
         if (profileResponse.status === 200 || profileResponse.status === 201) {
+          const userData = profileResponse.data.data;
           setIsAuthenticated(true);
-          setUserId(profileResponse.data.data._id);
+          setUserId(userData._id);
+          setUserEmail(userData.email);
+          setUserPhone(
+            `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
+          );
           setLoginOpen(false);
-          await pushLocalCartToBackend(profileResponse.data.data._id);
+
+          if (!userData.emailVerified) {
+            toast.error("Please verify your email to continue");
+            setShowVerifyModal(true);
+            return;
+          }
+
+          await pushLocalCartToBackend(userData._id);
         }
       }
     } catch (error) {
@@ -310,7 +327,7 @@ export function GiftBasket({
       localStorage.setItem("userId", newUserId);
       setIsAuthenticated(true);
       setUserId(newUserId);
-      pushLocalCartToBackend(newUserId);
+      pushLocalCartToBackend(newUserId, false);
     }
     setShowVerifyModal(true);
   };

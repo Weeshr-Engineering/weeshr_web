@@ -160,7 +160,7 @@ export function MenuList({
             className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 bg-white border-[1px] flex flex-row w-full md:min-w-[300px] p-2 gap-2 relative"
           >
             {/* Image */}
-            <div className="relative w-[100px] h-[100px] flex-shrink-0">
+            <div className="relative w-[100px] aspect-square flex-shrink-0 overflow-hidden rounded-lg">
               <Image
                 src={product.image}
                 alt={product.name}

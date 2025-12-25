@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 const vendorCategoryLabels: Record<string, string> = {
   food: "Restaurant Menu",
   fashion: "Fashion Collection",
-  gadget: "Gadget Collection",
+  gadgets: "Gadget Collection",
   lifestyle: "Lifestyle Collection",
   default: "Product Menu",
 };
