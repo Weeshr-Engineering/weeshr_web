@@ -50,7 +50,7 @@ export default function ChangeReceiverDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <button className="flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 p-2 rounded-lg cursor-pointer">
+        <button className="flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-2 rounded-lg cursor-pointer">
           <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-6">
             <Icon icon="lsicon:switch-outline" />
           </div>
