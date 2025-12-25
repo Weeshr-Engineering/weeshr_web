@@ -34,6 +34,7 @@ export interface Product {
   price: number;
   vendorId: string;
   category: string;
+  categoryId: string;
   isAvailable: boolean;
 }
 
@@ -58,6 +59,7 @@ export class ProductService {
         price: product.amount, // Convert from kobo to naira
         vendorId: product.vendorId,
         category: product.tag[0]?.name || "Food",
+        categoryId: product.tag[0]?._id || "",
         isAvailable:
           product.status === "published" &&
           !product.isDeleted &&
