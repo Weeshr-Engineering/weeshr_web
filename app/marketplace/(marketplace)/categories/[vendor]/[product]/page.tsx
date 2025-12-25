@@ -41,6 +41,7 @@ export default function VendorPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("categoryId");
@@ -51,10 +52,23 @@ export default function VendorPage() {
   const categoryName = segments[2] || "default";
   const vendorName = segments[3] || "";
 
+  // Derived effective category info for breadcrumb/navigation
+  const firstProduct = products[0];
+  const effectiveCategoryName =
+    categoryName === "undefined" || !categoryName
+      ? firstProduct?.category?.toLowerCase() || (loading ? "" : "food")
+      : categoryName.toLowerCase();
+
+  const effectiveCategoryId =
+    !categoryId || categoryId === "null"
+      ? firstProduct?.categoryId || ""
+      : categoryId;
+
   // Get display label for the category
-  const categoryLabel =
-    vendorCategoryLabels[categoryName as string] ||
-    vendorCategoryLabels.default;
+  const categoryLabel = loading
+    ? "Fetching menu..."
+    : vendorCategoryLabels[effectiveCategoryName] ||
+      vendorCategoryLabels.default;
 
   // Check authentication status
   useEffect(() => {
@@ -97,13 +111,19 @@ export default function VendorPage() {
   // Fetch products for selected vendor
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!vendorId) return;
+      if (!vendorId) {
+        setLoading(false);
+        return;
+      }
       try {
+        setLoading(true);
         const productsData = await ProductService.getProductsByVendor(vendorId);
         setProducts(productsData);
       } catch (error) {
         console.error("Failed to fetch products:", error);
         setProducts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -155,7 +175,7 @@ export default function VendorPage() {
 
   const handleCategoryClick = () => {
     router.push(
-      `/marketplace/categories/${categoryName}?id=${categoryId}&name=${encodeURIComponent(
+      `/marketplace/categories/${effectiveCategoryName}?id=${effectiveCategoryId}&name=${encodeURIComponent(
         nameParam
       )}`
     );
@@ -199,12 +219,16 @@ export default function VendorPage() {
     <div className="flex flex-col">
       {/* Breadcrumb - MOBILE SIZE ADJUSTED */}
       <div className="text-left text-xl md:text-4xl p-4 md:p-6 flex items-center font-extralight text-gray-700">
-        <button
-          onClick={handleCategoryClick}
-          className="capitalize hover:text-blue-600 transition-colors cursor-pointer"
-        >
-          {categoryName}
-        </button>
+        {loading && categoryName === "undefined" ? (
+          <div className="h-6 md:h-8 w-24 md:w-32 bg-gray-200 animate-pulse rounded-md" />
+        ) : (
+          <button
+            onClick={handleCategoryClick}
+            className="capitalize hover:text-blue-600 transition-colors cursor-pointer"
+          >
+            {effectiveCategoryName}
+          </button>
+        )}
         <span className="mx-1 font-bold">
           <Icon
             icon="teenyicons:right-outline"
@@ -234,7 +258,7 @@ export default function VendorPage() {
                 What would{" "}
                 <span className="relative whitespace-nowrap text-blue-600 pr-1">
                   <span
-                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-lg md:text-2xl font-medium md:ml-auto"
+                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl md:text-4xl font-medium md:ml-auto"
                     style={{ fontFamily: "Playwrite CU, sans-serif" }}
                   >
                     {displayName}

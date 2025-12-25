@@ -22,7 +22,6 @@ const VendorList: React.FC<VendorListProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams();
-  const currentCategory = params.vendor as string;
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("id");
 
@@ -31,11 +30,24 @@ const VendorList: React.FC<VendorListProps> = ({
     return str.toLowerCase().replace(/\s+/g, "-");
   }
 
-  function goToVendor(vendorName: string, vendorId: string) {
+  function goToVendor(
+    vendorCategory: string,
+    vendorName: string,
+    vendorId: string
+  ) {
     const slug = slugify(vendorName);
+    const cat = vendorCategory.toLowerCase();
     router.push(
-      `/marketplace/categories/${currentCategory}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
+      `/marketplace/categories/${cat}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
     );
+  }
+
+  function getCategoryIcon(category: string) {
+    const cat = category.toLowerCase();
+    if (cat.includes("food")) return "famicons:fast-food-outline";
+    if (cat.includes("fashion")) return "lucide:handbag";
+    if (cat.includes("gadget")) return "lucide:smartphone";
+    return "lucide:store";
   }
 
   function sentenceCase(str?: string) {
@@ -85,7 +97,9 @@ const VendorList: React.FC<VendorListProps> = ({
           >
             <Card
               className="overflow-hidden rounded-3xl shadow-sm transition-shadow duration-200 bg-white border-0 cursor-pointer hover:shadow-md" // ✅ Only shadow change on hover
-              onClick={() => goToVendor(vendor.name, vendor.id)}
+              onClick={() =>
+                goToVendor(vendor.category, vendor.name, vendor.id)
+              }
             >
               {/* Image Container */}
               <div className="relative overflow-hidden rounded-t-3xl">
@@ -112,17 +126,7 @@ const VendorList: React.FC<VendorListProps> = ({
                 {/* Category Badge */}
                 <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm rounded-2xl px-2 py-1 flex gap-1.5">
                   <div className="w-3">
-                    <Icon
-                      icon={
-                        currentCategory === "food"
-                          ? "famicons:fast-food-outline"
-                          : currentCategory === "fashion"
-                          ? "lucide:shirt"
-                          : currentCategory === "gadgets"
-                          ? "lucide:smartphone"
-                          : "lucide:store"
-                      }
-                    />
+                    <Icon icon={getCategoryIcon(vendor.category)} />
                   </div>
                   <span className="text-primary text-sm font-light">
                     {vendor.category}
@@ -177,7 +181,7 @@ const VendorList: React.FC<VendorListProps> = ({
                         variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
-                          goToVendor(vendor.name, vendor.id);
+                          goToVendor(vendor.category, vendor.name, vendor.id);
                         }}
                         className="px-2 py-2 text-muted-foreground hover:underline hover:decoration-text-foreground hover:bg-transparent transition-colors text-sm font-medium rounded-2xl"
                       >
@@ -194,7 +198,7 @@ const VendorList: React.FC<VendorListProps> = ({
                         variant="marketplace"
                         onClick={(e) => {
                           e.stopPropagation();
-                          goToVendor(vendor.name, vendor.id);
+                          goToVendor(vendor.category, vendor.name, vendor.id);
                         }}
                         className="transition-colors text-sm font-medium flex items-center gap-1 bg-marketplace-primary hover:bg-marketplace-primary/60 rounded-2xl"
                       >
