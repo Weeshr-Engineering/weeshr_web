@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { Card, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
@@ -21,6 +21,8 @@ const VendorList: React.FC<VendorListProps> = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams();
+  const currentCategory = params.vendor as string;
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("id");
 
@@ -32,7 +34,7 @@ const VendorList: React.FC<VendorListProps> = ({
   function goToVendor(vendorName: string, vendorId: string) {
     const slug = slugify(vendorName);
     router.push(
-      `/marketplace/categories/food/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
+      `/marketplace/categories/${currentCategory}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
     );
   }
 
@@ -110,7 +112,17 @@ const VendorList: React.FC<VendorListProps> = ({
                 {/* Category Badge */}
                 <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm rounded-2xl px-2 py-1 flex gap-1.5">
                   <div className="w-3">
-                    <Icon icon="famicons:fast-food-outline" />
+                    <Icon
+                      icon={
+                        currentCategory === "food"
+                          ? "famicons:fast-food-outline"
+                          : currentCategory === "fashion"
+                          ? "lucide:shirt"
+                          : currentCategory === "gadgets"
+                          ? "lucide:smartphone"
+                          : "lucide:store"
+                      }
+                    />
                   </div>
                   <span className="text-primary text-sm font-light">
                     {vendor.category}

@@ -85,7 +85,7 @@ export const FloatingNav = ({
     if (baseLink === "/marketplace/categories/fashion") {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
-    if (baseLink === "/marketplace/categories/gadget") {
+    if (baseLink === "/marketplace/categories/gadgets") {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
     if (baseLink === "/marketplace/categories/lifestyle") {

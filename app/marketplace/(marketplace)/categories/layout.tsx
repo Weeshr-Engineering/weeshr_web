@@ -53,7 +53,6 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
         };
       }
 
-      // For specific category links (food, fashion, gadget, lifestyle)
       if (baseLink.startsWith("/marketplace/categories/")) {
         // Extract category name from the link (e.g., "food" from "/marketplace/categories/food")
         const categoryNameFromLink = baseLink.split("/").pop();

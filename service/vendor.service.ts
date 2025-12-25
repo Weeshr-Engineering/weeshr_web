@@ -11,7 +11,15 @@ export interface ApiVendor {
     url: string;
     public_id: string;
     version: number;
-    // ... other logo properties
+  };
+  banner?: null | {
+    secure_url: string;
+    url: string;
+    public_id: string;
+    version: number;
+    width?: number;
+    height?: number;
+    format?: string;
   };
   cover: null;
   rcNumber: number;
@@ -21,8 +29,9 @@ export interface ApiVendor {
   companyState: string;
   status: string;
   createdAt: string;
-  categories?: string[]; // Make optional
-  totalProducts: number;
+  categories?: string[];
+  productCount: number;
+  totalProducts?: number; // Keep for backward compatibility if used elsewhere
 }
 
 export interface ProductImage {
@@ -65,26 +74,31 @@ export class VendorService {
         `Found ${apiVendors.length} vendors for category ${categoryId}`
       );
 
-      // Filter out vendors with no products and get valid ones
-      const validVendors = await Promise.all(
-        apiVendors.map(async (vendor) => {
-          try {
-            const enrichedVendor = await this.enrichVendorWithProductImages(
-              vendor
-            );
-            // Only return vendors that have at least one product image or are valid
-            return enrichedVendor;
-          } catch (error) {
-            console.error(`Error enriching vendor ${vendor._id}:`, error);
-            return null;
+      // Map vendors directly using the information we already have
+      return apiVendors
+        .filter((vendor: ApiVendor) => vendor.productCount > 0)
+        .map((vendor: ApiVendor) => {
+          // Use banner if available, then logo, then fallback
+          let vendorImage: string;
+          if (vendor.banner && vendor.banner.secure_url) {
+            vendorImage = vendor.banner.secure_url;
+          } else if (vendor.logo && vendor.logo.secure_url) {
+            vendorImage = vendor.logo.secure_url;
+          } else {
+            vendorImage = this.getDefaultVendorImage(vendor.companyName);
           }
-        })
-      );
 
-      // Filter out null values and vendors without products
-      return validVendors.filter(
-        (vendor): vendor is Vendor => vendor !== null && vendor.giftIdeas > 0
-      );
+          return {
+            id: vendor._id,
+            name: vendor.companyName,
+            image: vendorImage,
+            rating: this.calculateVendorRating(vendor),
+            category: this.getVendorCategory(vendor),
+            badges: this.generateBadges(vendor),
+            giftIdeas: vendor.productCount,
+            productImages: vendor.banner ? [vendor.banner.secure_url] : [],
+          };
+        });
     } catch (error) {
       console.error("Error fetching vendors:", error);
       return [];
@@ -105,102 +119,34 @@ export class VendorService {
       const { vendors: apiVendors, pagination } = await fetchAllVendors(page);
       console.log(`Found ${apiVendors.length} vendors on page ${page}`);
 
-      // Process vendors in parallel
-      const validVendors = await Promise.all(
-        apiVendors.map(async (vendor: ApiVendor) => {
-          try {
-            let products: ApiProduct[] = [];
-            let category = "General";
-            let giftIdeas = 0;
-
-            try {
-              // Fetch products for this vendor
-              products = await fetchProductsByVendor(vendor._id);
-
-              // Get gift ideas count from products
-              giftIdeas = products.length;
-
-              // Get category from first product's tag if available
-              if (
-                products.length > 0 &&
-                products[0].tag &&
-                products[0].tag.length > 0
-              ) {
-                category = products[0].tag[0].name;
-              }
-            } catch (productError) {
-              console.warn(
-                `Could not fetch products for vendor ${vendor._id}:`,
-                productError
-              );
-            }
-
-            // Get product images
-            const productImages = products
-              .filter((product: ApiProduct) => product?.image?.secure_url)
-              .map((product: ApiProduct) => product.image!.secure_url)
-              .slice(0, 5);
-
-            // Use vendor logo or product image, or fallback
-            let vendorImage: string;
-
-            // First priority: vendor logo
-            if (vendor.logo && vendor.logo.secure_url) {
-              vendorImage = vendor.logo.secure_url;
-            }
-            // Second priority: product images
-            else if (productImages.length > 0) {
-              vendorImage = productImages[0];
-            }
-            // Fallback: external placeholder
-            else {
-              vendorImage = this.getDefaultVendorImage(vendor.companyName);
-            }
-
-            return {
-              id: vendor._id,
-              name: vendor.companyName,
-              image: vendorImage,
-              rating: this.calculateVendorRating({
-                ...vendor,
-                totalProducts: giftIdeas,
-              }),
-              category: category,
-              badges: this.generateBadges({
-                ...vendor,
-                totalProducts: giftIdeas,
-              }),
-              giftIdeas: giftIdeas,
-              productImages: productImages,
-            };
-          } catch (error) {
-            console.error(`Error processing vendor ${vendor._id}:`, error);
-            // Return vendor with fallback data
-            return {
-              id: vendor._id,
-              name: vendor.companyName,
-              image: this.getDefaultVendorImage(vendor.companyName),
-              rating: 4.0,
-              category: "General",
-              badges: ["New"],
-              giftIdeas: 0,
-              productImages: [],
-            };
+      // Process vendors directly
+      const validVendors = apiVendors
+        .filter((vendor: ApiVendor) => vendor.productCount > 0)
+        .map((vendor: ApiVendor) => {
+          // Use banner if available, then logo, then fallback
+          let vendorImage: string;
+          if (vendor.banner && vendor.banner.secure_url) {
+            vendorImage = vendor.banner.secure_url;
+          } else if (vendor.logo && vendor.logo.secure_url) {
+            vendorImage = vendor.logo.secure_url;
+          } else {
+            vendorImage = this.getDefaultVendorImage(vendor.companyName);
           }
-        })
-      );
 
-      // Filter out vendors with no products (giftIdeas === 0)
-      const vendorsWithProducts = validVendors.filter(
-        (vendor): vendor is Vendor => vendor !== null && vendor.giftIdeas > 0
-      );
-
-      console.log(
-        `Returning ${vendorsWithProducts.length} vendors with products (filtered from ${validVendors.length} total)`
-      );
+          return {
+            id: vendor._id,
+            name: vendor.companyName,
+            image: vendorImage,
+            rating: this.calculateVendorRating(vendor),
+            category: this.getVendorCategory(vendor),
+            badges: this.generateBadges(vendor),
+            giftIdeas: vendor.productCount,
+            productImages: vendor.banner ? [vendor.banner.secure_url] : [],
+          };
+        });
 
       return {
-        vendors: vendorsWithProducts,
+        vendors: validVendors,
         pagination,
       };
     } catch (error) {
@@ -217,93 +163,14 @@ export class VendorService {
     }
   }
 
-  private static async enrichVendorWithProductImages(
-    vendor: ApiVendor
-  ): Promise<Vendor> {
-    try {
-      // Fetch products for this vendor to get images
-      const products = await fetchProductsByVendor(vendor._id);
-
-      // Safely get product images with null checking
-      const productImages = products
-        .filter((product: ApiProduct) => product?.image?.secure_url)
-        .map((product: ApiProduct) => product.image!.secure_url)
-        .slice(0, 5);
-
-      // Use vendor logo or product image, or fallback
-      let vendorImage: string;
-
-      // First priority: vendor logo
-      if (vendor.logo && vendor.logo.secure_url) {
-        vendorImage = vendor.logo.secure_url;
-      }
-      // Second priority: product images
-      else if (productImages.length > 0) {
-        vendorImage = productImages[0];
-      }
-      // Fallback: external placeholder
-      else {
-        vendorImage = this.getDefaultVendorImage(vendor.companyName);
-      }
-
-      return {
-        id: vendor._id,
-        name: vendor.companyName,
-        image: vendorImage,
-        rating: this.calculateVendorRating(vendor),
-        category: this.getVendorCategory(vendor), // Use safe method
-        badges: this.generateBadges(vendor),
-        giftIdeas: vendor.totalProducts || 0,
-        productImages: productImages,
-      };
-    } catch (error) {
-      console.error(`Error fetching products for vendor ${vendor._id}:`, error);
-      // Return vendor with fallback image
-      return this.createVendorWithFallback(vendor);
-    }
-  }
-
-  private static selectBestVendorImage(
-    productImages: string[],
-    vendorName: string
-  ): string {
-    if (productImages.length === 0) {
-      return this.getDefaultVendorImage(vendorName);
-    }
-    return productImages[0];
-  }
-
   private static getDefaultVendorImage(vendorName: string): string {
     const foodPlaceholders = ["🍕", "🍔", "🍣", "🍜", "🌮", "🍝", "🍛", "🥗"];
     const randomEmoji =
       foodPlaceholders[Math.floor(Math.random() * foodPlaceholders.length)];
 
-    // Use external placeholder service instead of your non-existent /api/placeholder
     return `https://via.placeholder.com/400x240/4F46E5/FFFFFF?text=${encodeURIComponent(
       vendorName
     )}`;
-  }
-
-  private static createVendorWithFallback(vendor: ApiVendor): Vendor {
-    let vendorImage: string;
-
-    // Try to use vendor logo first
-    if (vendor.logo && vendor.logo.secure_url) {
-      vendorImage = vendor.logo.secure_url;
-    } else {
-      vendorImage = this.getDefaultVendorImage(vendor.companyName);
-    }
-
-    return {
-      id: vendor._id,
-      name: vendor.companyName,
-      image: vendorImage,
-      rating: this.calculateVendorRating(vendor),
-      category: this.getVendorCategory(vendor), // Use safe method
-      badges: this.generateBadges(vendor),
-      giftIdeas: vendor.totalProducts || 0,
-      productImages: [],
-    };
   }
 
   // New helper method to safely get vendor category
@@ -315,16 +182,18 @@ export class VendorService {
 
   private static calculateVendorRating(vendor: ApiVendor): number {
     let rating = 4.0;
-    if (vendor.totalProducts > 10) rating += 0.5;
-    if (vendor.totalProducts > 5) rating += 0.3;
+    const products = vendor.productCount || vendor.totalProducts || 0;
+    if (products > 10) rating += 0.5;
+    if (products > 5) rating += 0.3;
     if (vendor.status === "published") rating += 0.2;
     return Math.min(Math.max(rating, 4.0), 5.0);
   }
 
   private static generateBadges(vendor: ApiVendor): string[] {
     const badges: string[] = [];
+    const products = vendor.productCount || vendor.totalProducts || 0;
 
-    if (vendor.totalProducts > 5) {
+    if (products > 5) {
       badges.push("Popular");
     }
 
@@ -336,7 +205,7 @@ export class VendorService {
       badges.push("Verified");
     }
 
-    if (vendor.totalProducts > 10) {
+    if (products > 10) {
       badges.push("Many Options");
     }
 
