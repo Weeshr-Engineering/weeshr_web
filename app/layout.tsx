@@ -3,6 +3,7 @@ import "./globals.css";
 import { Outfit } from "next/font/google";
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import ClientLayout from "./ClientLayout";
+import { playwrite } from "./fonts";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -45,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={`h-full ${playwrite.variable}`}>
       <GoogleTagManager gtmId="G-2W2JYJPBXZ" />
       <GoogleAnalytics gaId="G-2W2JYJPBXZ" />
 

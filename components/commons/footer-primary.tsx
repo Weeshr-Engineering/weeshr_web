@@ -54,8 +54,8 @@ const Footer: React.FC = () => {
             </a>
             <div className="mt-4 text-center md:mt-6 lg:max-w-md md:text-left">
               <p className="text-sm text-muted-foreground md:text-sm lg:text-sm">
-                Weeshr helps you collect your gifts with the click of one button
-                from your friends, fans, and family!
+                Find gifts, find your favorite vendors and send the gift they’d
+                truly love with Weeshr.
               </p>
             </div>
           </div>
@@ -108,7 +108,6 @@ const Footer: React.FC = () => {
 
         <div className="flex flex-col items-center px-4  md:flex-row md:justify-between md:pb-10">
           <div className="text-sm text-[#020721] flex items-center">
-           
             <p className="mx-2 text-sm flex items-center gap-1">
               <Icon icon="mdi:copyright" width="14px" height="14px" />
               Weeshr Technologies
