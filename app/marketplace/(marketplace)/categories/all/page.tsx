@@ -171,8 +171,11 @@ export default function AllVendorsPage() {
               What would{" "}
               <span className="relative whitespace-nowrap text-blue-600 pr-1">
                 <span
-                  className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl md:text-4xl font-medium "
-                  style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                  className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl md:text-3xl font-medium "
+                  style={{
+                    fontFamily:
+                      "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                  }}
                 >
                   {displayName}
                 </span>
