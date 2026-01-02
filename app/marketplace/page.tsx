@@ -46,7 +46,7 @@ export default function Home() {
         />
       </div>
       {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
-      <div className="md:hidden flex-1 px-2 mt-2 pb-3 min-h-0 w-full relative">
+      <div className="md:hidden flex-1 px-2 mt-2 pb-2 min-h-0 w-full relative">
         <motion.div
           className="relative w-full h-full rounded-3xl overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
