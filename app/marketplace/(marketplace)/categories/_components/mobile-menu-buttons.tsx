@@ -10,6 +10,7 @@ import { Product, ProductService } from "@/service/product.service";
 import { cartService } from "@/service/cart.service";
 import toast from "react-hot-toast";
 import { BasketItem } from "@/lib/BasketItem";
+import { cn } from "@/lib/utils";
 
 interface MobileMenuButtonsProps {
   vendorId: string;
@@ -33,7 +34,9 @@ export function MobileMenuButtons({
   clearBasket,
 }: MobileMenuButtonsProps) {
   const [shakeId, setShakeId] = useState<string | null>(null);
+  const [hoverId, setHoverId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
+
   const [loading, setLoading] = useState(true);
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
   // Track accumulated clicks per product during debounce period
@@ -262,7 +265,10 @@ export function MobileMenuButtons({
             <Button
               variant="ghost"
               className="text-[#6A70FF] text-xs px-3 py-1 h-7 rounded-3xl hover:bg-[#6A70FF]/10"
-              onClick={clearBasket}
+              onClick={(e) => {
+                e.stopPropagation();
+                clearBasket();
+              }}
             >
               Clear All
             </Button>
@@ -276,121 +282,156 @@ export function MobileMenuButtons({
           const itemCount = basketItem?.qty || 0;
 
           return (
-            <Card
+            <motion.div
               key={product.id}
-              className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 bg-white border-[1px] flex flex-row w-full p-2 gap-2 relative"
+              whileTap={product.isAvailable ? { scale: 0.98 } : {}}
+              className="w-full"
             >
-              {/* Image */}
-              <div className="relative w-[100px] h-[100px] flex-shrink-0">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={200}
-                  height={200}
-                  className="object-cover w-full h-full rounded-lg"
-                  loading="lazy"
-                  quality={75}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
-                      product.name
-                    )}`;
-                  }}
-                />
-              </div>
-
-              {/* Content */}
-              <div className="flex flex-col justify-between flex-1 min-w-0">
-                <div>
-                  <CardTitle className="text-sm font-normal">
-                    {product.name}
-                  </CardTitle>
-                  <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
-                    {product.description}
-                  </CardDescription>
+              <Card
+                onClick={() => product.isAvailable && handleAdd(product.id)}
+                onMouseEnter={() => setHoverId(product.id)}
+                onMouseLeave={() => setHoverId(null)}
+                className={cn(
+                  "overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 bg-white border-[1px] flex flex-row w-full p-2 gap-2 relative h-full",
+                  product.isAvailable
+                    ? "cursor-pointer"
+                    : "opacity-60 cursor-not-allowed"
+                )}
+              >
+                {/* Image */}
+                <div className="relative w-[100px] h-[100px] flex-shrink-0">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={200}
+                    height={200}
+                    className="object-cover w-full h-full rounded-lg"
+                    loading="lazy"
+                    quality={75}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
+                        product.name
+                      )}`;
+                    }}
+                  />
                 </div>
 
-                <div className="flex justify-between items-center text-md">
-                  <p className="font-semibold">
-                    ₦ {product.price.toLocaleString()}
-                  </p>
+                {/* Content */}
+                <div className="flex flex-col justify-between flex-1 min-w-0">
+                  <div>
+                    <CardTitle className="text-sm font-normal">
+                      {product.name}
+                    </CardTitle>
+                    <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
+                      {product.description}
+                    </CardDescription>
+                  </div>
 
-                  {/* BUTTON LOGIC */}
-                  {product.isAvailable ? (
-                    <>
-                      {/* Show basket icon FIRST when itemCount = 0 */}
-                      {itemCount === 0 && (
-                        <Button
-                          size="sm"
-                          variant="marketplace"
-                          onClick={() => handleAdd(product.id)}
-                          className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
-                        >
-                          <motion.span
-                            initial={{ scale: 1 }}
-                            animate={{
-                              scale: shakeId === product.id ? [1, 1.2, 1] : 1,
-                            }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <Icon
-                              icon="streamline-ultimate:shopping-basket-1"
-                              className="h-4 w-4 text-black"
-                            />
-                          </motion.span>
-                        </Button>
-                      )}
+                  <div className="flex justify-between items-center text-md">
+                    <p className="font-semibold">
+                      ₦ {product.price.toLocaleString()}
+                    </p>
 
-                      {/* Show qty controls when itemCount > 0 */}
-                      {itemCount > 0 && (
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleRemove(product.id)}
-                            className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
-                          >
-                            <Icon icon="mdi:minus" className="h-4 w-4" />
-                          </Button>
-
-                          <motion.span
-                            initial={{ scale: 1 }}
-                            animate={{
-                              scale: shakeId === product.id ? [1, 1.2, 1] : 1,
-                            }}
-                            transition={{ duration: 0.3 }}
-                            className="font-semibold text-sm min-w-[20px] text-center"
-                          >
-                            {itemCount}
-                          </motion.span>
-
+                    {/* BUTTON LOGIC */}
+                    {product.isAvailable ? (
+                      <>
+                        {/* Show basket icon FIRST when itemCount = 0 */}
+                        {itemCount === 0 && (
                           <Button
                             size="sm"
                             variant="marketplace"
-                            onClick={() => handleAdd(product.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdd(product.id);
+                            }}
                             className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
                           >
+                            <motion.span
+                              initial={{ x: 0, scale: 1, rotate: 0 }}
+                              animate={{
+                                x:
+                                  shakeId === product.id
+                                    ? [-6, 6, -6, 6, 0]
+                                    : 0,
+                                scale: hoverId === product.id ? 1.18 : 1,
+                                rotate: hoverId === product.id ? 8 : 0,
+                              }}
+                              transition={{
+                                x:
+                                  shakeId === product.id
+                                    ? { duration: 0.45, ease: "easeInOut" }
+                                    : { duration: 0.18 },
+                                scale: { duration: 0.15, ease: "easeOut" },
+                                rotate: { duration: 0.18, ease: "easeOut" },
+                              }}
+                            >
+                              <Icon
+                                icon="streamline-ultimate:shopping-basket-1"
+                                className="h-4 w-4 text-black"
+                              />
+                            </motion.span>
+                          </Button>
+                        )}
+
+                        {/* Show qty controls when itemCount > 0 */}
+                        {itemCount > 0 && (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemove(product.id);
+                              }}
+                              className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
+                            >
+                              <Icon icon="mdi:minus" className="h-4 w-4" />
+                            </Button>
+
                             <motion.span
                               initial={{ scale: 1 }}
                               animate={{
                                 scale: shakeId === product.id ? [1, 1.2, 1] : 1,
                               }}
                               transition={{ duration: 0.3 }}
+                              className="font-semibold text-sm min-w-[20px] text-center"
                             >
-                              <Icon icon="mdi:plus" className="h-4 w-4" />
+                              {itemCount}
                             </motion.span>
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">
-                      Out of stock
-                    </span>
-                  )}
+
+                            <Button
+                              size="sm"
+                              variant="marketplace"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAdd(product.id);
+                              }}
+                              className="rounded-full h-7 w-7 p-0 flex items-center justify-center"
+                            >
+                              <motion.span
+                                initial={{ scale: 1 }}
+                                animate={{
+                                  scale:
+                                    shakeId === product.id ? [1, 1.2, 1] : 1,
+                                }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <Icon icon="mdi:plus" className="h-4 w-4" />
+                              </motion.span>
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">
+                        Out of stock
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </motion.div>
           );
         })}
       </div>

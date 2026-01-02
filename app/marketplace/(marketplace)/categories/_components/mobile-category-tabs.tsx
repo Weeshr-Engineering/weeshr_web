@@ -57,7 +57,7 @@ export default function MobileCategoryTabs({
   };
 
   return (
-    <div className="md:hidden w-full px-4 pt-4 pb-2">
+    <div className="md:hidden sticky top-0 z-40  backdrop-blur-md w-full px-4 pt-4 pb-2 shadow-sm">
       <div className="relative w-full overflow-x-auto overflow-y-hidden scrollbar-hide">
         <div className="flex gap-8 min-w-max pb-3 justify-between">
           {categories.map((category, index) => {

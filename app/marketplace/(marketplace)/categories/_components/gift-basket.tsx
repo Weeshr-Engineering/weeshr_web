@@ -535,23 +535,28 @@ export function GiftBasket({
                         </span>
                       </div>
                     </button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="relative h-9 px-3 text-xs rounded-3xl border-[#6A70FF]/50 text-[#6A70FF] hover:bg-[#6A70FF]/10 flex items-center gap-2"
-                      onClick={() => setViewCartOpen(true)}
-                    >
-                      <Icon icon="mdi:cart-outline" className="h-4 w-4" />
-                      <span>View Cart</span>
-                      {filteredBasket.length > 0 && (
-                        <Badge className="absolute -top-2 -right-2 bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center rounded-full font-semibold">
-                          {filteredBasket.length}
-                        </Badge>
-                      )}
-                    </Button>
+                    {!mobileSheetOpen && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="relative h-9 px-3 text-xs rounded-3xl border-[#6A70FF]/50 text-[#6A70FF] hover:bg-[#6A70FF]/10 flex items-center gap-2"
+                        onClick={() => setViewCartOpen(true)}
+                      >
+                        <Icon icon="mdi:cart-outline" className="h-4 w-4" />
+                        <span>View Cart</span>
+                        {filteredBasket.length > 0 && (
+                          <Badge className="absolute -top-2 -right-2 bg-[#6A70FF] text-white text-[10px] h-5 min-w-[20px] px-1 flex items-center justify-center rounded-full font-semibold">
+                            {filteredBasket.length}
+                          </Badge>
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </SheetTrigger>
-                <SheetContent side="bottom" className="h-[80vh] p-0">
+                <SheetContent
+                  side="bottom"
+                  className="h-[80vh] p-0 flex flex-col"
+                >
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle className="flex items-center justify-between">
                       <span>
@@ -574,7 +579,7 @@ export function GiftBasket({
                       </div>
                     </SheetTitle>
                   </SheetHeader>
-                  <div className="p-4 overflow-y-auto h-[calc(80vh-80px)]">
+                  <div className="p-4 overflow-y-auto flex-grow">
                     {filteredBasket.length === 0 ? (
                       <EmptyBasket />
                     ) : (
@@ -592,11 +597,16 @@ export function GiftBasket({
                       </div>
                     )}
                   </div>
-                </SheetContent>
-              </Sheet>
-              <div className="flex gap-1 items-center">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
+                  {/* Sticky Footer for Mobile Sheet */}
+                  <div className="border-t p-4 bg-white">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-sm text-muted-foreground font-medium">
+                        Total Amount
+                      </span>
+                      <span className="text-lg font-bold">
+                        ₦ {getDisplayTotal().toLocaleString()}
+                      </span>
+                    </div>
                     <Button
                       variant="default"
                       disabled={
@@ -604,22 +614,50 @@ export function GiftBasket({
                         isCheckingAuth ||
                         isProcessingCart
                       }
-                      className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                      className="w-full disabled:opacity-50 rounded-3xl py-6 text-sm flex space-x-2 transition-all duration-300 bg-gradient-to-r from-[#6A70FF] to-[#4145A7] hover:opacity-90"
                       onClick={handleSendBasket}
                     >
-                      <span className="font-medium">Send basket</span>
+                      <span className="font-semibold text-lg">Send basket</span>
                       {isCheckingAuth || isProcessingCart ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                       ) : (
                         <Icon
                           icon="streamline-ultimate:shopping-basket-1"
-                          className="text-white h-4 w-4"
+                          className="text-white h-6 w-6"
                         />
                       )}
                     </Button>
-                  </AlertDialogTrigger>
-                </AlertDialog>
-              </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+              {!mobileSheetOpen && (
+                <div className="flex gap-1 items-center">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="default"
+                        disabled={
+                          filteredBasket.length === 0 ||
+                          isCheckingAuth ||
+                          isProcessingCart
+                        }
+                        className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                        onClick={handleSendBasket}
+                      >
+                        <span className="font-medium">Send basket</span>
+                        {isCheckingAuth || isProcessingCart ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        ) : (
+                          <Icon
+                            icon="streamline-ultimate:shopping-basket-1"
+                            className="text-white h-4 w-4"
+                          />
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                  </AlertDialog>
+                </div>
+              )}
             </div>
           </div>
           <div className="h-20"></div>

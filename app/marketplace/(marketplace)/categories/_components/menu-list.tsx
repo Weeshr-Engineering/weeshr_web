@@ -10,6 +10,7 @@ import { Product, ProductService } from "@/service/product.service";
 import { cartService } from "@/service/cart.service";
 import toast from "react-hot-toast";
 import { BasketItem } from "@/lib/BasketItem";
+import { cn } from "@/lib/utils";
 
 interface MenuListProps {
   vendorId: string;
@@ -155,93 +156,109 @@ export function MenuList({
         const itemCount = basketItem?.qty || 0;
 
         return (
-          <Card
+          <motion.div
             key={product.id}
-            className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 bg-white border-[1px] flex flex-row w-full md:min-w-[300px] p-2 gap-2 relative"
+            whileTap={product.isAvailable ? { scale: 0.98 } : {}}
+            className="w-full"
           >
-            {/* Image */}
-            <div className="relative w-[100px] aspect-square flex-shrink-0 overflow-hidden rounded-lg">
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={200}
-                height={200}
-                className="object-cover w-full h-full rounded-lg"
-                loading="lazy"
-                quality={75}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
-                    product.name
-                  )}`;
-                }}
-              />
-            </div>
-
-            {/* Content */}
-            <div className="flex flex-col justify-between flex-1 min-w-0">
-              <div>
-                <CardTitle className="text-sm font-normal">
-                  {product.name}
-                </CardTitle>
-                <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
-                  {product.description}
-                </CardDescription>
+            <Card
+              onClick={() => product.isAvailable && handleAdd(product.id)}
+              onMouseEnter={() => setHoverId(product.id)}
+              onMouseLeave={() => setHoverId(null)}
+              className={cn(
+                "overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 bg-white border-[1px] flex flex-row w-full md:min-w-[300px] p-2 gap-2 relative h-full",
+                product.isAvailable
+                  ? "cursor-pointer"
+                  : "opacity-60 cursor-not-allowed"
+              )}
+            >
+              {/* Image */}
+              <div className="relative w-[100px] aspect-square flex-shrink-0 overflow-hidden rounded-lg">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={200}
+                  height={200}
+                  className="object-cover w-full h-full rounded-lg"
+                  loading="lazy"
+                  quality={75}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
+                      product.name
+                    )}`;
+                  }}
+                />
               </div>
 
-              <div className="flex justify-between items-center text-md">
-                <p className="font-semibold">
-                  ₦ {product.price.toLocaleString()}
-                </p>
+              {/* Content */}
+              <div className="flex flex-col justify-between flex-1 min-w-0">
+                <div>
+                  <CardTitle className="text-sm font-normal">
+                    {product.name}
+                  </CardTitle>
+                  <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
+                    {product.description}
+                  </CardDescription>
+                </div>
 
-                <Button
-                  size="sm"
-                  variant="marketplace"
-                  onClick={() => handleAdd(product.id)}
-                  onMouseEnter={() => setHoverId(product.id)}
-                  onMouseLeave={() => setHoverId(null)}
-                  className="rounded-full sm:rounded-3xl font-light text-xs gap-1 flex items-center py-0.5 h-7"
-                  disabled={!product.isAvailable}
-                >
-                  {/* Text visible only on md+ screens */}
-                  {product.isAvailable && (
-                    <span className="hidden sm:inline lg:hidden xl:inline">
-                      Add to basket
-                    </span>
-                  )}
-                  {!product.isAvailable && (
-                    <span className="hidden sm:inline lg:hidden xl:inline">
-                      Out of stock
-                    </span>
-                  )}
+                <div className="flex justify-between items-center text-md">
+                  <p className="font-semibold">
+                    ₦ {product.price.toLocaleString()}
+                  </p>
 
-                  {/* Icon always visible */}
-                  <motion.span
-                    initial={{ x: 0, scale: 1, rotate: 0 }}
-                    animate={{
-                      x: shakeId === product.id ? [-6, 6, -6, 6, 0] : 0,
-                      scale: hoverId === product.id ? 1.18 : 1,
-                      rotate: hoverId === product.id ? 8 : 0,
+                  <Button
+                    size="sm"
+                    variant="marketplace"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAdd(product.id);
                     }}
-                    transition={{
-                      x:
-                        shakeId === product.id
-                          ? { duration: 0.45, ease: "easeInOut" }
-                          : { duration: 0.18 },
-                      scale: { duration: 0.15, ease: "easeOut" },
-                      rotate: { duration: 0.18, ease: "easeOut" },
-                    }}
-                    className="flex sm:ml-2 lg:ml-0 xl:ml-2"
+                    onMouseEnter={() => setHoverId(product.id)}
+                    onMouseLeave={() => setHoverId(null)}
+                    className="rounded-full sm:rounded-3xl font-light text-xs gap-1 flex items-center py-0.5 h-7"
+                    disabled={!product.isAvailable}
                   >
-                    <Icon
-                      icon="streamline-ultimate:shopping-basket-1"
-                      className="text-black font-bold h-4 w-4"
-                    />
-                  </motion.span>
-                </Button>
+                    {/* Text visible only on md+ screens */}
+                    {product.isAvailable && (
+                      <span className="hidden sm:inline lg:hidden xl:inline">
+                        Add to basket
+                      </span>
+                    )}
+                    {!product.isAvailable && (
+                      <span className="hidden sm:inline lg:hidden xl:inline">
+                        Out of stock
+                      </span>
+                    )}
+
+                    {/* Icon always visible */}
+                    <motion.span
+                      initial={{ x: 0, scale: 1, rotate: 0 }}
+                      animate={{
+                        x: shakeId === product.id ? [-6, 6, -6, 6, 0] : 0,
+                        scale: hoverId === product.id ? 1.18 : 1,
+                        rotate: hoverId === product.id ? 8 : 0,
+                      }}
+                      transition={{
+                        x:
+                          shakeId === product.id
+                            ? { duration: 0.45, ease: "easeInOut" }
+                            : { duration: 0.18 },
+                        scale: { duration: 0.15, ease: "easeOut" },
+                        rotate: { duration: 0.18, ease: "easeOut" },
+                      }}
+                      className="flex sm:ml-2 lg:ml-0 xl:ml-2"
+                    >
+                      <Icon
+                        icon="streamline-ultimate:shopping-basket-1"
+                        className="text-black font-bold h-4 w-4"
+                      />
+                    </motion.span>
+                  </Button>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </motion.div>
         );
       })}
     </div>

@@ -70,7 +70,10 @@ export default function Home() {
                     Who would you like to
                     <span
                       className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl sm:text-xl"
-                      style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                      style={{
+                        fontFamily:
+                          "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                      }}
                     >
                       gift?
                     </span>
@@ -192,7 +195,10 @@ export default function Home() {
                   Who would you like to
                   <span
                     className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl"
-                    style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                    style={{
+                      fontFamily:
+                        "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                    }}
                   >
                     gift?
                   </span>

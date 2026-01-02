@@ -103,7 +103,13 @@ export default function ReceiverInfoModal({
 
   const searchParams = useSearchParams();
   const nameFromUrl = searchParams?.get("name") || "";
-  const finalReceiverName = nameFromUrl || receiverName;
+  const rawReceiverName = nameFromUrl || receiverName;
+
+  const formatName = (name: string) => {
+    if (!name) return "";
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
+  const finalReceiverName = formatName(rawReceiverName);
 
   // Address autocomplete hook
 
@@ -273,8 +279,11 @@ export default function ReceiverInfoModal({
                 <CardTitle className="text-xl font-normal text-primary text-left">
                   More about
                   <span
-                    className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
-                    style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                    className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl capitalize"
+                    style={{
+                      fontFamily:
+                        "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                    }}
                   >
                     {finalReceiverName}
                   </span>
@@ -305,7 +314,6 @@ export default function ReceiverInfoModal({
                     <Label className="text-sm text-muted-foreground">
                       Phone Number
                     </Label>
-                
                   </div>
                   <div className="flex gap-2">
                     <Select

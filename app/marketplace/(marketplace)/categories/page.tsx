@@ -69,7 +69,10 @@ export default function Page() {
           What would you like to{" "}
           <span
             className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-3xl sm:text-5xl inline-flex items-center"
-            style={{ fontFamily: "Playwrite CU, sans-serif" }}
+            style={{
+              fontFamily:
+                "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+            }}
           >
             {/* Remove the fixed height container and use min-height instead */}
             <span className="inline-block min-h-[2em] overflow-visible align-middle">

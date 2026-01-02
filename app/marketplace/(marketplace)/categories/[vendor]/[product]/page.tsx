@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
 import { Product, ProductService } from "@/service/product.service";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useParams,
   useSearchParams,
@@ -65,10 +66,8 @@ export default function VendorPage() {
       : categoryId;
 
   // Get display label for the category
-  const categoryLabel = loading
-    ? "Fetching menu..."
-    : vendorCategoryLabels[effectiveCategoryName] ||
-      vendorCategoryLabels.default;
+  const categoryLabel =
+    vendorCategoryLabels[effectiveCategoryName] || vendorCategoryLabels.default;
 
   // Check authentication status
   useEffect(() => {
@@ -274,7 +273,7 @@ export default function VendorPage() {
 
           {/* Dynamic label based on category - MOBILE SIZE ADJUSTED */}
           <div className="text-muted-foreground pl-4 pt-4 text-sm md:text-base">
-            {categoryLabel}
+            {loading ? <Skeleton className="h-4 w-32" /> : categoryLabel}
           </div>
 
           <div className="md:max-h-[600px] md:max-h-96 overflow-y-auto mt-0  md:pr-2">
