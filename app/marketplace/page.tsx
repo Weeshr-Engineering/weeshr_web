@@ -31,25 +31,24 @@ export default function Home() {
   };
   return (
     <div
-      className="flex flex-col justify-between overflow-hidden min-h-screen h-screen max-h-screen 
-                
+      className="flex flex-col h-[100dvh] w-full overflow-hidden overscroll-none fixed inset-0
                 pt-[env(safe-area-inset-top)] 
                 pb-[env(safe-area-inset-bottom)]"
     >
       {/* 📌 MOBILE TOP LOGO */}
-      <div className="w-full flex justify-center pt-12 md:hidden">
+      <div className="w-full flex justify-center pt-6 pb-2 md:hidden shrink-0 z-10">
         <Image
           src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
           alt="Weeshr Logo"
-          width={144}
-          height={48}
+          width={130}
+          height={42}
           priority
         />
       </div>
       {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
-      <div className="md:hidden p-2 mt-6">
+      <div className="md:hidden flex-1 px-2 mt-2 pb-3 min-h-0 w-full relative">
         <motion.div
-          className="relative w-full h-[85vh] rounded-3xl overflow-hidden"
+          className="relative w-full h-full rounded-3xl overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}

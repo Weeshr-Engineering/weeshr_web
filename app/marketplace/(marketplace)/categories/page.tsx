@@ -62,7 +62,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col items-center p-2 md:p-6 max-h-max min-h-screen">
+    <div className="flex flex-col items-center p-2 md:p-6 pb-20 min-h-[100dvh]">
       {/* Header Section */}
       <div className="pt-10 md:pt-20 text-center lg:pt-28">
         <h1 className="mx-auto max-w-4xl text-3xl tracking-normal text-slate-900 sm:text-5xl font-normal">
