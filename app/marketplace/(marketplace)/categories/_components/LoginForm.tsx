@@ -122,7 +122,10 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
             More About
             <span
               className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
-              style={{ fontFamily: "Playwrite CU, sans-serif" }}
+              style={{
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+              }}
             >
               you
             </span>

@@ -128,7 +128,10 @@ export default function SetPinModal({
           Set access{" "}
           <span
             className="bg-gradient-to-r from-[#00E19D] via-[#6A70FF] to-[#00BBD4] bg-clip-text text-transparent"
-            style={{ fontFamily: "Playwrite CU, sans-serif" }}
+            style={{
+              fontFamily:
+                "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+            }}
           >
             pin
           </span>

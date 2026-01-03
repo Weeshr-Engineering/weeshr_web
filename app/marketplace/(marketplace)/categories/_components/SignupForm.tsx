@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,7 +63,14 @@ export default function SignupForm({
     }
   );
 
-  const [isLoadingSignup, setIsLoadingSignup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Sync state if initialData changes (e.g. when entering edit mode)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -80,12 +87,20 @@ export default function SignupForm({
     }));
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      setIsLoadingSignup(true);
-      const response = await signupService.register(formData);
+      setIsLoading(true);
+
+      let response;
+      if (initialData) {
+        // Edit Mode
+        response = await signupService.updateProfile(formData);
+      } else {
+        // Create Mode
+        response = await signupService.register(formData);
+      }
 
       // Show verification modal instead of calling onSuccess immediately
       // Call parent handler with email and phone to start verification flow
@@ -98,10 +113,10 @@ export default function SignupForm({
         response.data?.user?.token
       );
     } catch (error) {
-      // Zod and toast already handle messages in the service
-      console.error("Signup failed:", error);
+      // Errors are handled in the service via toast
+      console.error("Form submission failed:", error);
     } finally {
-      setIsLoadingSignup(false);
+      setIsLoading(false);
     }
   };
 
@@ -124,7 +139,10 @@ export default function SignupForm({
               {initialData ? "Edit profile" : "Create account"}
               <span
                 className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
-                style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                }}
               >
                 {initialData ? "Update your details" : "Join us today"}
               </span>
@@ -141,7 +159,7 @@ export default function SignupForm({
           }`}
         >
           <form
-            onSubmit={handleSignup}
+            onSubmit={handleSubmit}
             className="flex-1 flex flex-col overflow-hidden"
           >
             <div className="space-y-2 flex-1 overflow-y-auto pr-2">
@@ -288,10 +306,10 @@ export default function SignupForm({
             <div className="flex-shrink-0 space-y-4 pt-4 mt-4 border-t border-gray-200">
               <Button
                 type="submit"
-                disabled={isLoadingSignup}
+                disabled={isLoading}
                 className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold hover:from-[#5a5fc7] hover:to-[#4145A7] shadow-lg hover:shadow-xl"
               >
-                {isLoadingSignup ? (
+                {isLoading ? (
                   <Icon
                     height={20}
                     width={70}
@@ -304,15 +322,17 @@ export default function SignupForm({
                 )}
               </Button>
 
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={onToggleMode}
-                  className="text-sm text-[#6A70FF] hover:underline"
-                >
-                  Already have an account? Sign in
-                </button>
-              </div>
+              {!initialData && (
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={onToggleMode}
+                    className="text-sm text-[#6A70FF] hover:underline"
+                  >
+                    Already have an account? Sign in
+                  </button>
+                </div>
+              )}
             </div>
           </form>
         </CardContent>

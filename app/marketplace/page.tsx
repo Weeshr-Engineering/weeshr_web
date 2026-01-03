@@ -164,7 +164,10 @@ export default function Home() {
             <p className="text-3xl font-semibold">
               <span
                 className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl sm:text-3xl pb-8"
-                style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                }}
               >
                 Surprise
               </span>

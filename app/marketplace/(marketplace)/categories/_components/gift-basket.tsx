@@ -20,6 +20,7 @@ import LoginDialog from "./LoginDialog";
 import ReceiverInfoModal from "./ReceiverInfoModal";
 import VerifyAccountModal from "./VerifyAccountModal";
 import SetPinModal from "./SetPinModal";
+import EditProfileDialog from "./EditProfileDialog";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -70,6 +71,7 @@ export function GiftBasket({
   const [cartDetails, setCartDetails] = useState<CartDetails | null>(null);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [signupData, setSignupData] = useState<any | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -299,6 +301,22 @@ export function GiftBasket({
           setUserPhone(
             `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
           );
+
+          // Map to SignupFormData structure for Edit Modal
+          const mappedData = {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            userName: userData.userName || "",
+            gender: userData.gender || "",
+            dob: userData.dob || "",
+            phone: {
+              countryCode: userData.phoneNumber.countryCode,
+              phoneNumber: userData.phoneNumber.phoneNumber,
+            },
+          };
+          setSignupData(mappedData);
+
           setLoginOpen(false);
 
           if (!userData.emailVerified) {
@@ -675,7 +693,10 @@ export function GiftBasket({
       {/* Modals */}
       <LoginDialog
         open={
-          loginOpen && !isAuthenticated && !showVerifyModal && !showPinModal
+          loginOpen &&
+          (!isAuthenticated || signupData) &&
+          !showVerifyModal &&
+          !showPinModal
         }
         setOpen={(open) => {
           setLoginOpen(open);
@@ -711,8 +732,7 @@ export function GiftBasket({
           open={showVerifyModal}
           onEditProfile={() => {
             setShowVerifyModal(false);
-            setAuthMode("signup");
-            setLoginOpen(true);
+            setShowEditModal(true);
           }}
           onClose={() => {
             setShowVerifyModal(false);
@@ -743,6 +763,19 @@ export function GiftBasket({
           }}
         />
       )}
+
+      <EditProfileDialog
+        open={showEditModal}
+        setOpen={setShowEditModal}
+        initialData={signupData}
+        onSuccess={(email, phone, formData) => {
+          setUserEmail(email);
+          setUserPhone(phone);
+          setSignupData(formData);
+          setShowEditModal(false);
+          setShowVerifyModal(true);
+        }}
+      />
     </>
   );
 }

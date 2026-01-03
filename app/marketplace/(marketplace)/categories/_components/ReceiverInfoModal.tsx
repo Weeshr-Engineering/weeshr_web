@@ -275,24 +275,7 @@ export default function ReceiverInfoModal({
         <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 shrink-0" />
       )}
 
-      {/* Product Image on Mobile */}
-      {isMobile && basket?.length > 0 && (
-        <div className="flex justify-center py-2 shrink-0">
-          <div className="relative w-32 h-32">
-            {products.find((p) => p.id == basket[0].id)?.image && (
-              <Image
-                src={products.find((p) => p.id == basket[0].id)!.image}
-                alt="Product"
-                fill
-                className="object-cover rounded-2xl shadow-md"
-              />
-            )}
-            <div className="absolute -top-2 -right-2 bg-[#4145A7] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium shadow-lg z-20">
-              {basket.length}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Left Form */}
       <Card className="flex-1 md:w-[55%] bg-white md:bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col max-h-full overflow-hidden">
