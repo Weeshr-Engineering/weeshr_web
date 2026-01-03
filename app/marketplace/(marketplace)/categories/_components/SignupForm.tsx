@@ -125,13 +125,13 @@ export default function SignupForm({
       <Card
         className={`border-none flex flex-col ${
           isMobile
-            ? "bg-transparent shadow-none max-h-none"
+            ? "bg-white shadow-none max-h-none rounded-3xl "
             : "bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl max-h-[85vh]"
         }`}
       >
         <CardHeader
-          className={`text-center pb-6 lg:pb-8 flex-shrink-0 ${
-            isMobile ? "px-0" : ""
+          className={`text-center pb-2 lg:pb-8 flex-shrink-0 ${
+            isMobile ? "px-4" : ""
           }`}
         >
           <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
@@ -155,14 +155,14 @@ export default function SignupForm({
 
         <CardContent
           className={`space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden ${
-            isMobile ? "px-0" : ""
+            isMobile ? "px-4 pb-4" : ""
           }`}
         >
           <form
             onSubmit={handleSubmit}
             className="flex-1 flex flex-col overflow-hidden"
           >
-            <div className="space-y-2 flex-1 overflow-y-auto pr-2">
+            <div className="space-y-2 flex-1 overflow-y-auto ">
               {/* First & Last name */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
