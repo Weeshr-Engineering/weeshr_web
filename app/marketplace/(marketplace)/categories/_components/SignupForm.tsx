@@ -15,6 +15,7 @@ import {
 import { Icon } from "@iconify/react";
 import { SignupFormData, signupService } from "@/service/auth.service";
 import toast from "react-hot-toast";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -22,9 +23,11 @@ interface SignupFormProps {
   onSignupSuccess: (
     email: string,
     phone: string,
+    formData: SignupFormData,
     userId?: string,
     token?: string
   ) => void;
+  initialData?: SignupFormData | null;
 }
 
 const countryCodes = [
@@ -42,19 +45,23 @@ export default function SignupForm({
   onToggleMode,
   onSuccess,
   onSignupSuccess,
+  initialData,
 }: SignupFormProps) {
-  const [formData, setFormData] = useState<SignupFormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    userName: "",
-    gender: "",
-    dob: "",
-    phone: {
-      countryCode: "+234",
-      phoneNumber: "",
-    },
-  });
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [formData, setFormData] = useState<SignupFormData>(
+    initialData || {
+      firstName: "",
+      lastName: "",
+      email: "",
+      userName: "",
+      gender: "",
+      dob: "",
+      phone: {
+        countryCode: "+234",
+        phoneNumber: "",
+      },
+    }
+  );
 
   const [isLoadingSignup, setIsLoadingSignup] = useState(false);
 
@@ -86,6 +93,7 @@ export default function SignupForm({
       onSignupSuccess(
         formData.email,
         `${formData.phone.countryCode} ${formData.phone.phoneNumber}`,
+        formData,
         response.data?.user?._id,
         response.data?.user?.token
       );
@@ -99,16 +107,26 @@ export default function SignupForm({
 
   return (
     <>
-      <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
-        <CardHeader className="text-center pb-6 lg:pb-8 flex-shrink-0">
+      <Card
+        className={`border-none flex flex-col ${
+          isMobile
+            ? "bg-transparent shadow-none max-h-none"
+            : "bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl max-h-[85vh]"
+        }`}
+      >
+        <CardHeader
+          className={`text-center pb-6 lg:pb-8 flex-shrink-0 ${
+            isMobile ? "px-0" : ""
+          }`}
+        >
           <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
             <span className="relative text-primary pr-1">
-              Create account
+              {initialData ? "Edit profile" : "Create account"}
               <span
                 className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
                 style={{ fontFamily: "Playwrite CU, sans-serif" }}
               >
-                Join us today
+                {initialData ? "Update your details" : "Join us today"}
               </span>
             </span>
             <div className="text-xs lg:text-sm text-muted-foreground mt-2">
@@ -117,7 +135,11 @@ export default function SignupForm({
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden">
+        <CardContent
+          className={`space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden ${
+            isMobile ? "px-0" : ""
+          }`}
+        >
           <form
             onSubmit={handleSignup}
             className="flex-1 flex flex-col overflow-hidden"
@@ -275,6 +297,8 @@ export default function SignupForm({
                     width={70}
                     icon="eos-icons:three-dots-loading"
                   />
+                ) : initialData ? (
+                  "Update Profile"
                 ) : (
                   "Create Account"
                 )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -16,6 +17,7 @@ interface ChangeReceiverDialogProps {
   receiverName: string;
   setReceiverName: (name: string) => void;
   handleSubmit: () => void;
+  disabled?: boolean;
 }
 
 export default function ChangeReceiverDialog({
@@ -24,6 +26,7 @@ export default function ChangeReceiverDialog({
   receiverName,
   setReceiverName,
   handleSubmit,
+  disabled = false,
 }: ChangeReceiverDialogProps) {
   const placeholders = [
     "Enter receiver's name",
@@ -47,44 +50,67 @@ export default function ChangeReceiverDialog({
     handleSubmit();
   };
 
+  const Trigger = (
+    <button
+      disabled={disabled}
+      type="button"
+      className={cn(
+        "flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-2 rounded-lg cursor-pointer",
+        disabled && "opacity-50 cursor-not-allowed hover:bg-transparent"
+      )}
+    >
+      <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-6">
+        <Icon icon="lsicon:switch-outline" />
+      </div>
+      <span>Change receiver</span>
+    </button>
+  );
+
+  const Content = (
+    <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none relative">
+      <button
+        onClick={() => setOpen(false)}
+        className="absolute right-4 top-4 p-1 hover:bg-black/5 rounded-full transition-colors z-10"
+      >
+        <Icon icon="mdi:close" className="w-5 h-5 text-gray-500" />
+      </button>
+
+      <CardHeader className="px-5 py-4">
+        <CardTitle className="text-xl text-primary text-left p-0">
+          <span className="relative text-primary pr-1 font-normal">
+            Who would you like to
+            <span
+              className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl sm:text-xl"
+              style={{
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+              }}
+            >
+              gift?
+            </span>
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-1 rounded-xl border-none">
+        <PlaceholdersAndVanishInput
+          placeholders={placeholders}
+          onChange={(e) => setReceiverName(e.target.value)}
+          onSubmit={onFormSubmit}
+          value={receiverName}
+        />
+      </CardContent>
+    </Card>
+  );
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <button className="flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-2 rounded-lg cursor-pointer">
-          <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-6">
-            <Icon icon="lsicon:switch-outline" />
-          </div>
-          <span>Change receiver</span>
-        </button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{Trigger}</AlertDialogTrigger>
 
-      <AlertDialogContent className="border-none bg-transparent shadow-none flex items-center justify-center px-2">
-        <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none">
-          <CardHeader className="px-5 py-4">
-            <CardTitle className="text-xl text-primary text-left p-0">
-              <span className="relative text-primary pr-1 font-normal">
-                Who would you like to
-                <span
-                  className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl sm:text-xl"
-                  style={{
-                    fontFamily:
-                      "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
-                  }}
-                >
-                  gift?
-                </span>
-              </span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-1 rounded-xl border-none">
-            <PlaceholdersAndVanishInput
-              placeholders={placeholders}
-              onChange={(e) => setReceiverName(e.target.value)}
-              onSubmit={onFormSubmit}
-              value={receiverName}
-            />
-          </CardContent>
-        </Card>
+      <AlertDialogContent
+        onCloseRequest={() => setOpen(false)}
+        className="border-none bg-transparent shadow-none flex items-center justify-center px-4"
+      >
+        {Content}
       </AlertDialogContent>
     </AlertDialog>
   );

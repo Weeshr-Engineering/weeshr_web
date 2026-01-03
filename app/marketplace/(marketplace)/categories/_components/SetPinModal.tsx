@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -24,6 +26,7 @@ export default function SetPinModal({
   const [pin, setPin] = useState(["", "", "", ""]);
   const [isSettingPin, setIsSettingPin] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Reset pin when modal opens
   useEffect(() => {
@@ -112,65 +115,83 @@ export default function SetPinModal({
     }
   };
 
+  const Content = (
+    <div className="space-y-6">
+      {/* Grab handle for mobile */}
+      {isMobile && (
+        <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2" />
+      )}
+
+      {/* Title */}
+      <div className="text-center">
+        <h2 className="text-2xl font-normal">
+          Set access{" "}
+          <span
+            className="bg-gradient-to-r from-[#00E19D] via-[#6A70FF] to-[#00BBD4] bg-clip-text text-transparent"
+            style={{ fontFamily: "Playwrite CU, sans-serif" }}
+          >
+            pin
+          </span>
+        </h2>
+      </div>
+
+      {/* Message */}
+      <p className="text-sm text-gray-600 text-center">
+        Create a passcode to access your weeshr account
+      </p>
+
+      {/* PIN input boxes */}
+      <div className="flex justify-center gap-3">
+        {pin.map((digit, index) => (
+          <Input
+            key={index}
+            ref={(el) => {
+              inputRefs.current[index] = el;
+            }}
+            type="password"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleInputChange(index, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
+            onPaste={index === 0 ? handlePaste : undefined}
+            className="w-16 h-16 text-center text-2xl font-semibold rounded-xl border-2 focus:border-[#6A70FF] focus:ring-2 focus:ring-[#6A70FF]/20"
+          />
+        ))}
+      </div>
+
+      {/* Continue button */}
+      <Button
+        onClick={handleSetPin}
+        disabled={isSettingPin || pin.join("").length !== 4}
+        className="w-full h-12 rounded-full bg-[#020721] hover:bg-[#020721]/90 text-white font-medium flex items-center justify-center gap-2"
+      >
+        {isSettingPin ? (
+          <Icon height={20} width={70} icon="eos-icons:three-dots-loading" />
+        ) : (
+          "Continue to checkout"
+        )}
+      </Button>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <Sheet open={open} onOpenChange={onClose}>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-[2.5rem] p-8 pb-10 border-none outline-none"
+        >
+          {Content}
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
       <AlertDialogContent className="max-w-md bg-white rounded-3xl border-none shadow-2xl p-8">
-        <div className="space-y-6">
-          {/* Title */}
-          <div className="text-center">
-            <h2 className="text-2xl font-normal">
-              Set access{" "}
-              <span
-                className="bg-gradient-to-r from-[#00E19D] via-[#6A70FF] to-[#00BBD4] bg-clip-text text-transparent"
-                style={{ fontFamily: "Playwrite CU, sans-serif" }}
-              >
-                pin
-              </span>
-            </h2>
-          </div>
-
-          {/* Message */}
-          <p className="text-sm text-gray-600 text-center">
-            Create a passcode to access your weeshr account
-          </p>
-
-          {/* PIN input boxes */}
-          <div className="flex justify-center gap-3">
-            {pin.map((digit, index) => (
-              <Input
-                key={index}
-                ref={(el) => {
-                  inputRefs.current[index] = el;
-                }}
-                type="password"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                onPaste={index === 0 ? handlePaste : undefined}
-                className="w-16 h-16 text-center text-2xl font-semibold rounded-xl border-2 focus:border-[#6A70FF] focus:ring-2 focus:ring-[#6A70FF]/20"
-              />
-            ))}
-          </div>
-
-          {/* Continue button */}
-          <Button
-            onClick={handleSetPin}
-            disabled={isSettingPin || pin.join("").length !== 4}
-            className="w-full h-12 rounded-full bg-[#020721] hover:bg-[#020721]/90 text-white font-medium flex items-center justify-center gap-2"
-          >
-            {isSettingPin ? (
-              <Icon
-                height={20}
-                width={70}
-                icon="eos-icons:three-dots-loading"
-              />
-            ) : (
-              "Continue to checkout"
-            )}
-          </Button>
-        </div>
+        {Content}
       </AlertDialogContent>
     </AlertDialog>
   );

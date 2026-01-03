@@ -68,6 +68,8 @@ export function GiftBasket({
   const [userPhone, setUserPhone] = useState("");
   const [viewCartOpen, setViewCartOpen] = useState(false);
   const [cartDetails, setCartDetails] = useState<CartDetails | null>(null);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [signupData, setSignupData] = useState<any | null>(null);
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -190,6 +192,7 @@ export function GiftBasket({
         } else {
           setIsAuthenticated(false);
           setUserId(null);
+          setAuthMode("login");
           setLoginOpen(true);
         }
       } catch (error) {
@@ -202,6 +205,7 @@ export function GiftBasket({
     } else {
       setIsAuthenticated(false);
       setUserId(null);
+      setAuthMode("login");
       setLoginOpen(true);
     }
     setIsCheckingAuth(false);
@@ -315,12 +319,14 @@ export function GiftBasket({
   const handleSignupSuccess = (
     email: string,
     phone: string,
+    formData: any,
     newUserId?: string,
     token?: string
   ) => {
     setLoginOpen(false);
     setUserEmail(email);
     setUserPhone(phone);
+    setSignupData(formData);
 
     if (token && newUserId) {
       localStorage.setItem("authToken", token);
@@ -555,8 +561,10 @@ export function GiftBasket({
                 </SheetTrigger>
                 <SheetContent
                   side="bottom"
-                  className="h-[80vh] p-0 flex flex-col"
+                  className="h-[80vh] p-0 flex flex-col rounded-t-[2.5rem] overflow-hidden border-none outline-none"
                 >
+                  {/* Grab handle for mobile */}
+                  <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 mt-4 shrink-0" />
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle className="flex items-center justify-between">
                       <span>
@@ -679,6 +687,8 @@ export function GiftBasket({
         products={products}
         onLoginSuccess={handleLoginSuccess}
         onSignupSuccess={handleSignupSuccess}
+        initialMode={authMode}
+        initialSignupData={signupData}
       />
 
       <ReceiverInfoModal
@@ -699,6 +709,11 @@ export function GiftBasket({
       {userEmail && (
         <VerifyAccountModal
           open={showVerifyModal}
+          onEditProfile={() => {
+            setShowVerifyModal(false);
+            setAuthMode("signup");
+            setLoginOpen(true);
+          }}
           onClose={() => {
             setShowVerifyModal(false);
             setShowMobileBasket(true);

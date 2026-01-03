@@ -9,6 +9,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { handleApiError } from "@/lib/handle-err";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { z } from "zod";
 
 interface LoginFormProps {
@@ -22,6 +23,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -103,8 +105,18 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
   };
 
   return (
-    <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
-      <CardHeader className="text-center pb-6 lg:pb-8 flex-shrink-0">
+    <Card
+      className={`border-none flex flex-col ${
+        isMobile
+          ? "bg-transparent shadow-none max-h-none"
+          : "bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl max-h-[85vh]"
+      }`}
+    >
+      <CardHeader
+        className={`text-center pb-6 lg:pb-8 flex-shrink-0 ${
+          isMobile ? "px-0" : ""
+        }`}
+      >
         <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
           <span className="relative text-primary pr-1">
             More About
@@ -121,7 +133,11 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden">
+      <CardContent
+        className={`space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden ${
+          isMobile ? "px-0" : ""
+        }`}
+      >
         {/* Google Login Button */}
         {/* <div className="space-y-4 flex-shrink-0">
           <div className="space-y-2 text-center">
