@@ -458,6 +458,14 @@ export function GiftBasket({
     }
   }, [filteredBasket, isAuthenticated]);
 
+  // Show mobile basket when items are added or quantities change
+  useEffect(() => {
+    const totalItems = basket.reduce((sum, item) => sum + item.qty, 0);
+    if (totalItems > 0) {
+      setShowMobileBasket(true);
+    }
+  }, [basket]);
+
   return (
     <>
       {/* DESKTOP VIEW */}
@@ -714,7 +722,10 @@ export function GiftBasket({
 
       <ReceiverInfoModal
         open={receiverModalOpen && isAuthenticated}
-        setOpen={setReceiverModalOpen}
+        setOpen={(open) => {
+          setReceiverModalOpen(open);
+          if (!open) setShowMobileBasket(true);
+        }}
         basketTotal={cartDetails?.subTotal || getBasketTotal()}
         basketCount={filteredBasket.length}
         receiverName={receiverName}
