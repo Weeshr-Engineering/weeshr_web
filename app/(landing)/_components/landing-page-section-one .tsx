@@ -9,7 +9,10 @@ export const LandingPageSectionOne = () => {
           <span className="relative whitespace-nowrap text-blue-600 pr-1">
             <span
               className={`relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-4xl sm:text-5xl `}
-              style={{ fontFamily: "Playwrite CU, sans-serif" }}
+              style={{
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+              }}
             >
               special days
             </span>
@@ -20,7 +23,9 @@ export const LandingPageSectionOne = () => {
 
       <p className="mx-auto  max-w-4xl text-lg tracking-tight ">
         <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
-          Weeshr helps you curate and share your wishlist with friends and family and allows the people that love fulfill or contribute towards your gift list
+          Weeshr helps you curate and share your wishlist with friends and
+          family and allows the people that love fulfill or contribute towards
+          your gift list
         </span>
       </p>
 

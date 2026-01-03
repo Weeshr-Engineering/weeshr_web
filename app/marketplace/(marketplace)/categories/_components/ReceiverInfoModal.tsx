@@ -2,6 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
+
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
@@ -33,7 +35,9 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetOverlay,
 } from "@/components/ui/sheet";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 import { BasketItem } from "@/lib/BasketItem";
 import { Product } from "@/service/product.service";
@@ -100,6 +104,7 @@ export default function ReceiverInfoModal({
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [hasInvalidAddressAttempt, setHasInvalidAddressAttempt] =
     useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const searchParams = useSearchParams();
   const nameFromUrl = searchParams?.get("name") || "";
@@ -263,367 +268,371 @@ export default function ReceiverInfoModal({
           year: "numeric",
         })
       : "Select a date";
+  const Content = (
+    <div className="w-full flex flex-col md:flex-row-reverse gap-4 max-h-[85vh] md:max-h-none">
+      {/* Grab handle for mobile */}
+      {isMobile && (
+        <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 shrink-0" />
+      )}
 
-  return (
-    <>
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent
-          onCloseRequest={handleClose}
-          className="border-none bg-transparent shadow-none flex items-center justify-center max-w-4xl w-[95%] md:mt-14 overflow-visible"
-          // REMOVED: max-h-[550px] - this was causing the overflow
-        >
-          <div className="w-full flex flex-col md:flex-row-reverse gap-4 max-h-[85vh] ">
-            {/* Left Form */}
-            <Card className="flex-1 md:w-[55%] bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col max-h-full">
-              <CardHeader className="pb-6">
-                <CardTitle className="text-xl font-normal text-primary text-left">
-                  More about
-                  <span
-                    className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl capitalize"
-                    style={{
-                      fontFamily:
-                        "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
-                    }}
-                  >
-                    {finalReceiverName}
-                  </span>
-                  <div className="text-xs lg:text-sm text-muted-foreground mt-2">
-                    Fill in the details to send your gift
-                  </div>
-                </CardTitle>
-              </CardHeader>
 
-              <CardContent className="space-y-4 flex-1 overflow-y-auto">
-                {/* Email (OPTIONAL NOW) */}
-                <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Email Address (optional)
-                  </Label>
-                  <Input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="Enter email address (optional)"
-                    className="rounded-xl h-12 border-2"
-                  />
-                </div>
 
-                {/* Phone */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <Label className="text-sm text-muted-foreground">
-                      Phone Number
-                    </Label>
-                  </div>
-                  <div className="flex gap-2">
-                    <Select
-                      value={formData.countryCode}
-                      onValueChange={(v) => handleInputChange("countryCode", v)}
-                    >
-                      <SelectTrigger className="w-24 rounded-xl h-12 border-2">
-                        <SelectValue>
-                          <span className="flex items-center gap-1">
-                            <span>
-                              {
-                                countryCodes.find(
-                                  (c) => c.code === formData.countryCode
-                                )?.flag
-                              }
-                            </span>
-                            <span className="text-xs">
-                              {formData.countryCode}
-                            </span>
-                          </span>
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countryCodes.map((c) => (
-                          <SelectItem key={c.code} value={c.code}>
-                            <span className="flex items-center gap-2">
-                              <span>{c.flag}</span>
-                              <span>{c.code}</span>
-                              <span className="text-xs text-gray-500">
-                                {c.country}
-                              </span>
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+      {/* Left Form */}
+      <Card className="flex-1 md:w-[55%] bg-white md:bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col max-h-full overflow-hidden">
+        <CardHeader className="pb-6">
+          <CardTitle className="text-xl font-normal text-primary text-left">
+            More about
+            <span
+              className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl capitalize"
+              style={{
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+              }}
+            >
+              {finalReceiverName}
+            </span>
+            <div className="text-xs lg:text-sm text-muted-foreground mt-2">
+              Fill in the details to send your gift
+            </div>
+          </CardTitle>
+        </CardHeader>
 
-                    <Input
-                      type="tel"
-                      value={formData.phoneNumber}
-                      onChange={(e) =>
-                        handleInputChange("phoneNumber", e.target.value)
-                      }
-                      placeholder="Enter phone number"
-                      className="flex-1 rounded-xl h-12 border-2"
-                      required
-                    />
-                  </div>
-                </div>
+        <CardContent className="space-y-4 flex-1 overflow-y-auto">
+          {/* Email (OPTIONAL NOW) */}
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">
+              Email Address (optional)
+            </Label>
+            <Input
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              placeholder="Enter email address (optional)"
+              className="rounded-xl h-12 border-2"
+            />
+          </div>
 
-                {/* Address or Phone Toggle */}
-                <div className="space-y-2">
-                  {!usePhoneForDelivery ? (
-                    <>
-                      <div className="flex justify-between items-center">
-                        <Label className="text-sm text-muted-foreground">
-                          Delivery Address
-                        </Label>
-                        <span className="text-[10px] text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100 flex items-center gap-1">
-                          <Icon icon="mdi:map-marker" width="12" height="12" />
-                          Lagos only
-                        </span>
-                      </div>
-
-                      <div className="relative z-[9999]">
-                        <Input
-                          value={addressValue}
-                          onChange={(e) => {
-                            setAddressValue(e.target.value);
-                            handleInputChange("address", e.target.value);
-                          }}
-                          placeholder={
-                            addressReady
-                              ? "Start typing address..."
-                              : "Loading maps..."
-                          }
-                          className="rounded-xl h-12 border-2"
-                        />
-
-                        {/* Autocomplete Dropdown - only show when ready */}
-                        {addressReady &&
-                          addressStatus === "OK" &&
-                          addressData.length > 0 && (
-                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto z-[9999]">
-                              {addressData.map((suggestion) => {
-                                const {
-                                  place_id,
-                                  structured_formatting: {
-                                    main_text,
-                                    secondary_text,
-                                  },
-                                } = suggestion;
-
-                                return (
-                                  <button
-                                    key={place_id}
-                                    onClick={() =>
-                                      handleAddressSelect(
-                                        suggestion.description
-                                      )
-                                    }
-                                    type="button"
-                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors"
-                                  >
-                                    <div className="flex items-start gap-2">
-                                      <Icon
-                                        icon="mdi:map-marker"
-                                        className="text-green-600 mt-1 flex-shrink-0"
-                                        width="16"
-                                        height="16"
-                                      />
-                                      <div className="flex-1 min-w-0">
-                                        <div className="font-medium text-sm text-gray-900">
-                                          {main_text}
-                                        </div>
-                                        <div className="text-xs text-gray-500 truncate">
-                                          {secondary_text}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
-                      </div>
-
-                      <p
-                        className={`text-xs flex items-center gap-1 transition-colors ${
-                          hasInvalidAddressAttempt
-                            ? "text-red-600 font-semibold"
-                            : "text-amber-600"
-                        }`}
-                      >
-                        <Icon icon="mdi:information" width="14" height="14" />
-                        <span>Delivery currently available in Lagos only.</span>
-                      </p>
-
-                      <p
-                        className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
-                        onClick={() => setUsePhoneForDelivery(true)}
-                      >
-                        <span className="text-muted-foreground mr-1">
-                          Don't have the address?
-                        </span>
-                        Click here to send with phone number.
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <Label className="text-sm text-muted-foreground">
-                        Phone Number
-                      </Label>
-                      <div className="flex gap-2">
-                        <Select
-                          value={formData.countryCode}
-                          onValueChange={(v) =>
-                            handleInputChange("countryCode", v)
-                          }
-                        >
-                          <SelectTrigger className="w-24 rounded-xl h-12 border-2">
-                            <SelectValue>
-                              <span className="flex items-center gap-1">
-                                <span>
-                                  {
-                                    countryCodes.find(
-                                      (c) => c.code === formData.countryCode
-                                    )?.flag
-                                  }
-                                </span>
-                                <span className="text-xs">
-                                  {formData.countryCode}
-                                </span>
-                              </span>
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {countryCodes.map((c) => (
-                              <SelectItem key={c.code} value={c.code}>
-                                <span className="flex items-center gap-2">
-                                  <span>{c.flag}</span>
-                                  <span>{c.code}</span>
-                                  <span className="text-xs text-gray-500">
-                                    {c.country}
-                                  </span>
-                                </span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Input
-                          type="tel"
-                          value={formData.phoneNumber}
-                          onChange={(e) =>
-                            handleInputChange("phoneNumber", e.target.value)
-                          }
-                          placeholder="Enter phone number"
-                          className="flex-1 rounded-xl h-12 border-2"
-                          required
-                        />
-                      </div>
-                      <p
-                        className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
-                        onClick={() => setUsePhoneForDelivery(false)}
-                      >
-                        <span className="text-muted-foreground mr-1">
-                          I have the address?
-                        </span>
-                        Send with address
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                {/* Delivery Date */}
-                <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Delivery Date
-                  </Label>
-                  <Input
-                    type="date"
-                    value={formData.deliveryDate}
-                    onChange={(e) =>
-                      handleInputChange("deliveryDate", e.target.value)
-                    }
-                    className="rounded-xl h-12 border-2"
-                    required
-                    min={new Date().toISOString().split("T")[0]}
-                  />
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {formatDate(formData.deliveryDate)}
-                  </div>
-                </div>
-              </CardContent>
-
-              {/* Mobile View Order Details Button */}
-              <div className="md:hidden border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex justify-between items-center px-4 py-3">
-                <div>
-                  <h6 className="text-muted-foreground text-xs">Your basket</h6>
-                  <span className="font-semibold">
-                    ₦ {totalPrice.toLocaleString()}
-                  </span>
-                </div>
-                <Button
-                  variant="default"
-                  disabled={!isFormValid()}
-                  className="disabled:opacity-50 rounded-3xl px-3 text-xs py-2 h-9 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
-                  onClick={() => setShowOrderDetails(true)}
-                  type="button"
-                >
-                  <span className="font-medium">View Order Details</span>
-                </Button>
-              </div>
-
-              {/* Footer - Desktop only */}
-              <div className="mt-auto border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:flex justify-between items-center px-4 py-3 hidden">
-                <div>
-                  <h6 className="text-muted-foreground text-xs">Your basket</h6>
-                  <span className="font-semibold">
-                    ₦ {totalPrice.toLocaleString()}{" "}
-                    {/* Change basketTotal to totalPrice */}
-                  </span>
-                </div>
-                <Button
-                  variant="default"
-                  disabled={!isFormValid() || isProcessing}
-                  className="disabled:opacity-50 rounded-3xl px-1.5 text-xs md:flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
-                  onClick={handleMakePayment}
-                  type="button"
-                >
-                  {isProcessing ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                      <span className="font-medium">Processing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span
-                        className="font-medium md:hidden"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowOrderDetails(true);
-                        }}
-                      >
-                        View Order Details
+          {/* Phone */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <Label className="text-sm text-muted-foreground">
+                Phone Number
+              </Label>
+            </div>
+            <div className="flex gap-2">
+              <Select
+                value={formData.countryCode}
+                onValueChange={(v) => handleInputChange("countryCode", v)}
+              >
+                <SelectTrigger className="w-24 rounded-xl h-12 border-2">
+                  <SelectValue>
+                    <span className="flex items-center gap-1">
+                      <span>
+                        {
+                          countryCodes.find(
+                            (c) => c.code === formData.countryCode
+                          )?.flag
+                        }
                       </span>
-                      <span className="font-medium hidden md:inline">
-                        Proceed to Pay
+                      <span className="text-xs">{formData.countryCode}</span>
+                    </span>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {countryCodes.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      <span className="flex items-center gap-2">
+                        <span>{c.flag}</span>
+                        <span>{c.code}</span>
+                        <span className="text-xs text-gray-500">
+                          {c.country}
+                        </span>
                       </span>
-                    </>
-                  )}
-                </Button>
-              </div>
-            </Card>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            {/* Right: PaySidePanel - Desktop only */}
-            <div className="w-[45%] hidden md:flex">
-              <PaySidePanel
-                basket={basket}
-                products={products}
-                subTotal={basketTotal} // Change this from basketTotal to subTotal prop
-                deliveryFee={deliveryFee}
-                serviceCharge={serviceCharge}
-                totalPrice={totalPrice}
+              <Input
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={(e) =>
+                  handleInputChange("phoneNumber", e.target.value)
+                }
+                placeholder="Enter phone number"
+                className="flex-1 rounded-xl h-12 border-2"
+                required
               />
             </div>
           </div>
-        </AlertDialogContent>
-      </AlertDialog>
+
+          {/* Address or Phone Toggle */}
+          <div className="space-y-2">
+            {!usePhoneForDelivery ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <Label className="text-sm text-muted-foreground">
+                    Delivery Address
+                  </Label>
+                  <span className="text-[10px] text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100 flex items-center gap-1">
+                    <Icon icon="mdi:map-marker" width="12" height="12" />
+                    Lagos only
+                  </span>
+                </div>
+
+                <div className="relative z-[9999]">
+                  <Input
+                    value={addressValue}
+                    onChange={(e) => {
+                      setAddressValue(e.target.value);
+                      handleInputChange("address", e.target.value);
+                    }}
+                    placeholder={
+                      addressReady
+                        ? "Start typing address..."
+                        : "Loading maps..."
+                    }
+                    className="rounded-xl h-12 border-2"
+                  />
+
+                  {/* Autocomplete Dropdown - only show when ready */}
+                  {addressReady &&
+                    addressStatus === "OK" &&
+                    addressData.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto z-[9999]">
+                        {addressData.map((suggestion) => {
+                          const {
+                            place_id,
+                            structured_formatting: {
+                              main_text,
+                              secondary_text,
+                            },
+                          } = suggestion;
+
+                          return (
+                            <button
+                              key={place_id}
+                              onClick={() =>
+                                handleAddressSelect(suggestion.description)
+                              }
+                              type="button"
+                              className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                            >
+                              <div className="flex items-start gap-2">
+                                <Icon
+                                  icon="mdi:map-marker"
+                                  className="text-green-600 mt-1 flex-shrink-0"
+                                  width="16"
+                                  height="16"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-sm text-gray-900">
+                                    {main_text}
+                                  </div>
+                                  <div className="text-xs text-gray-500 truncate">
+                                    {secondary_text}
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                </div>
+
+                <p
+                  className={`text-xs flex items-center gap-1 transition-colors ${
+                    hasInvalidAddressAttempt
+                      ? "text-red-600 font-semibold"
+                      : "text-amber-600"
+                  }`}
+                >
+                  <Icon icon="mdi:information" width="14" height="14" />
+                  <span>Delivery currently available in Lagos only.</span>
+                </p>
+
+                <p
+                  className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
+                  onClick={() => setUsePhoneForDelivery(true)}
+                >
+                  <span className="text-muted-foreground mr-1">
+                    Don't have the address?
+                  </span>
+                  Click here to send with phone number.
+                </p>
+              </>
+            ) : (
+              <>
+                <Label className="text-sm text-muted-foreground">
+                  Phone Number
+                </Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={formData.countryCode}
+                    onValueChange={(v) => handleInputChange("countryCode", v)}
+                  >
+                    <SelectTrigger className="w-24 rounded-xl h-12 border-2">
+                      <SelectValue>
+                        <span className="flex items-center gap-1">
+                          <span>
+                            {
+                              countryCodes.find(
+                                (c) => c.code === formData.countryCode
+                              )?.flag
+                            }
+                          </span>
+                          <span className="text-xs">
+                            {formData.countryCode}
+                          </span>
+                        </span>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{c.flag}</span>
+                            <span>{c.code}</span>
+                            <span className="text-xs text-gray-500">
+                              {c.country}
+                            </span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Input
+                    type="tel"
+                    value={formData.phoneNumber}
+                    onChange={(e) =>
+                      handleInputChange("phoneNumber", e.target.value)
+                    }
+                    placeholder="Enter phone number"
+                    className="flex-1 rounded-xl h-12 border-2"
+                    required
+                  />
+                </div>
+                <p
+                  className="text-xs text-[#6A70FF] cursor-pointer hover:underline mt-1"
+                  onClick={() => setUsePhoneForDelivery(false)}
+                >
+                  <span className="text-muted-foreground mr-1">
+                    I have the address?
+                  </span>
+                  Send with address
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* Delivery Date */}
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">
+              Delivery Date
+            </Label>
+            <Input
+              type="date"
+              value={formData.deliveryDate}
+              onChange={(e) =>
+                handleInputChange("deliveryDate", e.target.value)
+              }
+              className="rounded-xl h-12 border-2"
+              required
+              min={new Date().toISOString().split("T")[0]}
+            />
+            <div className="text-xs text-muted-foreground mt-1">
+              {formatDate(formData.deliveryDate)}
+            </div>
+          </div>
+        </CardContent>
+
+        {/* Mobile View Order Details Button */}
+        <div className="md:hidden border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] flex justify-between items-center px-4 py-3">
+          <div>
+            <h6 className="text-muted-foreground text-xs">Your basket</h6>
+            <span className="font-semibold">
+              ₦ {totalPrice.toLocaleString()}
+            </span>
+          </div>
+          <Button
+            variant="default"
+            disabled={!isFormValid()}
+            className="disabled:opacity-50 rounded-3xl px-3 text-xs py-2 h-9 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+            onClick={() => setShowOrderDetails(true)}
+            type="button"
+          >
+            <span className="font-medium">View Order Details</span>
+          </Button>
+        </div>
+
+        {/* Footer - Desktop only */}
+        <div className="mt-auto border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:flex justify-between items-center px-4 py-3 hidden">
+          <div>
+            <h6 className="text-muted-foreground text-xs">Your basket</h6>
+            <span className="font-semibold">
+              ₦ {totalPrice.toLocaleString()}{" "}
+            </span>
+          </div>
+          <Button
+            variant="default"
+            disabled={!isFormValid() || isProcessing}
+            className="disabled:opacity-50 rounded-3xl px-1.5 text-xs md:flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
+            onClick={handleMakePayment}
+            type="button"
+          >
+            {isProcessing ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                <span className="font-medium">Processing...</span>
+              </>
+            ) : (
+              <>
+                <span className="font-medium hidden md:inline">
+                  Proceed to Pay
+                </span>
+              </>
+            )}
+          </Button>
+        </div>
+      </Card>
+
+      {/* Right: PaySidePanel - Desktop only */}
+      <div className="w-[45%] hidden md:flex">
+        <PaySidePanel
+          basket={basket}
+          products={products}
+          subTotal={basketTotal} // Change this from basketTotal to subTotal prop
+          deliveryFee={deliveryFee}
+          serviceCharge={serviceCharge}
+          totalPrice={totalPrice}
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {isMobile ? (
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetContent
+            side="bottom"
+            className="rounded-t-[2.5rem] p-6 pb-8 border-none outline-none max-h-[95vh] overflow-y-auto"
+          >
+            {Content}
+          </SheetContent>
+        </Sheet>
+      ) : (
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogContent
+            onCloseRequest={handleClose}
+            className="border-none bg-transparent shadow-none flex items-center justify-center max-w-4xl w-[95%] md:mt-14 overflow-visible"
+          >
+            {Content}
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
 
       {/* Mobile Order Details Sheet */}
       <Sheet open={showOrderDetails} onOpenChange={setShowOrderDetails}>

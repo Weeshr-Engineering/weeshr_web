@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import {
 import { Icon } from "@iconify/react";
 import { SignupFormData, signupService } from "@/service/auth.service";
 import toast from "react-hot-toast";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -22,9 +23,11 @@ interface SignupFormProps {
   onSignupSuccess: (
     email: string,
     phone: string,
+    formData: SignupFormData,
     userId?: string,
     token?: string
   ) => void;
+  initialData?: SignupFormData | null;
 }
 
 const countryCodes = [
@@ -42,21 +45,32 @@ export default function SignupForm({
   onToggleMode,
   onSuccess,
   onSignupSuccess,
+  initialData,
 }: SignupFormProps) {
-  const [formData, setFormData] = useState<SignupFormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    userName: "",
-    gender: "",
-    dob: "",
-    phone: {
-      countryCode: "+234",
-      phoneNumber: "",
-    },
-  });
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [formData, setFormData] = useState<SignupFormData>(
+    initialData || {
+      firstName: "",
+      lastName: "",
+      email: "",
+      userName: "",
+      gender: "",
+      dob: "",
+      phone: {
+        countryCode: "+234",
+        phoneNumber: "",
+      },
+    }
+  );
 
-  const [isLoadingSignup, setIsLoadingSignup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Sync state if initialData changes (e.g. when entering edit mode)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -73,12 +87,20 @@ export default function SignupForm({
     }));
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      setIsLoadingSignup(true);
-      const response = await signupService.register(formData);
+      setIsLoading(true);
+
+      let response;
+      if (initialData) {
+        // Edit Mode
+        response = await signupService.updateProfile(formData);
+      } else {
+        // Create Mode
+        response = await signupService.register(formData);
+      }
 
       // Show verification modal instead of calling onSuccess immediately
       // Call parent handler with email and phone to start verification flow
@@ -86,29 +108,43 @@ export default function SignupForm({
       onSignupSuccess(
         formData.email,
         `${formData.phone.countryCode} ${formData.phone.phoneNumber}`,
+        formData,
         response.data?.user?._id,
         response.data?.user?.token
       );
     } catch (error) {
-      // Zod and toast already handle messages in the service
-      console.error("Signup failed:", error);
+      // Errors are handled in the service via toast
+      console.error("Form submission failed:", error);
     } finally {
-      setIsLoadingSignup(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl max-h-[85vh] flex flex-col">
-        <CardHeader className="text-center pb-6 lg:pb-8 flex-shrink-0">
+      <Card
+        className={`border-none flex flex-col ${
+          isMobile
+            ? "bg-transparent shadow-none max-h-none"
+            : "bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl max-h-[85vh]"
+        }`}
+      >
+        <CardHeader
+          className={`text-center pb-6 lg:pb-8 flex-shrink-0 ${
+            isMobile ? "px-0" : ""
+          }`}
+        >
           <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
             <span className="relative text-primary pr-1">
-              Create account
+              {initialData ? "Edit profile" : "Create account"}
               <span
                 className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl lg:text-2xl"
-                style={{ fontFamily: "Playwrite CU, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                }}
               >
-                Join us today
+                {initialData ? "Update your details" : "Join us today"}
               </span>
             </span>
             <div className="text-xs lg:text-sm text-muted-foreground mt-2">
@@ -117,9 +153,13 @@ export default function SignupForm({
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden">
+        <CardContent
+          className={`space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden ${
+            isMobile ? "px-0" : ""
+          }`}
+        >
           <form
-            onSubmit={handleSignup}
+            onSubmit={handleSubmit}
             className="flex-1 flex flex-col overflow-hidden"
           >
             <div className="space-y-2 flex-1 overflow-y-auto pr-2">
@@ -266,29 +306,33 @@ export default function SignupForm({
             <div className="flex-shrink-0 space-y-4 pt-4 mt-4 border-t border-gray-200">
               <Button
                 type="submit"
-                disabled={isLoadingSignup}
+                disabled={isLoading}
                 className="w-full h-12 rounded-3xl bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white font-semibold hover:from-[#5a5fc7] hover:to-[#4145A7] shadow-lg hover:shadow-xl"
               >
-                {isLoadingSignup ? (
+                {isLoading ? (
                   <Icon
                     height={20}
                     width={70}
                     icon="eos-icons:three-dots-loading"
                   />
+                ) : initialData ? (
+                  "Update Profile"
                 ) : (
                   "Create Account"
                 )}
               </Button>
 
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={onToggleMode}
-                  className="text-sm text-[#6A70FF] hover:underline"
-                >
-                  Already have an account? Sign in
-                </button>
-              </div>
+              {!initialData && (
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={onToggleMode}
+                    className="text-sm text-[#6A70FF] hover:underline"
+                  >
+                    Already have an account? Sign in
+                  </button>
+                </div>
+              )}
             </div>
           </form>
         </CardContent>

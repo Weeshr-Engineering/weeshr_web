@@ -20,6 +20,7 @@ import LoginDialog from "./LoginDialog";
 import ReceiverInfoModal from "./ReceiverInfoModal";
 import VerifyAccountModal from "./VerifyAccountModal";
 import SetPinModal from "./SetPinModal";
+import EditProfileDialog from "./EditProfileDialog";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -68,6 +69,9 @@ export function GiftBasket({
   const [userPhone, setUserPhone] = useState("");
   const [viewCartOpen, setViewCartOpen] = useState(false);
   const [cartDetails, setCartDetails] = useState<CartDetails | null>(null);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [signupData, setSignupData] = useState<any | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   // Filter basket to only show items with quantity >= 1 and price > 0
   const filteredBasket = basket.filter((item) => {
@@ -190,6 +194,7 @@ export function GiftBasket({
         } else {
           setIsAuthenticated(false);
           setUserId(null);
+          setAuthMode("login");
           setLoginOpen(true);
         }
       } catch (error) {
@@ -202,6 +207,7 @@ export function GiftBasket({
     } else {
       setIsAuthenticated(false);
       setUserId(null);
+      setAuthMode("login");
       setLoginOpen(true);
     }
     setIsCheckingAuth(false);
@@ -295,6 +301,22 @@ export function GiftBasket({
           setUserPhone(
             `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
           );
+
+          // Map to SignupFormData structure for Edit Modal
+          const mappedData = {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            userName: userData.userName || "",
+            gender: userData.gender || "",
+            dob: userData.dob || "",
+            phone: {
+              countryCode: userData.phoneNumber.countryCode,
+              phoneNumber: userData.phoneNumber.phoneNumber,
+            },
+          };
+          setSignupData(mappedData);
+
           setLoginOpen(false);
 
           if (!userData.emailVerified) {
@@ -315,12 +337,14 @@ export function GiftBasket({
   const handleSignupSuccess = (
     email: string,
     phone: string,
+    formData: any,
     newUserId?: string,
     token?: string
   ) => {
     setLoginOpen(false);
     setUserEmail(email);
     setUserPhone(phone);
+    setSignupData(formData);
 
     if (token && newUserId) {
       localStorage.setItem("authToken", token);
@@ -433,6 +457,14 @@ export function GiftBasket({
       setCartDetails(null);
     }
   }, [filteredBasket, isAuthenticated]);
+
+  // Show mobile basket when items are added or quantities change
+  useEffect(() => {
+    const totalItems = basket.reduce((sum, item) => sum + item.qty, 0);
+    if (totalItems > 0) {
+      setShowMobileBasket(true);
+    }
+  }, [basket]);
 
   return (
     <>
@@ -555,8 +587,10 @@ export function GiftBasket({
                 </SheetTrigger>
                 <SheetContent
                   side="bottom"
-                  className="h-[80vh] p-0 flex flex-col"
+                  className="h-[80vh] p-0 flex flex-col rounded-t-[2.5rem] overflow-hidden border-none outline-none"
                 >
+                  {/* Grab handle for mobile */}
+                  <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 mt-4 shrink-0" />
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle className="flex items-center justify-between">
                       <span>
@@ -667,7 +701,10 @@ export function GiftBasket({
       {/* Modals */}
       <LoginDialog
         open={
-          loginOpen && !isAuthenticated && !showVerifyModal && !showPinModal
+          loginOpen &&
+          (!isAuthenticated || signupData) &&
+          !showVerifyModal &&
+          !showPinModal
         }
         setOpen={(open) => {
           setLoginOpen(open);
@@ -679,11 +716,16 @@ export function GiftBasket({
         products={products}
         onLoginSuccess={handleLoginSuccess}
         onSignupSuccess={handleSignupSuccess}
+        initialMode={authMode}
+        initialSignupData={signupData}
       />
 
       <ReceiverInfoModal
         open={receiverModalOpen && isAuthenticated}
-        setOpen={setReceiverModalOpen}
+        setOpen={(open) => {
+          setReceiverModalOpen(open);
+          if (!open) setShowMobileBasket(true);
+        }}
         basketTotal={cartDetails?.subTotal || getBasketTotal()}
         basketCount={filteredBasket.length}
         receiverName={receiverName}
@@ -699,6 +741,10 @@ export function GiftBasket({
       {userEmail && (
         <VerifyAccountModal
           open={showVerifyModal}
+          onEditProfile={() => {
+            setShowVerifyModal(false);
+            setShowEditModal(true);
+          }}
           onClose={() => {
             setShowVerifyModal(false);
             setShowMobileBasket(true);
@@ -728,6 +774,19 @@ export function GiftBasket({
           }}
         />
       )}
+
+      <EditProfileDialog
+        open={showEditModal}
+        setOpen={setShowEditModal}
+        initialData={signupData}
+        onSuccess={(email, phone, formData) => {
+          setUserEmail(email);
+          setUserPhone(phone);
+          setSignupData(formData);
+          setShowEditModal(false);
+          setShowVerifyModal(true);
+        }}
+      />
     </>
   );
 }

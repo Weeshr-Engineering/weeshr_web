@@ -87,6 +87,42 @@ class SignupService {
       throw error;
     }
   }
+
+  async updateProfile(userData: SignupFormData): Promise<SignupResponse> {
+    try {
+      const validatedData = SignupSchema.parse(userData);
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.patch<SignupResponse>(
+        `${this.baseUrl}/user/settings/identity`,
+        validatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.code === 200 || response.data.code === 201) {
+        toast.success(response.data.message || "Profile updated successfully!");
+        return response.data;
+      } else {
+        throw new Error(response.data.message || "Update failed");
+      }
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          toast.error(err.message);
+        });
+        throw new Error("Validation failed");
+      }
+      const errorMessage =
+        error.response?.data?.message || "Update failed. Please try again.";
+      toast.error(errorMessage);
+      throw error;
+    }
+  }
 }
 
 export const signupService = new SignupService();
