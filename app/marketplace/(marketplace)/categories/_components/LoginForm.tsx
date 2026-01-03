@@ -108,13 +108,13 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
     <Card
       className={`border-none flex flex-col ${
         isMobile
-          ? "bg-transparent shadow-none max-h-none"
+          ? "bg-white shadow-none max-h-none rounded-3xl "
           : "bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl max-h-[85vh]"
       }`}
     >
       <CardHeader
         className={`text-center pb-6 lg:pb-8 flex-shrink-0 ${
-          isMobile ? "px-0" : ""
+          isMobile ? "px-4" : ""
         }`}
       >
         <CardTitle className="text-xl lg:text-2xl font-normal text-primary text-left">
@@ -138,7 +138,7 @@ export default function LoginForm({ onToggleMode, onSuccess }: LoginFormProps) {
 
       <CardContent
         className={`space-y-4 lg:space-y-6 flex-1 flex flex-col overflow-hidden ${
-          isMobile ? "px-0" : ""
+          isMobile ? "px-4 pb-4" : ""
         }`}
       >
         {/* Google Login Button */}

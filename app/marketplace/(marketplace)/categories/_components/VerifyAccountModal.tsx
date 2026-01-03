@@ -196,12 +196,12 @@ export default function VerifyAccountModal({
           <span className="font-semibold text-black">{email}</span> and{" "}
           <span className="font-semibold text-black">{phone}</span>
         </p>
-        <button
+        {/* <button
           onClick={onEditProfile || onClose}
           className="text-[#6A70FF] hover:underline font-medium text-xs"
         >
           Edit profile
-        </button>
+        </button> */}
       </div>
 
       {/* Code input boxes */}
