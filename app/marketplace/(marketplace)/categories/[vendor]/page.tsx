@@ -118,7 +118,7 @@ export default function Page() {
         {categoryName}
       </div>
 
-      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 min-h-screen">
+      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6">
         <div className="pl-4">
           <ChangeReceiverDialog
             open={open}

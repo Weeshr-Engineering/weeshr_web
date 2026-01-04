@@ -1,29 +1,87 @@
 "use client";
 
-import { TailwindcssButtons } from "@/components/commons/tailwind-buttons";
 import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer className="w-full mt-auto pt-20  p-4 md:pt-10">
-      <div className="mx-auto flex items-center justify-between gap-6 px-4 py-6 flex-row sm:gap-0 sm:px-6 lg:px-8 reve">
+    <motion.footer
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full mt-auto relative overflow-hidden mb-6 rounded-[2rem]"
+    >
+      {/* Noisy Gradient Background */}
+      <div
+        className="absolute inset-0 opacity-95"
+     
+      />
+
+      {/* Noise Overlay */}
+      <div className="absolute inset-0 opacity-[0.2] pointer-events-none mix-blend-overlay">
+        <svg
+          viewBox="0 0 200 200"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+        >
+          <filter id="noiseFilter">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.65"
+              numOctaves="3"
+              stitchTiles="stitch"
+            />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 mx-auto flex flex-row items-center justify-between gap-6 px-6 py-8 md:px-10">
         {/* Logo */}
         <div className="flex-shrink-0">
           <Image
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1726082022/Weeshr_Light_lrreyo_4_addl75.png"
+            src="https://res.cloudinary.com/drykej1am/image/upload/v1767562379/Group_319_zjfxkf.png"
             alt="Weeshr Logo"
-            width={140}
+            width={120}
             height={40}
-            className="h-auto w-auto"
+            className="h-8 md:h-10 w-auto "
             priority
           />
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center gap-4 flex-row sm:gap-6 w-auto justify-end">
-          <TailwindcssButtons width="w-48" height="h-12" />
+        {/* Store Buttons */}
+        <div className="flex items-center gap-2 sm:gap-6 flex-row">
+          <Link
+            href="https://apps.apple.com/ng/app/weeshr/id6602884408"
+            target="_blank"
+            rel="noreferrer"
+            className="transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg "
+          >
+            <Image
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1767562126/marketplace/Frame_28990_jxf7wp.png"
+              alt="Download on the App Store"
+              width={160}
+              height={48}
+              className="h-8 sm:h-10 md:h-12 w-auto"
+            />
+          </Link>
+          <Link
+            href="https://play.google.com/store/apps/details?id=com.app.weeshr&pcampaignid=web_share"
+            target="_blank"
+            className="transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg rounded-n"
+            rel="noreferrer"
+          >
+            <Image
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1767562126/marketplace/Frame_28991_zwudyv.png"
+              alt="Get it on Google Play"
+              width={160}
+              height={48}
+              className="h-8 sm:h-10 md:h-12 w-auto"
+            />
+          </Link>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }
