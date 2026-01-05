@@ -31,7 +31,7 @@ export default function ClientLayout({
   return (
     <>
       {children}
-      <Toaster position="bottom-right" />
+      <Toaster position="bottom-left" />
       {!isMarketplacePath && <RuutChat />}
     </>
   );
