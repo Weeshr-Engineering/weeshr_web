@@ -96,7 +96,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main
-      className="relative flex flex-col h-screen overflow-hidden bg-cover bg-bottom bg-no-repeat
+      className="relative flex flex-col overflow-hidden h-full bg-cover bg-bottom bg-no-repeat
     bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]"
     >
       <WidthLayout className="h-full flex flex-col overflow-hidden">
