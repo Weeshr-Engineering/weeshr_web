@@ -10,7 +10,7 @@ export default function Footer() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="w-full mt-auto relative overflow-hidden mb-6 rounded-[2rem]"
+      className="w-full mt-auto relative overflow-hidden rounded-[2rem]"
     >
       {/* Noisy Gradient Background */}
       <div
@@ -37,7 +37,7 @@ export default function Footer() {
         </svg>
       </div>
 
-      <div className="relative z-10 mx-auto flex flex-row items-center justify-between gap-6 px-6 py-8 md:px-10">
+      <div className="relative z-10 mx-auto flex flex-row items-center justify-between gap-6 p-6 md:px-10">
         {/* Logo */}
         <div className="flex-shrink-0">
           <Image

@@ -109,17 +109,19 @@ export default function Page() {
   ];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Mobile-only Tab Navigation */}
-      <MobileCategoryTabs categories={tabCategories} nameParam={nameParam} />
+      <div className="shrink-0">
+        <MobileCategoryTabs categories={tabCategories} nameParam={nameParam} />
+      </div>
 
       {/* Category title */}
-      <div className="text-left text-2xl md:text-4xl p-4 md:p-6 capitalize">
+      <div className="text-left text-2xl md:text-4xl p-4 md:p-6 capitalize shrink-0">
         {categoryName}
       </div>
 
-      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6">
-        <div className="pl-4">
+      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 flex-1 flex flex-col overflow-hidden mb-2">
+        <div className="shrink-0 pl-4 py-2">
           <ChangeReceiverDialog
             open={open}
             setOpen={setOpen}
@@ -129,7 +131,7 @@ export default function Page() {
           />
 
           {/* Main question */}
-          <div>
+          <div className="mt-2">
             <span className="inline-block text-primary text-2xl md:text-4xl leading-snug">
               What would{" "}
               <span className="relative whitespace-nowrap text-blue-600 pr-1">
@@ -146,14 +148,14 @@ export default function Page() {
               <span className="inline-block pl-1">like?</span>
             </span>
           </div>
+
+          {/* Category description */}
+          <div className="text-muted-foreground pt-4 text-sm md:text-base">
+            {categoryLabel}
+          </div>
         </div>
 
-        {/* Category description */}
-        <div className="text-muted-foreground pl-4 pt-6 text-sm md:text-base">
-          {categoryLabel}
-        </div>
-
-        <div className="md:max-h-[600px] overflow-y-auto mt-1 pr-2">
+        <div className="flex-1 overflow-y-auto mt-4 md:mt-0 px-2 md:px-0 scrollbar-hide">
           <VendorList vendors={vendors} loading={loading} />
         </div>
       </div>
