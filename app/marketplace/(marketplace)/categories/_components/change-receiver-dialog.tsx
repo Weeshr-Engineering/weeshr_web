@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ChangeReceiverDialogProps {
   open: boolean;
@@ -28,7 +30,9 @@ export default function ChangeReceiverDialog({
   handleSubmit,
   disabled = false,
 }: ChangeReceiverDialogProps) {
-  const placeholders = [
+  const [isGiftingMyself, setIsGiftingMyself] = useState(false);
+
+  const defaultPlaceholders = [
     "Enter receiver's name",
     "Gift someone special 🎁",
     "Type a friend's name...",
@@ -40,6 +44,25 @@ export default function ChangeReceiverDialog({
     "Enter a colleague’s name 👔",
     "Make someone smile 😊",
   ];
+
+  const selfGiftingPlaceholders = [
+    "You entering your own name, ya dig? 😉",
+    "Treat yourself, you deserve it! 👑",
+    "Self-love is the best love ❤️",
+    "Who's a good human? You are! 🌟",
+    "Time for a little self-care ✨",
+    "Adding yourself to the nice list 🎅",
+    "Spoil yourself today! 🍫",
+    "Your future self will thank you 🎁",
+    "You're the lucky person today! 🍀",
+    "Make yourself smile 😊",
+  ];
+
+  const handleGiftMyself = () => {
+    const nextState = !isGiftingMyself;
+    setIsGiftingMyself(nextState);
+    setReceiverName("");
+  };
 
   const onFormSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -93,11 +116,66 @@ export default function ChangeReceiverDialog({
       </CardHeader>
       <CardContent className="p-1 rounded-xl border-none">
         <PlaceholdersAndVanishInput
-          placeholders={placeholders}
+          placeholders={
+            isGiftingMyself ? selfGiftingPlaceholders : defaultPlaceholders
+          }
           onChange={(e) => setReceiverName(e.target.value)}
           onSubmit={onFormSubmit}
           value={receiverName}
         />
+
+        {/* Gift Myself Button */}
+        <div className="flex justify-left my-1 pl-3">
+          <button
+            type="button"
+            onClick={handleGiftMyself}
+            className="group flex items-center gap-2 px-1 py-1 rounded-full transition-all duration-300 ease-out"
+          >
+            <div className="w-5 h-5 rounded border-2 border-[#6A70FF] flex items-center justify-center bg-[#6A70FF]/10 relative overflow-hidden transition-colors duration-300">
+              <AnimatePresence>
+                {isGiftingMyself && (
+                  <motion.div
+                    initial={{ scale: 0.5, opacity: 0, pathLength: 0 }}
+                    animate={{ scale: 1, opacity: 1, pathLength: 1 }}
+                    exit={{ scale: 0.5, opacity: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25,
+                    }}
+                    className="bg-[#6A70FF] absolute inset-0 flex items-center justify-center"
+                  >
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <Icon
+                        icon="lucide:check"
+                        className="w-3.5 h-3.5 text-white"
+                      />
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            <span
+              className={`text-[14px] transition-all duration-300 inline-flex items-center h-8 ${
+                isGiftingMyself
+                  ? "bg-gradient-custom bg-clip-text text-transparent font-normal overflow-visible"
+                  : "font-medium text-primary/80 group-hover:text-primary"
+              }`}
+              style={{
+                fontFamily: isGiftingMyself
+                  ? "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif"
+                  : "inherit",
+                lineHeight: "normal",
+              }}
+            >
+              I am gifting myself
+            </span>
+          </button>
+        </div>
       </CardContent>
     </Card>
   );
