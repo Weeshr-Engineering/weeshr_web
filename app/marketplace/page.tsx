@@ -6,33 +6,82 @@ import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-van
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "@iconify/react";
 
 export default function Home() {
   const [receiverName, setReceiverName] = useState("");
+  const [isGiftingMyself, setIsGiftingMyself] = useState(false);
   const router = useRouter();
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!receiverName.trim()) return;
 
-    if (receiverName.trim().length < 2) {
+  const defaultPlaceholders = [
+    "Enter receiver's name",
+    "Gift someone special 🎁",
+    "Type a friend's name...",
+    "Who's the lucky person ? ✨",
+    "Surprise someone today 🎉",
+    "Add a name to start gifting",
+    "Search for a loved one ❤️",
+    "Who deserves a treat ? 🍫",
+    "Enter a colleague's name 👔",
+    "Make someone smile 😊",
+  ];
+
+  const selfGiftingPlaceholders = [
+    "You entering your own name, ya dig? 😉",
+    "Treat yourself, you deserve it! 👑",
+    "Self-love is the best love ❤️",
+    "Who's a good human? You are! 🌟",
+    "Time for a little self-care ✨",
+    "Adding yourself to the nice list 🎅",
+    "Spoil yourself today! 🍫",
+    "Your future self will thank you 🎁",
+    "You're the lucky person today! 🍀",
+    "Make yourself smile 😊",
+  ];
+
+  const handleSubmit = (e?: React.FormEvent, nameOverride?: string) => {
+    e?.preventDefault();
+    const finalName = (nameOverride || receiverName).trim();
+
+    if (!finalName) {
+      toast.error("Please enter a name");
+      return;
+    }
+
+    if (finalName.length < 2) {
       toast.error("Name must be at least 2 characters long");
       return;
     }
 
-    if (!/^[a-zA-Z0-9\s]+$/.test(receiverName.trim())) {
+    if (!/^[a-zA-Z0-9\s]+$/.test(finalName)) {
       toast.error("Name can only contain letters and numbers");
       return;
     }
 
     router.push(
-      `marketplace/categories?name=${encodeURIComponent(receiverName.trim())}`
+      `/marketplace/categories?name=${encodeURIComponent(finalName)}`
     );
   };
+
+  const handleGiftMyself = () => {
+    const nextState = !isGiftingMyself;
+    setIsGiftingMyself(nextState);
+    // Don't auto-redirect anymore. Just toggle state and clear name to show cool placeholders.
+    setReceiverName("");
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Use a small timeout to let the vanish animation finish if desired,
+    // but the component already calls vanishAndSubmit.
+    handleSubmit(e);
+  };
+
   return (
     <div
       className="flex flex-col h-[100dvh] w-full overflow-hidden overscroll-none fixed inset-0
-                pt-[env(safe-area-inset-top)] 
+                pt-[env(safe-area-inset-top)]
                 pb-[env(safe-area-inset-bottom)]"
     >
       {/* 📌 MOBILE TOP LOGO */}
@@ -81,21 +130,68 @@ export default function Home() {
               </CardHeader>
               <CardContent className="p-1 rounded-xl border-none">
                 <PlaceholdersAndVanishInput
-                  placeholders={[
-                    "Enter receiver's name",
-                    "Gift someone special 🎁",
-                    "Type a friend's name...",
-                    "Who’s the lucky person ? ✨",
-                    "Surprise someone today 🎉",
-                    "Add a name to start gifting",
-                    "Search for a loved one ❤️",
-                    "Who deserves a treat ? 🍫",
-                    "Enter a colleague’s name 👔",
-                    "Make someone smile 😊",
-                  ]}
+                  placeholders={
+                    isGiftingMyself
+                      ? selfGiftingPlaceholders
+                      : defaultPlaceholders
+                  }
                   onChange={(e) => setReceiverName(e.target.value)}
                   onSubmit={handleSubmit}
+                  value={receiverName}
                 />
+
+                {/* Gift Myself Button - SIMPLIFIED VERSION */}
+                <div className="flex justify-left my-1 pl-3">
+                  <button
+                    type="button"
+                    onClick={handleGiftMyself}
+                    className="group flex items-center gap-2 px-1 py-1 rounded-full transition-all duration-300 ease-out"
+                  >
+                    <div className="w-5 h-5 rounded border-2 border-[#6A70FF] flex items-center justify-center bg-[#6A70FF]/10 relative overflow-hidden transition-colors duration-300">
+                      <AnimatePresence>
+                        {isGiftingMyself && (
+                          <motion.div
+                            initial={{ scale: 0.5, opacity: 0, pathLength: 0 }}
+                            animate={{ scale: 1, opacity: 1, pathLength: 1 }}
+                            exit={{ scale: 0.5, opacity: 0 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 25,
+                            }}
+                            className="bg-[#6A70FF] absolute inset-0 flex items-center justify-center"
+                          >
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ delay: 0.1 }}
+                            >
+                              <Icon
+                                icon="lucide:check"
+                                className="w-3.5 h-3.5 text-white"
+                              />
+                            </motion.div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <span
+                      className={`text-[14px] transition-all duration-300 inline-flex items-center h-8 ${
+                        isGiftingMyself
+                          ? "bg-gradient-custom bg-clip-text text-transparent font-normal overflow-visible"
+                          : "font-medium text-primary/80 group-hover:text-primary"
+                      }`}
+                      style={{
+                        fontFamily: isGiftingMyself
+                          ? "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif"
+                          : "inherit",
+                        lineHeight: "normal",
+                      }}
+                    >
+                      I am gifting myself
+                    </span>
+                  </button>
+                </div>
               </CardContent>
             </Card>
             <div className="relative mt-0 flex items-center justify-end pr-3 md:hidden">
@@ -139,7 +235,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </div>
-      {/* 📌 DESKTOP VERSION — UNCHANGED */}
+      {/* 📌 DESKTOP VERSION */}
       <div className="hidden md:flex min-h-screen flex-row">
         {/* Left Image Section */}
         <motion.div
@@ -209,24 +305,70 @@ export default function Home() {
             </CardHeader>
             <CardContent className="p-1">
               <PlaceholdersAndVanishInput
-                placeholders={[
-                  "Enter receiver's name",
-                  "Gift someone special 🎁",
-                  "Type a friend's name...",
-                  "Who’s the lucky person ? ✨",
-                  "Surprise someone today 🎉",
-                  "Add a name to start gifting",
-                  "Search for a loved one ❤️",
-                  "Who deserves a treat ? 🍫",
-                  "Enter a colleague’s name 👔",
-                  "Make someone smile 😊",
-                ]}
+                placeholders={
+                  isGiftingMyself
+                    ? selfGiftingPlaceholders
+                    : defaultPlaceholders
+                }
                 onChange={(e) => setReceiverName(e.target.value)}
                 onSubmit={handleSubmit}
+                value={receiverName}
               />
+
+              {/* Gift Myself Button - DESKTOP VERSION */}
+              <div className="flex justify-left my-1 pl-3">
+                <button
+                  type="button"
+                  onClick={handleGiftMyself}
+                  className="group flex items-center gap-2 px-1 py-1 rounded-full transition-all duration-300 ease-out"
+                >
+                  <div className="w-6 h-6 rounded border-2 border-[#6A70FF] flex items-center justify-center bg-[#6A70FF]/10 relative overflow-hidden transition-colors duration-300">
+                    <AnimatePresence>
+                      {isGiftingMyself && (
+                        <motion.div
+                          initial={{ scale: 0.5, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.5, opacity: 0 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 25,
+                          }}
+                          className="bg-[#6A70FF] absolute inset-0 flex items-center justify-center"
+                        >
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.1 }}
+                          >
+                            <Icon
+                              icon="lucide:check"
+                              className="w-4 h-4 text-white"
+                            />
+                          </motion.div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <span
+                    className={`text-[15px] transition-all duration-300 inline-flex items-center h-9 ${
+                      isGiftingMyself
+                        ? "bg-gradient-custom bg-clip-text text-transparent font-normal  overflow-visible"
+                        : "font-medium text-primary/80 group-hover:text-primary"
+                    }`}
+                    style={{
+                      fontFamily: isGiftingMyself
+                        ? "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif"
+                        : "inherit",
+                      lineHeight: "normal",
+                    }}
+                  >
+                    I am gifting myself
+                  </span>
+                </button>
+              </div>
             </CardContent>
           </Card>
-
           <div className="relative mt-4 flex items-center justify-end pr-3 hidden md:flex pl-[220px]">
             <span
               className="whitespace-nowrap text-xl mt-10"
@@ -245,9 +387,7 @@ export default function Home() {
               className="ml-2"
             />
           </div>
-
           {/* 📌 DESKTOP START HERE INDICATOR */}
-
           <Link
             href="/"
             className="text-white font-medium text-2xl absolute bottom-20 hover:underline transition"
