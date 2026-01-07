@@ -210,7 +210,8 @@ export default function LandingClient({ vendor }: LandingClientProps) {
               <span
                 className="whitespace-nowrap text-xl mt-10"
                 style={{
-                  fontFamily: "Playwrite CU, sans-serif",
+                  fontFamily:
+                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
                   color: "white",
                 }}
               >
@@ -288,22 +289,24 @@ export default function LandingClient({ vendor }: LandingClientProps) {
 
         {/* Right Content Section */}
         <motion.div
-          className="flex flex-1 flex-col items-center justify-center p-6 md:pb-40 relative"
+          className="flex flex-1 flex-col items-center justify-center p-6 md:pb-40 relative pt-36"
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
-            alt="Weeshr Logo"
-            width={144}
-            height={48}
-            className="mb-28"
-            priority
-          />
-x
-          {vendor.name}
-
+          <div className="flex flex-col items-center justify-center mb-6 space-y-4">
+            <h2 className="text-3xl md:text-4xl f text-[#0A0D14] tracking-tight text-center">
+              {vendor.name}
+            </h2>
+            <Icon icon="lucide:x" className="w-6 h-6 text-black" />
+            <Image
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
+              alt="Weeshr Logo"
+              width={130}
+              height={42}
+              priority
+            />
+          </div>
           <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none">
             <CardHeader className="px-5 py-4">
               <CardTitle className="text-xl text-primary text-left p-0">
@@ -320,25 +323,6 @@ x
                   </span>
                 </span>
               </CardTitle>
-              <div className="flex items-center gap-2 mt-2">
-                {vendor.image && (
-                  <div className="w-6 h-6 rounded-full overflow-hidden shrink-0">
-                    <Image
-                      src={vendor.image}
-                      alt={vendor.name}
-                      width={24}
-                      height={24}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                )}
-                <p className="text-sm text-muted-foreground">
-                  Start your journey with{" "}
-                  <span className="font-semibold text-primary">
-                    {vendor.name}
-                  </span>
-                </p>
-              </div>
             </CardHeader>
             <CardContent className="p-1">
               <PlaceholdersAndVanishInput
@@ -410,7 +394,8 @@ x
             <span
               className="whitespace-nowrap text-xl mt-10"
               style={{
-                fontFamily: "Playwrite CU, sans-serif",
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
                 color: "white",
               }}
             >
