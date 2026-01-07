@@ -2,6 +2,7 @@ import {
   fetchVendorsByCategory,
   fetchProductsByVendor,
   fetchAllVendors,
+  fetchVendorById,
 } from "@/lib/api";
 
 export interface ApiVendor {
@@ -102,6 +103,37 @@ export class VendorService {
     } catch (error) {
       console.error("Error fetching vendors:", error);
       return [];
+    }
+  }
+
+  static async getVendorById(vendorId: string): Promise<Vendor | null> {
+    try {
+      const apiVendor: ApiVendor = await fetchVendorById(vendorId);
+      if (!apiVendor) return null;
+
+      // Map single vendor
+      let vendorImage: string;
+      if (apiVendor.banner && apiVendor.banner.secure_url) {
+        vendorImage = apiVendor.banner.secure_url;
+      } else if (apiVendor.logo && apiVendor.logo.secure_url) {
+        vendorImage = apiVendor.logo.secure_url;
+      } else {
+        vendorImage = this.getDefaultVendorImage(apiVendor.companyName);
+      }
+
+      return {
+        id: apiVendor._id,
+        name: apiVendor.companyName,
+        image: vendorImage,
+        rating: this.calculateVendorRating(apiVendor),
+        category: this.getVendorCategory(apiVendor),
+        badges: this.generateBadges(apiVendor),
+        giftIdeas: apiVendor.productCount || apiVendor.totalProducts || 0,
+        productImages: apiVendor.banner ? [apiVendor.banner.secure_url] : [],
+      };
+    } catch (error) {
+      console.error(`Error fetching vendor ${vendorId}:`, error);
+      return null;
     }
   }
 
