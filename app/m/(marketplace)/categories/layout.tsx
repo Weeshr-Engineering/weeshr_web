@@ -44,7 +44,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
       const baseLink = item.link.split("?")[0];
 
       // For the "All" categories link - just preserve name
-      if (baseLink === "/marketplace/categories") {
+      if (baseLink === "/m/categories") {
         return {
           ...item,
           link: nameParam
@@ -53,8 +53,8 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
         };
       }
 
-      if (baseLink.startsWith("/marketplace/categories/")) {
-        // Extract category name from the link (e.g., "food" from "/marketplace/categories/food")
+      if (baseLink.startsWith("/m/categories/")) {
+        // Extract category name from the link (e.g., "food" from "/m/categories/food")
         const categoryNameFromLink = baseLink.split("/").pop();
 
         // Find the matching category from API data
@@ -67,7 +67,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
           // Build the exact same URL structure as categories page
           return {
             ...item,
-            link: `/marketplace/categories/${category.name.toLowerCase()}?id=${
+            link: `/m/categories/${category.name.toLowerCase()}?id=${
               category._id
             }&name=${encodeURIComponent(nameParam)}`,
           };
@@ -81,7 +81,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
           // If we have category but no name, just use ID
           return {
             ...item,
-            link: `/marketplace/categories/${category.name.toLowerCase()}?id=${
+            link: `/m/categories/${category.name.toLowerCase()}?id=${
               category._id
             }`,
           };

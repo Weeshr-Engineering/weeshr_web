@@ -1,24 +1,18 @@
 "use client";
-
-import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Vendor } from "@/service/vendor.service";
-import { motion, AnimatePresence } from "framer-motion";
-import { Icon } from "@iconify/react";
+import { useState } from "react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "@iconify/react";
 
-interface LandingClientProps {
-  vendor: Vendor;
-}
-
-export default function LandingClient({ vendor }: LandingClientProps) {
-  const router = useRouter();
+export default function Home() {
   const [receiverName, setReceiverName] = useState("");
   const [isGiftingMyself, setIsGiftingMyself] = useState(false);
+  const router = useRouter();
 
   const defaultPlaceholders = [
     "Enter receiver's name",
@@ -65,23 +59,21 @@ export default function LandingClient({ vendor }: LandingClientProps) {
       return;
     }
 
-    // Slugify logic matching vendor-list.tsx
-    const slug = vendor.slug || vendor.name.toLowerCase().replace(/\s+/g, "-");
-    const category = vendor.category.toLowerCase();
-    const categoryId = vendor.categoryId || "null";
-
-    // Construct target URL
-    const url = `/marketplace/categories/${category}/${slug}?name=${encodeURIComponent(
-      finalName
-    )}&categoryId=${categoryId}&vendorId=${vendor.id}`;
-
-    router.push(url);
+    router.push(`/m/categories?name=${encodeURIComponent(finalName)}`);
   };
 
   const handleGiftMyself = () => {
     const nextState = !isGiftingMyself;
     setIsGiftingMyself(nextState);
+    // Don't auto-redirect anymore. Just toggle state and clear name to show cool placeholders.
     setReceiverName("");
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Use a small timeout to let the vanish animation finish if desired,
+    // but the component already calls vanishAndSubmit.
+    handleSubmit(e);
   };
 
   return (
@@ -100,7 +92,6 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           priority
         />
       </div>
-
       {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
       <div className="md:hidden flex-1 px-2 mt-2 pb-2 min-h-0 w-full relative">
         <motion.div
@@ -110,8 +101,8 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <Image
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1767725180/market-place/vendors/Rectangle_3870_1_wfzehc.png"
-            alt="Vendor Background"
+            src="https://res.cloudinary.com/drykej1am/image/upload/v1763995415/weeshr-marketplace/Group_1000006517_qfxe3t.png"
+            alt="Background"
             fill
             className="object-cover rounded-3xl"
             priority
@@ -134,12 +125,6 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                     </span>
                   </span>
                 </CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Start exploring gifts from{" "}
-                  <span className="font-semibold text-primary">
-                    {vendor.name}
-                  </span>
-                </p>
               </CardHeader>
               <CardContent className="p-1 rounded-xl border-none">
                 <PlaceholdersAndVanishInput
@@ -211,8 +196,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
               <span
                 className="whitespace-nowrap text-xl mt-10"
                 style={{
-                  fontFamily:
-                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                  fontFamily: "Playwrite CU, sans-serif",
                   color: "white",
                 }}
               >
@@ -250,7 +234,6 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           </motion.div>
         </motion.div>
       </div>
-
       {/* 📌 DESKTOP VERSION */}
       <div className="hidden md:flex min-h-screen flex-row">
         {/* Left Image Section */}
@@ -261,8 +244,8 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <Image
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1767725180/market-place/vendors/Rectangle_3870_1_wfzehc.png"
-            alt="Vendor Background"
+            src="https://res.cloudinary.com/drykej1am/image/upload/v1757702462/weeshr-marketplace/Rectangle_3870_q7bea5.png"
+            alt="Background"
             fill
             className="object-cover rounded-3xl"
             priority
@@ -288,27 +271,20 @@ export default function LandingClient({ vendor }: LandingClientProps) {
             <p className="text-2xl">send them a gift</p>
           </motion.div>
         </motion.div>
-
-        {/* Right Content Section */}
         <motion.div
-          className="flex flex-1 flex-col items-center justify-center p-6 md:pb-40 relative pt-36"
+          className="flex flex-1 flex-col items-center justify-center p-6 md:pb-40 relative"
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="flex flex-col items-center justify-center mb-6 space-y-4">
-            <h2 className="text-3xl md:text-4xl f text-[#0A0D14] tracking-tight text-center">
-              {vendor.name}
-            </h2>
-            <Icon icon="lucide:x" className="w-6 h-6 text-black" />
-            <Image
-              src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
-              alt="Weeshr Logo"
-              width={130}
-              height={42}
-              priority
-            />
-          </div>
+          <Image
+            src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
+            alt="Weeshr Logo"
+            width={144}
+            height={48}
+            className="mb-28"
+            priority
+          />
           <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none">
             <CardHeader className="px-5 py-4">
               <CardTitle className="text-xl text-primary text-left p-0">
@@ -392,12 +368,11 @@ export default function LandingClient({ vendor }: LandingClientProps) {
               </div>
             </CardContent>
           </Card>
-          <div className="relative mt-4 items-center justify-end pr-3 hidden md:flex pl-[220px]">
+          <div className="relative mt-4 flex items-center justify-end pr-3 hidden md:flex pl-[220px]">
             <span
               className="whitespace-nowrap text-xl mt-10"
               style={{
-                fontFamily:
-                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                fontFamily: "Playwrite CU, sans-serif",
                 color: "white",
               }}
             >

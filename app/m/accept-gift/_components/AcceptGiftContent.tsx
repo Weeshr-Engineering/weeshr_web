@@ -44,10 +44,9 @@ export default function AcceptGiftContent() {
 
     // Redirect only on success
     if (isSuccess) {
-      router.push("/marketplace");
+      router.push("/m");
     }
   };
-
 
   return (
     <div className="min-h-screen w-full p-0 md:p-6 md:flex md:items-center md:justify-center bg-white/10 backdrop-blur-lg">
@@ -130,4 +129,3 @@ export default function AcceptGiftContent() {
     </div>
   );
 }
-

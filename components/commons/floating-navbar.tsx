@@ -70,8 +70,8 @@ export const FloatingNav = ({
     router.push("/login");
   };
 
-  const showLogout = pathname === "/marketplace";
-  const showAccount = isAuthenticated && pathname !== "/marketplace";
+  const showLogout = pathname === "/m";
+  const showAccount = isAuthenticated && pathname !== "/m";
 
   // Improved active link detection that handles nested routes
   const isLinkActive = (link: string) => {
@@ -79,21 +79,21 @@ export const FloatingNav = ({
     const currentPath = pathname;
 
     // Special cases for marketplace category routes
-    if (baseLink === "/marketplace/categories/food") {
+    if (baseLink === "/m/categories/food") {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
-    if (baseLink === "/marketplace/categories/fashion") {
+    if (baseLink === "/m/categories/fashion") {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
-    if (baseLink === "/marketplace/categories/gadgets") {
+    if (baseLink === "/m/categories/gadgets") {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
-    if (baseLink === "/marketplace/categories/lifestyle") {
+    if (baseLink === "/m/categories/lifestyle") {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
 
-    // For "All" category, match /marketplace/categories/all
-    if (baseLink === "/marketplace/categories/all") {
+    // For "All" category, match /m/categories/all
+    if (baseLink === "/m/categories/all") {
       return currentPath === baseLink;
     }
 
@@ -158,7 +158,7 @@ export const FloatingNav = ({
                     <span className="absolute inset-x-0 w-1/2 h-px mx-auto -bottom-px bg-gradient-to-r from-transparent via-red-500 to-transparent" />
                   </button>
                 ) : showAccount ? (
-                  <Link href="/marketplace">
+                  <Link href="/m">
                     <button
                       className={cn(
                         "border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] px-4 py-2 rounded-full text-neutral-500"

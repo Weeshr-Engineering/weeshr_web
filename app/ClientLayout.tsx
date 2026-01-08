@@ -11,7 +11,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isMarketplacePath = pathname.startsWith("/marketplace");
+  const isMarketplacePath = pathname.startsWith("/m");
 
   // ✅ Safe Google Maps loader
   useEffect(() => {

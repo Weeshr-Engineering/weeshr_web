@@ -41,7 +41,7 @@ const AuthPage: React.FC = () => {
 
           if (savedToken) {
             console.log("Token saved successfully, redirecting...");
-            router.push("/marketplace");
+            router.push("/m");
           } else {
             console.error("Token not saved correctly in localStorage.");
             toast.error("Failed to save authentication token.");

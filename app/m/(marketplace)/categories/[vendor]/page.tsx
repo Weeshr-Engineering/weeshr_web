@@ -77,7 +77,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!nameParam || !categoryId) {
-      router.replace("/marketplace");
+      router.replace("/m");
     }
   }, [nameParam, categoryId, router]);
 
@@ -90,7 +90,7 @@ export default function Page() {
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
       router.push(
-        `/marketplace/categories/${categoryName}?id=${categoryId}&name=${encodeURIComponent(
+        `/m/categories/${categoryName}?id=${categoryId}&name=${encodeURIComponent(
           receiverName
         )}`
       );
@@ -99,10 +99,10 @@ export default function Page() {
   };
 
   const tabCategories = [
-    { name: "All", link: "/marketplace/categories", value: "all", id: "" },
+    { name: "All", link: "/m/categories", value: "all", id: "" },
     ...apiCategories.map((cat) => ({
       name: cat.name,
-      link: `/marketplace/categories/${cat.name.toLowerCase()}`,
+      link: `/m/categories/${cat.name.toLowerCase()}`,
       value: cat.name.toLowerCase(),
       id: cat._id,
     })),

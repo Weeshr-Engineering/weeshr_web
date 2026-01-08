@@ -9,8 +9,17 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/marketplace",
+        destination: "/m",
         permanent: true, // 301 redirect (SEO-safe)
+      },
+    ];
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/v/:vendorSlug",
+        destination: "/m/:vendorSlug",
       },
     ];
   },

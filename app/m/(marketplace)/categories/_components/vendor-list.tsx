@@ -38,7 +38,7 @@ const VendorList: React.FC<VendorListProps> = ({
     const slug = slugify(vendorName);
     const cat = vendorCategory.toLowerCase();
     router.push(
-      `/marketplace/categories/${cat}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
+      `/m/categories/${cat}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
     );
   }
 
