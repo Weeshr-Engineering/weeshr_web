@@ -3,6 +3,7 @@ import {
   fetchProductsByVendor,
   fetchAllVendors,
   fetchVendorById,
+  fetchVendorBySlug,
 } from "@/lib/api";
 
 export interface ApiVendor {
@@ -30,7 +31,11 @@ export interface ApiVendor {
   companyState: string;
   status: string;
   createdAt: string;
-  categories?: string[];
+  weeshrName?: string;
+  categories?: {
+    _id: string;
+    name: string;
+  }[];
   productCount: number;
   totalProducts?: number; // Keep for backward compatibility if used elsewhere
 }
@@ -61,6 +66,9 @@ export interface Vendor {
   image: string;
   rating: number;
   category: string;
+  badge?: string;
+  categoryId?: string;
+  slug?: string;
   badges: string[];
   giftIdeas: number;
   productImages: string[];
@@ -106,6 +114,39 @@ export class VendorService {
     }
   }
 
+  static async getVendorBySlug(slug: string): Promise<Vendor | null> {
+    try {
+      const apiVendor: ApiVendor = await fetchVendorBySlug(slug);
+      if (!apiVendor) return null;
+
+      // Map single vendor
+      let vendorImage: string;
+      if (apiVendor.banner && apiVendor.banner.secure_url) {
+        vendorImage = apiVendor.banner.secure_url;
+      } else if (apiVendor.logo && apiVendor.logo.secure_url) {
+        vendorImage = apiVendor.logo.secure_url;
+      } else {
+        vendorImage = this.getDefaultVendorImage(apiVendor.companyName);
+      }
+
+      return {
+        id: apiVendor._id,
+        name: apiVendor.companyName,
+        image: vendorImage,
+        rating: this.calculateVendorRating(apiVendor),
+        category: this.getVendorCategory(apiVendor),
+        categoryId: this.getVendorCategoryId(apiVendor),
+        slug: apiVendor.weeshrName,
+        badges: this.generateBadges(apiVendor),
+        giftIdeas: apiVendor.productCount || apiVendor.totalProducts || 0,
+        productImages: apiVendor.banner ? [apiVendor.banner.secure_url] : [],
+      };
+    } catch (error) {
+      console.error(`Error fetching vendor by slug ${slug}:`, error);
+      return null;
+    }
+  }
+
   static async getVendorById(vendorId: string): Promise<Vendor | null> {
     try {
       const apiVendor: ApiVendor = await fetchVendorById(vendorId);
@@ -127,6 +168,8 @@ export class VendorService {
         image: vendorImage,
         rating: this.calculateVendorRating(apiVendor),
         category: this.getVendorCategory(apiVendor),
+        categoryId: this.getVendorCategoryId(apiVendor),
+        slug: apiVendor.weeshrName,
         badges: this.generateBadges(apiVendor),
         giftIdeas: apiVendor.productCount || apiVendor.totalProducts || 0,
         productImages: apiVendor.banner ? [apiVendor.banner.secure_url] : [],
@@ -208,8 +251,14 @@ export class VendorService {
   // New helper method to safely get vendor category
   private static getVendorCategory(vendor: ApiVendor): string {
     return vendor.categories && vendor.categories.length > 0
-      ? vendor.categories[0]
+      ? vendor.categories[0].name || "General" // Handle object or string if mixed, but type definition says object now
       : "General";
+  }
+
+  private static getVendorCategoryId(vendor: ApiVendor): string | undefined {
+    return vendor.categories && vendor.categories.length > 0
+      ? vendor.categories[0]._id
+      : undefined;
   }
 
   private static calculateVendorRating(vendor: ApiVendor): number {

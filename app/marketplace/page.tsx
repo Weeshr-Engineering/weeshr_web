@@ -222,7 +222,8 @@ export default function Home() {
             <span
               className="relative whitespace-nowrap px-2 text-md "
               style={{
-                fontFamily: "Playwrite CU, sans-serif",
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
                 color: "#BAEF23",
               }}
             >

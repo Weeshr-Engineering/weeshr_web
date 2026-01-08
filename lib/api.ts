@@ -88,3 +88,18 @@ export async function fetchVendorById(vendorId: string) {
   const json = await res.json();
   return json.data;
 }
+
+// Fetch single vendor by Slug (weeshrName)
+export async function fetchVendorBySlug(slug: string) {
+  const res = await fetch(`${API_BASE_URL}/market/vendor/name/${slug}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`Failed to fetch vendor: ${res.status}`);
+  }
+
+  const json = await res.json();
+  return json.data;
+}

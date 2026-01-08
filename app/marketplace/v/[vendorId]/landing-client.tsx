@@ -66,13 +66,14 @@ export default function LandingClient({ vendor }: LandingClientProps) {
     }
 
     // Slugify logic matching vendor-list.tsx
-    const slug = vendor.name.toLowerCase().replace(/\s+/g, "-");
+    const slug = vendor.slug || vendor.name.toLowerCase().replace(/\s+/g, "-");
     const category = vendor.category.toLowerCase();
+    const categoryId = vendor.categoryId || "null";
 
     // Construct target URL
     const url = `/marketplace/categories/${category}/${slug}?name=${encodeURIComponent(
       finalName
-    )}&categoryId=null&vendorId=${vendor.id}`;
+    )}&categoryId=${categoryId}&vendorId=${vendor.id}`;
 
     router.push(url);
   };
@@ -235,7 +236,8 @@ export default function LandingClient({ vendor }: LandingClientProps) {
             <span
               className="relative whitespace-nowrap px-2 text-md "
               style={{
-                fontFamily: "Playwrite CU, sans-serif",
+                fontFamily:
+                  "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
                 color: "#BAEF23",
               }}
             >
