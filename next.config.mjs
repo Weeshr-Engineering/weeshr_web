@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false, // Disable Strict Mode
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
 
   async redirects() {
     return [
@@ -13,6 +16,7 @@ const nextConfig = {
   },
 
   images: {
+    qualities: [75, 80, 90, 100],
     remotePatterns: [
       {
         protocol: "https",
