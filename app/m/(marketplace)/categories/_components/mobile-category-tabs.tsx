@@ -27,16 +27,16 @@ export default function MobileCategoryTabs({
     const baseLink = link.split("?")[0];
     const currentPath = pathname;
 
-    // For specific category routes (e.g., /marketplace/categories/food)
+    // For specific category routes (e.g., /m/categories/food)
     if (
-      baseLink.startsWith("/marketplace/categories/") &&
-      baseLink !== "/marketplace/categories/all"
+      baseLink.startsWith("/m/categories/") &&
+      baseLink !== "/m/categories/all"
     ) {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
 
-    // For "All" category, match /marketplace/categories/all
-    if (baseLink === "/marketplace/categories/all") {
+    // For "All" category, match /m/categories/all
+    if (baseLink === "/m/categories/all") {
       return currentPath === baseLink;
     }
 
@@ -47,11 +47,11 @@ export default function MobileCategoryTabs({
   const handleTabClick = (category: Category) => {
     if (category.value === "all") {
       // Navigate to all vendors page
-      router.push(`/marketplace/categories/all?name=${nameParam}`);
+      router.push(`/m/categories/all?name=${nameParam}`);
     } else {
       // Navigate to specific category page with name param
       router.push(
-        `/marketplace/categories/${category.value}?id=${category.id}&name=${nameParam}`
+        `/m/categories/${category.value}?id=${category.id}&name=${nameParam}`
       );
     }
   };

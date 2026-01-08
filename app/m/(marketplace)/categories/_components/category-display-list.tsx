@@ -8,7 +8,6 @@ import { Icon } from "@iconify/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { VendorCardSkeleton } from "./vendor-card-skeleton";
 
-
 // --- Types ---
 interface CategoryData {
   _id: string;
@@ -155,7 +154,7 @@ export default function CategoryDisplayList() {
                 size="xl2"
                 variant="marketplace"
                 onClick={() =>
-                  router.push(`/marketplace/categories/${id}?name=${nameParam}`)
+                  router.push(`/m/categories/${id}?name=${nameParam}`)
                 }
                 className="transition-colors text-sm font-medium flex items-center gap-1 bg-marketplace-primary hover:bg-marketplace-primary/60"
               >

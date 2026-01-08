@@ -192,7 +192,7 @@ export default function PaymentSuccess({
             <Button
               variant={"marketplace"}
               className="rounded-xl transition h-12 font-medium w-full"
-              onClick={() => (window.location.href = "/marketplace")}
+              onClick={() => (window.location.href = "/m")}
             >
               Continue Shopping
             </Button>

@@ -114,7 +114,7 @@ export default function AllVendorsPage() {
 
   useEffect(() => {
     if (!nameParam) {
-      router.replace("/marketplace");
+      router.replace("/m");
     }
   }, [nameParam, router]);
 
@@ -126,18 +126,16 @@ export default function AllVendorsPage() {
 
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
-      router.push(
-        `/marketplace/categories/all?name=${encodeURIComponent(receiverName)}`
-      );
+      router.push(`/m/categories/all?name=${encodeURIComponent(receiverName)}`);
       setOpen(false);
     }
   };
 
   const tabCategories = [
-    { name: "All", link: "/marketplace/categories/all", value: "all", id: "" },
+    { name: "All", link: "/m/categories/all", value: "all", id: "" },
     ...apiCategories.map((cat) => ({
       name: cat.name,
-      link: `/marketplace/categories/${cat.name.toLowerCase()}`,
+      link: `/m/categories/${cat.name.toLowerCase()}`,
       value: cat.name.toLowerCase(),
       id: cat._id,
     })),
