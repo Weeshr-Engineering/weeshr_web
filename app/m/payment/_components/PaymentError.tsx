@@ -49,7 +49,7 @@ export default function PaymentError({ error }: PaymentErrorProps) {
             <Button
               variant="outline"
               className="w-full rounded-xl border-gray-300 text-gray-700 hover:bg-gray-50 transition h-12 font-medium"
-              onClick={() => (window.location.href = "/marketplace")}
+              onClick={() => (window.location.href = "/m")}
             >
               Back to Marketplace
             </Button>

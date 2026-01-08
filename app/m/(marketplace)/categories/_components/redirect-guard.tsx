@@ -10,7 +10,7 @@ export default function RedirectGuard() {
 
   useEffect(() => {
     if (nameParam === "null" || !nameParam) {
-      router.replace("/marketplace");
+      router.replace("/m");
     }
   }, [nameParam, router]);
 

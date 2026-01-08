@@ -71,7 +71,7 @@ export default async function VendorSlugPage({
 
             {/* Actions */}
             <div className="space-y-3 w-full">
-              <Link href="/marketplace" className="w-full block">
+              <Link href="/ma" className="w-full block">
                 <Button className="w-full rounded-xl bg-[#3E68FF] text-white hover:bg-[#2d5aff] transition h-12 font-medium">
                   Go to Marketplace
                 </Button>

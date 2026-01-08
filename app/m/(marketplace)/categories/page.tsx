@@ -55,9 +55,7 @@ export default function Page() {
 
     // Use category name in the path and pass both id and name as query parameters
     router.push(
-      `/marketplace/categories/${cat.name.toLowerCase()}?id=${
-        cat._id
-      }&name=${nameParam}`
+      `/m/categories/${cat.name.toLowerCase()}?id=${cat._id}&name=${nameParam}`
     );
   };
 

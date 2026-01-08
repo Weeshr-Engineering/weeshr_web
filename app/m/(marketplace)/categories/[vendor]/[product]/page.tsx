@@ -132,7 +132,7 @@ export default function VendorPage() {
   // Redirect if missing required parameters
   useEffect(() => {
     if (!nameParam || !vendorId) {
-      router.replace("/marketplace");
+      router.replace("/m");
     }
   }, [nameParam, vendorId, router]);
 
@@ -146,7 +146,7 @@ export default function VendorPage() {
   const handleSubmit = () => {
     if (receiverName.trim().length > 0) {
       router.push(
-        `/marketplace/categories/${categoryName}/${vendorName}?name=${encodeURIComponent(
+        `/m/categories/${categoryName}/${vendorName}?name=${encodeURIComponent(
           receiverName
         )}&categoryId=${categoryId}&vendorId=${vendorId}`
       );
@@ -174,7 +174,7 @@ export default function VendorPage() {
 
   const handleCategoryClick = () => {
     router.push(
-      `/marketplace/categories/${effectiveCategoryName}?id=${effectiveCategoryId}&name=${encodeURIComponent(
+      `/m/categories/${effectiveCategoryName}?id=${effectiveCategoryId}&name=${encodeURIComponent(
         nameParam
       )}`
     );
