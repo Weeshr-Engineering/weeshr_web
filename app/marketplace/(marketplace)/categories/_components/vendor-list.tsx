@@ -46,7 +46,11 @@ const VendorList: React.FC<VendorListProps> = ({
     const cat = category.toLowerCase();
     if (cat.includes("food")) return "famicons:fast-food-outline";
     if (cat.includes("fashion")) return "lucide:handbag";
-    if (cat.includes("gadget")) return "lucide:smartphone";
+    if (cat.includes("gadget") || cat.includes("phone"))
+      return "lucide:smartphone";
+    if (cat.includes("lifestyle")) return "lucide:sparkles";
+    if (cat.includes("beauty") || cat.includes("health")) return "lucide:heart";
+    if (cat.includes("grocer")) return "lucide:shopping-basket";
     return "lucide:store";
   }
 

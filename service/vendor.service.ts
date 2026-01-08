@@ -32,10 +32,13 @@ export interface ApiVendor {
   status: string;
   createdAt: string;
   weeshrName?: string;
-  categories?: {
-    _id: string;
-    name: string;
-  }[];
+  categories?: (
+    | string
+    | {
+        _id: string;
+        name: string;
+      }
+  )[];
   productCount: number;
   totalProducts?: number; // Keep for backward compatibility if used elsewhere
 }
@@ -250,15 +253,17 @@ export class VendorService {
 
   // New helper method to safely get vendor category
   private static getVendorCategory(vendor: ApiVendor): string {
-    return vendor.categories && vendor.categories.length > 0
-      ? vendor.categories[0].name || "General" // Handle object or string if mixed, but type definition says object now
-      : "General";
+    if (!vendor.categories || vendor.categories.length === 0) return "General";
+    const category = vendor.categories[0];
+    if (typeof category === "string") return category;
+    return category.name || "General";
   }
 
   private static getVendorCategoryId(vendor: ApiVendor): string | undefined {
-    return vendor.categories && vendor.categories.length > 0
-      ? vendor.categories[0]._id
-      : undefined;
+    if (!vendor.categories || vendor.categories.length === 0) return undefined;
+    const category = vendor.categories[0];
+    if (typeof category === "object" && "_id" in category) return category._id;
+    return undefined;
   }
 
   private static calculateVendorRating(vendor: ApiVendor): number {
