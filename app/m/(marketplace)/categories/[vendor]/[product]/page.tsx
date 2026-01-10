@@ -278,7 +278,7 @@ export default function VendorPage() {
 
           <div className="md:max-h-[600px] md:max-h-96 overflow-y-auto mt-0  md:pr-2">
             {/* Mobile version with quantity buttons */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <MobileMenuButtons
                 vendorId={vendorId}
                 addToBasket={addToBasket}
