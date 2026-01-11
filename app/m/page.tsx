@@ -12,6 +12,8 @@ import { Icon } from "@iconify/react";
 export default function Home() {
   const [receiverName, setReceiverName] = useState("");
   const [isGiftingMyself, setIsGiftingMyself] = useState(false);
+  const [mobileBgLoaded, setMobileBgLoaded] = useState(false);
+  const [desktopBgLoaded, setDesktopBgLoaded] = useState(false);
   const router = useRouter();
 
   const defaultPlaceholders = [
@@ -100,13 +102,32 @@ export default function Home() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1763995415/weeshr-marketplace/Group_1000006517_qfxe3t.png"
-            alt="Background"
-            fill
-            className="object-cover rounded-3xl"
-            priority
-          />
+          {/* Shimmer skeleton while loading */}
+          {!mobileBgLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, scale: 1.01 }}
+            animate={{
+              opacity: mobileBgLoaded ? 1 : 0,
+              scale: mobileBgLoaded ? 1 : 1.01,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: "easeOut",
+            }}
+            className="w-full h-full"
+          >
+            <Image
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1763995415/weeshr-marketplace/Group_1000006517_qfxe3t.png"
+              alt="Background"
+              fill
+              className="object-cover rounded-3xl"
+              priority
+              onLoad={() => setMobileBgLoaded(true)}
+            />
+          </motion.div>
           {/* CARD OVER THE IMAGE */}
           <div className="absolute bottom-[15%] left-0 right-0 px-2">
             <Card className="bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl bg-[#E9F4D1] border-none">
@@ -243,13 +264,32 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image
-            src="https://res.cloudinary.com/drykej1am/image/upload/v1757702462/weeshr-marketplace/Rectangle_3870_q7bea5.png"
-            alt="Background"
-            fill
-            className="object-cover rounded-3xl"
-            priority
-          />
+          {/* Shimmer skeleton while loading */}
+          {!desktopBgLoaded && (
+            <div className="absolute inset-0 bg-gray-100 rounded-3xl animate-shimmer z-10" />
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, scale: 1.01 }}
+            animate={{
+              opacity: desktopBgLoaded ? 1 : 0,
+              scale: desktopBgLoaded ? 1 : 1.01,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: "easeOut",
+            }}
+            className="w-full h-full"
+          >
+            <Image
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1757702462/weeshr-marketplace/Rectangle_3870_q7bea5.png"
+              alt="Background"
+              fill
+              className="object-cover rounded-3xl"
+              priority
+              onLoad={() => setDesktopBgLoaded(true)}
+            />
+          </motion.div>
           <motion.div
             className="absolute bottom-6 left-6 right-6 text-white"
             initial={{ opacity: 0, y: 20 }}
