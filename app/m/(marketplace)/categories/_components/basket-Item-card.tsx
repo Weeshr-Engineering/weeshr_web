@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { cartService } from "@/service/cart.service";
 import { MinusIcon, PlusIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface BasketItemCardProps {
   item: BasketItem;
@@ -27,6 +28,7 @@ export function BasketItemCard({
   const product = products.find((p) => p.id == item.id);
 
   const [isUpdating, setIsUpdating] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Store a ref to debounce timer to avoid recreating it on each render
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -134,22 +136,42 @@ export function BasketItemCard({
   return (
     <div className="flex items-center justify-between bg-white border rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-1.5 gap-2 min-w-[300px]">
       {/* Image */}
-      <div className="relative w-[60px] h-[60px] flex-shrink-0">
-        <Image
-          src={productImage}
-          alt={productName}
-          fill
-          className="object-cover rounded-lg"
-          sizes="100px"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = `/api/placeholder/60/60?text=${encodeURIComponent(
-              productName
-            )}`;
+      <div className="relative w-[60px] h-[60px] flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+        {/* Shimmer skeleton while loading */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+        )}
+
+        <motion.div
+          initial={{ opacity: 0, scale: 1.01 }}
+          animate={{
+            opacity: imageLoaded ? 1 : 0,
+            scale: imageLoaded ? 1 : 1.01,
           }}
-        />
+          transition={{
+            duration: 0.2,
+            ease: "easeOut",
+          }}
+          className="w-full h-full"
+        >
+          <Image
+            src={productImage}
+            alt={productName}
+            fill
+            className="object-cover rounded-lg"
+            sizes="100px"
+            onLoad={() => setImageLoaded(true)}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = `/api/placeholder/60/60?text=${encodeURIComponent(
+                productName
+              )}`;
+              setImageLoaded(true);
+            }}
+          />
+        </motion.div>
         {isUpdating && (
-          <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center z-20">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
           </div>
         )}

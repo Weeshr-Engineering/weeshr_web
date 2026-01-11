@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { Card, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
@@ -24,6 +25,11 @@ const VendorList: React.FC<VendorListProps> = ({
   const params = useParams();
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("id");
+
+  // Track image loading state for each vendor
+  const [imageLoadedStates, setImageLoadedStates] = React.useState<
+    Record<string, boolean>
+  >({});
 
   // helper to slugify vendor names
   function slugify(str: string) {
@@ -106,25 +112,52 @@ const VendorList: React.FC<VendorListProps> = ({
               }
             >
               {/* Image Container */}
-              <div className="relative overflow-hidden rounded-t-3xl">
+              <div className="relative overflow-hidden rounded-t-3xl bg-gray-100">
+                {/* Shimmer skeleton while loading */}
+                {!imageLoadedStates[vendor.id] && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer" />
+                )}
+
                 <motion.div
-                  whileHover={{ scale: 1.05 }} // ✅ ONLY image hover effect
+                  whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                   className="rounded-t-3xl overflow-hidden"
                 >
-                  <Image
-                    src={vendor.image}
-                    alt={vendor.name}
-                    width={400}
-                    height={240}
-                    className="w-full h-36 object-cover"
-                    loading="lazy"
-                    quality={75}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = getFallbackImageUrl(vendor.name);
+                  <motion.div
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{
+                      opacity: imageLoadedStates[vendor.id] ? 1 : 0,
+                      scale: imageLoadedStates[vendor.id] ? 1 : 1.1,
                     }}
-                  />
+                    transition={{
+                      duration: 0.6,
+                      ease: [0.25, 0.1, 0.25, 1], // Custom easing for smooth fade
+                    }}
+                  >
+                    <Image
+                      src={vendor.image}
+                      alt={vendor.name}
+                      width={400}
+                      height={240}
+                      className="w-full h-36 object-cover"
+                      loading="lazy"
+                      quality={75}
+                      onLoad={() => {
+                        setImageLoadedStates((prev) => ({
+                          ...prev,
+                          [vendor.id]: true,
+                        }));
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = getFallbackImageUrl(vendor.name);
+                        setImageLoadedStates((prev) => ({
+                          ...prev,
+                          [vendor.id]: true,
+                        }));
+                      }}
+                    />
+                  </motion.div>
                 </motion.div>
 
                 {/* Category Badge */}

@@ -37,6 +37,11 @@ export function MenuList({
   const [imageScale, setImageScale] = useState(1);
   const [dragY, setDragY] = useState(0);
 
+  // Track image loading state for each product
+  const [imageLoadedStates, setImageLoadedStates] = useState<
+    Record<string, boolean>
+  >({});
+
   // Use a single debounce ref per product for better consistency
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
   // Track accumulated clicks for each product
@@ -201,29 +206,56 @@ export function MenuList({
                   : "opacity-60 cursor-not-allowed"
               )}
             >
-              {/* Image */}
               <div
-                className="relative w-[100px] aspect-square flex-shrink-0 overflow-hidden rounded-lg cursor-zoom-in group"
+                className="relative w-[100px] h-[100px] flex-shrink-0 cursor-zoom-in group bg-gray-100 rounded-lg overflow-hidden"
                 onClick={(e) => {
                   e.stopPropagation();
                   setExpandedImage(product);
                 }}
               >
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={200}
-                  height={200}
-                  className="object-cover w-full h-full rounded-lg transition-transform hover:scale-105"
-                  loading="lazy"
-                  quality={75}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
-                      product.name
-                    )}`;
+                {/* Shimmer skeleton while loading */}
+                {!imageLoadedStates[product.id] && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+                )}
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 1.01 }}
+                  animate={{
+                    opacity: imageLoadedStates[product.id] ? 1 : 0,
+                    scale: imageLoadedStates[product.id] ? 1 : 1.01,
                   }}
-                />
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeOut",
+                  }}
+                  className="w-full h-full"
+                >
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={200}
+                    height={200}
+                    className="object-cover w-full h-full rounded-lg transition-transform hover:scale-105"
+                    loading="lazy"
+                    quality={75}
+                    onLoad={() => {
+                      setImageLoadedStates((prev) => ({
+                        ...prev,
+                        [product.id]: true,
+                      }));
+                    }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
+                        product.name
+                      )}`;
+                      setImageLoadedStates((prev) => ({
+                        ...prev,
+                        [product.id]: true,
+                      }));
+                    }}
+                  />
+                </motion.div>
                 {/* Zoom indicator */}
                 <div className="absolute top-1 right-1 bg-black/50 backdrop-blur-sm rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Icon
@@ -387,24 +419,25 @@ export function MenuList({
             <motion.div
               animate={{ scale: imageScale }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="relative max-w-4xl max-h-[80vh] md:max-h-[85vh] w-full pointer-events-auto"
+              className="relative w-[90vw] md:w-[70vh] aspect-square pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={expandedImage.image}
-                alt={expandedImage.name}
-                width={1200}
-                height={1200}
-                className="object-contain w-full h-full rounded-2xl"
-                quality={100}
-                priority
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `/api/placeholder/1200/1200?text=${encodeURIComponent(
-                    expandedImage.name
-                  )}`;
-                }}
-              />
+              <div className="absolute inset-0 bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                <Image
+                  src={expandedImage.image}
+                  alt={expandedImage.name}
+                  fill
+                  className="object-cover"
+                  quality={100}
+                  priority
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `/api/placeholder/1200/1200?text=${encodeURIComponent(
+                      expandedImage.name
+                    )}`;
+                  }}
+                />
+              </div>
             </motion.div>
           </motion.div>
 

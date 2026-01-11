@@ -9,6 +9,7 @@ import { FlipWords } from "@/components/ui/flip-words";
 import { cn } from "@/lib/utils";
 import { fetchCategories } from "@/lib/api";
 import CategorySkeletonGrid from "./_components/CategorySkeleton";
+import { motion } from "framer-motion";
 
 const categoryColors: Record<string, string> = {
   Food: "bg-[#C6F4EB]",
@@ -22,6 +23,9 @@ export default function Page() {
   const router = useRouter();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imageLoadedStates, setImageLoadedStates] = useState<
+    Record<string, boolean>
+  >({});
 
   useEffect(() => {
     async function loadCategories() {
@@ -118,14 +122,46 @@ export default function Page() {
                         : ""
                     )}
                   >
-                    {/* Background Image */}
-                    <Image
-                      src={cat.image?.secure_url}
-                      alt={cat.name}
-                      fill
-                      className="object-cover z-0 pointer-events-none transition-transform duration-500 hover:scale-110"
-                      priority
-                    />
+                    {/* Background Image Container */}
+                    <div className="absolute inset-0 z-0 bg-gray-100">
+                      {/* Shimmer skeleton while loading */}
+                      {!imageLoadedStates[cat._id] && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+                      )}
+
+                      <motion.div
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{
+                          opacity: imageLoadedStates[cat._id] ? 1 : 0,
+                          scale: imageLoadedStates[cat._id] ? 1 : 1.05,
+                        }}
+                        transition={{
+                          duration: 0.4,
+                          ease: [0.25, 0.1, 0.25, 1],
+                        }}
+                        className="w-full h-full"
+                      >
+                        <Image
+                          src={cat.image?.secure_url}
+                          alt={cat.name}
+                          fill
+                          className="object-cover pointer-events-none transition-transform duration-500 hover:scale-110"
+                          priority
+                          onLoad={() => {
+                            setImageLoadedStates((prev) => ({
+                              ...prev,
+                              [cat._id]: true,
+                            }));
+                          }}
+                          onError={() => {
+                            setImageLoadedStates((prev) => ({
+                              ...prev,
+                              [cat._id]: true,
+                            }));
+                          }}
+                        />
+                      </motion.div>
+                    </div>
 
                     {/* Colored panel at the bottom */}
                     <div

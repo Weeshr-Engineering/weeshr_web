@@ -6,6 +6,8 @@ import { Product } from "@/service/product.service";
 import { BasketItem } from "@/lib/BasketItem";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@iconify/react";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface PaySidePanelProps {
   basket: BasketItem[];
@@ -30,6 +32,10 @@ export default function PaySidePanel({
   onProceedToPay,
   isProcessing = false,
 }: PaySidePanelProps) {
+  const [imageLoadedStates, setImageLoadedStates] = useState<
+    Record<string, boolean>
+  >({});
+
   const handleItemClick = (id: string | number) => {
     console.log("Clicked item:", id);
   };
@@ -111,17 +117,47 @@ export default function PaySidePanel({
                     className="overflow-visible cursor-pointer flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group active:scale-[0.98]"
                   >
                     <div className="flex items-center gap-4 flex-1 overflow-visible">
-                      <div className="relative overflow-visible">
-                        <div className="relative w-12 h-12 overflow-visible">
-                          <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            className="object-cover rounded-xl group-hover:scale-110 transition-transform duration-300"
-                          />
+                      <div className="relative overflow-hidden">
+                        <div className="relative w-12 h-12 bg-gray-100 rounded-xl overflow-hidden">
+                          {/* Shimmer skeleton while loading */}
+                          {!imageLoadedStates[product.id] && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+                          )}
+
+                          <motion.div
+                            initial={{ opacity: 0, scale: 1.01 }}
+                            animate={{
+                              opacity: imageLoadedStates[product.id] ? 1 : 0,
+                              scale: imageLoadedStates[product.id] ? 1 : 1.01,
+                            }}
+                            transition={{
+                              duration: 0.2,
+                              ease: "easeOut",
+                            }}
+                            className="w-full h-full"
+                          >
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover rounded-xl group-hover:scale-110 transition-transform duration-300"
+                              onLoad={() => {
+                                setImageLoadedStates((prev) => ({
+                                  ...prev,
+                                  [product.id]: true,
+                                }));
+                              }}
+                              onError={() => {
+                                setImageLoadedStates((prev) => ({
+                                  ...prev,
+                                  [product.id]: true,
+                                }));
+                              }}
+                            />
+                          </motion.div>
                         </div>
 
-                        <div className="absolute -top-2 -right-2 bg-[#4145A7] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg">
+                        <div className="absolute -top-2 -right-2 bg-[#4145A7] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg z-20">
                           {item.qty}
                         </div>
                       </div>
