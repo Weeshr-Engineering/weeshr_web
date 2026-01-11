@@ -92,6 +92,12 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                 pt-[env(safe-area-inset-top)]
                 pb-[env(safe-area-inset-bottom)]"
     >
+      {/* 📌 BACKGROUND WATERMARK TEXT */}
+      <div className="absolute top-[-5%] left-0 right-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.03] flex whitespace-nowrap leading-none items-center">
+        <h1 className="text-[18vw] font-black uppercase tracking-tighter text-[#0A0D14]">
+          {vendor.name} • {vendor.name} • {vendor.name}
+        </h1>
+      </div>
       {/* 📌 MOBILE TOP LOGO */}
       <div className="w-full flex justify-center pt-6 pb-2 md:hidden shrink-0 z-10">
         <Image
@@ -336,6 +342,46 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
+          {/* Squiggly SVG Decorations */}
+          <div className="absolute top-[30%] left-[10%] w-32 h-32 opacity-30 pointer-events-none hidden lg:block">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <motion.path
+                d="M10,80 Q30,20 50,80 T90,20"
+                fill="none"
+                stroke="#BAEF23"
+                strokeWidth="2"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                }}
+              />
+            </svg>
+          </div>
+
+          <div className="absolute bottom-[10%] left-[5%] w-40 h-40 opacity-20 pointer-events-none hidden lg:block">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <motion.path
+                d="M90,20 Q70,80 50,20 T10,80"
+                fill="none"
+                stroke="#6A70FF"
+                strokeWidth="1.5"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                }}
+              />
+            </svg>
+          </div>
+
+          {/* Centered Decorative Watermark Link */}
+    
+
           <div className="flex flex-col items-center justify-center mb-6 space-y-4">
             <h2 className="text-3xl md:text-4xl f text-[#0A0D14] tracking-tight text-center">
               {vendor.name}
