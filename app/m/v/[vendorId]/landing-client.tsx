@@ -342,6 +342,33 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
+          {/* Subtle Sparkles */}
+          <motion.div
+            animate={{ opacity: [0.1, 0.4, 0.1], scale: [0.8, 1.2, 0.8] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[20%] right-[30%] w-2 h-2 rounded-full bg-[#BAEF23] blur-[1px] hidden lg:block"
+          />
+          <motion.div
+            animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.5, 1] }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+            className="absolute bottom-[30%] left-[20%] w-3 h-3 rounded-full bg-[#6A70FF] blur-[2px] hidden lg:block"
+          />
+          <motion.div
+            animate={{ opacity: [0.1, 0.2, 0.1], scale: [1.2, 0.8, 1.2] }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2,
+            }}
+            className="absolute top-[60%] right-[10%] w-1.5 h-1.5 rounded-full bg-white blur-[1px] hidden lg:block"
+          />
+
           {/* Squiggly SVG Decorations */}
           <div className="absolute top-[30%] left-[10%] w-32 h-32 opacity-30 pointer-events-none hidden lg:block">
             <svg viewBox="0 0 100 100" className="w-full h-full">
@@ -380,7 +407,6 @@ export default function LandingClient({ vendor }: LandingClientProps) {
           </div>
 
           {/* Centered Decorative Watermark Link */}
-    
 
           <div className="flex flex-col items-center justify-center mb-6 space-y-4">
             <h2 className="text-3xl md:text-4xl f text-[#0A0D14] tracking-tight text-center">
