@@ -87,7 +87,7 @@ export default function Home() {
       {/* 📌 BACKGROUND WATERMARK TEXT */}
       <div className="absolute top-[-5%] left-0 right-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.03] flex whitespace-nowrap leading-none items-center">
         <h1 className="text-[18vw] font-black uppercase tracking-tighter text-[#0A0D14]">
-         MARKETPLACE  WEESHR 
+          MARKETPLACE • MARKETPLACE • WEESHR
         </h1>
       </div>
       {/* 📌 MOBILE TOP LOGO */}
