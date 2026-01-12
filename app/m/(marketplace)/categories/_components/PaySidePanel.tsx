@@ -117,7 +117,7 @@ export default function PaySidePanel({
                     className="overflow-visible cursor-pointer flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group active:scale-[0.98]"
                   >
                     <div className="flex items-center gap-4 flex-1 overflow-visible">
-                      <div className="relative overflow-hidden">
+                      <div className="relative">
                         <div className="relative w-12 h-12 bg-gray-100 rounded-xl overflow-hidden">
                           {/* Shimmer skeleton while loading */}
                           {!imageLoadedStates[product.id] && (
