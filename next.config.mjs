@@ -10,7 +10,12 @@ const nextConfig = {
       {
         source: "/",
         destination: "/m",
-        permanent: true, // 301 redirect (SEO-safe)
+        permanent: true,
+      },
+      {
+        source: "/marketplace",
+        destination: "/m",
+        permanent: true,
       },
     ];
   },
