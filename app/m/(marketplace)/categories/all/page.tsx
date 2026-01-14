@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import VendorList from "../_components/vendor-list";
 import MobileCategoryTabs from "../_components/mobile-category-tabs";
 import ChangeReceiverDialog from "../_components/change-receiver-dialog";
@@ -146,6 +146,16 @@ export default function AllVendorsPage() {
 
   const hasMoreVendors = currentPage < totalPages;
 
+  // Split vendors into featured and regular
+  const { featuredVendors, regularVendors } = useMemo(() => {
+    if (vendors.length === 0)
+      return { featuredVendors: [], regularVendors: [] };
+    // Take first 5 for featured
+    const featured = vendors.slice(0, Math.min(5, vendors.length));
+    // Show ALL vendors in the regular list
+    return { featuredVendors: featured, regularVendors: vendors };
+  }, [vendors]);
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Mobile-only Tab Navigation */}
@@ -157,10 +167,10 @@ export default function AllVendorsPage() {
         <div className="shrink-0 mb-2">
           <FeaturedCarouselSkeleton />
         </div>
-      ) : vendors.length > 0 ? (
+      ) : featuredVendors.length > 0 ? (
         <div className="shrink-0 mb-2">
           <FeaturedCarousel
-            vendors={vendors}
+            vendors={featuredVendors}
             title="Top Picks"
             subtitle="Featured vendors for you"
           />
@@ -208,7 +218,7 @@ export default function AllVendorsPage() {
         </div>
 
         <div className="flex-1 overflow-y-auto mt-4 md:mt-0 px-2 md:px-0 scrollbar-hide">
-          <VendorList vendors={vendors} loading={loading} />
+          <VendorList vendors={regularVendors} loading={loading} />
 
           {/* Infinite Scroll Trigger & Status Messages */}
           {!loading && (

@@ -140,6 +140,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
               fill
               className="object-cover rounded-3xl"
               priority
+              sizes="100vw"
               onLoad={() => setMobileBgLoaded(true)}
             />
           </motion.div>
@@ -315,6 +316,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
               fill
               className="object-cover rounded-3xl"
               priority
+              sizes="50vw"
               onLoad={() => setDesktopBgLoaded(true)}
             />
           </motion.div>

@@ -8,13 +8,18 @@ import MobileCategoryTabs from "../_components/mobile-category-tabs";
 import ChangeReceiverDialog from "../_components/change-receiver-dialog";
 import { Vendor, VendorService } from "@/service/vendor.service";
 import { fetchCategories } from "@/lib/api";
+import { useMemo } from "react";
+import FeaturedCarousel from "../_components/featured-carousel";
+import FeaturedCarouselSkeleton from "../_components/featured-carousel-skeleton";
 
-// Define category labels
+// Define category labels with normalization for plural/singular
 const categoryLabels: Record<string, string> = {
   food: "Restaurant Options",
   fashion: "Fashion Stores",
   gadgets: "Gadget Stores",
+  gadget: "Gadget Stores",
   lifestyle: "Lifestyle Stores",
+  lifestyles: "Lifestyle Stores",
   default: "Store Options",
 };
 
@@ -75,6 +80,22 @@ export default function Page() {
     fetchVendors();
   }, [categoryId]);
 
+  // Split vendors into featured and regular
+  const { featuredVendors, regularVendors } = useMemo(() => {
+    if (vendors.length === 0)
+      return { featuredVendors: [], regularVendors: [] };
+
+    // Select up to 3 for featured (randomly)
+    const shuffled = [...vendors].sort(() => 0.5 - Math.random());
+    const featured = shuffled.slice(0, Math.min(3, vendors.length));
+
+    // Show ALL vendors in the regular list as per user request
+    return {
+      featuredVendors: featured,
+      regularVendors: vendors, // Use the original full list
+    };
+  }, [vendors]);
+
   useEffect(() => {
     if (!nameParam || !categoryId) {
       router.replace("/m");
@@ -99,7 +120,7 @@ export default function Page() {
   };
 
   const tabCategories = [
-    { name: "All", link: "/m/categories", value: "all", id: "" },
+    { name: "All", link: "/m/categories/all", value: "all", id: "" },
     ...apiCategories.map((cat) => ({
       name: cat.name,
       link: `/m/categories/${cat.name.toLowerCase()}`,
@@ -114,6 +135,28 @@ export default function Page() {
       <div className="shrink-0">
         <MobileCategoryTabs categories={tabCategories} nameParam={nameParam} />
       </div>
+
+      {loading ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarouselSkeleton />
+        </div>
+      ) : featuredVendors.length > 0 ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarousel
+            vendors={featuredVendors}
+            title="Top Picks"
+            subtitle={`Featured ${categoryName} for you`}
+          />
+        </div>
+      ) : vendors.length > 0 ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarousel
+            vendors={vendors.slice(0, 5)}
+            title="Top Picks"
+            subtitle={`Featured ${categoryName} for you`}
+          />
+        </div>
+      ) : null}
 
       {/* Category title */}
       <div className="text-left text-2xl md:text-4xl p-4 md:p-6 capitalize shrink-0">
@@ -156,7 +199,7 @@ export default function Page() {
         </div>
 
         <div className="flex-1 overflow-y-auto mt-4 md:mt-0 px-2 md:px-0 scrollbar-hide">
-          <VendorList vendors={vendors} loading={loading} />
+          <VendorList vendors={regularVendors} loading={loading} />
         </div>
       </div>
     </div>

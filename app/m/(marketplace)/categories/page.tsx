@@ -13,9 +13,12 @@ import { motion } from "framer-motion";
 
 const categoryColors: Record<string, string> = {
   Food: "bg-[#C6F4EB]",
+  Foods: "bg-[#C6F4EB]",
   Fashion: "bg-[#DCDEFF]",
   Gadget: "bg-[#E9F4D1]",
+  Gadgets: "bg-[#E9F4D1]",
   Lifestyle: "bg-[#C6EDF6]",
+  Lifestyles: "bg-[#C6EDF6]",
 };
 
 export default function Page() {
@@ -38,8 +41,10 @@ export default function Page() {
             color: categoryColors[cat.name] || "bg-gray-100",
           }))
           .sort((a: any, b: any) => {
-            if (a.name.toLowerCase() === "fashion") return -1;
-            if (b.name.toLowerCase() === "fashion") return 1;
+            const nameA = a.name?.toLowerCase() || "";
+            const nameB = b.name?.toLowerCase() || "";
+            if (nameA === "fashion") return -1;
+            if (nameB === "fashion") return 1;
             return 0;
           });
         setCategories(enriched);
@@ -172,6 +177,7 @@ export default function Page() {
                           fill
                           className="object-cover pointer-events-none transition-transform duration-500 hover:scale-110"
                           priority
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           onLoad={() => {
                             setImageLoadedStates((prev) => ({
                               ...prev,

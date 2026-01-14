@@ -21,7 +21,10 @@ export default function FeaturedCarouselSkeleton() {
       </div>
 
       {/* Main Card Skeleton */}
-      <div className="relative w-full h-[240px] px-4">
+      <div
+        className="relative w-full    h-[150px]
+            md:h-[200px] px-4"
+      >
         <div className="w-full h-full rounded-[2rem] overflow-hidden relative">
           <Skeleton className="w-full h-full" />
 
