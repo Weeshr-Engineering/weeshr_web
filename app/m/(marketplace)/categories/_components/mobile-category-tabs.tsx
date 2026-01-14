@@ -96,7 +96,7 @@ export default function MobileCategoryTabs({
                 {/* Active indicator with animation */}
                 {isActive && (
                   <motion.div
-                    className="absolute -bottom-3 left-0 right-0 h-1 bg-indigo-600 rounded-full"
+                    className="absolute -bottom-3 left-0 right-0 h-1 bg-[#0CC990] rounded-full"
                     layoutId="activeTab"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}

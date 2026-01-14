@@ -31,11 +31,17 @@ export default function Page() {
     async function loadCategories() {
       try {
         const data = await fetchCategories();
-        // Attach static colors to each category if available
-        const enriched = data.map((cat: any) => ({
-          ...cat,
-          color: categoryColors[cat.name] || "bg-gray-100",
-        }));
+        // Attach static colors to each category if available and sort Fashion to top
+        const enriched = data
+          .map((cat: any) => ({
+            ...cat,
+            color: categoryColors[cat.name] || "bg-gray-100",
+          }))
+          .sort((a: any, b: any) => {
+            if (a.name.toLowerCase() === "fashion") return -1;
+            if (b.name.toLowerCase() === "fashion") return 1;
+            return 0;
+          });
         setCategories(enriched);
       } catch (error) {
         console.error("Error fetching categories:", error);

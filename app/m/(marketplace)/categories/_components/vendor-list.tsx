@@ -139,7 +139,7 @@ const VendorList: React.FC<VendorListProps> = ({
                       alt={vendor.name}
                       width={400}
                       height={240}
-                      className="w-full h-36 object-cover"
+                      className="w-full h-48 md:h-56 object-cover"
                       loading="lazy"
                       quality={75}
                       onLoad={() => {

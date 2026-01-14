@@ -9,6 +9,7 @@ import { Vendor, VendorService } from "@/service/vendor.service";
 import { fetchCategories } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
+import { motion } from "framer-motion";
 import FeaturedCarouselSkeleton from "../_components/featured-carousel-skeleton";
 import FeaturedCarousel from "../_components/featured-carousel";
 
@@ -171,8 +172,8 @@ export default function AllVendorsPage() {
         All Vendors
       </div>
 
-      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 flex-1 flex flex-col overflow-hidden mb-2">
-        <div className="shrink-0 pl-4 py-2">
+      <div className="bg-white p-4 md:p-8 rounded-3xl font-light flex-1 flex flex-col overflow-hidden mb-2">
+        <div className="shrink-0 py-2">
           <ChangeReceiverDialog
             open={open}
             setOpen={setOpen}
@@ -182,12 +183,12 @@ export default function AllVendorsPage() {
           />
 
           {/* Main question */}
-          <div className="mt-2">
-            <span className="inline-block text-primary text-2xl md:text-4xl leading-snug">
+          <div className="mt-2 flex items-center gap-3">
+            <span className="text-primary text-2xl md:text-4xl leading-tight">
               What would{" "}
-              <span className="relative whitespace-nowrap text-blue-600 pr-1">
+              <span className="relative inline-block px-1">
                 <span
-                  className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl md:text-3xl font-medium "
+                  className="relative z-10 bg-gradient-custom bg-clip-text text-transparent font-medium"
                   style={{
                     fontFamily:
                       "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
@@ -195,14 +196,14 @@ export default function AllVendorsPage() {
                 >
                   {displayName}
                 </span>
-              </span>
-              <span className="inline-block pl-1">like?</span>
+                <motion.span
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  className="absolute bottom-1 left-0 h-2 bg-[#0CC990]/10 -z-10"
+                />
+              </span>{" "}
+              like?
             </span>
-          </div>
-
-          {/* Category description */}
-          <div className="text-muted-foreground pt-4 text-sm md:text-base">
-            Browse all available vendors
           </div>
         </div>
 
