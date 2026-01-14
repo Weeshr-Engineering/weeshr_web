@@ -9,6 +9,8 @@ import { Vendor, VendorService } from "@/service/vendor.service";
 import { fetchCategories } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
+import FeaturedCarouselSkeleton from "../_components/featured-carousel-skeleton";
+import FeaturedCarousel from "../_components/featured-carousel";
 
 export default function AllVendorsPage() {
   const searchParams = useSearchParams();
@@ -149,6 +151,20 @@ export default function AllVendorsPage() {
       <div className="shrink-0">
         <MobileCategoryTabs categories={tabCategories} nameParam={nameParam} />
       </div>
+
+      {loading ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarouselSkeleton />
+        </div>
+      ) : vendors.length > 0 ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarousel
+            vendors={vendors}
+            title="Top Picks"
+            subtitle="Featured vendors for you"
+          />
+        </div>
+      ) : null}
 
       {/* Category title */}
       <div className="text-left text-2xl md:text-4xl p-4 md:p-6 capitalize shrink-0">

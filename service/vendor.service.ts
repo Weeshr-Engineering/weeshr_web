@@ -75,6 +75,7 @@ export interface Vendor {
   badges: string[];
   giftIdeas: number;
   productImages: string[];
+  description?: string;
 }
 
 export class VendorService {

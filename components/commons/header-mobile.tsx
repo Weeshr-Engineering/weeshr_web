@@ -57,7 +57,7 @@ export default function HeaderMobile({
       </a>
       <nav>
         <section className="MOBILE-MENU flex lg:hidden">
-          <div className="HAMBURGER-ICON bg-white rounded-lg mr-2">
+          <div className="HAMBURGER-ICON bg-white rounded-lg mr-2 opacity-0 pointer-events-none">
             <Hamburger toggled={isNavOpen} toggle={setIsNavOpen} size={18} />
           </div>
 
