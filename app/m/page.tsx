@@ -85,7 +85,7 @@ export default function Home() {
                 pb-[env(safe-area-inset-bottom)]"
     >
       {/* 📌 BACKGROUND WATERMARK TEXT */}
-      <div className="absolute top-[-5%] left-0 right-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.03] flex whitespace-nowrap leading-none items-center">
+      <div className="hidden md:flex absolute top-[-50%] md:top-[-5%] left-0 right-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.03] whitespace-nowrap leading-none items-center">
         <h1 className="text-[18vw] font-black uppercase tracking-tighter text-[#0A0D14]">
           WEESHR • WEESHR
         </h1>
@@ -135,6 +135,11 @@ export default function Home() {
             />
           </motion.div>
           {/* CARD OVER THE IMAGE */}
+          <div className="absolute top-16 left-0 right-0 flex justify-center items-center pointer-events-none select-none z-0 opacity-[0.1]">
+            <h1 className="text-[17vw] font-black uppercase tracking-tighter text-[#0A0D14]">
+              WEESHR • WEESHR
+            </h1>
+          </div>
           <div className="absolute bottom-[15%] left-0 right-0 px-2">
             <Card className="bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl bg-[#E9F4D1] border-none">
               <CardHeader className="px-5 py-4">

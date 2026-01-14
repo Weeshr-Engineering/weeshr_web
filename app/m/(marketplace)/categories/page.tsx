@@ -95,7 +95,7 @@ export default function Page() {
 
         <p className="mx-auto max-w-4xl text-lg tracking-tight text-center">
           <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
-            Speak to your person in their love language
+            Select the category of gift 🎁
           </span>
         </p>
       </div>
