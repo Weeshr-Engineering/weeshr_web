@@ -95,7 +95,26 @@ export default function Page() {
 
         <p className="mx-auto max-w-4xl text-lg tracking-tight text-center">
           <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
-            Select the category of gift 🎁
+            Select the category of gift{" "}
+            <motion.span
+              className="inline-block align-middle drop-shadow-md opacity-100 text-foreground ml-0"
+              style={{
+                fontSize: "2.5rem", // Larger font size for sharpness
+                lineHeight: 1,
+              }}
+              animate={{
+                rotate: [0, 10, -10, 10, -5, 5, 0],
+                scale: [0.8, 0.9, 0.8], // Scaling down from a larger size keeps it sharp
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 3,
+                ease: "easeInOut",
+              }}
+            >
+              🎁
+            </motion.span>
           </span>
         </p>
       </div>
