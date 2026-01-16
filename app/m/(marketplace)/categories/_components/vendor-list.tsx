@@ -218,33 +218,51 @@ const VendorList: React.FC<VendorListProps> = ({
                     </p>
                   </div>
 
-                  <div className="flex gap-2 shrink-0">
-                    <Button
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goToVendor(vendor.category, vendor.name, vendor.id);
-                      }}
-                      className="h-9 px-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all text-xs font-bold rounded-xl active:scale-95"
-                    >
-                      SEND
-                    </Button>
+              
 
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goToVendor(vendor.category, vendor.name, vendor.id);
-                      }}
-                      className="h-9 px-4 bg-[#6A70FF] hover:bg-[#585fe6] text-white transition-all text-xs font-bold flex items-center gap-1.5 rounded-xl shadow-[0_4px_12px_-4px_rgba(106,112,255,0.4)] active:scale-95"
+                  <div className="flex gap-1">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }} // ✅ Button hover only
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <Icon
-                        icon="famicons:gift-sharp"
-                        className="w-3.5 h-3.5"
-                      />
-                      GIFT
-                    </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          goToVendor(vendor.category, vendor.name, vendor.id);
+                        }}
+                        className="px-2 py-2 text-muted-foreground hover:underline hover:decoration-text-foreground hover:bg-transparent transition-colors text-sm font-medium rounded-2xl"
+                      >
+                        Send
+                      </Button>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ scale: 1.05 }} // ✅ Button hover only
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        size="xl2"
+                        variant="marketplace"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          goToVendor(vendor.category, vendor.name, vendor.id);
+                        }}
+                        className="transition-colors text-sm font-medium flex items-center gap-1 bg-marketplace-primary hover:bg-marketplace-primary/60 rounded-2xl"
+                      >
+                        <motion.span
+                          whileHover={{ rotate: 15 }} // ✅ Icon hover only
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Icon
+                            icon="famicons:gift-sharp"
+                            height={14}
+                            width={14}
+                          />
+                        </motion.span>
+                        Delivery
+                      </Button>
+                    </motion.div>
                   </div>
                 </div>
               </div>
