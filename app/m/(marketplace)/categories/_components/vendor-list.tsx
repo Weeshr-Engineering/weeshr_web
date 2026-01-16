@@ -94,44 +94,69 @@ const VendorList: React.FC<VendorListProps> = ({
     );
   }
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05, // Faster stagger for mobile feeling
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    }),
+    hover: {
+      y: -4,
+      transition: {
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+    tap: {
+      scale: 0.97,
+      transition: { duration: 0.1 },
+    },
+  };
+
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 py-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 py-6 transition-all">
         {vendors.map((vendor, index) => (
           <motion.div
             key={vendor.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            // ❌ REMOVED card scale hover
+            custom={index}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            whileTap="tap"
+            viewport={{ once: true, margin: "50px" }}
           >
             <Card
-              className="overflow-hidden rounded-3xl shadow-sm transition-shadow duration-200 bg-white border-0 cursor-pointer hover:shadow-md" // ✅ Only shadow change on hover
+              className="group overflow-hidden rounded-3xl border border-gray-50 cursor-pointer bg-white transition-all duration-500
+              shadow-[0_8px_20px_-4px_rgba(0,0,0,0.04)] 
+              hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]
+              active:shadow-[0_16px_24px_-12px_rgba(0,0,0,0.06)]"
               onClick={() =>
                 goToVendor(vendor.category, vendor.name, vendor.id)
               }
             >
               {/* Image Container */}
-              <div className="relative overflow-hidden rounded-t-3xl bg-gray-100">
+              <div className="relative overflow-hidden rounded-t-3xl bg-gray-50">
                 {/* Shimmer skeleton while loading */}
                 {!imageLoadedStates[vendor.id] && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 animate-shimmer z-10" />
                 )}
 
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-t-3xl overflow-hidden"
-                >
+                <div className="rounded-t-3xl overflow-hidden group relative">
                   <motion.div
-                    initial={{ opacity: 0, scale: 1.1 }}
+                    initial={{ opacity: 0 }}
                     animate={{
                       opacity: imageLoadedStates[vendor.id] ? 1 : 0,
-                      scale: imageLoadedStates[vendor.id] ? 1 : 1.1,
                     }}
                     transition={{
-                      duration: 0.6,
-                      ease: [0.25, 0.1, 0.25, 1], // Custom easing for smooth fade
+                      duration: 0.4,
+                      ease: "easeOut",
                     }}
                   >
                     <Image
@@ -139,8 +164,9 @@ const VendorList: React.FC<VendorListProps> = ({
                       alt={vendor.name}
                       width={400}
                       height={240}
-                      className="w-full h-36 object-cover"
+                      className="w-full h-48 object-cover transition-all duration-700 group-hover:saturate-[1.03] group-hover:brightness-[1.02]"
                       loading="lazy"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       quality={75}
                       onLoad={() => {
                         setImageLoadedStates((prev) => ({
@@ -158,100 +184,67 @@ const VendorList: React.FC<VendorListProps> = ({
                       }}
                     />
                   </motion.div>
-                </motion.div>
+                  {/* Subtle Gradient Overlay for Depth */}
+                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-40" />
+                </div>
 
                 {/* Category Badge */}
-                <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm rounded-2xl px-2 py-1 flex gap-1.5">
-                  <div className="w-3">
-                    <Icon icon={getCategoryIcon(vendor.category)} />
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex gap-1.5 shadow-sm border border-gray-100/50 z-20">
+                  <div className="w-3 flex items-center">
+                    <Icon
+                      icon={getCategoryIcon(vendor.category)}
+                      className="text-gray-600"
+                    />
                   </div>
-                  <span className="text-primary text-sm font-light">
+                  <span className="text-gray-600 text-xs font-medium tracking-tight">
                     {vendor.category}
                   </span>
                 </div>
-
-                {/* Product Count Badge */}
               </div>
 
-              {/* Badges Section */}
-              {/* {vendor.badges.length > 0 && (
-                <div className="py-2 px-0">
-                  <ScrollVelocityContainer className="text-4xl md:text-7xl font-bold">
-                    <ScrollVelocityRow
-                      baseVelocity={2}
-                      direction={1}
-                      className="text-muted-foreground text-sm px-0 whitespace-nowrap custom-scroll-text font-light"
-                    >
-                      {vendor.badges.map((badge, index) =>
-                        index < vendor.badges.length - 1 ? (
-                          <span key={index}>
-                            {badge}{" "}
-                            <span className="text-[#6A70FF] px-2">✱</span>{" "}
-                          </span>
-                        ) : (
-                          <span key={index}>{badge}</span>
-                        )
-                      )}
-                    </ScrollVelocityRow>
-                  </ScrollVelocityContainer>
-                </div>
-              )} */}
-
               {/* Content Section */}
-              <div className="p-4 bg-marketplace-foreground rounded-b-3xl">
-                <CardTitle className="text-lg font-normal text-gray-900 mb-4 capitalize">
+              <div className="p-5 bg-white rounded-b-3xl">
+                <CardTitle className="text-base font-semibold text-gray-900 mb-3 capitalize tracking-tight">
                   {sentenceCase(vendor?.name)}
                 </CardTitle>
 
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-muted-foreground text-sm">Gift Ideas</p>
-                    {vendor.giftIdeas}
+                <div className="flex justify-between items-end gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-gray-400 text-[11px] uppercase tracking-wider font-bold mb-1">
+                      Gift Ideas
+                    </p>
+                    <p className="text-gray-600 text-sm line-clamp-1 font-medium">
+                      {vendor.giftIdeas}
+                    </p>
                   </div>
 
-                  <div className="flex gap-1">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }} // ✅ Button hover only
-                      whileTap={{ scale: 0.95 }}
+                  <div className="flex gap-2 shrink-0">
+                    <Button
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goToVendor(vendor.category, vendor.name, vendor.id);
+                      }}
+                      className="h-9 px-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all text-xs font-bold rounded-xl active:scale-95"
                     >
-                      <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goToVendor(vendor.category, vendor.name, vendor.id);
-                        }}
-                        className="px-2 py-2 text-muted-foreground hover:underline hover:decoration-text-foreground hover:bg-transparent transition-colors text-sm font-medium rounded-2xl"
-                      >
-                        Send
-                      </Button>
-                    </motion.div>
+                      SEND
+                    </Button>
 
-                    <motion.div
-                      whileHover={{ scale: 1.05 }} // ✅ Button hover only
-                      whileTap={{ scale: 0.95 }}
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goToVendor(vendor.category, vendor.name, vendor.id);
+                      }}
+                      className="h-9 px-4 bg-[#6A70FF] hover:bg-[#585fe6] text-white transition-all text-xs font-bold flex items-center gap-1.5 rounded-xl shadow-[0_4px_12px_-4px_rgba(106,112,255,0.4)] active:scale-95"
                     >
-                      <Button
-                        size="xl2"
-                        variant="marketplace"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goToVendor(vendor.category, vendor.name, vendor.id);
-                        }}
-                        className="transition-colors text-sm font-medium flex items-center gap-1 bg-marketplace-primary hover:bg-marketplace-primary/60 rounded-2xl"
-                      >
-                        <motion.span
-                          whileHover={{ rotate: 15 }} // ✅ Icon hover only
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Icon
-                            icon="famicons:gift-sharp"
-                            height={14}
-                            width={14}
-                          />
-                        </motion.span>
-                        Delivery
-                      </Button>
-                    </motion.div>
+                      <Icon
+                        icon="famicons:gift-sharp"
+                        className="w-3.5 h-3.5"
+                      />
+                      GIFT
+                    </Button>
                   </div>
                 </div>
               </div>

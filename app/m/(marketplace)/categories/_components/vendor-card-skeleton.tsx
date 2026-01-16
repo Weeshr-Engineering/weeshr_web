@@ -6,7 +6,7 @@ export function VendorCardSkeleton() {
     <Card className="overflow-hidden rounded-3xl shadow-sm bg-white border-0">
       {/* Image placeholder */}
       <div className="relative">
-        <Skeleton className="w-full h-36 object-cover" />
+        <Skeleton className="w-full h-48 object-cover" />
 
         {/* Category badge placeholder */}
         <div className="absolute top-3 left-3 bg-white/60 backdrop-blur-sm rounded-2xl px-2 py-1 flex gap-1.5">
@@ -16,8 +16,7 @@ export function VendorCardSkeleton() {
       </div>
 
       {/* Badges scroll placeholder */}
-      <div className="py-2 px- h-4 w-3/4 ">
-      </div>
+      <div className="py-2 px- h-4 w-3/4 "></div>
 
       {/* Content */}
       <div className="p-4 bg-marketplace-foreground pt-2 space-y-4">

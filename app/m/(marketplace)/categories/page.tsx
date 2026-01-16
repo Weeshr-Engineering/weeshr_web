@@ -13,9 +13,12 @@ import { motion } from "framer-motion";
 
 const categoryColors: Record<string, string> = {
   Food: "bg-[#C6F4EB]",
+  Foods: "bg-[#C6F4EB]",
   Fashion: "bg-[#DCDEFF]",
   Gadget: "bg-[#E9F4D1]",
+  Gadgets: "bg-[#E9F4D1]",
   Lifestyle: "bg-[#C6EDF6]",
+  Lifestyles: "bg-[#C6EDF6]",
 };
 
 export default function Page() {
@@ -31,11 +34,19 @@ export default function Page() {
     async function loadCategories() {
       try {
         const data = await fetchCategories();
-        // Attach static colors to each category if available
-        const enriched = data.map((cat: any) => ({
-          ...cat,
-          color: categoryColors[cat.name] || "bg-gray-100",
-        }));
+        // Attach static colors to each category if available and sort Fashion to top
+        const enriched = data
+          .map((cat: any) => ({
+            ...cat,
+            color: categoryColors[cat.name] || "bg-gray-100",
+          }))
+          .sort((a: any, b: any) => {
+            const nameA = a.name?.toLowerCase() || "";
+            const nameB = b.name?.toLowerCase() || "";
+            if (nameA === "fashion") return -1;
+            if (nameB === "fashion") return 1;
+            return 0;
+          });
         setCategories(enriched);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -95,7 +106,26 @@ export default function Page() {
 
         <p className="mx-auto max-w-4xl text-lg tracking-tight text-center">
           <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
-            Speak to your person in their love language
+            Select the category of gift{" "}
+            <motion.span
+              className="inline-block align-middle drop-shadow-md opacity-100 text-foreground ml-0"
+              style={{
+                fontSize: "2.5rem", // Larger font size for sharpness
+                lineHeight: 1,
+              }}
+              animate={{
+                rotate: [0, 10, -10, 10, -5, 5, 0],
+                scale: [0.8, 0.9, 0.8], // Scaling down from a larger size keeps it sharp
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 3,
+                ease: "easeInOut",
+              }}
+            >
+              🎁
+            </motion.span>
           </span>
         </p>
       </div>
@@ -147,6 +177,7 @@ export default function Page() {
                           fill
                           className="object-cover pointer-events-none transition-transform duration-500 hover:scale-110"
                           priority
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           onLoad={() => {
                             setImageLoadedStates((prev) => ({
                               ...prev,

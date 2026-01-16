@@ -271,7 +271,7 @@ export function MenuList({
                   <CardTitle className="text-sm font-normal">
                     {product.name}
                   </CardTitle>
-                  <CardDescription className="text-xs mb-2 text-muted-foreground line-clamp-2">
+                  <CardDescription className="text-xs  text-muted-foreground line-clamp-2">
                     {product.description}
                   </CardDescription>
                 </div>

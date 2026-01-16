@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { Icon } from "@iconify/react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { MARKETPLACE_BACKGROUND_IMAGES } from "../../constants";
 
 interface LandingClientProps {
   vendor: Vendor;
@@ -21,6 +22,24 @@ export default function LandingClient({ vendor }: LandingClientProps) {
   const [isGiftingMyself, setIsGiftingMyself] = useState(false);
   const [mobileBgLoaded, setMobileBgLoaded] = useState(false);
   const [desktopBgLoaded, setDesktopBgLoaded] = useState(false);
+  const [bgImage, setBgImage] = useState("");
+
+  useEffect(() => {
+    // Select random image on mount
+    const randomImage =
+      MARKETPLACE_BACKGROUND_IMAGES[
+        Math.floor(Math.random() * MARKETPLACE_BACKGROUND_IMAGES.length)
+      ];
+    setBgImage(randomImage);
+
+    // Safety timeout to ensure content is visible even if image onload hangs
+    const timer = setTimeout(() => {
+      setMobileBgLoaded(true);
+      setDesktopBgLoaded(true);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const defaultPlaceholders = [
     "Enter receiver's name",
@@ -93,7 +112,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                 pb-[env(safe-area-inset-bottom)]"
     >
       {/* 📌 BACKGROUND WATERMARK TEXT */}
-      <div className="absolute top-[-5%] left-0 right-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.03] flex whitespace-nowrap leading-none items-center">
+      <div className="hidden md:flex absolute md:top-[-5%] top-[-15%] left-0 right-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.03] whitespace-nowrap leading-none items-center">
         <h1 className="text-[18vw] font-black uppercase tracking-tighter text-[#0A0D14]">
           {vendor.name} • {vendor.name} • {vendor.name}
         </h1>
@@ -134,16 +153,25 @@ export default function LandingClient({ vendor }: LandingClientProps) {
             }}
             className="w-full h-full"
           >
-            <Image
-              src="https://res.cloudinary.com/drykej1am/image/upload/v1767725180/market-place/vendors/Rectangle_3870_1_wfzehc.png"
-              alt="Vendor Background"
-              fill
-              className="object-cover rounded-3xl"
-              priority
-              onLoad={() => setMobileBgLoaded(true)}
-            />
+            {bgImage && (
+              <Image
+                src={bgImage}
+                alt="Vendor Background"
+                fill
+                className="object-cover rounded-3xl"
+                priority
+                sizes="100vw"
+                onLoad={() => setMobileBgLoaded(true)}
+                onError={() => setMobileBgLoaded(true)}
+              />
+            )}
           </motion.div>
           {/* CARD OVER THE IMAGE */}
+          <div className="absolute top-16 left-0 right-0 flex justify-center items-center pointer-events-none select-none z-0 opacity-[0.1]">
+            <h1 className="text-[17vw] font-black uppercase tracking-tighter text-[#0A0D14] whitespace-nowrap">
+              {vendor.name} • {vendor.name}
+            </h1>
+          </div>
           <div className="absolute bottom-[15%] left-0 right-0 px-2">
             <Card className="bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl bg-[#E9F4D1] border-none">
               <CardHeader className="px-5 py-4">
@@ -304,14 +332,21 @@ export default function LandingClient({ vendor }: LandingClientProps) {
             }}
             className="w-full h-full"
           >
-            <Image
-              src="https://res.cloudinary.com/drykej1am/image/upload/v1767725180/market-place/vendors/Rectangle_3870_1_wfzehc.png"
-              alt="Vendor Background"
-              fill
-              className="object-cover rounded-3xl"
-              priority
-              onLoad={() => setDesktopBgLoaded(true)}
-            />
+            {bgImage && (
+              <>
+                <Image
+                  src={bgImage}
+                  alt="Vendor Background"
+                  fill
+                  className="object-cover rounded-3xl"
+                  priority
+                  sizes="50vw"
+                  onLoad={() => setDesktopBgLoaded(true)}
+                  onError={() => setDesktopBgLoaded(true)}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
+              </>
+            )}
           </motion.div>
           <motion.div
             className="absolute bottom-6 left-6 right-6 text-white"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import VendorList from "../_components/vendor-list";
 import MobileCategoryTabs from "../_components/mobile-category-tabs";
 import ChangeReceiverDialog from "../_components/change-receiver-dialog";
@@ -9,6 +9,9 @@ import { Vendor, VendorService } from "@/service/vendor.service";
 import { fetchCategories } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
+import { motion } from "framer-motion";
+import FeaturedCarouselSkeleton from "../_components/featured-carousel-skeleton";
+import FeaturedCarousel from "../_components/featured-carousel";
 
 export default function AllVendorsPage() {
   const searchParams = useSearchParams();
@@ -143,6 +146,16 @@ export default function AllVendorsPage() {
 
   const hasMoreVendors = currentPage < totalPages;
 
+  // Split vendors into featured and regular
+  const { featuredVendors, regularVendors } = useMemo(() => {
+    if (vendors.length === 0)
+      return { featuredVendors: [], regularVendors: [] };
+    // Take first 5 for featured
+    const featured = vendors.slice(0, Math.min(5, vendors.length));
+    // Show ALL vendors in the regular list
+    return { featuredVendors: featured, regularVendors: vendors };
+  }, [vendors]);
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Mobile-only Tab Navigation */}
@@ -150,13 +163,27 @@ export default function AllVendorsPage() {
         <MobileCategoryTabs categories={tabCategories} nameParam={nameParam} />
       </div>
 
+      {loading ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarouselSkeleton />
+        </div>
+      ) : featuredVendors.length > 0 ? (
+        <div className="shrink-0 mb-2">
+          <FeaturedCarousel
+            vendors={featuredVendors}
+            title="Top Picks"
+            subtitle="Featured vendors for you"
+          />
+        </div>
+      ) : null}
+
       {/* Category title */}
       <div className="text-left text-2xl md:text-4xl p-4 md:p-6 capitalize shrink-0">
         All Vendors
       </div>
 
-      <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 flex-1 flex flex-col overflow-hidden mb-2">
-        <div className="shrink-0 pl-4 py-2">
+      <div className="bg-white p-4 md:p-8 rounded-3xl font-light flex-1 flex flex-col overflow-hidden mb-2">
+        <div className="shrink-0 py-2">
           <ChangeReceiverDialog
             open={open}
             setOpen={setOpen}
@@ -166,12 +193,12 @@ export default function AllVendorsPage() {
           />
 
           {/* Main question */}
-          <div className="mt-2">
-            <span className="inline-block text-primary text-2xl md:text-4xl leading-snug">
+          <div className="mt-2 flex items-center gap-3">
+            <span className="text-primary text-2xl md:text-4xl leading-tight">
               What would{" "}
-              <span className="relative whitespace-nowrap text-blue-600 pr-1">
+              <span className="relative inline-block px-1">
                 <span
-                  className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl md:text-3xl font-medium "
+                  className="relative z-10 bg-gradient-custom bg-clip-text text-transparent font-medium"
                   style={{
                     fontFamily:
                       "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
@@ -179,19 +206,19 @@ export default function AllVendorsPage() {
                 >
                   {displayName}
                 </span>
-              </span>
-              <span className="inline-block pl-1">like?</span>
+                <motion.span
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  className="absolute bottom-1 left-0 h-2 bg-[#0CC990]/10 -z-10"
+                />
+              </span>{" "}
+              like?
             </span>
-          </div>
-
-          {/* Category description */}
-          <div className="text-muted-foreground pt-4 text-sm md:text-base">
-            Browse all available vendors
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto mt-4 md:mt-0 px-2 md:px-0 scrollbar-hide">
-          <VendorList vendors={vendors} loading={loading} />
+          <VendorList vendors={regularVendors} loading={loading} />
 
           {/* Infinite Scroll Trigger & Status Messages */}
           {!loading && (

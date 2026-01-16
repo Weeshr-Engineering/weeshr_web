@@ -105,7 +105,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
           <FloatingNav navItems={navWithQuery} showLoginButton={false} />
           <RedirectGuard />
         </div>
-        <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col md:mt-10">
+        <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col md:mt-20">
           {children}
         </div>
         <div className="shrink-0">
