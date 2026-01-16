@@ -122,7 +122,7 @@ export default function Home() {
       {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
       <div className="md:hidden flex-1 px-2 mt-2 pb-2 min-h-0 w-full relative">
         <motion.div
-          className="relative w-full h-full rounded-3xl overflow-hidden shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)]"
+          className="relative w-full h-full rounded-3xl overflow-hidden shadow-[0_32px_64px_-20px_rgba(0,0,0,0.25)]"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -266,13 +266,13 @@ export default function Home() {
             </div>
           </div>
           <motion.div
-            className="absolute bottom-5 w-full flex flex-col justify-start items-start px-2"
+            className="absolute bottom-8 w-full flex flex-col justify-start items-start px-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <span
-              className="relative whitespace-nowrap px-2 text-md "
+              className="relative whitespace-nowrap px-2 text-2xl "
               style={{
                 fontFamily:
                   "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
@@ -281,10 +281,12 @@ export default function Home() {
             >
               Surprise
             </span>
-            <span className="text-[#E9F4D1] mt-[5px] pl-2">
+            <span className="text-white text-lg mt-1 pl-2 font-medium">
               the ones you love,
             </span>
-            <span className="text-[#E9F4D1] pl-2">send them a gift</span>
+            <span className="text-white text-lg pl-2 font-medium">
+              send them a gift
+            </span>
           </motion.div>
         </motion.div>
       </div>
