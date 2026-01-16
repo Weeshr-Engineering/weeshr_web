@@ -116,17 +116,23 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+import CategorySkeletonGrid from "./_components/CategorySkeleton";
+
 // Main component with Suspense boundary
 const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Suspense
       fallback={
         <main className="relative flex flex-col min-h-screen bg-cover bg-top bg-no-repeat bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]">
-          <WidthLayout>
-            <div className="flex-grow pt-0 ">
-              <div>Loading...</div>
+          <WidthLayout className="h-full flex flex-col">
+            <div className="flex-grow pt-20 px-4">
+              <div className="max-w-5xl mx-auto">
+                <div className="pt-10 md:pt-20 text-center mb-8">
+                  <div className="h-12 w-2/3 bg-gray-100/50 rounded-2xl mx-auto animate-pulse" />
+                </div>
+                <CategorySkeletonGrid count={8} />
+              </div>
             </div>
-            <Footer />
           </WidthLayout>
         </main>
       }
