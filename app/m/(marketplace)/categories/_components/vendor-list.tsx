@@ -94,16 +94,43 @@ const VendorList: React.FC<VendorListProps> = ({
     );
   }
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    }),
+    hover: {
+      y: -8,
+      scale: 1.02,
+      rotate: 0.5,
+      transition: {
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1], // Premium easing (easeOutQuint)
+        delay: 0.15,
+      },
+    },
+    tap: { scale: 0.98 },
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 py-6">
         {vendors.map((vendor, index) => (
           <motion.div
             key={vendor.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            // ❌ REMOVED card scale hover
+            custom={index}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            whileTap="tap"
+            viewport={{ once: true }}
           >
             <Card
               className="overflow-hidden rounded-3xl shadow-sm transition-shadow duration-200 bg-white border-0 cursor-pointer hover:shadow-md" // ✅ Only shadow change on hover
