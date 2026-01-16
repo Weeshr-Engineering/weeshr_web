@@ -121,7 +121,7 @@ const VendorList: React.FC<VendorListProps> = ({
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
-                  className="rounded-t-3xl overflow-hidden"
+                  className="rounded-t-3xl overflow-hidden shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] transition-shadow duration-300 group"
                 >
                   <motion.div
                     initial={{ opacity: 0, scale: 1.1 }}
@@ -139,7 +139,7 @@ const VendorList: React.FC<VendorListProps> = ({
                       alt={vendor.name}
                       width={400}
                       height={240}
-                      className="w-full h-36 object-cover"
+                      className="w-full h-48 object-cover transition-all duration-500 group-hover:saturate-105 group-hover:brightness-105"
                       loading="lazy"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       quality={75}
@@ -159,6 +159,8 @@ const VendorList: React.FC<VendorListProps> = ({
                       }}
                     />
                   </motion.div>
+                  {/* Subtle Gradient Overlay for Depth */}
+                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-60" />
                 </motion.div>
 
                 {/* Category Badge */}
