@@ -25,6 +25,14 @@ export default function Home() {
         Math.floor(Math.random() * MARKETPLACE_BACKGROUND_IMAGES.length)
       ];
     setBgImage(randomImage);
+
+    // Safety timeout to ensure content is visible even if image onload hangs
+    const timer = setTimeout(() => {
+      setMobileBgLoaded(true);
+      setDesktopBgLoaded(true);
+    }, 2500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const defaultPlaceholders = [
@@ -144,6 +152,7 @@ export default function Home() {
                 className="object-cover rounded-3xl"
                 priority
                 onLoad={() => setMobileBgLoaded(true)}
+                onError={() => setMobileBgLoaded(true)}
               />
             )}
           </motion.div>
@@ -314,6 +323,7 @@ export default function Home() {
                   className="object-cover rounded-3xl"
                   priority
                   onLoad={() => setDesktopBgLoaded(true)}
+                  onError={() => setDesktopBgLoaded(true)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
               </>

@@ -31,6 +31,14 @@ export default function LandingClient({ vendor }: LandingClientProps) {
         Math.floor(Math.random() * MARKETPLACE_BACKGROUND_IMAGES.length)
       ];
     setBgImage(randomImage);
+
+    // Safety timeout to ensure content is visible even if image onload hangs
+    const timer = setTimeout(() => {
+      setMobileBgLoaded(true);
+      setDesktopBgLoaded(true);
+    }, 2500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const defaultPlaceholders = [
@@ -154,6 +162,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                 priority
                 sizes="100vw"
                 onLoad={() => setMobileBgLoaded(true)}
+                onError={() => setMobileBgLoaded(true)}
               />
             )}
           </motion.div>
@@ -333,6 +342,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                   priority
                   sizes="50vw"
                   onLoad={() => setDesktopBgLoaded(true)}
+                  onError={() => setDesktopBgLoaded(true)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
               </>
