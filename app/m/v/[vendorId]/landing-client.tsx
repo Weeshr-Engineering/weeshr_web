@@ -10,19 +10,7 @@ import { Icon } from "@iconify/react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import Link from "next/link";
 import toast from "react-hot-toast";
-
-const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577869/marketplace/sbdbgzs5faen2pwky8q9_j6vvn3.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577870/marketplace/mazhhydhcnhxhowloljn_nspkvl.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577869/marketplace/dlre9yvpdrcmsaefvw3x_guot0w.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577870/marketplace/hyl0ndrv5e9feoqajl7d_fh5fw5.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577870/marketplace/utbzznhoksnjv9fkhl6k_qa3p1v.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577868/marketplace/pzezsqmohrhr5zoybezy_bh2nz4.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577868/marketplace/qcx3kaepj0wokwvhslhw_pvl5pm.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577868/marketplace/gdods7b3r96oedixuevs_fw2sp6.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577868/marketplace/clayi3dtumxdbhes2hr5_ov9yvg.webp",
-  "https://res.cloudinary.com/drykej1am/image/upload/v1768577868/marketplace/agezuqfv4oi0eybnrx79_v6vipj.webp",
-];
+import { MARKETPLACE_BACKGROUND_IMAGES } from "../../constants";
 
 interface LandingClientProps {
   vendor: Vendor;
@@ -39,7 +27,9 @@ export default function LandingClient({ vendor }: LandingClientProps) {
   useEffect(() => {
     // Select random image on mount
     const randomImage =
-      BACKGROUND_IMAGES[Math.floor(Math.random() * BACKGROUND_IMAGES.length)];
+      MARKETPLACE_BACKGROUND_IMAGES[
+        Math.floor(Math.random() * MARKETPLACE_BACKGROUND_IMAGES.length)
+      ];
     setBgImage(randomImage);
   }, []);
 
@@ -334,15 +324,18 @@ export default function LandingClient({ vendor }: LandingClientProps) {
             className="w-full h-full"
           >
             {bgImage && (
-              <Image
-                src={bgImage}
-                alt="Vendor Background"
-                fill
-                className="object-cover rounded-3xl"
-                priority
-                sizes="50vw"
-                onLoad={() => setDesktopBgLoaded(true)}
-              />
+              <>
+                <Image
+                  src={bgImage}
+                  alt="Vendor Background"
+                  fill
+                  className="object-cover rounded-3xl"
+                  priority
+                  sizes="50vw"
+                  onLoad={() => setDesktopBgLoaded(true)}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
+              </>
             )}
           </motion.div>
           <motion.div
