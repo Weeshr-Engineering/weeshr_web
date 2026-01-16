@@ -106,14 +106,14 @@ const VendorList: React.FC<VendorListProps> = ({
       },
     }),
     hover: {
-      y: -4,
+      y: 0,
       transition: {
         duration: 0.4,
         ease: [0.22, 1, 0.36, 1],
       },
     },
     tap: {
-      scale: 0.97,
+      scale: 1,
       transition: { duration: 0.1 },
     },
   };
@@ -217,8 +217,6 @@ const VendorList: React.FC<VendorListProps> = ({
                       {vendor.giftIdeas}
                     </p>
                   </div>
-
-              
 
                   <div className="flex gap-1">
                     <motion.div
