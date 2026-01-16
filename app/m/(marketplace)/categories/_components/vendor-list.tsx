@@ -106,13 +106,13 @@ const VendorList: React.FC<VendorListProps> = ({
       },
     }),
     hover: {
-      y: -8,
-      scale: 1.02,
-      rotate: 0.5,
+      y: -4,
+      scale: 1.01,
+      rotate: 0,
       transition: {
         duration: 0.4,
-        ease: [0.22, 1, 0.36, 1], // Premium easing (easeOutQuint)
-        delay: 0.15,
+        ease: [0.22, 1, 0.36, 1],
+        delay: 0.1, // Slightly faster reaction for minimal effect
       },
     },
     tap: { scale: 0.98 },
