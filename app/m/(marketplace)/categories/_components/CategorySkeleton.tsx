@@ -12,20 +12,27 @@ export default function CategorySkeletonGrid({
       {Array.from({ length: count }).map((_, i) => (
         <TiltedCard key={i}>
           <motion.div
-            className="rounded-3xl overflow-hidden shadow-lg relative h-[300px] lg:h-[400px] bg-muted/40"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            className="rounded-3xl overflow-hidden shadow-[0_8px_20px_-4px_rgba(0,0,0,0.04)] relative h-80 lg:h-[400px] bg-white border border-gray-50"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: i * 0.05 }}
           >
             {/* Full card background skeleton (image placeholder) */}
-            <Skeleton className="absolute inset-0 w-full h-full animate-pulse" />
+            <div className="absolute inset-0 w-full h-full bg-gray-50">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+            </div>
 
             {/* Bottom overlay skeleton mimicking text area */}
-            <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-24 lg:h-[100px] flex items-center rounded-r-3xl z-20 bg-white/60 backdrop-blur-sm">
-              <div className="p-3 sm:p-4 w-full">
-                <Skeleton className="h-5 sm:h-6 w-2/5 mb-2 animate-pulse" />
-                <Skeleton className="h-3 sm:h-4 w-1/3 animate-pulse" />
+            <div className="absolute bottom-0 left-0 right-0 h-24 lg:h-[100px] flex items-center rounded-r-3xl z-20 bg-white p-4">
+              <div className="w-full space-y-3">
+                <Skeleton className="h-6 w-3/5 rounded-lg bg-gray-100/80" />
+                <Skeleton className="h-3 w-1/4 rounded bg-gray-100/60" />
               </div>
+            </div>
+
+            {/* Badge placeholder */}
+            <div className="absolute top-4 left-4 z-20">
+              <Skeleton className="h-7 w-20 rounded-full bg-white/90 border border-gray-50 shadow-sm" />
             </div>
           </motion.div>
         </TiltedCard>

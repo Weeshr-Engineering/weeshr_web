@@ -77,7 +77,12 @@ export default function Page() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header Section */}
-      <div className="pt-10 md:pt-20 text-center shrink-0">
+      <motion.div
+        className="pt-10 md:pt-20 text-center shrink-0 px-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
         <h1 className="mx-auto max-w-4xl text-3xl tracking-normal text-slate-900 sm:text-5xl font-normal text-center ">
           What would you like to{" "}
           <span
@@ -104,7 +109,7 @@ export default function Page() {
           </span>
         </h1>
 
-        <p className="mx-auto max-w-4xl text-lg tracking-tight text-center">
+        <p className="mx-auto max-w-4xl text-lg tracking-tight text-center mt-2">
           <span className="inline-block text-muted-foreground w-4/5 lg:w-[60%]">
             Select the category of gift{" "}
             <motion.span
@@ -128,13 +133,18 @@ export default function Page() {
             </motion.span>
           </span>
         </p>
-      </div>
+      </motion.div>
 
       {/* Category Cards - Scrollable area */}
-      <div className="flex-1 overflow-y-auto mt-8 md:mt-4 px-4 pb-10 scrollbar-hide">
+      <motion.div
+        className="flex-1 overflow-y-auto mt-8 md:mt-4 px-4 pb-16 scrollbar-hide"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
         <div className="max-w-5xl mx-auto">
           {loading ? (
-            <CategorySkeletonGrid />
+            <CategorySkeletonGrid count={8} />
           ) : categories.length === 0 ? (
             <p className="pt-20 text-center text-muted-foreground">
               No categories found
@@ -210,7 +220,7 @@ export default function Page() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
