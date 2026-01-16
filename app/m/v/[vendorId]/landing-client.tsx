@@ -154,16 +154,20 @@ export default function LandingClient({ vendor }: LandingClientProps) {
             className="w-full h-full"
           >
             {bgImage && (
-              <Image
-                src={bgImage}
-                alt="Vendor Background"
-                fill
-                className="object-cover rounded-3xl"
-                priority
-                sizes="100vw"
-                onLoad={() => setMobileBgLoaded(true)}
-                onError={() => setMobileBgLoaded(true)}
-              />
+              <>
+                <Image
+                  src={bgImage}
+                  alt="Vendor Background"
+                  fill
+                  className="object-cover rounded-3xl"
+                  priority
+                  sizes="100vw"
+                  onLoad={() => setMobileBgLoaded(true)}
+                  onError={() => setMobileBgLoaded(true)}
+                />
+                {/* 📌 Added shadow/gradient for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
+              </>
             )}
           </motion.div>
           {/* CARD OVER THE IMAGE */}
