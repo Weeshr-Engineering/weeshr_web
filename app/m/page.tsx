@@ -122,7 +122,7 @@ export default function Home() {
       {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
       <div className="md:hidden flex-1 px-2 mt-2 pb-2 min-h-0 w-full relative">
         <motion.div
-          className="relative w-full h-full rounded-3xl overflow-hidden"
+          className="relative w-full h-full rounded-3xl overflow-hidden shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)]"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -292,7 +292,7 @@ export default function Home() {
       <div className="hidden md:flex min-h-screen flex-row">
         {/* Left Image Section */}
         <motion.div
-          className="relative flex-1 m-6"
+          className="relative flex-1 m-6 shadow-[0_32px_64px_-20px_rgba(0,0,0,0.15)] rounded-3xl"
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
