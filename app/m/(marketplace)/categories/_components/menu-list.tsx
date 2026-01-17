@@ -150,23 +150,14 @@ export function MenuList({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 pt-4">
-        {Array.from({ length: 6 }).map((_, index) => (
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 py-6 pt-4">
+        {Array.from({ length: 8 }).map((_, index) => (
           <Card
             key={index}
-            className="overflow-hidden rounded-2xl shadow-sm bg-white border-[1px] flex flex-row min-w-[300px] p-2 gap-2 animate-pulse"
+            className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative animate-pulse"
           >
-            <div className="relative w-[100px] h-[100px] flex-shrink-0 bg-gray-200 rounded-lg"></div>
-            <div className="flex flex-col justify-between flex-1 min-w-0 space-y-2">
-              <div className="space-y-1">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-3 bg-gray-200 rounded w-full"></div>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                <div className="h-7 bg-gray-200 rounded w-24"></div>
-              </div>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50"></div>
+            <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40"></div>
           </Card>
         ))}
       </div>
@@ -184,30 +175,37 @@ export function MenuList({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 pt-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 py-6 pt-4">
       {menuProducts.map((product) => {
         const basketItem = basket.find((item) => item.id === product.id);
         const itemCount = basketItem?.qty || 0;
+        const isHovered = hoverId === product.id;
 
         return (
           <motion.div
             key={product.id}
-            whileTap={product.isAvailable ? { scale: 0.98 } : {}}
-            className="w-full"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            whileHover={product.isAvailable ? { y: -6 } : {}}
+            whileTap={product.isAvailable ? { scale: 0.97 } : {}}
+            className="w-full group"
           >
             <Card
-              onClick={() => product.isAvailable && handleAdd(product.id)}
               onMouseEnter={() => setHoverId(product.id)}
               onMouseLeave={() => setHoverId(null)}
               className={cn(
-                "overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 bg-white border-[1px] flex flex-row w-full md:min-w-[300px] p-2 gap-2 relative h-full",
+                "overflow-hidden rounded-3xl transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
+                "bg-gradient-to-br from-white/95 via-white/90 to-white/95",
+                "backdrop-blur-xl border-[1.5px]",
                 product.isAvailable
-                  ? "cursor-pointer"
-                  : "opacity-60 cursor-not-allowed"
+                  ? "cursor-pointer border-gray-200/60 hover:border-marketplace-primary/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
+                  : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm"
               )}
             >
+              {/* Image Container - Full card */}
               <div
-                className="relative w-[100px] h-[100px] flex-shrink-0 cursor-zoom-in group bg-gray-100 rounded-lg overflow-hidden"
+                className="absolute inset-0 cursor-zoom-in group/image bg-gradient-to-br from-gray-50 to-gray-100/50 overflow-hidden"
                 onClick={(e) => {
                   e.stopPropagation();
                   setExpandedImage(product);
@@ -215,72 +213,133 @@ export function MenuList({
               >
                 {/* Shimmer skeleton while loading */}
                 {!imageLoadedStates[product.id] && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-50 via-amber-50/30 to-gray-50 animate-shimmer z-10" />
                 )}
 
                 <motion.div
-                  initial={{ opacity: 0, scale: 1.01 }}
+                  initial={{ opacity: 0, scale: 1.02 }}
                   animate={{
                     opacity: imageLoadedStates[product.id] ? 1 : 0,
-                    scale: imageLoadedStates[product.id] ? 1 : 1.01,
+                    scale: imageLoadedStates[product.id] ? 1 : 1.02,
                   }}
                   transition={{
-                    duration: 0.2,
-                    ease: "easeOut",
+                    duration: 0.5,
+                    ease: [0.25, 0.1, 0.25, 1],
                   }}
                   className="w-full h-full"
                 >
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={200}
-                    height={200}
-                    className="object-cover w-full h-full rounded-lg transition-transform hover:scale-105"
-                    loading="lazy"
-                    quality={75}
-                    onLoad={() => {
-                      setImageLoadedStates((prev) => ({
-                        ...prev,
-                        [product.id]: true,
-                      }));
+                  <motion.div
+                    animate={{
+                      scale: isHovered ? 1.1 : 1,
                     }}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `/api/placeholder/200/200?text=${encodeURIComponent(
-                        product.name
-                      )}`;
-                      setImageLoadedStates((prev) => ({
-                        ...prev,
-                        [product.id]: true,
-                      }));
+                    transition={{
+                      duration: 0.7,
+                      ease: [0.25, 0.1, 0.25, 1],
                     }}
-                  />
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      quality={85}
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      onLoad={() => {
+                        setImageLoadedStates((prev) => ({
+                          ...prev,
+                          [product.id]: true,
+                        }));
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = `/api/placeholder/400/500?text=${encodeURIComponent(
+                          product.name
+                        )}`;
+                        setImageLoadedStates((prev) => ({
+                          ...prev,
+                          [product.id]: true,
+                        }));
+                      }}
+                    />
+                  </motion.div>
                 </motion.div>
-                {/* Zoom indicator */}
-                <div className="absolute top-1 right-1 bg-black/50 backdrop-blur-sm rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                {itemCount > 0 && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-2 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
+                  >
+                    <span className="text-xs font-bold">{itemCount}</span>
+                  </motion.div>
+                )}
+
+                {/* Elegant zoom indicator - top right */}
+                <motion.div
+                  className="absolute top-3 right-3 bg-black/60 backdrop-blur-md rounded-full p-2 shadow-lg z-20"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{
+                    opacity: isHovered ? 1 : 0,
+                    scale: isHovered ? 1 : 0.8,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                >
                   <Icon
                     icon="ph:magnifying-glass-plus"
-                    className="w-3 h-3 text-white"
+                    className="w-4 h-4 text-white"
                   />
-                </div>
+                </motion.div>
+
+                {/* Dark gradient overlay on hover for text readability */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-10"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: isHovered ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                />
               </div>
 
-              {/* Content */}
-              <div className="flex flex-col justify-between flex-1 min-w-0">
-                <div>
-                  <CardTitle className="text-sm font-normal">
-                    {product.name}
-                  </CardTitle>
-                  <CardDescription className="text-xs  text-muted-foreground line-clamp-2">
-                    {product.description}
-                  </CardDescription>
-                </div>
+              {/* Price Tag - Always visible at top left */}
+              <motion.div
+                className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg border border-marketplace-primary/40"
+                animate={{
+                  scale: isHovered ? 1.05 : 1,
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="font-semibold text-[13px] md:text-[14px] bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900 bg-clip-text text-transparent">
+                  ₦{product.price.toLocaleString()}
+                </p>
+              </motion.div>
 
-                <div className="flex justify-between items-center text-md">
-                  <p className="font-semibold">
-                    ₦ {product.price.toLocaleString()}
-                  </p>
+              {/* Instagram-style overlay - slides up on hover */}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-5 pointer-events-none"
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{
+                  y: isHovered ? 0 : "100%",
+                  opacity: isHovered ? 1 : 0,
+                }}
+                transition={{
+                  duration: 0.5,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+              >
+                <div className="space-y-3">
+                  {/* Product Info */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-white text-[15px] md:text-[16px] font-semibold tracking-tight leading-snug drop-shadow-lg">
+                      {product.name}
+                    </h3>
+                    <p className="text-white/90 text-[12px] md:text-[13px] line-clamp-2 leading-relaxed drop-shadow-md">
+                      {product.description}
+                    </p>
+                  </div>
 
+                  {/* Add to Basket Button */}
                   <Button
                     size="sm"
                     variant="marketplace"
@@ -288,49 +347,49 @@ export function MenuList({
                       e.stopPropagation();
                       handleAdd(product.id);
                     }}
-                    onMouseEnter={() => setHoverId(product.id)}
-                    onMouseLeave={() => setHoverId(null)}
-                    className="rounded-full sm:rounded-3xl font-light text-xs gap-1 flex items-center py-0.5 h-7"
+                    className={cn(
+                      "w-full rounded-full font-semibold text-[13px] md:text-[14px] gap-2 flex items-center justify-center h-10 md:h-11 transition-all duration-300 pointer-events-auto",
+                      "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_30px_-6px_rgba(147,51,234,0.4)]",
+                      "hover:bg-marketplace-primary/80",
+                      "border-2 border-marketplace-primary/60 hover:border-marketplace-primary",
+                      !product.isAvailable && "opacity-50"
+                    )}
                     disabled={!product.isAvailable}
                   >
-                    {/* Text visible only on md+ screens */}
-                    {product.isAvailable && (
-                      <span className="hidden sm:inline lg:hidden xl:inline">
-                        Add to basket
-                      </span>
+                    {product.isAvailable ? (
+                      <>
+                        <Icon
+                          icon="streamline-ultimate:shopping-basket-1"
+                          className="text-gray-900 h-5 w-5"
+                        />
+                        <span className="text-gray-900 font-semibold">
+                          Add to basket
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-gray-600">Out of stock</span>
                     )}
-                    {!product.isAvailable && (
-                      <span className="hidden sm:inline lg:hidden xl:inline">
-                        Out of stock
-                      </span>
-                    )}
-
-                    {/* Icon always visible */}
-                    <motion.span
-                      initial={{ x: 0, scale: 1, rotate: 0 }}
-                      animate={{
-                        x: shakeId === product.id ? [-6, 6, -6, 6, 0] : 0,
-                        scale: hoverId === product.id ? 1.18 : 1,
-                        rotate: hoverId === product.id ? 8 : 0,
-                      }}
-                      transition={{
-                        x:
-                          shakeId === product.id
-                            ? { duration: 0.45, ease: "easeInOut" }
-                            : { duration: 0.18 },
-                        scale: { duration: 0.15, ease: "easeOut" },
-                        rotate: { duration: 0.18, ease: "easeOut" },
-                      }}
-                      className="flex sm:ml-2 lg:ml-0 xl:ml-2"
-                    >
-                      <Icon
-                        icon="streamline-ultimate:shopping-basket-1"
-                        className="text-black font-bold h-4 w-4"
-                      />
-                    </motion.span>
                   </Button>
                 </div>
-              </div>
+              </motion.div>
+
+              {/* Subtle shimmer effect */}
+              <motion.div
+                className="absolute inset-0 opacity-0 pointer-events-none z-[5]"
+                animate={{
+                  opacity: isHovered && product.isAvailable ? [0, 0.05, 0] : 0,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  background:
+                    "linear-gradient(110deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%)",
+                  backgroundSize: "200% 100%",
+                }}
+              />
             </Card>
           </motion.div>
         );
