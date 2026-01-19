@@ -128,7 +128,7 @@ export function MobileMenuButtons({
           const result = await cartService.removeItemFromCart(
             userId,
             productId.toString(),
-            Math.abs(clicksToSend)
+            Math.abs(clicksToSend),
           );
           if (!(result.code === 200 || result.code === 201)) {
             toast.error("Failed to sync removal with server");
@@ -177,7 +177,7 @@ export function MobileMenuButtons({
           try {
             const result = await cartService.removeItemFromCart(
               userId,
-              productId.toString()
+              productId.toString(),
             );
             if (!(result.code === 200 || result.code === 201)) {
               toast.error("Failed to sync removal with server");
@@ -193,7 +193,7 @@ export function MobileMenuButtons({
 
       // Otherwise decrease quantity
       const updated = prev.map((i) =>
-        i.id === productId ? { ...i, qty: i.qty - 1 } : i
+        i.id === productId ? { ...i, qty: i.qty - 1 } : i,
       );
 
       // Accumulate clicks (negative for decrement)
@@ -222,7 +222,7 @@ export function MobileMenuButtons({
             const result = await cartService.removeItemFromCart(
               userId,
               productId.toString(),
-              Math.abs(clicksToSend)
+              Math.abs(clicksToSend),
             );
             if (!(result.code === 200 || result.code === 201)) {
               toast.error("Failed to sync removal with server");
@@ -326,7 +326,7 @@ export function MobileMenuButtons({
                   "backdrop-blur-xl border-[1.5px]",
                   product.isAvailable
                     ? "cursor-pointer border-gray-200/60 active:border-marketplace-primary/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] active:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
-                    : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm"
+                    : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm",
                 )}
               >
                 {/* Image Container - Full card */}
@@ -381,7 +381,7 @@ export function MobileMenuButtons({
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = `/api/placeholder/400/500?text=${encodeURIComponent(
-                            product.name
+                            product.name,
                           )}`;
                           setImageLoadedStates((prev) => ({
                             ...prev,
@@ -421,13 +421,14 @@ export function MobileMenuButtons({
 
                 {/* Price Tag - Always visible at top left */}
                 <motion.div
-                  className="absolute top-2 left-2 z-20 bg-white/95 backdrop-blur-md rounded-full px-2.5 py-1 shadow-lg border border-marketplace-primary/40"
+                  className="absolute top-2 left-2 z-20 bg-white/80 backdrop-blur-md rounded-full px-2.5 py-1 shadow-md border border-white/60"
                   animate={{
                     scale: isHovered ? 1.05 : 1,
+                    opacity: isHovered ? 1 : 0.85,
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="font-semibold text-[11px] bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900 bg-clip-text text-transparent">
+                  <p className="font-semibold text-[11px] bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent">
                     ₦{product.price.toLocaleString()}
                   </p>
                 </motion.div>
@@ -436,8 +437,12 @@ export function MobileMenuButtons({
                 {itemCount > 0 && (
                   <motion.div
                     initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
+                    animate={{
+                      scale: 1,
+                      opacity: isHovered ? 0 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute top-4 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
                   >
                     <span className="text-[11px] font-bold">{itemCount}</span>
                   </motion.div>
@@ -482,7 +487,7 @@ export function MobileMenuButtons({
                               "w-full rounded-full font-semibold text-[12px] gap-1.5 flex items-center justify-center h-9 transition-all duration-300 pointer-events-auto",
                               "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_30px_-6px_rgba(147,51,234,0.4)]",
                               "hover:bg-marketplace-primary/80",
-                              "border-2 border-marketplace-primary/60 hover:border-marketplace-primary"
+                              "border-2 border-marketplace-primary/60 hover:border-marketplace-primary",
                             )}
                           >
                             <Icon
@@ -667,7 +672,7 @@ export function MobileMenuButtons({
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = `/api/placeholder/1200/1200?text=${encodeURIComponent(
-                      expandedImage.name
+                      expandedImage.name,
                     )}`;
                   }}
                 />
