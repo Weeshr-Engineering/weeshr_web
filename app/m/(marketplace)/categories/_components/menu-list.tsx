@@ -200,7 +200,7 @@ export function MenuList({
                 "backdrop-blur-xl border-[1.5px]",
                 product.isAvailable
                   ? "cursor-pointer border-gray-200/60 hover:border-marketplace-primary/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
-                  : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm"
+                  : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm",
               )}
             >
               {/* Image Container - Full card */}
@@ -255,7 +255,7 @@ export function MenuList({
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = `/api/placeholder/400/500?text=${encodeURIComponent(
-                          product.name
+                          product.name,
                         )}`;
                         setImageLoadedStates((prev) => ({
                           ...prev,
@@ -268,8 +268,12 @@ export function MenuList({
                 {itemCount > 0 && (
                   <motion.div
                     initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
+                    animate={{
+                      scale: 1,
+                      opacity: isHovered ? 0 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute top-4 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
                   >
                     <span className="text-xs font-bold">{itemCount}</span>
                   </motion.div>
@@ -293,7 +297,7 @@ export function MenuList({
 
                 {/* Dark gradient overlay on hover for text readability */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-10"
+                  className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-10"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: isHovered ? 1 : 0,
@@ -304,20 +308,21 @@ export function MenuList({
 
               {/* Price Tag - Always visible at top left */}
               <motion.div
-                className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg border border-marketplace-primary/40"
+                className="absolute top-3 left-3 z-20 bg-white backdrop-blur-md rounded-full px-3 py-1.5 shadow-md border border-white/60"
                 animate={{
                   scale: isHovered ? 1.05 : 1,
+                  opacity: isHovered ? 1 : 0.85,
                 }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="font-semibold text-[13px] md:text-[14px] bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900 bg-clip-text text-transparent">
+                <p className="font-semibold text-[13px] md:text-[14px] bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent">
                   ₦{product.price.toLocaleString()}
                 </p>
               </motion.div>
 
               {/* Instagram-style overlay - slides up on hover */}
               <motion.div
-                className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-5 pointer-events-none"
+                className="absolute bottom-0 left-0 right-0 z-20 p-3 md:p-4 pointer-events-none"
                 initial={{ y: "100%", opacity: 0 }}
                 animate={{
                   y: isHovered ? 0 : "100%",
@@ -328,13 +333,13 @@ export function MenuList({
                   ease: [0.25, 0.1, 0.25, 1],
                 }}
               >
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {/* Product Info */}
-                  <div className="space-y-1.5">
-                    <h3 className="text-white text-[15px] md:text-[16px] font-semibold tracking-tight leading-snug drop-shadow-lg">
+                  <div className="space-y-1">
+                    <h3 className="text-white text-[13px] md:text-[14px] font-semibold tracking-tight leading-tight drop-shadow-lg line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="text-white/90 text-[12px] md:text-[13px] line-clamp-2 leading-relaxed drop-shadow-md">
+                    <p className="text-white/85 text-[11px] md:text-[12px] line-clamp-2 leading-snug drop-shadow-md">
                       {product.description}
                     </p>
                   </div>
@@ -352,7 +357,7 @@ export function MenuList({
                       "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_30px_-6px_rgba(147,51,234,0.4)]",
                       "hover:bg-marketplace-primary/80",
                       "border-2 border-marketplace-primary/60 hover:border-marketplace-primary",
-                      !product.isAvailable && "opacity-50"
+                      !product.isAvailable && "opacity-50",
                     )}
                     disabled={!product.isAvailable}
                   >
@@ -492,7 +497,7 @@ export function MenuList({
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = `/api/placeholder/1200/1200?text=${encodeURIComponent(
-                      expandedImage.name
+                      expandedImage.name,
                     )}`;
                   }}
                 />
