@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Toaster } from "react-hot-toast";
-import RuutChat from "@/components/commons/RuutChat";
+// import RuutChat from "@/components/commons/RuutChat";
 
 export default function ClientLayout({
   children,
@@ -32,7 +32,7 @@ export default function ClientLayout({
     <>
       {children}
       <Toaster position="bottom-left" />
-      {!isMarketplacePath && <RuutChat />}
+      {/* {!isMarketplacePath && <RuutChat />} */}
     </>
   );
 }
