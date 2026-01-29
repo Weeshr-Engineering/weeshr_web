@@ -21,7 +21,7 @@ export async function fetchVendorsByCategory(categoryId: string) {
     `${API_BASE_URL}/market/vendors/category/${categoryId}`,
     {
       next: { revalidate: 60 },
-    }
+    },
   );
 
   if (!res.ok) {
@@ -38,7 +38,7 @@ export async function fetchAllVendors(page: number = 1) {
     `${API_BASE_URL}/market/vendors?page=${page}&per_page=8&sortOrder=desc`,
     {
       next: { revalidate: 60 },
-    }
+    },
   );
 
   if (!res.ok) {
@@ -57,13 +57,17 @@ export async function fetchAllVendors(page: number = 1) {
   };
 }
 
-// Fetch products by vendor ID
-export async function fetchProductsByVendor(vendorId: string) {
+// Fetch products by vendor ID with pagination
+export async function fetchProductsByVendor(
+  vendorId: string,
+  page: number = 1,
+  perPage: number = 36,
+) {
   const res = await fetch(
-    `${API_BASE_URL}/market/products/?vendorId=${vendorId}`,
+    `${API_BASE_URL}/market/products/?vendorId=${vendorId}&page=${page}&per_page=${perPage}`,
     {
       next: { revalidate: 60 },
-    }
+    },
   );
 
   if (!res.ok) {
@@ -71,7 +75,15 @@ export async function fetchProductsByVendor(vendorId: string) {
   }
 
   const json = await res.json();
-  return json.data?.data || [];
+  return {
+    products: json.data?.data || [],
+    pagination: {
+      currentPage: json.data?.currentPage || 1,
+      totalPages: json.data?.totalPages || 1,
+      totalItems: json.data?.totalItems || 0,
+      perPage: json.data?.perPage || perPage,
+    },
+  };
 }
 
 // Fetch single vendor by ID

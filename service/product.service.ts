@@ -43,13 +43,26 @@ export interface Product {
  */
 export class ProductService {
   /**
-   * Fetch products by vendor ID
+   * Fetch products by vendor ID with pagination
    */
-  static async getProductsByVendor(vendorId: string): Promise<Product[]> {
+  static async getProductsByVendor(
+    vendorId: string,
+    page: number = 1,
+    perPage: number = 36,
+  ): Promise<{
+    products: Product[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      perPage: number;
+    };
+  }> {
     try {
-      const apiProducts: ApiProduct[] = await fetchProductsByVendor(vendorId);
+      const response = await fetchProductsByVendor(vendorId, page, perPage);
+      const apiProducts: ApiProduct[] = response.products;
 
-      return apiProducts.map((product) => ({
+      const products = apiProducts.map((product) => ({
         id: product._id,
         name: product.name,
         description: product.description,
@@ -65,9 +78,22 @@ export class ProductService {
           !product.isDeleted &&
           product.qty > 0,
       }));
+
+      return {
+        products,
+        pagination: response.pagination,
+      };
     } catch (error) {
       console.error("Error fetching products:", error);
-      return [];
+      return {
+        products: [],
+        pagination: {
+          currentPage: 1,
+          totalPages: 1,
+          totalItems: 0,
+          perPage: perPage,
+        },
+      };
     }
   }
 
@@ -79,7 +105,7 @@ export class ProductService {
     const randomEmoji =
       foodPlaceholders[Math.floor(Math.random() * foodPlaceholders.length)];
     return `/api/placeholder/200/200?text=${encodeURIComponent(
-      productName
+      productName,
     )}&emoji=${randomEmoji}`;
   }
 }

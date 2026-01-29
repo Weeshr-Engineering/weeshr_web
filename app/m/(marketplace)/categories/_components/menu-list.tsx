@@ -33,9 +33,15 @@ export function MenuList({
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [expandedImage, setExpandedImage] = useState<Product | null>(null);
   const [imageScale, setImageScale] = useState(1);
   const [dragY, setDragY] = useState(0);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // Track image loading state for each product
   const [imageLoadedStates, setImageLoadedStates] = useState<
@@ -46,17 +52,25 @@ export function MenuList({
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
   // Track accumulated clicks for each product
   const clickCountRefs = useRef<{ [key: string]: number }>({});
+  // Ref for infinite scroll observer
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  // Fetch products when vendorId changes
+  // Fetch products when vendorId changes (initial load)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const productsData = await ProductService.getProductsByVendor(vendorId);
-        setMenuProducts(productsData);
+        setCurrentPage(1);
+        const response = await ProductService.getProductsByVendor(vendorId, 1);
+        setMenuProducts(response.products);
+        setTotalPages(response.pagination.totalPages);
+        setHasMore(
+          response.pagination.currentPage < response.pagination.totalPages,
+        );
       } catch (error) {
         console.error("Failed to fetch products:", error);
         setMenuProducts([]);
+        setHasMore(false);
       } finally {
         setLoading(false);
       }
@@ -64,6 +78,50 @@ export function MenuList({
 
     if (vendorId) fetchProducts();
   }, [vendorId]);
+
+  // Load more products
+  const loadMoreProducts = async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      const nextPage = currentPage + 1;
+      const response = await ProductService.getProductsByVendor(
+        vendorId,
+        nextPage,
+      );
+
+      setMenuProducts((prev) => [...prev, ...response.products]);
+      setCurrentPage(nextPage);
+      setHasMore(nextPage < response.pagination.totalPages);
+    } catch (error) {
+      console.error("Failed to load more products:", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          loadMoreProducts();
+        }
+      },
+      { threshold: 0.1, rootMargin: "100px" },
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasMore, loadingMore, currentPage, vendorId]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -339,7 +397,7 @@ export function MenuList({
                     <h3 className="text-white text-[13px] md:text-[14px] font-semibold tracking-tight leading-tight drop-shadow-lg line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="text-white/85 text-[11px] md:text-[12px] line-clamp-2 leading-snug drop-shadow-md">
+                    <p className="text-white/85 text-[11px] md:text-[12px] leading-snug drop-shadow-md">
                       {product.description}
                     </p>
                   </div>
@@ -399,6 +457,44 @@ export function MenuList({
           </motion.div>
         );
       })}
+
+      {/* Infinite Scroll Loading Indicator - Skeleton Cards */}
+      {loadingMore && (
+        <>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <motion.div
+              key={`loading-${index}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="w-full"
+            >
+              <Card className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 animate-pulse"></div>
+                <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40 animate-pulse"></div>
+              </Card>
+            </motion.div>
+          ))}
+        </>
+      )}
+
+      {/* Infinite Scroll Trigger */}
+      <div ref={loadMoreRef} className="col-span-full h-4" />
+
+      {/* End of products message */}
+      {!hasMore && menuProducts.length > 0 && (
+        <div className="col-span-full flex flex-col items-center gap-2 py-8 pb-10">
+          <Icon
+            icon="material-symbols:check-circle-outline"
+            height={32}
+            width={32}
+            className="text-marketplace-primary"
+          />
+          <p className="text-sm font-medium text-muted-foreground">
+            hoohooo you've reached the end 🥰
+          </p>
+        </div>
+      )}
 
       {/* Premium Image Expansion Modal */}
       {expandedImage && (
@@ -518,7 +614,12 @@ export function MenuList({
                 <h3 className="text-white text-sm md:text-base font-semibold truncate">
                   {expandedImage.name}
                 </h3>
-                <p className="text-white text-lg md:text-xl font-bold">
+                {expandedImage.description && (
+                  <p className="text-white/70 text-xs md:text-sm mt-1 line-clamp-2">
+                    {expandedImage.description}
+                  </p>
+                )}
+                <p className="text-white text-lg md:text-xl font-bold mt-1">
                   ₦ {expandedImage.price.toLocaleString()}
                 </p>
               </div>

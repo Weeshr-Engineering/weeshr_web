@@ -37,6 +37,7 @@ export function MobileMenuButtons({
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [expandedImage, setExpandedImage] = useState<Product | null>(null);
   const [imageScale, setImageScale] = useState(1);
   const [dragY, setDragY] = useState(0);
@@ -46,20 +47,33 @@ export function MobileMenuButtons({
     Record<string, boolean>
   >({});
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
   // Track accumulated clicks per product during debounce period
   const clickCountRefs = useRef<{ [key: string]: number }>({});
+  // Ref for infinite scroll observer
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  // Fetch products when vendorId changes
+  // Fetch products when vendorId changes (initial load)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const productsData = await ProductService.getProductsByVendor(vendorId);
-        setMenuProducts(productsData);
+        setCurrentPage(1);
+        const response = await ProductService.getProductsByVendor(vendorId, 1);
+        setMenuProducts(response.products);
+        setTotalPages(response.pagination.totalPages);
+        setHasMore(
+          response.pagination.currentPage < response.pagination.totalPages,
+        );
       } catch (error) {
         console.error("Failed to fetch products:", error);
         setMenuProducts([]);
+        setHasMore(false);
       } finally {
         setLoading(false);
       }
@@ -67,6 +81,60 @@ export function MobileMenuButtons({
 
     if (vendorId) fetchProducts();
   }, [vendorId]);
+
+  // Load more products
+  const loadMoreProducts = async () => {
+    console.log("Attempting to load more:", {
+      loadingMore,
+      hasMore,
+      currentPage,
+    });
+    if (loadingMore || !hasMore) return;
+
+    try {
+      console.log("Fetching page:", currentPage + 1);
+      setLoadingMore(true);
+      const nextPage = currentPage + 1;
+      const response = await ProductService.getProductsByVendor(
+        vendorId,
+        nextPage,
+      );
+
+      console.log("Fetched new products:", response.products.length);
+      setMenuProducts((prev) => [...prev, ...response.products]);
+      setCurrentPage(nextPage);
+      setHasMore(nextPage < response.pagination.totalPages);
+    } catch (error) {
+      console.error("Failed to load more products:", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          console.log("Observer intersecting:", { hasMore, loadingMore });
+          if (hasMore && !loadingMore) {
+            loadMoreProducts();
+          }
+        }
+      },
+      { threshold: 0.1, rootMargin: "100px" },
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasMore, loadingMore, currentPage, vendorId]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -450,7 +518,7 @@ export function MobileMenuButtons({
 
                 {/* Instagram-style overlay - slides up on hover */}
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 z-20 p-3 pointer-events-none"
+                  className="absolute bottom-0 left-0 right-0 z-20 p-4 pointer-events-none"
                   initial={{ y: "100%", opacity: 0 }}
                   animate={{
                     y: isHovered ? 0 : "100%",
@@ -461,13 +529,13 @@ export function MobileMenuButtons({
                     ease: [0.25, 0.1, 0.25, 1],
                   }}
                 >
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     {/* Product Info */}
-                    <div className="space-y-1">
-                      <h3 className="text-white text-[13px] font-semibold tracking-tight leading-snug drop-shadow-lg line-clamp-1">
+                    <div className="space-y-1.5">
+                      <h3 className="text-white text-[14px] font-semibold tracking-tight leading-snug drop-shadow-lg line-clamp-1">
                         {product.name}
                       </h3>
-                      <p className="text-white/90 text-[11px] line-clamp-2 leading-relaxed drop-shadow-md">
+                      <p className="text-white/95 text-[12px] leading-relaxed drop-shadow-md">
                         {product.description}
                       </p>
                     </div>
@@ -573,6 +641,44 @@ export function MobileMenuButtons({
             </motion.div>
           );
         })}
+
+        {/* Infinite Scroll Loading Indicator - Skeleton Cards */}
+        {loadingMore && (
+          <>
+            {Array.from({ length: 4 }).map((_, index) => (
+              <motion.div
+                key={`loading-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 animate-pulse"></div>
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40 animate-pulse"></div>
+                </Card>
+              </motion.div>
+            ))}
+          </>
+        )}
+
+        {/* Infinite Scroll Trigger */}
+        <div ref={loadMoreRef} className="col-span-full h-4" />
+
+        {/* End of products message */}
+        {!hasMore && menuProducts.length > 0 && (
+          <div className="col-span-full flex flex-col items-center gap-2 py-8 pb-10">
+            <Icon
+              icon="material-symbols:check-circle-outline"
+              height={32}
+              width={32}
+              className="text-marketplace-primary"
+            />
+            <p className="text-sm font-medium text-muted-foreground">
+              hoohooo you've reached the end 🥰
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Premium Image Expansion Modal */}

@@ -81,7 +81,7 @@ export default function VendorPage() {
               headers: {
                 Authorization: `Bearer ${authToken}`,
               },
-            }
+            },
           );
 
           if (
@@ -116,8 +116,8 @@ export default function VendorPage() {
       }
       try {
         setLoading(true);
-        const productsData = await ProductService.getProductsByVendor(vendorId);
-        setProducts(productsData);
+        const response = await ProductService.getProductsByVendor(vendorId);
+        setProducts(response.products);
       } catch (error) {
         console.error("Failed to fetch products:", error);
         setProducts([]);
@@ -147,8 +147,8 @@ export default function VendorPage() {
     if (receiverName.trim().length > 0) {
       router.push(
         `/m/categories/${categoryName}/${vendorName}?name=${encodeURIComponent(
-          receiverName
-        )}&categoryId=${categoryId}&vendorId=${vendorId}`
+          receiverName,
+        )}&categoryId=${categoryId}&vendorId=${vendorId}`,
       );
       setOpen(false);
     }
@@ -175,8 +175,8 @@ export default function VendorPage() {
   const handleCategoryClick = () => {
     router.push(
       `/m/categories/${effectiveCategoryName}?id=${effectiveCategoryId}&name=${encodeURIComponent(
-        nameParam
-      )}`
+        nameParam,
+      )}`,
     );
   };
 
