@@ -109,7 +109,7 @@ export function MenuList({
           loadMoreProducts();
         }
       },
-      { threshold: 0.1, rootMargin: "100px" },
+      { threshold: 0.1, rootMargin: "500px" },
     );
 
     if (loadMoreRef.current) {
@@ -479,7 +479,7 @@ export function MenuList({
       )}
 
       {/* Infinite Scroll Trigger */}
-      <div ref={loadMoreRef} className="col-span-full h-4" />
+      <div ref={loadMoreRef} className="col-span-full h-10 w-full" />
 
       {/* End of products message */}
       {!hasMore && menuProducts.length > 0 && (

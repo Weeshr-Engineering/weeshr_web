@@ -61,7 +61,7 @@ export async function fetchAllVendors(page: number = 1) {
 export async function fetchProductsByVendor(
   vendorId: string,
   page: number = 1,
-  perPage: number = 36,
+  perPage: number = 100,
 ) {
   const res = await fetch(
     `${API_BASE_URL}/market/products/?vendorId=${vendorId}&page=${page}&per_page=${perPage}`,
