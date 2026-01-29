@@ -84,7 +84,7 @@ export class VendorService {
       console.log(`Fetching vendors for category: ${categoryId}`);
       const apiVendors: ApiVendor[] = await fetchVendorsByCategory(categoryId);
       console.log(
-        `Found ${apiVendors.length} vendors for category ${categoryId}`
+        `Found ${apiVendors.length} vendors for category ${categoryId}`,
       );
 
       // Map vendors directly using the information we already have
@@ -248,7 +248,7 @@ export class VendorService {
       foodPlaceholders[Math.floor(Math.random() * foodPlaceholders.length)];
 
     return `https://via.placeholder.com/400x240/4F46E5/FFFFFF?text=${encodeURIComponent(
-      vendorName
+      vendorName,
     )}`;
   }
 
@@ -305,14 +305,14 @@ export class VendorService {
 
   static async getVendorProductImages(vendorId: string): Promise<string[]> {
     try {
-      const products = await fetchProductsByVendor(vendorId);
-      return products
+      const response = await fetchProductsByVendor(vendorId);
+      return response.products
         .filter((product: ApiProduct) => product?.image?.secure_url)
         .map((product: ApiProduct) => product.image!.secure_url);
     } catch (error) {
       console.error(
         `Error fetching product images for vendor ${vendorId}:`,
-        error
+        error,
       );
       return [];
     }

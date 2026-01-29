@@ -83,16 +83,11 @@ export function MobileMenuButtons({
   }, [vendorId]);
 
   // Load more products
+  // Load more products
   const loadMoreProducts = async () => {
-    console.log("Attempting to load more:", {
-      loadingMore,
-      hasMore,
-      currentPage,
-    });
     if (loadingMore || !hasMore) return;
 
     try {
-      console.log("Fetching page:", currentPage + 1);
       setLoadingMore(true);
       const nextPage = currentPage + 1;
       const response = await ProductService.getProductsByVendor(
@@ -100,7 +95,6 @@ export function MobileMenuButtons({
         nextPage,
       );
 
-      console.log("Fetched new products:", response.products.length);
       setMenuProducts((prev) => [...prev, ...response.products]);
       setCurrentPage(nextPage);
       setHasMore(nextPage < response.pagination.totalPages);
@@ -115,14 +109,11 @@ export function MobileMenuButtons({
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          console.log("Observer intersecting:", { hasMore, loadingMore });
-          if (hasMore && !loadingMore) {
-            loadMoreProducts();
-          }
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          loadMoreProducts();
         }
       },
-      { threshold: 0.1, rootMargin: "100px" },
+      { threshold: 0.1, rootMargin: "500px" },
     );
 
     if (loadMoreRef.current) {
@@ -663,7 +654,7 @@ export function MobileMenuButtons({
         )}
 
         {/* Infinite Scroll Trigger */}
-        <div ref={loadMoreRef} className="col-span-full h-4" />
+        <div ref={loadMoreRef} className="col-span-full h-10 w-full" />
 
         {/* End of products message */}
         {!hasMore && menuProducts.length > 0 && (

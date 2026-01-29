@@ -48,7 +48,7 @@ export class ProductService {
   static async getProductsByVendor(
     vendorId: string,
     page: number = 1,
-    perPage: number = 36,
+    perPage: number = 100,
   ): Promise<{
     products: Product[];
     pagination: {
