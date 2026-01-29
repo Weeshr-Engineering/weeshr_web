@@ -614,11 +614,10 @@ export function MenuList({
                 <h3 className="text-white text-sm md:text-base font-semibold truncate">
                   {expandedImage.name}
                 </h3>
-                {expandedImage.description && (
                   <p className="text-white/70 text-xs md:text-sm mt-1 line-clamp-2">
                     {expandedImage.description}
                   </p>
-                )}
+             
                 <p className="text-white text-lg md:text-xl font-bold mt-1">
                   ₦ {expandedImage.price.toLocaleString()}
                 </p>

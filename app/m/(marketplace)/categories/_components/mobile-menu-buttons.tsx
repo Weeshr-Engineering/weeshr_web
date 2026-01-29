@@ -467,14 +467,11 @@ export function MobileMenuButtons({
                     />
                   </motion.div>
 
-                  {/* Dark gradient overlay on hover for text readability */}
+                  {/* Dark gradient overlay for text readability - Always visible */}
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-10"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: isHovered ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 1 }}
                   />
                 </div>
 
@@ -507,18 +504,11 @@ export function MobileMenuButtons({
                   </motion.div>
                 )}
 
-                {/* Instagram-style overlay - slides up on hover */}
+                {/* Instagram-style overlay - Always visible on mobile */}
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 z-20 p-4 pointer-events-none"
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{
-                    y: isHovered ? 0 : "100%",
-                    opacity: isHovered ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.25, 0.1, 0.25, 1],
-                  }}
+                  initial={{ y: 0, opacity: 1 }}
+                  animate={{ y: 0, opacity: 1 }}
                 >
                   <div className="space-y-2.5">
                     {/* Product Info */}
@@ -526,7 +516,7 @@ export function MobileMenuButtons({
                       <h3 className="text-white text-[14px] font-semibold tracking-tight leading-snug drop-shadow-lg line-clamp-1">
                         {product.name}
                       </h3>
-                      <p className="text-white/95 text-[12px] leading-relaxed drop-shadow-md">
+                      <p className="text-white/95 text-[12px] leading-relaxed drop-shadow-md line-clamp-2">
                         {product.description}
                       </p>
                     </div>
@@ -790,6 +780,9 @@ export function MobileMenuButtons({
                 <h3 className="text-white text-sm md:text-base font-semibold truncate">
                   {expandedImage.name}
                 </h3>
+                <p className="text-white/70 text-xs md:text-sm mt-1 line-clamp-2">
+                  {expandedImage.description}
+                </p>
                 <p className="text-white text-lg md:text-xl font-bold">
                   ₦ {expandedImage.price.toLocaleString()}
                 </p>
