@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import VendorList from "../_components/vendor-list";
+import { Card } from "@/components/ui/card";
 import MobileCategoryTabs from "../_components/mobile-category-tabs";
 import ChangeReceiverDialog from "../_components/change-receiver-dialog";
 import { Vendor, VendorService } from "@/service/vendor.service";
@@ -26,7 +27,7 @@ export default function AllVendorsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [observerTarget, setObserverTarget] = useState<HTMLDivElement | null>(
-    null
+    null,
   );
 
   const nameParam = searchParams.get("name");
@@ -103,7 +104,7 @@ export default function AllVendorsPage() {
           handleLoadMore();
         }
       },
-      { threshold: 0.1, rootMargin: "100px" }
+      { threshold: 0.1, rootMargin: "100px" },
     );
 
     observer.observe(observerTarget);
@@ -226,36 +227,42 @@ export default function AllVendorsPage() {
               {hasMoreVendors ? (
                 <>
                   {/* Invisible trigger for infinite scroll */}
-                  <div
-                    ref={setObserverTarget}
-                    className="flex justify-center items-center"
-                  >
+                  {/* Infinite Scroll Loading Indicator - Skeleton Vendor Cards */}
+                  <div ref={setObserverTarget} className="w-full">
                     {loadingMore && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Icon icon="eos-icons:loading" height={24} width={24} />
-                        <span className="text-sm">Loading more vendors...</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 py-6 transition-all">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                          <motion.div
+                            key={`loading-vendor-${index}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: index * 0.1 }}
+                          >
+                            <Card className="overflow-hidden rounded-3xl border border-gray-100 bg-white">
+                              {/* Image Skeleton */}
+                              <div className="h-48 bg-gray-100 animate-pulse relative">
+                                <div className="absolute top-3 left-3 bg-white/60 w-24 h-6 rounded-full" />
+                              </div>
+                              {/* Content Skeleton */}
+                              <div className="p-5 space-y-4">
+                                <div className="h-5 bg-gray-100 rounded w-3/4 animate-pulse" />
+                                <div className="flex justify-between items-end gap-2">
+                                  <div className="flex-1 space-y-2">
+                                    <div className="h-3 bg-gray-100 rounded w-16 animate-pulse" />
+                                    <div className="h-4 bg-gray-100 rounded w-full animate-pulse" />
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <div className="h-9 w-16 bg-gray-100 rounded-2xl animate-pulse" />
+                                    <div className="h-9 w-24 bg-gray-100 rounded-2xl animate-pulse" />
+                                  </div>
+                                </div>
+                              </div>
+                            </Card>
+                          </motion.div>
+                        ))}
                       </div>
                     )}
                   </div>
-
-                  {/* Optional: Keep button for manual trigger */}
-                  {!loadingMore && (
-                    <div className="flex justify-center">
-                      <Button
-                        onClick={handleLoadMore}
-                        variant="ghost"
-                        className="px-6 py-3 text-sm font-medium rounded-full text-muted-foreground hover:text-marketplace-primary transition-colors"
-                      >
-                        <Icon
-                          icon="material-symbols:expand-more"
-                          className="mr-2"
-                          height={20}
-                          width={20}
-                        />
-                        Load More
-                      </Button>
-                    </div>
-                  )}
                 </>
               ) : vendors.length > 0 ? (
                 <div className="flex flex-col items-center gap-2 text-muted-foreground pb-10">
