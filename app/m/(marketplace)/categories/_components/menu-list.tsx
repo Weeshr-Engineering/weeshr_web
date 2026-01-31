@@ -387,6 +387,8 @@ export function MenuList({
                   startIndex={expandedImageIndex}
                   enableAutoplay={false} // Don't autoplay in expanded view unless explicitly requested
                   showArrows={true} // Show arrows in modal for better UX
+                  showThumbnails={true}
+                  showDots={false}
                   className="h-full w-full"
                   imageClassName="object-contain" // Use object-contain for expanded view to see full image
                   aspectRatio="aspect-square"

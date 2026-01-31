@@ -736,6 +736,8 @@ export function MobileMenuButtons({
                   startIndex={expandedImageIndex}
                   enableAutoplay={false}
                   showArrows={true}
+                  showThumbnails={true}
+                  showDots={false}
                   className="h-full w-full"
                   imageClassName="object-contain"
                   aspectRatio="aspect-square"

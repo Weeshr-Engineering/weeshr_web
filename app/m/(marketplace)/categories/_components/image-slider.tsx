@@ -17,6 +17,7 @@ interface ImageSliderProps {
   onImageClick?: (index: number) => void;
   showDots?: boolean;
   showArrows?: boolean;
+  showThumbnails?: boolean;
   startIndex?: number;
   enableAutoplay?: boolean;
 }
@@ -31,6 +32,7 @@ export function ImageSlider({
   onImageClick,
   showDots = true,
   showArrows = false,
+  showThumbnails = false,
   startIndex = 0,
   enableAutoplay = true,
 }: ImageSliderProps) {
@@ -218,6 +220,40 @@ export function ImageSlider({
           >
             <Icon icon="ph:caret-right-bold" className="w-4 h-4" />
           </button>
+        </>
+      )}
+
+      {/* Thumbnails - Added for Expandable Mode */}
+      {showThumbnails && images.length > 1 && (
+        <>
+ 
+
+          {/* Bottom thumbnails */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2 p-1.5 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 max-w-[85%] overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth">
+            {images.map((src, idx) => (
+              <button
+                key={`bottom-${idx}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  scrollTo(idx);
+                }}
+                className={cn(
+                  "relative w-11 h-11 md:w-12 md:h-12 rounded-xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0",
+                  idx === selectedIndex
+                    ? "border-marketplace-primary scale-110 shadow-lg shadow-marketplace-primary/20"
+                    : "border-white/10 opacity-40 hover:opacity-100 hover:scale-105",
+                )}
+              >
+                <Image
+                  src={src}
+                  fill
+                  className="object-cover"
+                  alt={`Thumbnail ${idx}`}
+                  sizes="48px"
+                />
+              </button>
+            ))}
+          </div>
         </>
       )}
     </div>
