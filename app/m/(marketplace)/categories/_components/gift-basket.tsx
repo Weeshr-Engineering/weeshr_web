@@ -81,11 +81,13 @@ export function GiftBasket({
   });
 
   // Fetch cart details from API
-  const fetchCartDetails = async () => {
-    if (!isAuthenticated || !userId) return;
+  const fetchCartDetails = async (passedUserId?: string) => {
+    const effectiveUserId = passedUserId || userId;
+    if (!isAuthenticated && !passedUserId) return;
+    if (!effectiveUserId) return;
 
     try {
-      const result = await cartService.getUserCart(userId);
+      const result = await cartService.getUserCart(effectiveUserId);
       if (result.code === 200 || result.code === 201) {
         setCartDetails({
           subTotal: result.data?.subTotal || 0,
@@ -169,7 +171,7 @@ export function GiftBasket({
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
-          }
+          },
         );
 
         if (profileResponse.status === 200 || profileResponse.status === 201) {
@@ -178,7 +180,7 @@ export function GiftBasket({
           setUserId(userData._id);
           setUserEmail(userData.email);
           setUserPhone(
-            `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
+            `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`,
           );
 
           if (!userData.emailVerified) {
@@ -189,7 +191,7 @@ export function GiftBasket({
           }
 
           // Fetch cart details before opening receiver modal
-          await fetchCartDetails();
+          await fetchCartDetails(userData._id);
           setReceiverModalOpen(true);
         } else {
           setIsAuthenticated(false);
@@ -216,7 +218,7 @@ export function GiftBasket({
   // Push local cart items to backend API (for login/signup)
   const pushLocalCartToBackend = async (
     userId: string,
-    shouldOpenReceiverModal: boolean = true
+    shouldOpenReceiverModal: boolean = true,
   ) => {
     setIsProcessingCart(true);
     try {
@@ -235,13 +237,13 @@ export function GiftBasket({
       if (result.code === 200 || result.code === 201) {
         toast.success("🎉 Basket synced successfully! Ready for payment.");
         // Fetch cart details after syncing
-        await fetchCartDetails();
+        await fetchCartDetails(userId);
         if (shouldOpenReceiverModal) {
           setReceiverModalOpen(true);
         }
       } else {
         toast.error(
-          result.message || "Failed to sync basket. Please try again."
+          result.message || "Failed to sync basket. Please try again.",
         );
       }
     } catch (error: any) {
@@ -259,12 +261,12 @@ export function GiftBasket({
       const result = await cartService.getUserCart(userId);
       if (result.code === 200 || result.code === 201) {
         // Fetch cart details after verification
-        await fetchCartDetails();
+        await fetchCartDetails(userId);
         toast.success("🎉 Basket verified! Ready for payment.");
         setReceiverModalOpen(true);
       } else {
         toast.error(
-          result.message || "Failed to verify basket. Please try again."
+          result.message || "Failed to verify basket. Please try again.",
         );
       }
     } catch (error: any) {
@@ -291,7 +293,7 @@ export function GiftBasket({
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
-          }
+          },
         );
         if (profileResponse.status === 200 || profileResponse.status === 201) {
           const userData = profileResponse.data.data;
@@ -299,7 +301,7 @@ export function GiftBasket({
           setUserId(userData._id);
           setUserEmail(userData.email);
           setUserPhone(
-            `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`
+            `${userData.phoneNumber.countryCode} ${userData.phoneNumber.phoneNumber}`,
           );
 
           // Map to SignupFormData structure for Edit Modal
@@ -339,7 +341,7 @@ export function GiftBasket({
     phone: string,
     formData: any,
     newUserId?: string,
-    token?: string
+    token?: string,
   ) => {
     setLoginOpen(false);
     setUserEmail(email);
@@ -368,7 +370,7 @@ export function GiftBasket({
               headers: {
                 Authorization: `Bearer ${authToken}`,
               },
-            }
+            },
           );
           if (
             profileResponse.status === 200 ||
@@ -378,7 +380,7 @@ export function GiftBasket({
             setUserId(profileResponse.data.data._id);
             // Load user's cart from backend
             const cartResult = await cartService.getUserCart(
-              profileResponse.data.data._id
+              profileResponse.data.data._id,
             );
             if (
               cartResult.data?.items &&
@@ -405,7 +407,7 @@ export function GiftBasket({
                     item.id !== undefined &&
                     item.qty !== undefined &&
                     item.name !== undefined &&
-                    item.qty >= 1
+                    item.qty >= 1,
                 );
               setBasket(apiBasket);
 

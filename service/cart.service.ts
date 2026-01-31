@@ -12,6 +12,9 @@ export interface CartData {
   _id?: string;
   userId: string;
   items: CartItem[];
+  subTotal?: number;
+  serviceCharge?: number;
+  deliveryFee?: number;
   totalPrice?: number;
   isActive?: boolean;
 }
@@ -45,7 +48,7 @@ class CartService {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // Store cart ID for future reference
@@ -74,7 +77,7 @@ class CartService {
   async removeItemFromCart(
     userId: string,
     productId: string,
-    quantityToRemove?: number
+    quantityToRemove?: number,
   ): Promise<CartResponse> {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -100,7 +103,7 @@ class CartService {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       return {
@@ -135,7 +138,7 @@ class CartService {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        }
+        },
       );
 
       // Clear local cart ID
@@ -173,7 +176,7 @@ class CartService {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        }
+        },
       );
 
       if (response.data.data?._id) {
