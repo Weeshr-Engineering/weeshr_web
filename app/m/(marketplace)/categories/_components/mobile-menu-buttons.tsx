@@ -11,6 +11,7 @@ import { cartService } from "@/service/cart.service";
 import toast from "react-hot-toast";
 import { BasketItem } from "@/lib/BasketItem";
 import { cn } from "@/lib/utils";
+import { ImageSlider } from "./image-slider";
 
 interface MobileMenuButtonsProps {
   vendorId: string;
@@ -39,13 +40,9 @@ export function MobileMenuButtons({
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [expandedImage, setExpandedImage] = useState<Product | null>(null);
+  const [expandedImageIndex, setExpandedImageIndex] = useState(0);
   const [imageScale, setImageScale] = useState(1);
   const [dragY, setDragY] = useState(0);
-
-  // Track image loading state for each product
-  const [imageLoadedStates, setImageLoadedStates] = useState<
-    Record<string, boolean>
-  >({});
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,6 +104,17 @@ export function MobileMenuButtons({
 
   // Infinite scroll observer
   useEffect(() => {
+    if (menuProducts.length > 0) {
+      console.log(
+        "Client Menu Products Debug:",
+        menuProducts.map((p) => ({
+          name: p.name,
+          imagesCount: p.images?.length,
+          hasImages: !!p.images,
+        })),
+      );
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingMore) {
@@ -389,67 +397,26 @@ export function MobileMenuButtons({
                 )}
               >
                 {/* Image Container - Full card */}
-                <div
-                  className="absolute inset-0 cursor-zoom-in group/image bg-gradient-to-br from-gray-50 to-gray-100/50 overflow-hidden"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setExpandedImage(product);
-                  }}
-                >
-                  {/* Shimmer skeleton while loading */}
-                  {!imageLoadedStates[product.id] && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-50 via-amber-50/30 to-gray-50 animate-shimmer z-10" />
-                  )}
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 1.02 }}
-                    animate={{
-                      opacity: imageLoadedStates[product.id] ? 1 : 0,
-                      scale: imageLoadedStates[product.id] ? 1 : 1.02,
+                <div className="absolute inset-0 cursor-zoom-in group/image bg-gray-100 overflow-hidden">
+                  <ImageSlider
+                    images={
+                      product.images && product.images.length > 0
+                        ? product.images
+                        : [product.image]
+                    }
+                    alt={product.name}
+                    autoplayDelay={3500 + Math.random() * 1000}
+                    onImageClick={(index) => {
+                      setExpandedImage(product);
+                      setExpandedImageIndex(index);
                     }}
-                    transition={{
-                      duration: 0.5,
-                      ease: [0.25, 0.1, 0.25, 1],
-                    }}
-                    className="w-full h-full"
-                  >
-                    <motion.div
-                      animate={{
-                        scale: isHovered ? 1.1 : 1,
-                      }}
-                      transition={{
-                        duration: 0.7,
-                        ease: [0.25, 0.1, 0.25, 1],
-                      }}
-                      className="w-full h-full"
-                    >
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover"
-                        loading="lazy"
-                        quality={85}
-                        sizes="50vw"
-                        onLoad={() => {
-                          setImageLoadedStates((prev) => ({
-                            ...prev,
-                            [product.id]: true,
-                          }));
-                        }}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = `/api/placeholder/400/500?text=${encodeURIComponent(
-                            product.name,
-                          )}`;
-                          setImageLoadedStates((prev) => ({
-                            ...prev,
-                            [product.id]: true,
-                          }));
-                        }}
-                      />
-                    </motion.div>
-                  </motion.div>
+                    showArrows={false}
+                    className="h-full w-full"
+                    imageClassName={cn(
+                      "transition-transform duration-700 ease-out",
+                      isHovered && "scale-110",
+                    )}
+                  />
 
                   {/* Elegant zoom indicator - top right */}
                   <motion.div
@@ -759,19 +726,21 @@ export function MobileMenuButtons({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="absolute inset-0 bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-                <Image
-                  src={expandedImage.image}
+                <ImageSlider
+                  images={
+                    expandedImage.images && expandedImage.images.length > 0
+                      ? expandedImage.images
+                      : [expandedImage.image]
+                  }
                   alt={expandedImage.name}
-                  fill
-                  className="object-cover"
-                  quality={100}
-                  priority
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = `/api/placeholder/1200/1200?text=${encodeURIComponent(
-                      expandedImage.name,
-                    )}`;
-                  }}
+                  startIndex={expandedImageIndex}
+                  enableAutoplay={false}
+                  showArrows={true}
+                  showThumbnails={true}
+                  showDots={false}
+                  className="h-full w-full"
+                  imageClassName="object-contain"
+                  aspectRatio="aspect-square"
                 />
               </div>
             </motion.div>

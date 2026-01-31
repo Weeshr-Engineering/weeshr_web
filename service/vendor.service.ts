@@ -243,13 +243,8 @@ export class VendorService {
   }
 
   private static getDefaultVendorImage(vendorName: string): string {
-    const foodPlaceholders = ["🍕", "🍔", "🍣", "🍜", "🌮", "🍝", "🍛", "🥗"];
-    const randomEmoji =
-      foodPlaceholders[Math.floor(Math.random() * foodPlaceholders.length)];
-
-    return `https://via.placeholder.com/400x240/4F46E5/FFFFFF?text=${encodeURIComponent(
-      vendorName,
-    )}`;
+    // Return a simple gray SVG data URI instead of fetching from an API
+    return `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+`;
   }
 
   // New helper method to safely get vendor category

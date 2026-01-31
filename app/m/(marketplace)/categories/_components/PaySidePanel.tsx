@@ -214,12 +214,12 @@ export default function PaySidePanel({
                   <span className="text-gray-600">Delivery</span>
                   <span
                     className={`font-medium ${
-                      deliveryFee === 0 ? "text-green-600" : "text-gray-900"
+                      safeDeliveryFee === 0 ? "text-green-600" : "text-gray-900"
                     }`}
                   >
-                    {deliveryFee === 0
+                    {safeDeliveryFee === 0
                       ? "FREE"
-                      : `₦ ${deliveryFee.toLocaleString()}`}
+                      : `₦ ${safeDeliveryFee.toLocaleString()}`}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-xs">

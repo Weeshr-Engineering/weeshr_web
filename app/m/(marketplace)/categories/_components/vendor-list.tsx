@@ -39,12 +39,12 @@ const VendorList: React.FC<VendorListProps> = ({
   function goToVendor(
     vendorCategory: string,
     vendorName: string,
-    vendorId: string
+    vendorId: string,
   ) {
     const slug = slugify(vendorName);
     const cat = vendorCategory.toLowerCase();
     router.push(
-      `/m/categories/${cat}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`
+      `/m/categories/${cat}/${slug}?name=${nameParam}&categoryId=${categoryId}&vendorId=${vendorId}`,
     );
   }
 
@@ -64,15 +64,6 @@ const VendorList: React.FC<VendorListProps> = ({
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
-
-  const getFallbackImageUrl = (vendorName: string) => {
-    const foodPlaceholders = ["🍕", "🍔", "🍣", "🍜", "🌮", "🍝", "🍛", "🥗"];
-    const randomEmoji =
-      foodPlaceholders[Math.floor(Math.random() * foodPlaceholders.length)];
-    return `/api/placeholder/400/240?text=${encodeURIComponent(
-      vendorName
-    )}&emoji=${randomEmoji}`;
-  };
 
   if (loading) {
     return (
@@ -176,7 +167,8 @@ const VendorList: React.FC<VendorListProps> = ({
                       }}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = getFallbackImageUrl(vendor.name);
+                        target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
                         setImageLoadedStates((prev) => ({
                           ...prev,
                           [vendor.id]: true,

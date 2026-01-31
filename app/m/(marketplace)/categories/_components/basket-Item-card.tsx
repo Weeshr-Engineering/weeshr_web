@@ -38,7 +38,9 @@ export function BasketItemCard({
   // Use product name from products array or fallback to item name
   const productName = product?.name || item.name || "Unknown Product";
   const productPrice = product?.price || 0;
-  const productImage = product?.image || "/api/placeholder/60/60";
+  const productImage =
+    product?.image ||
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI0YzRjRGNiIvPjwvc3ZnPg==";
 
   // Don't render if product has invalid price or quantity
   if (!product && !item.name) return null;
@@ -59,7 +61,7 @@ export function BasketItemCard({
         if (newQty === 0) {
           const result = await cartService.removeItemFromCart(
             userId,
-            item.id.toString()
+            item.id.toString(),
           );
           if (!(result.code === 200 || result.code === 201)) {
             toast.error("Failed to sync removal with server");
@@ -70,7 +72,7 @@ export function BasketItemCard({
             const result = await cartService.removeItemFromCart(
               userId,
               item.id.toString(),
-              Math.abs(clicksToSend)
+              Math.abs(clicksToSend),
             );
             if (!(result.code === 200 || result.code === 201)) {
               toast.error("Failed to sync quantity with server");
@@ -106,7 +108,7 @@ export function BasketItemCard({
 
     // Update UI immediately
     setBasket((prev) =>
-      prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i))
+      prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i)),
     );
 
     // Accumulate clicks
@@ -125,7 +127,7 @@ export function BasketItemCard({
       syncQuantity(newQty);
     } else {
       setBasket((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i))
+        prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i)),
       );
       // Accumulate clicks (negative for decrement)
       clickCountRef.current -= 1;
@@ -163,9 +165,8 @@ export function BasketItemCard({
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = `/api/placeholder/60/60?text=${encodeURIComponent(
-                productName
-              )}`;
+              target.src =
+                "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI0YzRjRGNiIvPjwvc3ZnPg==";
               setImageLoaded(true);
             }}
           />
