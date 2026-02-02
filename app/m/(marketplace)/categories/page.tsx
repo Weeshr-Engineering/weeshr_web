@@ -59,7 +59,7 @@ export default function Page() {
 
   const nameParam = searchParams.get("name");
   const activeCategory = categories.find(
-    (cat) => cat.name.toLowerCase() === nameParam?.toLowerCase()
+    (cat) => cat.name.toLowerCase() === nameParam?.toLowerCase(),
   );
 
   const handleClick = (cat: any) => {
@@ -70,7 +70,7 @@ export default function Page() {
 
     // Use category name in the path and pass both id and name as query parameters
     router.push(
-      `/m/categories/${cat.name.toLowerCase()}?id=${cat._id}&name=${nameParam}`
+      `/m/categories/${cat.name.toLowerCase()}?id=${cat._id}&name=${nameParam}`,
     );
   };
 
@@ -144,7 +144,7 @@ export default function Page() {
       >
         <div className="max-w-5xl mx-auto">
           {loading ? (
-            <CategorySkeletonGrid count={8} />
+            <CategorySkeletonGrid count={4} />
           ) : categories.length === 0 ? (
             <p className="pt-20 text-center text-muted-foreground">
               No categories found
@@ -159,7 +159,7 @@ export default function Page() {
                       "rounded-3xl overflow-hidden shadow-lg transition cursor-pointer border-none relative h-80 lg:h-[400px] pointer-events-auto",
                       activeCategory?._id === cat._id
                         ? "ring-4 ring-[#0CC990]"
-                        : ""
+                        : "",
                     )}
                   >
                     {/* Background Image Container */}
