@@ -2,22 +2,6 @@ import { VendorService } from "@/service/vendor.service";
 import LandingClient from "./landing-client";
 import { Metadata } from "next";
 
-// Rotating taglines for variety - short and focused on self-love
-const taglines = [
-  "Gift yourself or someone special 💝",
-  "Self-love counts too. Treat yourself or others ✨",
-  "For you or someone you love 🎁",
-  "Because you deserve it too 😉",
-];
-
-// Get a consistent but rotating tagline based on vendor ID
-function getTaglineForVendor(vendorId: string): string {
-  const hash = vendorId
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return taglines[hash % taglines.length];
-}
-
 export async function generateMetadata({
   params,
 }: {
@@ -34,9 +18,8 @@ export async function generateMetadata({
     };
   }
 
-  const tagline = getTaglineForVendor(vendorId);
   const title = `Find gifts from ${vendor.name} on Weeshr`;
-  const description = `${tagline} Browse amazing gifts from ${vendor.name}.`;
+  const description = "Weeshr | Send gifts to Someone Special";
   const vendorUrl = `https://weeshr.com/v/${vendor.slug || vendorId}`;
 
   // Use vendor's image or banner, fallback to Weeshr default

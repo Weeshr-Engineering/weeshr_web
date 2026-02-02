@@ -493,7 +493,7 @@ export function MobileMenuButtons({
                       <h3 className="text-white text-[14px] font-semibold tracking-tight leading-snug drop-shadow-lg line-clamp-1">
                         {product.name}
                       </h3>
-                      <p className="text-white/95 text-[12px] leading-relaxed drop-shadow-md line-clamp-2">
+                      <p className="text-white/95 text-[12px]  drop-shadow-md ">
                         {product.description}
                       </p>
                     </div>
@@ -759,7 +759,7 @@ export function MobileMenuButtons({
                 <h3 className="text-white text-sm md:text-base font-semibold truncate">
                   {expandedImage.name}
                 </h3>
-                <p className="text-white/70 text-xs md:text-sm mt-1 line-clamp-2">
+                <p className="text-white/70 text-xs md:text-sm mt-1">
                   {expandedImage.description}
                 </p>
                 <p className="text-white text-lg md:text-xl font-bold">
