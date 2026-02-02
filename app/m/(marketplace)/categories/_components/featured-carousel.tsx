@@ -28,9 +28,25 @@ export default function FeaturedCarousel({
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("id");
 
-  /** Pick up to 5 vendors randomly */
+  /** Flatten vendors and their multiple images into a featured items list */
   const featured = useMemo(() => {
-    return [...vendors].sort(() => 0.5 - Math.random()).slice(0, 5);
+    const selectedVendors = [...vendors]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 5);
+
+    const items: { vendor: Vendor; image: string }[] = [];
+
+    selectedVendors.forEach((vendor) => {
+      if (vendor.productImages && vendor.productImages.length > 1) {
+        vendor.productImages.forEach((img) => {
+          items.push({ vendor, image: img });
+        });
+      } else {
+        items.push({ vendor, image: vendor.image });
+      }
+    });
+
+    return items;
   }, [vendors]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -131,8 +147,9 @@ export default function FeaturedCarousel({
 
   if (!featured.length) return null;
 
-  // Get current vendor
-  const currentVendor = featured[currentIndex];
+  // Get current vendor item
+  const currentItem = featured[currentIndex];
+  const { vendor: currentVendor, image: currentImage } = currentItem;
 
   return (
     <section
@@ -171,7 +188,7 @@ export default function FeaturedCarousel({
               key={idx}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
-                idx === currentIndex ? "w-6 bg-[#0CC990]" : "w-1.5 bg-gray-300"
+                idx === currentIndex ? "w-6 bg-[#0CC990]" : "w-1.5 bg-gray-300",
               )}
             />
           ))}
@@ -183,52 +200,54 @@ export default function FeaturedCarousel({
         <div
           className="
             relative w-full
-            h-[150px]
-            md:h-[200px]
+            h-[160px]
+            md:h-[220px]
           "
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             <motion.div
-              key={currentVendor.id}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.04 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              key={`${currentVendor.id}-${currentIndex}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
               className="absolute inset-0"
               onClick={() => handleVendorClick(currentVendor)}
             >
-              <Card className="relative h-full w-full overflow-hidden rounded-3xl border-none cursor-pointer bg-black">
+              <Card className="relative h-full w-full overflow-hidden rounded-[2rem] border-none cursor-pointer bg-neutral-900">
                 {/* IMAGE WITH LOADING STATE */}
                 <div className="absolute inset-0">
-                  {isLoading && !loadedImages.has(currentVendor.image) && (
-                    <div className="absolute inset-0 bg-gradient-to-tr from-gray-800 via-gray-900 to-black animate-pulse z-0" />
-                  )}
+                  {/* Persistent Shimmer */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-neutral-800 via-neutral-900 to-black animate-pulse z-0" />
+
                   <Image
-                    src={currentVendor.image}
+                    src={currentImage}
                     alt={currentVendor.name}
                     fill
-                    priority
+                    priority={currentIndex < 2} // Prioritize first two slides
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
                     className={cn(
-                      "object-cover transition-opacity duration-500",
-                      loadedImages.has(currentVendor.image)
+                      "object-cover transition-opacity duration-700",
+                      loadedImages.has(currentImage)
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
-                    onLoad={() => handleImageLoad(currentVendor.image)}
-                    onLoadingComplete={() =>
-                      handleImageLoad(currentVendor.image)
-                    }
+                    onLoadingComplete={() => handleImageLoad(currentImage)}
                   />
                 </div>
 
                 {/* OVERLAYS */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/50 via-transparent to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-black/10" />
 
-                {/* CONTENT */}
-                <div className="absolute inset-0 z-10 flex flex-col justify-end p-5 md:p-8 text-white">
-                  <span className="mb-2 inline-flex items-center gap-1 bg-white/10 backdrop-blur border border-white/20 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest w-fit">
+                {/* CONTENT - Slightly staggered fade in */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="absolute inset-0 z-10 flex flex-col justify-end p-5 md:p-8 text-white"
+                >
+                  <span className="mb-2 inline-flex items-center gap-1 bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest w-fit">
                     <Icon icon="ph:crown-fill" className="text-yellow-400" />
                     {currentVendor.category}
                   </span>
@@ -238,7 +257,7 @@ export default function FeaturedCarousel({
                   </h3>
 
                   <div className="flex items-end justify-between gap-4">
-                    <p className="text-xs md:text-sm text-gray-200 line-clamp-2 max-w-[70%]">
+                    <p className="text-xs md:text-sm text-gray-300 line-clamp-2 max-w-[70%] font-light">
                       {currentVendor.description ||
                         "Experience premium service and curated gifts."}
                     </p>
@@ -253,16 +272,17 @@ export default function FeaturedCarousel({
                         px-5
                         h-9
                         shadow-lg
+                        transition-transform active:scale-95
                       "
                     >
-                      Visit Store
+                      Visit
                       <Icon
                         icon="heroicons:arrow-right"
-                        className="ml-2 w-4 h-4"
+                        className="ml-1 w-4 h-4"
                       />
                     </Button>
                   </div>
-                </div>
+                </motion.div>
               </Card>
             </motion.div>
           </AnimatePresence>

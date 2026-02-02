@@ -6,23 +6,20 @@ import {
   fetchVendorBySlug,
 } from "@/lib/api";
 
+export interface CloudinaryImage {
+  secure_url: string;
+  url: string;
+  public_id: string;
+  version: number;
+  width?: number;
+  height?: number;
+  format?: string;
+}
+
 export interface ApiVendor {
   _id: string;
-  logo: null | {
-    secure_url: string;
-    url: string;
-    public_id: string;
-    version: number;
-  };
-  banner?: null | {
-    secure_url: string;
-    url: string;
-    public_id: string;
-    version: number;
-    width?: number;
-    height?: number;
-    format?: string;
-  };
+  logo: null | CloudinaryImage;
+  banner?: null | CloudinaryImage | CloudinaryImage[];
   cover: null;
   rcNumber: number;
   companyName: string;
@@ -93,8 +90,16 @@ export class VendorService {
         .map((vendor: ApiVendor) => {
           // Use banner if available, then logo, then fallback
           let vendorImage: string;
-          if (vendor.banner && vendor.banner.secure_url) {
-            vendorImage = vendor.banner.secure_url;
+          let productImages: string[] = [];
+
+          if (vendor.banner) {
+            if (Array.isArray(vendor.banner)) {
+              vendorImage = vendor.banner[0]?.secure_url || "";
+              productImages = vendor.banner.map((b) => b.secure_url);
+            } else {
+              vendorImage = vendor.banner.secure_url;
+              productImages = [vendor.banner.secure_url];
+            }
           } else if (vendor.logo && vendor.logo.secure_url) {
             vendorImage = vendor.logo.secure_url;
           } else {
@@ -109,7 +114,7 @@ export class VendorService {
             category: this.getVendorCategory(vendor),
             badges: this.generateBadges(vendor),
             giftIdeas: vendor.productCount,
-            productImages: vendor.banner ? [vendor.banner.secure_url] : [],
+            productImages: productImages,
           };
         });
     } catch (error) {
@@ -125,8 +130,16 @@ export class VendorService {
 
       // Map single vendor
       let vendorImage: string;
-      if (apiVendor.banner && apiVendor.banner.secure_url) {
-        vendorImage = apiVendor.banner.secure_url;
+      let productImages: string[] = [];
+
+      if (apiVendor.banner) {
+        if (Array.isArray(apiVendor.banner)) {
+          vendorImage = apiVendor.banner[0]?.secure_url || "";
+          productImages = apiVendor.banner.map((b) => b.secure_url);
+        } else {
+          vendorImage = apiVendor.banner.secure_url;
+          productImages = [apiVendor.banner.secure_url];
+        }
       } else if (apiVendor.logo && apiVendor.logo.secure_url) {
         vendorImage = apiVendor.logo.secure_url;
       } else {
@@ -143,7 +156,7 @@ export class VendorService {
         slug: apiVendor.weeshrName,
         badges: this.generateBadges(apiVendor),
         giftIdeas: apiVendor.productCount || apiVendor.totalProducts || 0,
-        productImages: apiVendor.banner ? [apiVendor.banner.secure_url] : [],
+        productImages: productImages,
       };
     } catch (error) {
       console.error(`Error fetching vendor by slug ${slug}:`, error);
@@ -158,8 +171,16 @@ export class VendorService {
 
       // Map single vendor
       let vendorImage: string;
-      if (apiVendor.banner && apiVendor.banner.secure_url) {
-        vendorImage = apiVendor.banner.secure_url;
+      let productImages: string[] = [];
+
+      if (apiVendor.banner) {
+        if (Array.isArray(apiVendor.banner)) {
+          vendorImage = apiVendor.banner[0]?.secure_url || "";
+          productImages = apiVendor.banner.map((b) => b.secure_url);
+        } else {
+          vendorImage = apiVendor.banner.secure_url;
+          productImages = [apiVendor.banner.secure_url];
+        }
       } else if (apiVendor.logo && apiVendor.logo.secure_url) {
         vendorImage = apiVendor.logo.secure_url;
       } else {
@@ -176,7 +197,7 @@ export class VendorService {
         slug: apiVendor.weeshrName,
         badges: this.generateBadges(apiVendor),
         giftIdeas: apiVendor.productCount || apiVendor.totalProducts || 0,
-        productImages: apiVendor.banner ? [apiVendor.banner.secure_url] : [],
+        productImages: productImages,
       };
     } catch (error) {
       console.error(`Error fetching vendor ${vendorId}:`, error);
@@ -204,8 +225,16 @@ export class VendorService {
         .map((vendor: ApiVendor) => {
           // Use banner if available, then logo, then fallback
           let vendorImage: string;
-          if (vendor.banner && vendor.banner.secure_url) {
-            vendorImage = vendor.banner.secure_url;
+          let productImages: string[] = [];
+
+          if (vendor.banner) {
+            if (Array.isArray(vendor.banner)) {
+              vendorImage = vendor.banner[0]?.secure_url || "";
+              productImages = vendor.banner.map((b) => b.secure_url);
+            } else {
+              vendorImage = vendor.banner.secure_url;
+              productImages = [vendor.banner.secure_url];
+            }
           } else if (vendor.logo && vendor.logo.secure_url) {
             vendorImage = vendor.logo.secure_url;
           } else {
@@ -220,7 +249,7 @@ export class VendorService {
             category: this.getVendorCategory(vendor),
             badges: this.generateBadges(vendor),
             giftIdeas: vendor.productCount,
-            productImages: vendor.banner ? [vendor.banner.secure_url] : [],
+            productImages: productImages,
           };
         });
 
