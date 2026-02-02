@@ -31,6 +31,20 @@ const VendorList: React.FC<VendorListProps> = ({
     Record<string, boolean>
   >({});
 
+  // Generate random starting offsets for each vendor once per mount
+  const [randomOffsets] = React.useState<Record<string, number>>({});
+
+  // Initialize random offsets for vendors that have multiple images
+  React.useMemo(() => {
+    vendors.forEach((vendor) => {
+      if (vendor.productImages.length > 1 && !randomOffsets[vendor.id]) {
+        randomOffsets[vendor.id] = Math.floor(
+          Math.random() * vendor.productImages.length,
+        );
+      }
+    });
+  }, [vendors, randomOffsets]);
+
   // helper to slugify vendor names
   function slugify(str: string) {
     return str.toLowerCase().replace(/\s+/g, "-");
@@ -134,50 +148,65 @@ const VendorList: React.FC<VendorListProps> = ({
             >
               {/* Image Container */}
               <div className="relative overflow-hidden rounded-t-3xl bg-gray-50">
-                {/* Shimmer skeleton while loading */}
-                {!imageLoadedStates[vendor.id] && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 animate-shimmer z-10" />
-                )}
-
                 <div className="rounded-t-3xl overflow-hidden group relative">
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: imageLoadedStates[vendor.id] ? 1 : 0,
-                    }}
-                    transition={{
-                      duration: 0.4,
-                      ease: "easeOut",
-                    }}
-                  >
-                    <Image
-                      src={vendor.image}
-                      alt={vendor.name}
-                      width={400}
-                      height={240}
-                      className="w-full h-48 object-cover transition-all duration-700 group-hover:saturate-[1.03] group-hover:brightness-[1.02]"
-                      loading="lazy"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      quality={75}
-                      onLoad={() => {
-                        setImageLoadedStates((prev) => ({
-                          ...prev,
-                          [vendor.id]: true,
-                        }));
-                      }}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
-                        setImageLoadedStates((prev) => ({
-                          ...prev,
-                          [vendor.id]: true,
-                        }));
-                      }}
-                    />
-                  </motion.div>
-                  {/* Subtle Gradient Overlay for Depth */}
-                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-40" />
+                  {(() => {
+                    const offset = randomOffsets[vendor.id] || 0;
+                    const currentImage =
+                      vendor.productImages.length > 0
+                        ? vendor.productImages[
+                            offset % vendor.productImages.length
+                          ]
+                        : vendor.image;
+
+                    const isLoaded = imageLoadedStates[currentImage];
+
+                    return (
+                      <>
+                        {/* Shimmer skeleton while loading */}
+                        {!isLoaded && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 animate-shimmer z-10" />
+                        )}
+
+                        <motion.div
+                          key={`${vendor.id}-${currentImage}`}
+                          initial={{ opacity: 0 }}
+                          animate={{
+                            opacity: isLoaded ? 1 : 0,
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            ease: "easeInOut",
+                          }}
+                        >
+                          <Image
+                            src={currentImage}
+                            alt={vendor.name}
+                            width={400}
+                            height={240}
+                            className="w-full h-48 object-cover transition-all duration-700 group-hover:saturate-[1.03] group-hover:brightness-[1.02]"
+                            loading="lazy"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            quality={75}
+                            onLoad={() => {
+                              setImageLoadedStates((prev) => ({
+                                ...prev,
+                                [currentImage]: true,
+                              }));
+                            }}
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src =
+                                "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
+                              setImageLoadedStates((prev) => ({
+                                ...prev,
+                                [currentImage]: true,
+                              }));
+                            }}
+                          />
+                        </motion.div>
+                      </>
+                    );
+                  })()}
                 </div>
 
                 {/* Category Badge */}
