@@ -13,10 +13,7 @@ export default function Footer() {
       className="w-full mt-auto relative overflow-hidden rounded-[2rem]"
     >
       {/* Noisy Gradient Background */}
-      <div
-        className="absolute inset-0 opacity-95"
-     
-      />
+      <div className="absolute inset-0 opacity-95" />
 
       {/* Noise Overlay */}
       <div className="absolute inset-0 opacity-[0.2] pointer-events-none mix-blend-overlay">
@@ -37,7 +34,7 @@ export default function Footer() {
         </svg>
       </div>
 
-      <div className="relative z-10 mx-auto flex flex-row items-center justify-between gap-6 p-6 md:px-10">
+      <div className="relative z-10 mx-auto flex flex-row items-center justify-between gap-4 md:gap-6 p-6 md:px-10">
         {/* Logo */}
         <div className="flex-shrink-0">
           <Image
@@ -45,18 +42,49 @@ export default function Footer() {
             alt="Weeshr Logo"
             width={120}
             height={40}
-            className="h-8 md:h-10 w-auto "
+            className="h-8 md:h-10 w-auto"
             priority
           />
         </div>
 
+        {/* Footer Links - Middle */}
+        <div className="hidden md:flex items-center gap-4 lg:gap-6">
+          <Link
+            href="/contact"
+            className="text-white/70 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
+          >
+            Contact
+          </Link>
+          <span className="text-white/30">•</span>
+          <Link
+            href="/privacy-policy"
+            className="text-white/70 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
+          >
+            Privacy Policy
+          </Link>
+          <span className="text-white/30">•</span>
+          <Link
+            href="/terms-and-conditions"
+            className="text-white/70 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
+          >
+            Terms and Conditions
+          </Link>
+          <span className="text-white/30">•</span>
+          <Link
+            href="/account"
+            className="text-white/70 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
+          >
+            Account
+          </Link>
+        </div>
+
         {/* Store Buttons */}
-        <div className="flex items-center gap-2 sm:gap-6 flex-row">
+        <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 flex-row">
           <Link
             href="https://apps.apple.com/ng/app/weeshr/id6602884408"
             target="_blank"
             rel="noreferrer"
-            className="transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg "
+            className="transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg"
           >
             <Image
               src="https://res.cloudinary.com/drykej1am/image/upload/v1767562126/marketplace/Frame_28990_jxf7wp.png"
