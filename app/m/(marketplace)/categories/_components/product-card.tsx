@@ -106,6 +106,16 @@ export function ProductCard({
               className="w-4 h-4 text-white"
             />
           </motion.div>
+
+          {/* Dark gradient overlay on hover for text readability */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-10"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          />
         </div>
 
         {/* Price Tag - Always visible at top left */}

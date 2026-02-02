@@ -1,0 +1,12 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow sensitive areas
+Disallow: /api/
+Disallow: /(auth)/
+Disallow: /(protected)/
+Disallow: /payment/
+
+# Sitemap location
+Sitemap: https://weeshr.com/sitemap.xml
