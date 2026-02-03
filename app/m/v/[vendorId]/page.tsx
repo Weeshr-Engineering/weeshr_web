@@ -19,7 +19,7 @@ export async function generateMetadata({
   }
 
   const title = `Find gifts from ${vendor.name} on Weeshr`;
-  const description = "Weeshr | Send gifts to Someone Special";
+  const description = "Weeshr |Send gifts to Someone Special";
   const vendorUrl = `https://weeshr.com/v/${vendor.slug || vendorId}`;
 
   // Use vendor's image or banner, fallback to Weeshr default

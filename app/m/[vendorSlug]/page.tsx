@@ -12,18 +12,73 @@ export async function generateMetadata({
   params: Promise<{ vendorSlug: string }>;
 }): Promise<Metadata> {
   const { vendorSlug } = await params;
+
   try {
     const vendor = await VendorService.getVendorBySlug(vendorSlug);
+
+    if (!vendor) {
+      return {
+        title: "Vendor Not Found | Weeshr",
+        description:
+          "The vendor you're looking for doesn't exist or has been removed.",
+      };
+    }
+
+    const title = `Find gifts from ${vendor.name} on Weeshr`;
+    const description = "Weeshr |Send gifts to Someone Special";
+    const vendorUrl = `https://weeshr.com/m/${vendorSlug}`;
+
+    // Use vendor's image or banner, fallback to Weeshr default
+    const imageUrl =
+      vendor.image ||
+      "https://res.cloudinary.com/drykej1am/image/upload/v1727903584/weeshr_website/ThumbnailWeeshr_1_3_oicmbz.png";
+
     return {
-      title: vendor ? `Gift from ${vendor.name} | Weeshr` : "Vendor Not Found",
-      description: vendor
-        ? `Browse gifts from ${vendor.name} on Weeshr`
-        : "Vendor page not found",
+      title,
+      description,
+      keywords: [
+        vendor.name,
+        "gifts",
+        "weeshr",
+        "gift ideas",
+        vendor.category,
+        "surprise gifts",
+        "send gifts",
+        "online gifting",
+        "self-gifting",
+        "treat yourself",
+      ],
+      openGraph: {
+        title,
+        description,
+        url: vendorUrl,
+        siteName: "Weeshr",
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: `${vendor.name} on Weeshr`,
+          },
+        ],
+        locale: "en_US",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [imageUrl],
+      },
+      alternates: {
+        canonical: vendorUrl,
+      },
     };
   } catch (error) {
     return {
-      title: "Vendor Not Found",
-      description: "Vendor page not found",
+      title: "Vendor Not Found | Weeshr",
+      description:
+        "The vendor you're looking for doesn't exist or has been removed.",
     };
   }
 }

@@ -52,7 +52,7 @@ Refactored to support server-side metadata:
 
 - Split into server component (page.tsx) and client component (marketplace-client.tsx)
 - Added comprehensive metadata:
-  - Title: "Weeshr | Send Gifts to Someone Special"
+  - Title: "Weeshr |Send gifts to Someone Special"
   - Description: "Surprise the ones you love — or treat yourself — with a gift."
   - Keywords: gifts, send gifts, gift ideas, surprise gifts, etc.
   - Open Graph and Twitter Card tags
@@ -141,7 +141,7 @@ When sharing vendor pages on social media:
 
 When sharing marketplace pages:
 
-- **Title:** "Weeshr | Send Gifts to Someone Special"
+- **Title:** "Weeshr |Send gifts to Someone Special"
 - **Description:** "Surprise the ones you love — or treat yourself — with a gift."
 - **Image:** Weeshr default banner
 
