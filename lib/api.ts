@@ -1,6 +1,5 @@
 // lib/api.ts
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://api.staging.weeshr.com/api/v1";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function fetchCategories() {
   const res = await fetch(`${API_BASE_URL}/market/categories`, {
