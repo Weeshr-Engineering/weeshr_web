@@ -53,13 +53,13 @@ export default function PaymentContent() {
     const verifyPayment = async () => {
       try {
         const response = await fetch(
-          `https://api.staging.weeshr.com/api/v1/payments/transaction/verify/${reference}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/transaction/verify/${reference}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         const result = await response.json();
