@@ -434,12 +434,12 @@ export function MobileMenuButtons({
                     />
                   </motion.div>
 
-                  {/* Dark gradient overlay on hover for text readability */}
+                  {/* Dark gradient overlay on hover or if in basket for text readability */}
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-10"
                     initial={{ opacity: 0 }}
                     animate={{
-                      opacity: isHovered ? 1 : 0,
+                      opacity: isHovered || itemCount > 0 ? 1 : 0,
                     }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                   />
@@ -459,13 +459,13 @@ export function MobileMenuButtons({
                   </p>
                 </motion.div>
 
-                {/* Quantity Badge - Top right when items in basket */}
+                {/* Quantity Badge - Top right when items in basket, hidden when bottom overlay is shown */}
                 {itemCount > 0 && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{
                       scale: 1,
-                      opacity: isHovered ? 0 : 1,
+                      opacity: isHovered || itemCount > 0 ? 0 : 1,
                     }}
                     transition={{ duration: 0.3 }}
                     className="absolute top-4 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
@@ -474,13 +474,13 @@ export function MobileMenuButtons({
                   </motion.div>
                 )}
 
-                {/* Instagram-style overlay - slides up on hover */}
+                {/* Instagram-style overlay - slides up on hover or if items in basket */}
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 z-20 p-3 md:p-4 pointer-events-none"
                   initial={{ y: "100%", opacity: 0 }}
                   animate={{
-                    y: isHovered ? 0 : "100%",
-                    opacity: isHovered ? 1 : 0,
+                    y: isHovered || itemCount > 0 ? 0 : "100%",
+                    opacity: isHovered || itemCount > 0 ? 1 : 0,
                   }}
                   transition={{
                     duration: 0.5,
