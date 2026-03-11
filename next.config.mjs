@@ -77,6 +77,11 @@ const nextConfig = {
         hostname: "flowersandflowers.com.ng",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "getorielle.com",
+        pathname: "/**",
+      },
     ],
     localPatterns: [],
   },

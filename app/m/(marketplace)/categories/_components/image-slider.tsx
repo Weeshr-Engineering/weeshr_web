@@ -168,6 +168,9 @@ export function ImageSlider({
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   priority={index === 0}
                   quality={85}
+                  unoptimized={
+                    typeof src === "string" && src.includes("getorielle.com")
+                  }
                 />
               </div>
             </div>
@@ -226,8 +229,6 @@ export function ImageSlider({
       {/* Thumbnails - Added for Expandable Mode */}
       {showThumbnails && images.length > 1 && (
         <>
- 
-
           {/* Bottom thumbnails */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2 p-1.5 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 max-w-[85%] overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth">
             {images.map((src, idx) => (
@@ -250,6 +251,9 @@ export function ImageSlider({
                   className="object-cover"
                   alt={`Thumbnail ${idx}`}
                   sizes="48px"
+                  unoptimized={
+                    typeof src === "string" && src.includes("getorielle.com")
+                  }
                 />
               </button>
             ))}
