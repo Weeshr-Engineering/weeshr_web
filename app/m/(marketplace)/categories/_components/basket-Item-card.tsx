@@ -163,6 +163,10 @@ export function BasketItemCard({
             className="object-cover rounded-lg"
             sizes="100px"
             onLoad={() => setImageLoaded(true)}
+            unoptimized={
+              typeof productImage === "string" &&
+              productImage.includes("getorielle.com")
+            }
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src =

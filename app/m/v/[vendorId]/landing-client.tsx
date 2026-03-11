@@ -93,7 +93,7 @@ export default function LandingClient({ vendor }: LandingClientProps) {
 
     // Construct target URL
     const url = `/m/categories/${category}/${slug}?name=${encodeURIComponent(
-      finalName
+      finalName,
     )}&categoryId=${categoryId}&vendorId=${vendor.id}`;
 
     router.push(url);
@@ -164,6 +164,10 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                   sizes="100vw"
                   onLoad={() => setMobileBgLoaded(true)}
                   onError={() => setMobileBgLoaded(true)}
+                  unoptimized={
+                    typeof bgImage === "string" &&
+                    bgImage.includes("getorielle.com")
+                  }
                 />
                 {/* 📌 Added shadow/gradient for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
@@ -349,6 +353,10 @@ export default function LandingClient({ vendor }: LandingClientProps) {
                   sizes="50vw"
                   onLoad={() => setDesktopBgLoaded(true)}
                   onError={() => setDesktopBgLoaded(true)}
+                  unoptimized={
+                    typeof bgImage === "string" &&
+                    bgImage.includes("getorielle.com")
+                  }
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
               </>

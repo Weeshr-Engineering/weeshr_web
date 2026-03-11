@@ -43,7 +43,7 @@ export default function CategoryDisplayList() {
       if (!id) return;
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/${id}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/${id}`,
         );
         const json = await res.json();
         if (json?.code === 200 && json?.data) {
@@ -101,6 +101,10 @@ export default function CategoryDisplayList() {
             className="w-full h-60 object-cover"
             loading="lazy"
             quality={75}
+            unoptimized={
+              typeof categoryData.image === "string" &&
+              categoryData.image.includes("getorielle.com")
+            }
           />
           <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm rounded-2xl px-2 py-1 flex gap-1.5">
             <Icon icon="mdi:wardrobe-outline" />
