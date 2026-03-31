@@ -306,6 +306,22 @@ export default function TermsAndConditions() {
               support team.
             </p>
           </div>
+          <div className="mb-6">
+            <h3 className="mt-4 text-lg font-medium text-muted-foreground">
+              6.5 Vendor Sales and Remittance
+            </h3>
+            <p className="text-muted-foreground">
+              For every sales made by the vendor. Weeshr will remit a 100% to
+              the vendor without charging commission. The vendor is able to
+              request payout from dashboard in specified times or it is
+              automatically disbursed as the case may be. This is subject to
+              change as Weeshr will communicate to the vendor should it
+              introduce a commission base service. Weeshr reserve the right to
+              make changes to the current business model and shall inform the
+              vendor before implementation via written or electronic means or
+              channels.
+            </p>
+          </div>
           <h2 className="mt-8 text-xl font-semibold text-gray-800">
             7. Intellectual Property Rights
           </h2>
