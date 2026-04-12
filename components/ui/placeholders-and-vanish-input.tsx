@@ -163,7 +163,7 @@ export function PlaceholdersAndVanishInput({
     if (value && inputRef.current) {
       const maxX = newDataRef.current.reduce(
         (prev, current) => (current.x > prev ? current.x : prev),
-        0
+        0,
       );
       animate(maxX);
     }
@@ -184,21 +184,11 @@ export function PlaceholdersAndVanishInput({
   return (
     <form
       className={cn(
-        "w-full relative max-w-xl mx-auto h-12 rounded-2xl overflow-hidden transition duration-200",
-        value && "brightness-[0.98]"
+        "relative max-w-xl mx-auto h-[54px] w-full bg-white rounded-2xl bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-80 border border-gray-100 overflow-hidden transition duration-200",
+        value && "bg-white bg-opacity-100",
       )}
-      style={{
-        backgroundColor: "rgba(6, 12, 36, 0.267)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-      }}
       onSubmit={handleSubmit}
     >
-      {/* White fill overlay at 72% */}
-      <div
-        className="absolute inset-0 rounded-2xl pointer-events-none"
-        style={{ backgroundColor: "rgba(255, 255, 255, 0.72)" }}
-      />
       <input
         onChange={(e) => {
           if (!animating) {
@@ -212,23 +202,24 @@ export function PlaceholdersAndVanishInput({
         type="text"
         placeholder={placeholders[currentPlaceholder]}
         className={cn(
-          "w-full relative text-sm sm:text-base z-50 border-none bg-transparent h-full rounded-3xl focus:outline-none focus:ring-0 pl-3 sm:pl-4 pr-20 text-[#060C24]",
-          animating
-            ? "placeholder-transparent"
-            : "placeholder-[#060C24]/40",
-          animating && "text-[#060C24]"
+          "w-full relative text-sm sm:text-base z-50 border-none bg-transparent h-full rounded-2xl focus:outline-none focus:ring-0 pl-4 sm:pl-5 pr-20 text-[#0A0D14]",
+          animating ? "placeholder-transparent" : "placeholder-[#0A0D14]/50",
+          animating && "text-[#0A0D14]",
         )}
       />
       <button
         disabled={!value}
         type="submit"
         className={cn(
-          "absolute right-1 top-1/2 z-50 -translate-y-1/2 h-10 w-10 rounded-xl text-white transition duration-200 flex items-center justify-center",
-          !value && "bg-[#060C24]",
-          value && "bg-[#060C24] hover:bg-[#0A1140]"
+          "absolute right-1.5 top-1/2 z-50 -translate-y-1/2 h-10 w-10 rounded-[12px] text-white transition duration-200 flex items-center justify-center",
+          !value && "bg-[#5D63E6]",
+          value && "bg-[#454BCD] hover:bg-[#343AB0]",
         )}
       >
-        <Icon icon="carbon:send-alt-filled" width={24} />
+        <Icon
+          icon="lucide:send"
+          className="w-[18px] h-[18px] ml-[-2px] text-white"
+        />
       </button>
     </form>
   );

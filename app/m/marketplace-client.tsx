@@ -13,6 +13,7 @@ import { MARKETPLACE_BACKGROUND_IMAGES } from "./constants";
 export default function MarketplaceClient() {
   const [receiverName, setReceiverName] = useState("");
   const [isGiftingMyself, setIsGiftingMyself] = useState(false);
+  const [showEbunSoon, setShowEbunSoon] = useState(false);
   const [mobileBgLoaded, setMobileBgLoaded] = useState(false);
   const [desktopBgLoaded, setDesktopBgLoaded] = useState(false);
   const [bgImage, setBgImage] = useState("");
@@ -113,7 +114,7 @@ export default function MarketplaceClient() {
       {/* ═══════════════════════════════════════════════════════════════
           📌 MOBILE VERSION — Figma-matched design
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="md:hidden flex flex-col h-full w-full relative overflow-hidden">
+      <div className="md:hidden flex flex-col h-full w-full relative overflow-hidden bg-[#F6F7F9]">
         {/* ── LAYER 1: Scrolling main image (continuous upward animation) ── */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div
@@ -122,7 +123,7 @@ export default function MarketplaceClient() {
             initial={{ y: "0%" }}
             animate={{ y: "-50%" }}
             transition={{
-              duration: 30,
+              duration: 90,
               ease: "linear",
               repeat: Infinity,
               repeatType: "loop",
@@ -179,12 +180,58 @@ export default function MarketplaceClient() {
 
           {/* ── Glass Card Section ── */}
           <motion.div
-            className="px-4 pb-2"
+            className="px-4 pb-4"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Card className="backdrop-blur-xl bg-white/70 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-3xl border border-white/40">
+            {/* Vendor badge added specifically for layout check */}
+            <div className="flex items-center justify-end gap-2 mb-3 pr-1">
+              <span
+                className="text-[#0A0D14]/50 text-sm font-medium tracking-wide"
+                style={{
+                  fontFamily:
+                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                }}
+              ></span>
+              <button
+                onClick={() => {
+                  setShowEbunSoon(true);
+                  setTimeout(() => setShowEbunSoon(false), 2000);
+                }}
+                className="bg-[#EAECE1]/90 backdrop-blur-md text-[#6A70FF] text-[13px] px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition-all duration-300 active:scale-95"
+              >
+                <AnimatePresence mode="wait">
+                  {showEbunSoon ? (
+                    <motion.span
+                      key="soon"
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      className="font-medium px-1"
+                    >
+                      Coming soon
+                    </motion.span>
+                  ) : (
+                    <motion.div
+                      key="ebun"
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      className="flex items-center gap-1"
+                    >
+                      èbùn{" "}
+                      <Icon
+                        icon="lucide:sparkles"
+                        className="w-3.5 h-3.5 fill-current"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
+
+            <Card className="backdrop-blur-2xl bg-[rgba(255,255,255,0.85)] shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-3xl border border-white/60 relative z-10">
               <CardHeader className="px-5 pt-5 pb-3">
                 <CardTitle className="text-xl text-[#0A0D14] text-left p-0">
                   <span className="relative text-[#0A0D14] pr-1 font-normal">
@@ -220,7 +267,7 @@ export default function MarketplaceClient() {
                     onClick={handleGiftMyself}
                     className="group flex items-center gap-2 px-1 py-1 rounded-full transition-all duration-300 ease-out"
                   >
-                    <div className="w-5 h-5 rounded border-2 border-[#6A70FF] flex items-center justify-center bg-[#6A70FF]/10 relative overflow-hidden transition-colors duration-300">
+                    <div className="w-5 h-5 rounded-[6px] border-[1.5px] border-[#0A0D14]/80 flex items-center justify-center bg-transparent relative overflow-hidden transition-colors duration-300">
                       <AnimatePresence>
                         {isGiftingMyself && (
                           <motion.div
@@ -269,36 +316,36 @@ export default function MarketplaceClient() {
             </Card>
 
             {/* Start Here indicator */}
-            <div className="relative mt-1 flex items-center justify-end pr-3">
+            <div className="absolute right-1 -bottom-4 md:relative md:bottom-auto md:right-auto md:mt-1 flex items-start justify-end pr-24 z-30 pointer-events-none">
               <span
-                className="whitespace-nowrap text-lg mt-6"
+                className="whitespace-nowrap text-[17px] mt-6"
                 style={{
                   fontFamily:
                     "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
-                  color: "#0A0D14",
+                  color: "#6A70FF",
                 }}
               >
                 Start here
               </span>
               <Image
-                src="https://res.cloudinary.com/drykej1am/image/upload/v1763995414/weeshr-marketplace/Group_317_dxmhcs.png"
+                src="/arrow.png"
                 alt="Pointer Arrow"
-                width={28}
-                height={28}
-                className="ml-2 mt-6"
+                width={42}
+                height={42}
+                className="absolute -top-[2rem] right-[2.5rem] md:static md:top-auto md:right-auto md:ml-2"
               />
             </div>
           </motion.div>
 
           {/* ── Bottom tagline ── */}
           <motion.div
-            className="w-full flex flex-wrap items-center justify-center px-4 pb-6 pt-2 gap-x-1"
+            className="w-full flex items-baseline justify-center px-4 py-4 pt-6 gap-x-1.5"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <span
-              className="whitespace-nowrap text-lg bg-gradient-custom bg-clip-text text-transparent"
+              className="whitespace-nowrap text-xl bg-gradient-custom bg-clip-text text-transparent transform translate-y-1"
               style={{
                 fontFamily:
                   "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
@@ -306,7 +353,7 @@ export default function MarketplaceClient() {
             >
               Surprise
             </span>
-            <span className="text-[#0A0D14] text-sm font-medium">
+            <span className="whitespace-nowrap text-white text-sm font-medium transform translate-y-[0.2rem]">
               the ones you love, send them a gift
             </span>
           </motion.div>
