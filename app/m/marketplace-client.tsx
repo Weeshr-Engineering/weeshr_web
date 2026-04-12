@@ -109,68 +109,85 @@ export default function MarketplaceClient() {
           WEESHR • WEESHR
         </h1>
       </div>
-      {/* 📌 MOBILE TOP LOGO */}
-      <div className="w-full flex justify-center pt-6 pb-2 md:hidden shrink-0 z-10">
-        <Image
-          src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
-          alt="Weeshr Logo"
-          width={130}
-          height={42}
-          priority
-        />
-      </div>
-      {/* 📌 MOBILE BACKGROUND IMAGE + CARD */}
-      <div className="md:hidden flex-1 px-2 mt-2 pb-2 min-h-0 w-full relative">
-        <motion.div
-          className="relative w-full h-full rounded-3xl overflow-hidden shadow-[0_32px_64px_-20px_rgba(0,0,0,0.25)]"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {/* Shimmer skeleton while loading */}
-          {!mobileBgLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
-          )}
 
+      {/* ═══════════════════════════════════════════════════════════════
+          📌 MOBILE VERSION — Figma-matched design
+          ═══════════════════════════════════════════════════════════════ */}
+      <div className="md:hidden flex flex-col h-full w-full relative overflow-hidden">
+        {/* ── LAYER 1: Scrolling main image (continuous upward animation) ── */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div
-            initial={{ opacity: 0, scale: 1.01 }}
-            animate={{
-              opacity: mobileBgLoaded ? 1 : 0,
-              scale: mobileBgLoaded ? 1 : 1.01,
-            }}
+            className="absolute w-full"
+            style={{ top: 0, left: 0 }}
+            initial={{ y: "0%" }}
+            animate={{ y: "-50%" }}
             transition={{
-              duration: 0.3,
-              ease: "easeOut",
+              duration: 30,
+              ease: "linear",
+              repeat: Infinity,
+              repeatType: "loop",
             }}
-            className="w-full h-full"
           >
-            {bgImage && (
-              <>
-                <Image
-                  src={bgImage}
-                  alt="Background"
-                  fill
-                  className="object-cover rounded-3xl"
-                  priority
-                  onLoad={() => setMobileBgLoaded(true)}
-                  onError={() => setMobileBgLoaded(true)}
-                />
-                {/* 📌 Added shadow/gradient for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-3xl pointer-events-none" />
-              </>
-            )}
+            {/* Two copies stacked for seamless loop */}
+            <Image
+              src="/mainimage.png"
+              alt="Gift products collage"
+              width={430}
+              height={932}
+              className="w-full h-auto object-cover"
+              priority
+              onLoad={() => setMobileBgLoaded(true)}
+              onError={() => setMobileBgLoaded(true)}
+            />
+            <Image
+              src="/mainimage.png"
+              alt="Gift products collage"
+              width={430}
+              height={932}
+              className="w-full h-auto object-cover"
+              priority
+            />
           </motion.div>
-          {/* CARD OVER THE IMAGE */}
-          <div className="absolute top-16 left-0 right-0 flex justify-center items-center pointer-events-none select-none z-0 opacity-[0.1]">
-            <h1 className="text-[17vw] font-black uppercase tracking-tighter text-[#0A0D14]">
-              WEESHR • WEESHR
-            </h1>
+        </div>
+
+        {/* ── LAYER 2: Static gradient overlay ── */}
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <Image
+            src="/gradient.png"
+            alt="Gradient overlay"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        {/* ── LAYER 3: Content (logo + card + bottom text) ── */}
+        <div className="relative z-[2] flex flex-col h-full">
+          {/* Top logo */}
+          <div className="w-full flex justify-center pt-8 pb-2 shrink-0">
+            <Image
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1704590628/weeshr_website/c9jufgt5n7dm009cehr4.png"
+              alt="Weeshr Logo"
+              width={130}
+              height={42}
+              priority
+            />
           </div>
-          <div className="absolute bottom-[15%] left-0 right-0 px-2">
-            <Card className="bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl bg-[#E9F4D1] border-none">
-              <CardHeader className="px-5 py-4">
-                <CardTitle className="text-xl text-primary text-left p-0">
-                  <span className="relative text-primary pr-1 font-normal">
+
+          {/* Spacer to push card to bottom area */}
+          <div className="flex-1" />
+
+          {/* ── Glass Card Section ── */}
+          <motion.div
+            className="px-4 pb-2"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Card className="backdrop-blur-xl bg-white/70 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-3xl border border-white/40">
+              <CardHeader className="px-5 pt-5 pb-3">
+                <CardTitle className="text-xl text-[#0A0D14] text-left p-0">
+                  <span className="relative text-[#0A0D14] pr-1 font-normal">
                     Who would you like to
                     <span
                       className="relative whitespace-nowrap px-2 bg-gradient-custom bg-clip-text text-transparent text-xl sm:text-xl"
@@ -184,7 +201,7 @@ export default function MarketplaceClient() {
                   </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-1 rounded-xl border-none">
+              <CardContent className="px-4 pb-3 pt-0">
                 <PlaceholdersAndVanishInput
                   placeholders={
                     isGiftingMyself
@@ -196,8 +213,8 @@ export default function MarketplaceClient() {
                   value={receiverName}
                 />
 
-                {/* Gift Myself Button - SIMPLIFIED VERSION */}
-                <div className="flex justify-left my-1 pl-3">
+                {/* Gift Myself Checkbox */}
+                <div className="flex justify-left mt-2 pl-1">
                   <button
                     type="button"
                     onClick={handleGiftMyself}
@@ -235,7 +252,7 @@ export default function MarketplaceClient() {
                       className={`text-[14px] transition-all duration-300 inline-flex items-center h-8 ${
                         isGiftingMyself
                           ? "bg-gradient-custom bg-clip-text text-transparent font-normal overflow-visible"
-                          : "font-medium text-primary/80 group-hover:text-primary"
+                          : "font-medium text-[#0A0D14]/70 group-hover:text-[#0A0D14]"
                       }`}
                       style={{
                         fontFamily: isGiftingMyself
@@ -250,49 +267,50 @@ export default function MarketplaceClient() {
                 </div>
               </CardContent>
             </Card>
-            <div className="relative mt-0 flex items-center justify-end pr-3 md:hidden">
+
+            {/* Start Here indicator */}
+            <div className="relative mt-1 flex items-center justify-end pr-3">
               <span
-                className="whitespace-nowrap text-xl mt-10"
+                className="whitespace-nowrap text-lg mt-6"
                 style={{
-                  fontFamily: "Playwrite CU, sans-serif",
-                  color: "white",
+                  fontFamily:
+                    "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                  color: "#0A0D14",
                 }}
               >
-                start here
+                Start here
               </span>
               <Image
                 src="https://res.cloudinary.com/drykej1am/image/upload/v1763995414/weeshr-marketplace/Group_317_dxmhcs.png"
                 alt="Pointer Arrow"
-                width={32}
-                height={32}
-                className="ml-2"
+                width={28}
+                height={28}
+                className="ml-2 mt-6"
               />
             </div>
-          </div>
+          </motion.div>
+
+          {/* ── Bottom tagline ── */}
           <motion.div
-            className="absolute bottom-8 w-full flex flex-col justify-start items-start px-4"
+            className="w-full flex flex-wrap items-center justify-center px-4 pb-6 pt-2 gap-x-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <span
-              className="relative whitespace-nowrap px-2 text-2xl "
+              className="whitespace-nowrap text-lg bg-gradient-custom bg-clip-text text-transparent"
               style={{
                 fontFamily:
                   "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
-                color: "#BAEF23",
               }}
             >
               Surprise
             </span>
-            <span className="text-white text-lg mt-1 pl-2 font-medium">
-              the ones you love,
-            </span>
-            <span className="text-white text-lg pl-2 font-medium">
-              send them a gift
+            <span className="text-[#0A0D14] text-sm font-medium">
+              the ones you love, send them a gift
             </span>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
       {/* 📌 DESKTOP VERSION */}
       <div className="hidden md:flex min-h-screen flex-row">

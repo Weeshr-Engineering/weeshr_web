@@ -184,11 +184,21 @@ export function PlaceholdersAndVanishInput({
   return (
     <form
       className={cn(
-        "w-full relative max-w-xl mx-auto bg-white dark:bg-zinc-800 h-12 rounded-2xl overflow-hidden  transition duration-200",
-        value && "bg-gray-50"
+        "w-full relative max-w-xl mx-auto h-12 rounded-2xl overflow-hidden transition duration-200",
+        value && "brightness-[0.98]"
       )}
+      style={{
+        backgroundColor: "rgba(6, 12, 36, 0.267)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+      }}
       onSubmit={handleSubmit}
     >
+      {/* White fill overlay at 72% */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.72)" }}
+      />
       <input
         onChange={(e) => {
           if (!animating) {
@@ -202,11 +212,11 @@ export function PlaceholdersAndVanishInput({
         type="text"
         placeholder={placeholders[currentPlaceholder]}
         className={cn(
-          "w-full relative text-sm sm:text-base z-50 border-none bg-transparent h-full rounded-3xl focus:outline-none focus:ring-0 pl-3 sm:pl-4 pr-20",
+          "w-full relative text-sm sm:text-base z-50 border-none bg-transparent h-full rounded-3xl focus:outline-none focus:ring-0 pl-3 sm:pl-4 pr-20 text-[#060C24]",
           animating
             ? "placeholder-transparent"
-            : "placeholder-gray-400 dark:placeholder-gray-500",
-          animating && "text-primary dark:text-primary"
+            : "placeholder-[#060C24]/40",
+          animating && "text-[#060C24]"
         )}
       />
       <button
@@ -214,8 +224,8 @@ export function PlaceholdersAndVanishInput({
         type="submit"
         className={cn(
           "absolute right-1 top-1/2 z-50 -translate-y-1/2 h-10 w-10 rounded-xl text-white transition duration-200 flex items-center justify-center",
-          !value && "bg-primary ", // default when empty
-          value && "bg-teal-700 hover:bg-teal-700" // teal when user types
+          !value && "bg-[#060C24]",
+          value && "bg-[#060C24] hover:bg-[#0A1140]"
         )}
       >
         <Icon icon="carbon:send-alt-filled" width={24} />
