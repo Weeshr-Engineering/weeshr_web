@@ -220,7 +220,6 @@ export default function AllVendorsPage() {
 
         <div className="flex-1 overflow-y-auto mt-4 md:mt-0 px-2 md:px-0 scrollbar-hide">
           <VendorList vendors={regularVendors} loading={loading} />
-
           {/* Infinite Scroll Trigger & Status Messages */}
           {!loading && (
             <div className="py-8">

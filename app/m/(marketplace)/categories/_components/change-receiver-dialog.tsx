@@ -79,7 +79,7 @@ export default function ChangeReceiverDialog({
       type="button"
       className={cn(
         "flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-2 rounded-lg cursor-pointer",
-        disabled && "opacity-50 cursor-not-allowed hover:bg-transparent"
+        disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
       )}
     >
       <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-6">

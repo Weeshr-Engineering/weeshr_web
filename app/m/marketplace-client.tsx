@@ -81,7 +81,7 @@ export default function MarketplaceClient() {
       return;
     }
 
-    router.push(`/m/categories?name=${encodeURIComponent(finalName)}`);
+    router.push(`/m/categories/all?name=${encodeURIComponent(finalName)}`);
   };
 
   const handleGiftMyself = () => {
@@ -308,7 +308,7 @@ export default function MarketplaceClient() {
                         lineHeight: "normal",
                       }}
                     >
-                      I am gifting myself
+                      I am gifting  my self
                     </span>
                   </button>
                 </div>
