@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Product, ProductService } from "@/service/product.service";
 import { cartService } from "@/service/cart.service";
@@ -22,6 +22,7 @@ interface MobileMenuButtonsProps {
   isAuthenticated: boolean;
   userId?: string;
   clearBasket: () => void;
+  onOpenChangeReceiver?: () => void;
 }
 
 export function MobileMenuButtons({
@@ -33,6 +34,7 @@ export function MobileMenuButtons({
   isAuthenticated,
   userId,
   clearBasket,
+  onOpenChangeReceiver,
 }: MobileMenuButtonsProps) {
   const [shakeId, setShakeId] = useState<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export function MobileMenuButtons({
   const [expandedImageIndex, setExpandedImageIndex] = useState(0);
   const [imageScale, setImageScale] = useState(1);
   const [dragY, setDragY] = useState(0);
+  const [activeProductId, setActiveProductId] = useState<string | null>(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -195,23 +198,18 @@ export function MobileMenuButtons({
           const result = await cartService.removeItemFromCart(
             userId,
             productId.toString(),
-            Math.abs(clicksToSend),
           );
-          if (!(result.code === 200 || result.code === 201)) {
-            toast.error("Failed to sync removal with server");
-          }
-        } else if (clicksToSend > 0) {
+        } else {
           const result = await cartService.addItemsToCart({
             userId,
             items: [
               {
                 productId: productId.toString(),
-                quantity: clicksToSend, // Send accumulated clicks
+                quantity: clicksToSend,
                 price: product?.price || 0,
               },
             ],
           });
-
           if (!(result.code === 200 || result.code === 201)) {
             // toast.error("Failed to sync with server");
             console.error("Failed to sync with server");
@@ -322,15 +320,12 @@ export function MobileMenuButtons({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 gap-3 py-6 pt-4">
-        {Array.from({ length: 6 }).map((_, index) => (
+      <div className="grid grid-cols-3 gap-px py-6 pt-4">
+        {Array.from({ length: 9 }).map((_, index) => (
           <Card
             key={index}
-            className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative animate-pulse"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50"></div>
-            <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40"></div>
-          </Card>
+            className="overflow-hidden rounded-none bg-gray-100 aspect-square relative animate-pulse"
+          />
         ))}
       </div>
     );
@@ -352,52 +347,81 @@ export function MobileMenuButtons({
   return (
     <div className="space-y-4">
       {/* Clear All button - only show when basket has items */}
-      <div className="h-10">
-        {totalItems > 0 && (
-          <div className="flex justify-end items-end px-2">
-            <Button
-              variant="ghost"
-              className="text-amber-700 text-xs px-3 py-1 h-7 rounded-3xl hover:bg-amber-50"
+      <div className="h-10 px-4">
+        <div className="flex justify-between items-center h-full">
+          {onOpenChangeReceiver && (
+            <button
               onClick={(e) => {
                 e.stopPropagation();
-                clearBasket();
+                onOpenChangeReceiver();
               }}
+              className="flex flex-row gap-2 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-1.5 px-3 rounded-full cursor-pointer"
             >
-              Clear All
-            </Button>
-          </div>
-        )}
+              <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-7 h-7 flex items-center justify-center">
+                <Icon icon="lsicon:switch-outline" className="text-[#6A70FF] w-4 h-4" />
+              </div>
+              <span className="text-[#1F2937] font-medium text-xs">Change receiver</span>
+            </button>
+          )}
+
+          <button
+            disabled={totalItems <= 1}
+            className={cn(
+              "text-[10px] uppercase tracking-widest px-3 py-1 transition-all duration-300",
+              totalItems > 1
+                ? "text-red-500 font-bold opacity-100 hover:scale-105 active:scale-95"
+                : "text-gray-400 font-medium opacity-10 blur-[0.5px] cursor-not-allowed",
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              clearBasket();
+            }}
+          >
+            Clear All
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:py-2">
+      <div className="grid grid-cols-3 md:py-2">
         {menuProducts.map((product) => {
           const basketItem = basket.find((item) => item.id === product.id);
           const itemCount = basketItem?.qty || 0;
-          const isHovered = hoverId === product.id;
+          const isItemActive = activeProductId === product.id || itemCount > 0;
 
           return (
             <motion.div
               key={product.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-              whileTap={product.isAvailable ? { scale: 0.97 } : {}}
-              className="w-full group"
+              transition={{ duration: 0.3 }}
+              className="w-full"
+              onClick={() => {
+                if (activeProductId !== product.id) {
+                  setActiveProductId(product.id);
+                }
+              }}
+              onMouseEnter={() => {
+                if (activeProductId !== product.id) {
+                  setActiveProductId(product.id);
+                }
+              }}
+              onMouseLeave={() => {
+                if (activeProductId === product.id) {
+                  setActiveProductId(null);
+                }
+              }}
             >
               <Card
-                onMouseEnter={() => setHoverId(product.id)}
-                onMouseLeave={() => setHoverId(null)}
                 className={cn(
-                  "overflow-hidden rounded-3xl transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
-                  "bg-gradient-to-br from-white/95 via-white/90 to-white/95",
-                  "backdrop-blur-xl border-[1.5px]",
+                  "overflow-hidden rounded-none transition-all duration-300 relative aspect-square flex flex-col",
+                  "bg-gray-100 border-none",
                   product.isAvailable
-                    ? "cursor-pointer border-gray-200/60 hover:border-marketplace-primary/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
-                    : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm",
+                    ? "cursor-pointer"
+                    : "opacity-50 cursor-not-allowed",
                 )}
               >
-                {/* Image Container - Full card */}
-                <div className="absolute inset-0 cursor-zoom-in group/image bg-gray-100 overflow-hidden">
+                {/* Image Container */}
+                <div className="absolute inset-0 bg-gray-100 overflow-hidden">
                   <ImageSlider
                     images={
                       product.images && product.images.length > 0
@@ -407,194 +431,123 @@ export function MobileMenuButtons({
                     alt={product.name}
                     autoplayDelay={3500 + Math.random() * 1000}
                     onImageClick={(index) => {
-                      setExpandedImage(product);
-                      setExpandedImageIndex(index);
+                      if (isItemActive) {
+                        setExpandedImage(product);
+                        setExpandedImageIndex(index);
+                      } else {
+                        setActiveProductId(product.id);
+                      }
                     }}
                     showArrows={false}
                     className="h-full w-full"
                     imageClassName={cn(
                       "transition-transform duration-700 ease-out",
-                      isHovered && "scale-110",
+                      isItemActive && "scale-105",
                     )}
                   />
 
-                  {/* Elegant zoom indicator - top right */}
-                  <motion.div
-                    className="absolute top-2 right-2 bg-black/60 backdrop-blur-md rounded-full p-1.5 shadow-lg z-20"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{
-                      opacity: isHovered ? 1 : 0,
-                      scale: isHovered ? 1 : 0.8,
-                    }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                  >
-                    <Icon
-                      icon="ph:magnifying-glass-plus"
-                      className="w-3 h-3 text-white"
-                    />
-                  </motion.div>
+                  {/* Base Gradient - Always visible for name readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
 
-                  {/* Dark gradient overlay on hover or if in basket for text readability */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-10"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: isHovered || itemCount > 0 ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                  />
+                  {/* Active/Selection Overlay - revealing buttons and price */}
+                  <AnimatePresence>
+                    {isItemActive && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-black/20 backdrop-blur-[2px] z-20 pointer-events-none"
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                {/* Price Tag - Always visible at top left */}
-                <motion.div
-                  className="absolute top-2 left-2 z-20 bg-white/80 backdrop-blur-md rounded-full px-2.5 py-1 shadow-md border border-white/60"
-                  animate={{
-                    scale: isHovered ? 1.05 : 1,
-                    opacity: isHovered ? 1 : 0.85,
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <p className="font-semibold text-[11px] bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent">
-                    ₦{product.price.toLocaleString()}
-                  </p>
-                </motion.div>
+                {/* Revealed Content: Price and Controls */}
+                <AnimatePresence>
+                  {isItemActive && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 5 }}
+                      className="absolute inset-0 z-40 p-3 flex flex-col justify-between pointer-events-none"
+                    >
+                      {/* Top Row: Price */}
+                      <div className="flex justify-start">
+                        <span className="text-[10px] font-bold text-gray-800 bg-white/95 backdrop-blur-md rounded-full px-2 py-0.5 shadow-sm border border-white/40">
+                          ₦{product.price.toLocaleString()}
+                        </span>
+                      </div>
 
-                {/* Quantity Badge - Top right when items in basket, hidden when bottom overlay is shown */}
-                {itemCount > 0 && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{
-                      scale: 1,
-                      opacity: isHovered || itemCount > 0 ? 0 : 1,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute top-4 right-2 z-30 bg-marketplace-primary text-gray-900 rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white"
-                  >
-                    <span className="text-[11px] font-bold">{itemCount}</span>
-                  </motion.div>
-                )}
+                      {/* Middle: Name and Description - Restored details */}
+                      <div className="flex flex-col gap-0.5">
+                        <h4 className="text-white text-[11px] font-bold leading-tight drop-shadow-md line-clamp-1">
+                          {product.name}
+                        </h4>
+                        <p className="text-white/80 text-[10px] leading-tight drop-shadow-sm line-clamp-2">
+                          {product.description}
+                        </p>
+                      </div>
 
-                {/* Instagram-style overlay - slides up on hover or if items in basket */}
-                <motion.div
-                  className="absolute bottom-0 left-0 right-0 z-20 p-3 md:p-4 pointer-events-none"
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{
-                    y: isHovered || itemCount > 0 ? 0 : "100%",
-                    opacity: isHovered || itemCount > 0 ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.25, 0.1, 0.25, 1],
-                  }}
-                >
-                  <div className="space-y-2.5">
-                    {/* Product Info */}
-                    <div className="space-y-1.5">
-                      <h3 className="text-white text-[14px] font-semibold tracking-tight leading-snug drop-shadow-lg line-clamp-1">
-                        {product.name}
-                      </h3>
-                      <p className="text-white/95 text-[12px]  drop-shadow-md ">
-                        {product.description}
-                      </p>
-                    </div>
-
-                    {/* Action Buttons */}
-                    {product.isAvailable ? (
-                      <>
-                        {itemCount === 0 ? (
-                          <Button
-                            size="sm"
-                            variant="marketplace"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAdd(product.id);
-                            }}
-                            className={cn(
-                              "w-full rounded-full font-semibold text-[12px] gap-1.5 flex items-center justify-center h-9 transition-all duration-300 pointer-events-auto",
-                              "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_30px_-6px_rgba(147,51,234,0.4)]",
-                              "hover:bg-marketplace-primary/80",
-                              "border-2 border-marketplace-primary/60 hover:border-marketplace-primary",
-                            )}
-                          >
-                            <Icon
-                              icon="streamline-ultimate:shopping-basket-1"
-                              className="text-gray-900 h-4 w-4"
-                            />
-                            <span className="text-gray-900 font-semibold">
-                              Add to basket
-                            </span>
-                          </Button>
-                        ) : (
-                          <div className="flex items-center gap-2 pointer-events-auto">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemove(product.id);
-                              }}
-                              className="rounded-full h-9 w-9 p-0 flex items-center justify-center bg-white/90 hover:bg-white border-2"
-                            >
-                              <Icon icon="mdi:minus" className="h-4 w-4" />
-                            </Button>
-
-                            <div className="flex-1 text-center bg-white/90 rounded-full h-9 flex items-center justify-center border-2 border-white/80">
-                              <motion.span
-                                initial={{ scale: 1 }}
-                                animate={{
-                                  scale:
-                                    shakeId === product.id ? [1, 1.2, 1] : 1,
-                                }}
-                                transition={{ duration: 0.3 }}
-                                className="font-bold text-sm text-gray-900"
-                              >
-                                {itemCount}
-                              </motion.span>
-                            </div>
-
-                            <Button
-                              size="sm"
-                              variant="marketplace"
+                      {/* Action Row - Bottom Right */}
+                      <div className="flex justify-end items-end h-10 pointer-events-auto">
+                        {product.isAvailable ? (
+                          itemCount === 0 ? (
+                            <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleAdd(product.id);
                               }}
-                              className="rounded-full h-9 w-9 p-0 flex items-center justify-center bg-marketplace-primary hover:bg-marketplace-primary/80 border-2 border-marketplace-primary/60"
+                              className="w-9 h-9 bg-marketplace-primary text-gray-900 rounded-full flex items-center justify-center shadow-lg active:scale-90 border border-white/30"
                             >
-                              <Icon
-                                icon="mdi:plus"
-                                className="h-4 w-4 text-gray-900"
-                              />
-                            </Button>
+                              <Icon icon="mdi:plus" className="w-6 h-6" />
+                            </button>
+                          ) : (
+                            <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-full p-1 shadow-xl border border-white/50">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemove(product.id);
+                                }}
+                                className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm active:scale-90"
+                              >
+                                <Icon
+                                  icon="mdi:minus"
+                                  className="w-4 h-4 text-red-500"
+                                />
+                              </button>
+
+                              <span className="text-[13px] font-bold px-1 min-w-[14px] text-center text-gray-900">
+                                {itemCount}
+                              </span>
+
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAdd(product.id);
+                                }}
+                                className="w-8 h-8 bg-marketplace-primary rounded-full flex items-center justify-center shadow-sm active:scale-90"
+                              >
+                                <Icon
+                                  icon="mdi:plus"
+                                  className="w-4 h-4 text-gray-900"
+                                />
+                              </button>
+                            </div>
+                          )
+                        ) : (
+                          <div className="w-8 h-8 bg-gray-500/80 text-white rounded-full flex items-center justify-center backdrop-blur-sm">
+                            <Icon icon="mdi:close" className="w-4 h-4" />
                           </div>
                         )}
-                      </>
-                    ) : (
-                      <div className="w-full rounded-full bg-gray-500/80 text-white text-[12px] font-medium h-9 flex items-center justify-center">
-                        Out of stock
                       </div>
-                    )}
-                  </div>
-                </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                {/* Subtle shimmer effect */}
-                <motion.div
-                  className="absolute inset-0 opacity-0 pointer-events-none z-[5]"
-                  animate={{
-                    opacity:
-                      isHovered && product.isAvailable ? [0, 0.05, 0] : 0,
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  style={{
-                    background:
-                      "linear-gradient(110deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%)",
-                    backgroundSize: "200% 100%",
-                  }}
-                />
+                {/* Selection border/indicator */}
+                {isItemActive && (
+                  <div className="absolute inset-0 border-2 border-marketplace-primary/40 rounded-none z-50 pointer-events-none" />
+                )}
               </Card>
             </motion.div>
           );
@@ -603,18 +556,15 @@ export function MobileMenuButtons({
         {/* Infinite Scroll Loading Indicator - Skeleton Cards */}
         {loadingMore && (
           <>
-            {Array.from({ length: 4 }).map((_, index) => (
+            {Array.from({ length: 3 }).map((_, index) => (
               <motion.div
                 key={`loading-${index}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2, delay: index * 0.05 }}
                 className="w-full"
               >
-                <Card className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 animate-pulse"></div>
-                  <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40 animate-pulse"></div>
-                </Card>
+                <Card className="overflow-hidden rounded-2xl bg-gray-100 aspect-square relative animate-pulse" />
               </motion.div>
             ))}
           </>

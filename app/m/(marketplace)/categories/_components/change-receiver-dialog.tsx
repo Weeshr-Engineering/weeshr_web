@@ -73,22 +73,6 @@ export default function ChangeReceiverDialog({
     handleSubmit();
   };
 
-  const Trigger = (
-    <button
-      disabled={disabled}
-      type="button"
-      className={cn(
-        "flex flex-row gap-1 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-2 rounded-lg cursor-pointer",
-        disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
-      )}
-    >
-      <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-6">
-        <Icon icon="lsicon:switch-outline" />
-      </div>
-      <span>Change receiver</span>
-    </button>
-  );
-
   const Content = (
     <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none relative">
       <button
@@ -182,8 +166,6 @@ export default function ChangeReceiverDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>{Trigger}</AlertDialogTrigger>
-
       <AlertDialogContent
         onCloseRequest={() => setOpen(false)}
         className="border-none bg-transparent shadow-none flex items-center justify-center px-4"

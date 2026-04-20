@@ -26,6 +26,7 @@ export interface ApiProduct {
   }>;
   status: string;
   isDeleted: boolean;
+  availableQty?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -101,14 +102,19 @@ export class ProductService {
           isAvailable:
             product.status === "published" &&
             !product.isDeleted &&
-            product.qty > 0,
+            (product.availableQty !== undefined
+              ? product.availableQty > 0
+              : product.qty > 0),
         };
       });
 
+      // Filter out products that are not available
+      const availableProducts = products.filter((p) => p.isAvailable);
+
       // Debug mapped products
       console.log(
-        "Mapped Products:",
-        products.map((p) => ({
+        "Mapped and Filtered Products:",
+        availableProducts.map((p) => ({
           name: p.name,
           imagesCount: p.images.length,
           firstImage: p.image,
@@ -116,7 +122,7 @@ export class ProductService {
       );
 
       return {
-        products,
+        products: availableProducts,
         pagination: response.pagination,
       };
     } catch (error) {

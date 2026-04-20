@@ -9,11 +9,13 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { fetchCategories } from "@/lib/api";
 import RedirectGuard from "./_components/redirect-guard";
+import { cn } from "@/lib/utils";
 
 // Create a separate component that uses useSearchParams
 const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const segments = pathname.split("/").filter(Boolean);
   const [categories, setCategories] = useState<any[]>([]);
   const [navWithQuery, setNavWithQuery] = useState(marketplaceLinks);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
         // Find the matching category from API data
         const category = categories.find(
           (cat: any) =>
-            cat.name.toLowerCase() === categoryNameFromLink?.toLowerCase()
+            cat.name.toLowerCase() === categoryNameFromLink?.toLowerCase(),
         );
 
         if (category && nameParam) {
@@ -94,23 +96,36 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
     setNavWithQuery(updatedNav);
   }, [categories, nameParam]);
 
+  // Check if we are on a specific vendor product page (e.g., /m/categories/fashion/vendor-name)
+  // These pages should have 4 or more segments
+  const isProductPage = segments.length >= 4;
+
   return (
     <main
-      className="relative flex flex-col overflow-hidden h-full bg-cover bg-bottom bg-no-repeat
+      className="relative flex flex-col h-full bg-cover bg-bottom bg-no-repeat
     bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]"
     >
-      <WidthLayout className="h-full flex flex-col overflow-hidden">
-        <div className="shrink-0">
-          <HeaderMobile hideLoginButton={true} customLinks={navWithQuery} />
-          <FloatingNav navItems={navWithQuery} showLoginButton={false} />
-          <RedirectGuard />
-        </div>
-        <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col md:mt-20">
+      <WidthLayout className="h-full flex flex-col w-full">
+        {!isProductPage && (
+          <div className="shrink-0">
+            <HeaderMobile customLinks={navWithQuery} />
+            <FloatingNav navItems={navWithQuery} showLoginButton={false} />
+            <RedirectGuard />
+          </div>
+        )}
+        <div
+          className={cn(
+            "flex-1 min-h-0 w-full flex flex-col",
+            !isProductPage && "md:mt-20",
+          )}
+        >
           {children}
         </div>
-        <div className="shrink-0">
-          <Footer />
-        </div>
+        {!isProductPage && (
+          <div className="shrink-0">
+            <Footer />
+          </div>
+        )}
       </WidthLayout>
     </main>
   );
@@ -124,15 +139,9 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
     <Suspense
       fallback={
         <main className="relative flex flex-col min-h-screen bg-cover bg-top bg-no-repeat bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]">
+          {/* Minimal fallback to prevent layout shift while allowing page skeletons to show first */}
           <WidthLayout className="h-full flex flex-col">
-            <div className="flex-grow pt-20 px-4">
-              <div className="max-w-5xl mx-auto">
-                <div className="pt-10 md:pt-20 text-center mb-8">
-                  <div className="h-12 w-2/3 bg-gray-100/50 rounded-2xl mx-auto animate-pulse" />
-                </div>
-                <CategorySkeletonGrid count={8} />
-              </div>
-            </div>
+            <div className="flex-grow pt-20 px-4" />
           </WidthLayout>
         </main>
       }

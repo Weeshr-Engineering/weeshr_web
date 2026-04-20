@@ -2,11 +2,9 @@
 
 import React from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
-import { Card, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { Icon } from "@iconify/react";
-import { Button } from "@/components/ui/button";
 import { VendorCardSkeleton } from "./vendor-card-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { Vendor } from "@/service/vendor.service";
 import { motion } from "framer-motion";
@@ -62,18 +60,6 @@ const VendorList: React.FC<VendorListProps> = ({
     );
   }
 
-  function getCategoryIcon(category: string) {
-    const cat = category.toLowerCase();
-    if (cat.includes("food")) return "famicons:fast-food-outline";
-    if (cat.includes("fashion")) return "lucide:handbag";
-    if (cat.includes("gadget") || cat.includes("phone"))
-      return "lucide:smartphone";
-    if (cat.includes("lifestyle")) return "lucide:sparkles";
-    if (cat.includes("beauty") || cat.includes("health")) return "lucide:heart";
-    if (cat.includes("grocer")) return "lucide:shopping-basket";
-    return "lucide:store";
-  }
-
   function sentenceCase(str?: string) {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -81,10 +67,18 @@ const VendorList: React.FC<VendorListProps> = ({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 py-6">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <VendorCardSkeleton key={i} />
-        ))}
+      <div className="space-y-px sm:space-y-3">
+        <div className="grid grid-cols-3 sm:gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <VendorCardSkeleton key={i} />
+          ))}
+        </div>
+        <Skeleton className="w-full aspect-[4/3] sm:rounded-3xl" />
+        <div className="grid grid-cols-3 sm:gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <VendorCardSkeleton key={`more-${i}`} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -100,195 +94,194 @@ const VendorList: React.FC<VendorListProps> = ({
   }
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 12 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.05, // Faster stagger for mobile feeling
-        duration: 0.5,
+        delay: i * 0.03,
+        duration: 0.4,
         ease: [0.25, 0.1, 0.25, 1],
       },
     }),
-    hover: {
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-    tap: {
-      scale: 1,
-      transition: { duration: 0.1 },
-    },
   };
 
+  // Build the layout: 6 regular cards followed by 1 featured card sequentially
+  const FEATURED_INTERVAL = 6;
+  const items: Array<
+    | { type: "regular"; vendors: Vendor[]; startIndex: number }
+    | { type: "featured"; vendor: Vendor; index: number }
+  > = [];
+
+  let i = 0;
+  while (i < vendors.length) {
+    // Collect up to 6 regular cards
+    const groupEnd = Math.min(i + FEATURED_INTERVAL, vendors.length);
+    const group = vendors.slice(i, groupEnd);
+    items.push({ type: "regular", vendors: group, startIndex: i });
+    i = groupEnd;
+
+    // The next card is a featured one, if we have vendors left
+    if (i < vendors.length) {
+      items.push({ type: "featured", vendor: vendors[i], index: i });
+      i++;
+    }
+  }
+
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 py-6 transition-all">
-        {vendors.map((vendor, index) => (
-          <motion.div
-            key={vendor.id}
-            custom={index}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-            whileTap="tap"
-            viewport={{ once: true, margin: "50px" }}
-          >
-            <Card
-              className="group overflow-hidden rounded-3xl border border-gray-50 cursor-pointer bg-white transition-all duration-500
-              shadow-[0_8px_20px_-4px_rgba(0,0,0,0.04)] 
-              hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]
-              active:shadow-[0_16px_24px_-12px_rgba(0,0,0,0.06)]"
+    <div className="space-y-px sm:space-y-3">
+      {items.map((item, blockIndex) => {
+        if (item.type === "featured") {
+          const vendor = item.vendor;
+          const offset = randomOffsets[vendor.id] || 0;
+          const currentImage =
+            vendor.productImages.length > 0
+              ? vendor.productImages[offset % vendor.productImages.length]
+              : vendor.image;
+          const isLoaded = imageLoadedStates[currentImage];
+
+          return (
+            <motion.div
+              key={`featured-${vendor.id}`}
+              custom={item.index}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              className="w-full cursor-pointer"
               onClick={() =>
                 goToVendor(vendor.category, vendor.name, vendor.id)
               }
             >
-              {/* Image Container */}
-              <div className="relative overflow-hidden rounded-t-3xl bg-gray-50">
-                <div className="rounded-t-3xl overflow-hidden group relative">
-                  {(() => {
-                    const offset = randomOffsets[vendor.id] || 0;
-                    const currentImage =
-                      vendor.productImages.length > 0
-                        ? vendor.productImages[
-                            offset % vendor.productImages.length
-                          ]
-                        : vendor.image;
+              <div className="relative overflow-hidden sm:rounded-3xl bg-gray-100">
+                {/* Featured image — taller */}
+                <div className="relative w-full aspect-[4/3] overflow-hidden">
+                  {!isLoaded && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+                  )}
+                  <Image
+                    src={currentImage}
+                    alt={vendor.name}
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-[1.02]"
+                    loading="lazy"
+                    sizes="100vw"
+                    quality={80}
+                    onLoad={() =>
+                      setImageLoadedStates((prev) => ({
+                        ...prev,
+                        [currentImage]: true,
+                      }))
+                    }
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src =
+                        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
+                      setImageLoadedStates((prev) => ({
+                        ...prev,
+                        [currentImage]: true,
+                      }));
+                    }}
+                  />
 
-                    const isLoaded = imageLoadedStates[currentImage];
+                  {/* Gradient overlay for text */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-                    return (
-                      <>
-                        {/* Shimmer skeleton while loading */}
-                        {!isLoaded && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 animate-shimmer z-10" />
-                        )}
+                  {/* Category badge - top right */}
+                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 z-20">
+                    <span className="text-gray-700 text-xs font-medium">
+                      {vendor.category}
+                    </span>
+                  </div>
 
-                        <motion.div
-                          key={`${vendor.id}-${currentImage}`}
-                          initial={{ opacity: 0 }}
-                          animate={{
-                            opacity: isLoaded ? 1 : 0,
-                          }}
-                          transition={{
-                            duration: 0.8,
-                            ease: "easeInOut",
-                          }}
-                        >
-                          <Image
-                            src={currentImage}
-                            alt={vendor.name}
-                            width={400}
-                            height={240}
-                            className="w-full h-48 object-cover transition-all duration-700 group-hover:saturate-[1.03] group-hover:brightness-[1.02]"
-                            loading="lazy"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            quality={75}
-                            onLoad={() => {
-                              setImageLoadedStates((prev) => ({
-                                ...prev,
-                                [currentImage]: true,
-                              }));
-                            }}
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src =
-                                "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
-                              setImageLoadedStates((prev) => ({
-                                ...prev,
-                                [currentImage]: true,
-                              }));
-                            }}
-                          />
-                        </motion.div>
-                      </>
-                    );
-                  })()}
+                  {/* Vendor name overlay - bottom left */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+                    <p className="text-white text-xl sm:text-2xl font-medium sm:font-bold tracking-tight drop-shadow-lg">
+                      {sentenceCase(vendor?.name)}
+                    </p>
+                  </div>
                 </div>
+              </div>
+            </motion.div>
+          );
+        }
 
-                {/* Category Badge */}
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex gap-1.5 shadow-sm border border-gray-100/50 z-20">
-                  <div className="w-3 flex items-center">
-                    <Icon
-                      icon={getCategoryIcon(vendor.category)}
-                      className="text-gray-600"
+        // Regular 3-column grid
+        return (
+          <div
+            key={`grid-${blockIndex}`}
+            className="grid grid-cols-3  sm:gap-3"
+          >
+            {item.vendors.map((vendor, idx) => {
+              const globalIndex = item.startIndex + idx;
+              const offset = randomOffsets[vendor.id] || 0;
+              const currentImage =
+                vendor.productImages.length > 0
+                  ? vendor.productImages[offset % vendor.productImages.length]
+                  : vendor.image;
+              const isLoaded = imageLoadedStates[currentImage];
+
+              return (
+                <motion.div
+                  key={vendor.id}
+                  custom={globalIndex}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="cursor-pointer"
+                  onClick={() =>
+                    goToVendor(vendor.category, vendor.name, vendor.id)
+                  }
+                >
+                  <div className="relative overflow-hidden sm:rounded-2xl bg-gray-100 aspect-square">
+                    {!isLoaded && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+                    )}
+                    <Image
+                      src={currentImage}
+                      alt={vendor.name}
+                      fill
+                      className="object-cover transition-transform duration-500 hover:scale-105"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 33vw, 25vw"
+                      quality={70}
+                      onLoad={() =>
+                        setImageLoadedStates((prev) => ({
+                          ...prev,
+                          [currentImage]: true,
+                        }))
+                      }
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
+                        setImageLoadedStates((prev) => ({
+                          ...prev,
+                          [currentImage]: true,
+                        }));
+                      }}
                     />
-                  </div>
-                  <span className="text-gray-600 text-xs font-medium tracking-tight">
-                    {vendor.category}
-                  </span>
-                </div>
-              </div>
 
-              {/* Content Section */}
-              <div className="p-5 bg-white rounded-b-3xl">
-                <CardTitle className="text-base font-semibold text-gray-900 mb-3 capitalize tracking-tight">
-                  {sentenceCase(vendor?.name)}
-                </CardTitle>
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
 
-                <div className="flex justify-between items-end gap-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-gray-400 text-[11px] uppercase tracking-wider font-bold mb-1">
-                      Gift Ideas
-                    </p>
-                    <p className="text-gray-600 text-sm line-clamp-1 font-medium">
-                      {vendor.giftIdeas}
+                    {/* Category badge - top right */}
+                    <div className="absolute top-2 right-2 z-20">
+                      <span className="text-[10px] sm:text-xs font-semibold text-gray-700 bg-white/85 backdrop-blur-sm rounded-full px-2 py-0.5 whitespace-nowrap">
+                        {vendor.category}
+                      </span>
+                    </div>
+
+                    {/* Vendor name - bottom left */}
+                    <p className="absolute bottom-2 left-2 right-2 text-white text-[11px] sm:text-sm font-medium sm:font-bold truncate z-20 drop-shadow-md">
+                      {sentenceCase(vendor?.name)}
                     </p>
                   </div>
-
-                  <div className="flex gap-1">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }} // ✅ Button hover only
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goToVendor(vendor.category, vendor.name, vendor.id);
-                        }}
-                        className="px-2 py-2 text-muted-foreground hover:underline hover:decoration-text-foreground hover:bg-transparent transition-colors text-sm font-medium rounded-2xl"
-                      >
-                        Send
-                      </Button>
-                    </motion.div>
-
-                    <motion.div
-                      whileHover={{ scale: 1.05 }} // ✅ Button hover only
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Button
-                        size="xl2"
-                        variant="marketplace"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goToVendor(vendor.category, vendor.name, vendor.id);
-                        }}
-                        className="transition-colors text-sm font-medium flex items-center gap-1 bg-marketplace-primary hover:bg-marketplace-primary/60 rounded-2xl"
-                      >
-                        <motion.span
-                          whileHover={{ rotate: 15 }} // ✅ Icon hover only
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Icon
-                            icon="famicons:gift-sharp"
-                            height={14}
-                            width={14}
-                          />
-                        </motion.span>
-                        Delivery
-                      </Button>
-                    </motion.div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };

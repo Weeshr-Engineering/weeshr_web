@@ -16,8 +16,8 @@ interface ProductCardProps {
   basket: BasketItem[];
   onExpand: (product: Product, index?: number) => void;
   onAdd: (id: string) => void;
-  hoverId: string | null;
-  setHoverId: (id: string | null) => void;
+  onExpand: (product: Product, index?: number) => void;
+  onAdd: (id: string) => void;
 }
 
 export function ProductCard({
@@ -25,15 +25,13 @@ export function ProductCard({
   basket,
   onExpand,
   onAdd,
-  hoverId,
-  setHoverId,
 }: ProductCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const basketItem = basket.find((item) => item.id === product.id);
   const itemCount = basketItem?.qty || 0;
-  const isHovered = hoverId === product.id;
 
   const images =
     product.images && product.images.length > 0
@@ -50,8 +48,8 @@ export function ProductCard({
       className="w-full group"
     >
       <Card
-        onMouseEnter={() => setHoverId(product.id)}
-        onMouseLeave={() => setHoverId(null)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={cn(
           "overflow-hidden rounded-3xl transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
           "bg-gradient-to-br from-white/95 via-white/90 to-white/95",

@@ -21,6 +21,8 @@ interface MenuListProps {
   products: Product[];
   isAuthenticated: boolean;
   userId?: string;
+  clearBasket: () => void;
+  onOpenChangeReceiver?: () => void;
 }
 
 export function MenuList({
@@ -30,9 +32,10 @@ export function MenuList({
   products,
   isAuthenticated,
   userId,
+  clearBasket,
+  onOpenChangeReceiver,
 }: MenuListProps) {
   const [shakeId, setShakeId] = useState<string | null>(null);
-  const [hoverId, setHoverId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -235,8 +238,45 @@ export function MenuList({
     );
   }
 
+  const totalItems = basket.reduce((sum, item) => sum + item.qty, 0);
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 py-6 pt-4">
+    <div className="space-y-4">
+      {/* Utility Bar for Desktop */}
+      <div className="flex justify-between items-center px-4 py-2 bg-gray-50/50 rounded-2xl border border-gray-100">
+        {onOpenChangeReceiver && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenChangeReceiver();
+            }}
+            className="flex flex-row gap-2 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-1.5 px-3 rounded-full cursor-pointer"
+          >
+            <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-7 h-7 flex items-center justify-center">
+              <Icon icon="lsicon:switch-outline" className="text-[#6A70FF] w-4 h-4" />
+            </div>
+            <span className="text-[#1F2937] font-medium text-xs">Change receiver</span>
+          </button>
+        )}
+
+        <button
+          disabled={totalItems <= 1}
+          className={cn(
+            "text-[10px] uppercase tracking-widest px-3 py-1 transition-all duration-300",
+            totalItems > 1
+              ? "text-red-500 font-bold opacity-100 hover:scale-105 active:scale-95"
+              : "text-gray-400 font-medium opacity-10 blur-[0.5px] cursor-not-allowed",
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
+            clearBasket();
+          }}
+        >
+          Clear All
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 py-6 pt-4">
       {menuProducts.map((product) => (
         <ProductCard
           key={product.id}
@@ -247,8 +287,6 @@ export function MenuList({
             setExpandedImageIndex(index || 0);
           }}
           onAdd={handleAdd}
-          hoverId={hoverId}
-          setHoverId={setHoverId}
         />
       ))}
 
@@ -289,6 +327,7 @@ export function MenuList({
           </p>
         </div>
       )}
+      </div>
 
       {/* Premium Image Expansion Modal */}
       {expandedImage && (
