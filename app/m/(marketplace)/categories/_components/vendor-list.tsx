@@ -25,25 +25,6 @@ const VendorList: React.FC<VendorListProps> = ({
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("id");
 
-  // Dynamic interval for featured items
-  const [featuredInterval, setFeaturedInterval] = React.useState(9); // Default to mobile
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setFeaturedInterval(10); // lg and above
-      } else if (window.innerWidth >= 768) {
-        setFeaturedInterval(8); // md
-      } else {
-        setFeaturedInterval(9); // mobile
-      }
-    };
-
-    handleResize(); // Initial check
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   // Track image loading state for each vendor
   const [imageLoadedStates, setImageLoadedStates] = React.useState<
     Record<string, boolean>
@@ -51,17 +32,29 @@ const VendorList: React.FC<VendorListProps> = ({
 
   // Generate random starting offsets for each vendor once per mount
   const [randomOffsets] = React.useState<Record<string, number>>({});
+  const [randomStyles] = React.useState<Record<string, number>>({});
 
-  // Initialize random offsets for vendors that have multiple images
+  // Initialize random offsets and styles
   React.useMemo(() => {
-    vendors.forEach((vendor) => {
+    vendors.forEach((vendor, index) => {
       if (vendor.productImages.length > 1 && !randomOffsets[vendor.id]) {
         randomOffsets[vendor.id] = Math.floor(
           Math.random() * vendor.productImages.length,
         );
       }
+      if (randomStyles[vendor.id] === undefined) {
+        if (index === 0) {
+          randomStyles[vendor.id] = 0; // 2x2 for the first item
+        } else {
+          const r = Math.random();
+          if (r < 0.05) randomStyles[vendor.id] = 0; // 2x2 (5%)
+          else if (r < 0.10) randomStyles[vendor.id] = 1; // 2x1 (5%)
+          else if (r < 0.15) randomStyles[vendor.id] = 2; // 1x2 (5%)
+          else randomStyles[vendor.id] = 3; // regular (85%)
+        }
+      }
     });
-  }, [vendors, randomOffsets]);
+  }, [vendors, randomOffsets, randomStyles]);
 
   // helper to slugify vendor names
   function slugify(str: string) {
@@ -85,18 +78,89 @@ const VendorList: React.FC<VendorListProps> = ({
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
 
+  const getCardStyles = (index: number, vendorId?: string) => {
+    const isMobileFeatured = (index + 1) % 10 === 0;
+
+    let isDesktop2x2 = false;
+    let isDesktop2x1 = false;
+    let isDesktop1x2 = false;
+
+    if (vendorId && randomStyles[vendorId] !== undefined) {
+      const code = randomStyles[vendorId];
+      isDesktop2x2 = code === 0;
+      isDesktop2x1 = code === 1;
+      isDesktop1x2 = code === 2;
+    } else {
+      // Fallback for skeletons
+      const desktopCycle = index % 15;
+      isDesktop2x2 = desktopCycle === 0;
+      isDesktop2x1 = desktopCycle === 7;
+      isDesktop1x2 = desktopCycle === 11;
+    }
+
+    let spanClass = "";
+    let titleClass = "font-medium sm:font-bold drop-shadow-md text-white ";
+    let badgeClass = "font-semibold whitespace-nowrap text-gray-700 ";
+    let containerPadding = "absolute z-20 ";
+    let topPadding = "absolute bg-white/85 backdrop-blur-sm rounded-full z-20 ";
+    let imageQuality = 70;
+    let imageSizes = "(max-width: 768px) 33vw, 25vw";
+
+    // --- Mobile classes ---
+    if (isMobileFeatured) {
+      spanClass += "col-span-3 aspect-[4/3] ";
+      titleClass += "text-xl sm:text-2xl whitespace-normal break-words ";
+      badgeClass += "text-xs px-3 py-1 ";
+      containerPadding += "bottom-0 left-0 right-0 p-4 ";
+      topPadding += "top-3 right-3 ";
+      imageQuality = 80;
+      imageSizes = "100vw";
+    } else {
+      spanClass += "col-span-1 aspect-square ";
+      titleClass += "text-[11px] sm:text-sm truncate ";
+      badgeClass += "text-[10px] sm:text-xs px-2 py-0.5 ";
+      containerPadding += "bottom-2 left-2 right-2 ";
+      topPadding += "top-2 right-2 ";
+    }
+
+    // --- Desktop classes ---
+    if (isDesktop2x2) {
+      spanClass += "md:col-span-2 md:row-span-2 md:aspect-square ";
+      titleClass += "md:text-2xl md:whitespace-normal md:break-words md:tracking-tight ";
+      badgeClass += "md:text-xs md:px-3 md:py-1 ";
+      containerPadding += "md:bottom-0 md:left-0 md:right-0 md:p-4 ";
+      topPadding += "md:top-3 md:right-3 ";
+      imageQuality = 80;
+      imageSizes = "(max-width: 768px) 100vw, 50vw";
+    } else if (isDesktop2x1) {
+      spanClass += "md:col-span-2 md:row-span-1 md:aspect-[2/1] ";
+      titleClass += "md:text-xl md:whitespace-normal md:break-words md:tracking-tight ";
+      badgeClass += "md:text-xs md:px-3 md:py-1 ";
+      containerPadding += "md:bottom-0 md:left-0 md:right-0 md:p-3 ";
+      topPadding += "md:top-3 md:right-3 ";
+      imageSizes = "(max-width: 768px) 100vw, 50vw";
+    } else if (isDesktop1x2) {
+      spanClass += "md:col-span-1 md:row-span-2 md:aspect-[1/2] ";
+      titleClass += "md:text-lg md:whitespace-normal md:break-words md:tracking-tight ";
+      badgeClass += "md:text-xs md:px-2 md:py-0.5 ";
+      containerPadding += "md:bottom-0 md:left-0 md:right-0 md:p-3 ";
+      topPadding += "md:top-2 md:right-2 ";
+    } else {
+      spanClass += "md:col-span-1 md:row-span-1 md:aspect-square ";
+      titleClass += "md:text-sm md:truncate ";
+      badgeClass += "md:text-xs md:px-2 md:py-0.5 ";
+      containerPadding += "md:bottom-2 md:left-2 md:right-2 md:p-0 ";
+      topPadding += "md:top-2 md:right-2 ";
+    }
+
+    return { spanClass, titleClass, badgeClass, containerPadding, topPadding, imageQuality, imageSizes };
+  };
+
   if (loading) {
     return (
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] grid-flow-row-dense">
         {Array.from({ length: 20 }).map((_, i) => {
-          const isFeatured = (i + 1) % (featuredInterval + 1) === 0;
-          let spanClass = "col-span-1 row-span-1 aspect-square";
-          if (isFeatured) {
-            const cycle = Math.floor(i / (featuredInterval + 1)) % 3;
-            if (cycle === 0) spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square";
-            else if (cycle === 1) spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-1 md:aspect-[2/1]";
-            else spanClass = "col-span-3 aspect-[4/3] md:col-span-1 md:row-span-2 md:aspect-[1/2]";
-          }
+          const { spanClass } = getCardStyles(i);
           return <VendorCardSkeleton key={i} className={spanClass} />;
         })}
       </div>
@@ -127,9 +191,8 @@ const VendorList: React.FC<VendorListProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
+    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] grid-flow-row-dense">
       {vendors.map((vendor, index) => {
-        const isFeatured = (index + 1) % (featuredInterval + 1) === 0;
         const offset = randomOffsets[vendor.id] || 0;
         const currentImage =
           vendor.productImages.length > 0
@@ -137,34 +200,15 @@ const VendorList: React.FC<VendorListProps> = ({
             : vendor.image;
         const isLoaded = imageLoadedStates[currentImage];
 
-        let spanClass = "col-span-1 row-span-1 aspect-square";
-        let titleClass = "text-[11px] sm:text-sm font-medium sm:font-bold";
-        let badgeClass = "text-[10px] sm:text-xs font-semibold px-2 py-0.5";
-        let containerPadding = "bottom-2 left-2 right-2";
-        let topPadding = "top-2 right-2";
-
-        if (isFeatured) {
-          const cycle = Math.floor(index / (featuredInterval + 1)) % 3;
-          if (cycle === 0) {
-            spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square";
-            titleClass = "text-xl sm:text-2xl font-medium sm:font-bold";
-            badgeClass = "text-xs font-medium px-3 py-1";
-            containerPadding = "p-4";
-            topPadding = "top-3 right-3";
-          } else if (cycle === 1) {
-            spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-1 md:aspect-[2/1]";
-            titleClass = "text-xl sm:text-xl font-medium sm:font-bold";
-            badgeClass = "text-[10px] sm:text-xs font-semibold px-2 py-0.5";
-            containerPadding = "p-3";
-            topPadding = "top-2 right-2";
-          } else {
-            spanClass = "col-span-3 aspect-[4/3] md:col-span-1 md:row-span-2 md:aspect-[1/2]";
-            titleClass = "text-xl sm:text-lg font-medium sm:font-bold";
-            badgeClass = "text-[10px] sm:text-xs font-semibold px-2 py-0.5";
-            containerPadding = "p-3";
-            topPadding = "top-2 right-2";
-          }
-        }
+        const {
+          spanClass,
+          titleClass,
+          badgeClass,
+          containerPadding,
+          topPadding,
+          imageQuality,
+          imageSizes,
+        } = getCardStyles(index, vendor.id);
 
         return (
           <motion.div
@@ -185,8 +229,8 @@ const VendorList: React.FC<VendorListProps> = ({
               fill
               className="object-cover transition-transform duration-500 hover:scale-[1.02]"
               loading="lazy"
-              sizes={isFeatured ? "100vw" : "(max-width: 768px) 33vw, 25vw"}
-              quality={isFeatured ? 80 : 70}
+              sizes={imageSizes}
+              quality={imageQuality}
               onLoad={() =>
                 setImageLoadedStates((prev) => ({
                   ...prev,
@@ -208,15 +252,15 @@ const VendorList: React.FC<VendorListProps> = ({
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
 
             {/* Category badge - top right */}
-            <div className={cn("absolute bg-white/85 backdrop-blur-sm rounded-full z-20", topPadding)}>
-              <span className={cn("text-gray-700 whitespace-nowrap", badgeClass)}>
+            <div className={topPadding}>
+              <span className={badgeClass}>
                 {vendor.category}
               </span>
             </div>
 
             {/* Vendor name - bottom left */}
-            <div className={cn("absolute bottom-0 left-0 right-0 z-20", isFeatured ? containerPadding : "")}>
-              <p className={cn("text-white truncate drop-shadow-lg", titleClass, !isFeatured ? containerPadding : "")}>
+            <div className={containerPadding}>
+              <p className={titleClass}>
                 {sentenceCase(vendor?.name)}
               </p>
             </div>
