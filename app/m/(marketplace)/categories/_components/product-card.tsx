@@ -10,12 +10,11 @@ import { Product } from "@/service/product.service";
 import { BasketItem } from "@/lib/BasketItem";
 import { cn } from "@/lib/utils";
 import { ImageSlider } from "./image-slider";
+import { useRouter, usePathname } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
   basket: BasketItem[];
-  onExpand: (product: Product, index?: number) => void;
-  onAdd: (id: string) => void;
   onExpand: (product: Product, index?: number) => void;
   onAdd: (id: string) => void;
 }
@@ -26,6 +25,8 @@ export function ProductCard({
   onExpand,
   onAdd,
 }: ProductCardProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -50,13 +51,20 @@ export function ProductCard({
       <Card
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          // If we are already on a product detail page, we need to go up one level first
+          const segments = pathname.split("/");
+          const isProductDetail = segments.length > 5; // /m/categories/[cat]/[vendor]/[productId]
+          const basePath = isProductDetail ? segments.slice(0, -1).join("/") : pathname;
+          router.push(`${basePath}/${product.id}`);
+        }}
         className={cn(
           "overflow-hidden rounded-3xl transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
           "bg-gradient-to-br from-white/95 via-white/90 to-white/95",
-          "backdrop-blur-xl border-[1.5px]",
+          "backdrop-blur-xl border-none",
           product.isAvailable
-            ? "cursor-pointer border-gray-200/60 hover:border-marketplace-primary/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
-            : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm",
+            ? "cursor-pointer shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
+            : "opacity-50 cursor-not-allowed shadow-sm",
         )}
       >
         {/* Image / Slider Container */}

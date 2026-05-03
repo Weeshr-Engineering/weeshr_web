@@ -1,4 +1,4 @@
-import { fetchProductsByVendor } from "@/lib/api";
+import { fetchProductsByVendor, fetchProductById } from "@/lib/api";
 
 export interface ApiProduct {
   _id: string;
@@ -136,6 +136,47 @@ export class ProductService {
           perPage: perPage,
         },
       };
+    }
+  }
+
+  /**
+   * Fetch single product by ID
+   */
+  static async getProductById(productId: string): Promise<Product | null> {
+    try {
+      const product: ApiProduct = await fetchProductById(productId);
+      if (!product) return null;
+
+      const mainImage =
+        product.image?.secure_url ||
+        product.images?.[0]?.secure_url ||
+        this.getDefaultProductImage(product.name);
+
+      const images =
+        product.images && product.images.length > 0
+          ? product.images.map((img) => img.secure_url)
+          : [mainImage];
+
+      return {
+        id: product._id,
+        name: product.name,
+        description: product.description,
+        image: mainImage,
+        images: images,
+        price: product.amount,
+        vendorId: product.vendorId,
+        category: product.tag[0]?.name || "Food",
+        categoryId: product.tag[0]?._id || "",
+        isAvailable:
+          product.status === "published" &&
+          !product.isDeleted &&
+          (product.availableQty !== undefined
+            ? product.availableQty > 0
+            : product.qty > 0),
+      };
+    } catch (error) {
+      console.error(`Error fetching product ${productId}:`, error);
+      return null;
     }
   }
 

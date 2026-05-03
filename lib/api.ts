@@ -63,7 +63,7 @@ export async function fetchProductsByVendor(
   perPage: number = 100,
 ) {
   const res = await fetch(
-    `${API_BASE_URL}/market/products/?vendorId=${vendorId}&page=${page}&per_page=${perPage}`,
+    `${API_BASE_URL}/market/products?vendorId=${vendorId}&page=${page}&per_page=${perPage}`,
     {
       next: { revalidate: 60 },
     },
@@ -109,6 +109,20 @@ export async function fetchVendorBySlug(slug: string) {
   if (!res.ok) {
     if (res.status === 404) return null;
     throw new Error(`Failed to fetch vendor: ${res.status}`);
+  }
+
+  const json = await res.json();
+  return json.data;
+}
+// Fetch single product by ID
+export async function fetchProductById(productId: string) {
+  const res = await fetch(`${API_BASE_URL}/market/products/${productId}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`Failed to fetch product: ${res.status}`);
   }
 
   const json = await res.json();

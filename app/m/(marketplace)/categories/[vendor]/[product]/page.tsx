@@ -50,6 +50,8 @@ export default function VendorPage() {
   const [showAiSoon, setShowAiSoon] = useState(false);
   const [randomBanner, setRandomBanner] = useState<string | null>(null);
   const [bannerLoaded, setBannerLoaded] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("categoryId");
@@ -273,7 +275,7 @@ export default function VendorPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Hero Banner Section - Ultra immersive and short */}
-      <section className="relative w-full aspect-[5/2] md:aspect-[21/6] overflow-hidden">
+      <section className="relative w-full md:w-[90%] md:mx-auto md:rounded-[3rem] md:mt-8 aspect-[5/2] md:aspect-[21/6] overflow-hidden shadow-lg">
         {/* Banner Source Resolution */}
         {(() => {
           const bannerSrc = randomBanner || products[0]?.image;
@@ -323,14 +325,48 @@ export default function VendorPage() {
             <span className="text-sm font-semibold tracking-wide">Back</span>
           </button>
 
-          <button className="w-11 h-11 flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <Icon icon="ph:magnifying-glass-bold" width="22" />
-          </button>
+          <div className="flex items-center gap-2">
+            <motion.div
+              initial={false}
+              animate={{
+                width: isSearching
+                  ? window.innerWidth < 768
+                    ? "160px"
+                    : "240px"
+                  : "0px",
+                opacity: isSearching ? 1 : 0,
+                marginRight: isSearching ? "8px" : "0px",
+              }}
+              className="overflow-hidden"
+            >
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-full py-2.5 px-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-white/50"
+              />
+            </motion.div>
+
+            <button
+              onClick={() => {
+                setIsSearching(!isSearching);
+                if (isSearching) setSearchQuery("");
+              }}
+              className="w-11 h-11 flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
+            >
+              <Icon
+                icon={isSearching ? "ph:x-bold" : "ph:magnifying-glass-bold"}
+                width="22"
+              />
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Vendor Indigo Header Bar - Luxurious Overlap */}
-      <section className="bg-[#3B41B1] px-8 py-6 pt-4 pb-12 flex items-center justify-between shadow-2xl sticky top-0 z-30 rounded-t-[2rem] -mt-14 md:-mt-16 border-t border-white/5">
+      <section className="bg-[#3B41B1] px-8 py-6 pt-4 pb-[3.5rem] flex items-center justify-between shadow-2xl sticky top-0 z-30 rounded-t-[2rem] -mt-14 md:-mt-16 border-t border-white/5">
         <div className="flex flex-col">
           <h2 className="text-white font-medium text-xl md:text-3xl tracking-tight leading-none">
             {vendorName
@@ -426,6 +462,8 @@ export default function VendorPage() {
                     userId={userId || undefined}
                     clearBasket={clearBasket}
                     onOpenChangeReceiver={() => setOpen(true)}
+                    searchQuery={searchQuery}
+                    vendorName={vendor?.name}
                   />
                 </div>
 
@@ -439,6 +477,8 @@ export default function VendorPage() {
                     userId={userId || undefined}
                     clearBasket={clearBasket}
                     onOpenChangeReceiver={() => setOpen(true)}
+                    searchQuery={searchQuery}
+                    vendorName={vendor?.name}
                   />
                 </div>
               </div>

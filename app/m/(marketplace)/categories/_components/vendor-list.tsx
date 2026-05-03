@@ -68,13 +68,13 @@ const VendorList: React.FC<VendorListProps> = ({
   if (loading) {
     return (
       <div className="space-y-px sm:space-y-3">
-        <div className="grid grid-cols-3 sm:gap-3">
+        <div className="grid grid-cols-3 md:gap-4sm:gap-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <VendorCardSkeleton key={i} />
           ))}
         </div>
         <Skeleton className="w-full aspect-[4/3] sm:rounded-3xl" />
-        <div className="grid grid-cols-3 sm:gap-3">
+        <div className="grid grid-cols-3 md:gap-4sm:gap-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <VendorCardSkeleton key={`more-${i}`} />
           ))}
@@ -207,10 +207,7 @@ const VendorList: React.FC<VendorListProps> = ({
 
         // Regular 3-column grid
         return (
-          <div
-            key={`grid-${blockIndex}`}
-            className="grid grid-cols-3  sm:gap-3"
-          >
+          <div key={`grid-${blockIndex}`} className="grid grid-cols-3 md:gap-4">
             {item.vendors.map((vendor, idx) => {
               const globalIndex = item.startIndex + idx;
               const offset = randomOffsets[vendor.id] || 0;
