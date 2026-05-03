@@ -33,11 +33,11 @@ export default function HeaderMobile({
         setShowProfileMenu(false);
       }
     };
-    
+
     if (showProfileMenu) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -66,7 +66,7 @@ export default function HeaderMobile({
     !hideLoginButton && !isAuthenticated && !showLogout && !showAccount;
 
   return (
-    <div className="flex items-center justify-between border-gray-400 py-6 lg:py-0 relative z-20 px-2">
+    <div className="flex items-center justify-between border-gray-400 py-6  relative z-20 px-2">
       <a href="/">
         <Image
           alt="Weeshr Logo"
@@ -82,7 +82,11 @@ export default function HeaderMobile({
         {!hideLoginButton && (
           <div className="relative" ref={menuRef}>
             <button
-              onClick={isAuthenticated ? () => setShowProfileMenu(!showProfileMenu) : handleLogin}
+              onClick={
+                isAuthenticated
+                  ? () => setShowProfileMenu(!showProfileMenu)
+                  : handleLogin
+              }
               className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all group focus:outline-none"
             >
               {isAuthenticated ? (
@@ -90,7 +94,10 @@ export default function HeaderMobile({
                   <Icon icon="solar:user-bold" className="w-5 h-5" />
                 </div>
               ) : (
-                <Icon icon="solar:user-circle-linear" className="w-6 h-6 text-gray-500 group-hover:text-primary transition-colors" />
+                <Icon
+                  icon="solar:user-circle-linear"
+                  className="w-6 h-6 text-gray-500 group-hover:text-primary transition-colors"
+                />
               )}
             </button>
 
@@ -104,11 +111,11 @@ export default function HeaderMobile({
                   className="absolute right-0 top-12 mt-1 w-36 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
                   onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
                 >
-                  <button 
+                  <button
                     onClick={() => {
                       setShowProfileMenu(false);
                       handleLogout();
-                    }} 
+                    }}
                     className="w-full text-left px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
                   >
                     <Icon icon="solar:logout-2-bold" className="w-5 h-5" />
