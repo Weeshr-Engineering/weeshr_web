@@ -162,8 +162,8 @@ export default function AllVendorsPage() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="shrink-0 md:py-4">
-        <WidthLayout className="flex-none !pt-0 w-full px-4">
+      <div className="shrink-0 ">
+        <WidthLayout className="flex-none !pt-0 w-full px-4 md:px-8 2xl:w-[100%]">
           <ChangeReceiverDialog
             open={open}
             setOpen={setOpen}
@@ -178,12 +178,11 @@ export default function AllVendorsPage() {
               What would{" "}
               <span className="relative inline-flex items-center overflow-visible">
                 <span
-                  className="relative z-10 bg-gradient-custom bg-clip-text text-transparent font-medium whitespace-nowrap inline-flex items-center justify-center"
+                  className="relative z-10 bg-gradient-custom bg-clip-text text-transparent font-medium whitespace-nowrap inline-flex items-center justify-center px-1 md:px-2 py-1"
                   style={{
                     fontFamily:
                       "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
-                    height: "56px",
-                    width: `${Math.max(80, (displayName?.length || 0) * 20)}px`,
+                    lineHeight: "normal",
                   }}
                 >
                   {displayName}
@@ -264,11 +263,10 @@ export default function AllVendorsPage() {
         </WidthLayout>
       </div>
 
-      <div className="md:bg-white md:pt-4 px-0 md:p-8 md:rounded-3xl font-light flex-1 flex flex-col overflow-hidden mb-2">
-        <div className="flex-1 overflow-y-auto  md:mt-0 md:px-0 scrollbar-hide">
-          <WidthLayout fullWidthMobile className="!pt-0">
-            <VendorList vendors={regularVendors} loading={loading} />
-          </WidthLayout>
+      <div className="md:bg-white px-0 font-light flex-1 flex flex-col overflow-hidden mb-2">
+        <div className="flex-1 overflow-y-auto md:mt-0 md:px-0 scrollbar-hide">
+          <VendorList vendors={regularVendors} loading={loading} />
+
           {/* Infinite Scroll Trigger & Status Messages */}
           {!loading && (
             <div className="py-8">

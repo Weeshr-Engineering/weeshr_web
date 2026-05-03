@@ -67,15 +67,15 @@ const VendorList: React.FC<VendorListProps> = ({
 
   if (loading) {
     return (
-      <div className="space-y-px sm:space-y-3">
-        <div className="grid grid-cols-3 md:gap-4sm:gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
+      <div className="space-y-px">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] sm:gap-3 md:gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
             <VendorCardSkeleton key={i} />
           ))}
         </div>
         <Skeleton className="w-full aspect-[4/3] sm:rounded-3xl" />
-        <div className="grid grid-cols-3 md:gap-4sm:gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] sm:gap-3 md:gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
             <VendorCardSkeleton key={`more-${i}`} />
           ))}
         </div>
@@ -106,8 +106,8 @@ const VendorList: React.FC<VendorListProps> = ({
     }),
   };
 
-  // Build the layout: 6 regular cards followed by 1 featured card sequentially
-  const FEATURED_INTERVAL = 6;
+  // Build the layout: regular cards followed by 1 featured card sequentially
+  const FEATURED_INTERVAL = 12;
   const items: Array<
     | { type: "regular"; vendors: Vendor[]; startIndex: number }
     | { type: "featured"; vendor: Vendor; index: number }
@@ -129,7 +129,7 @@ const VendorList: React.FC<VendorListProps> = ({
   }
 
   return (
-    <div className="space-y-px sm:space-y-3">
+    <div className="space-y-px">
       {items.map((item, blockIndex) => {
         if (item.type === "featured") {
           const vendor = item.vendor;
@@ -152,7 +152,7 @@ const VendorList: React.FC<VendorListProps> = ({
                 goToVendor(vendor.category, vendor.name, vendor.id)
               }
             >
-              <div className="relative overflow-hidden sm:rounded-3xl bg-gray-100">
+              <div className="">
                 {/* Featured image — taller */}
                 <div className="relative w-full aspect-[4/3] overflow-hidden">
                   {!isLoaded && (
@@ -205,9 +205,12 @@ const VendorList: React.FC<VendorListProps> = ({
           );
         }
 
-        // Regular 3-column grid
+        // Regular grid
         return (
-          <div key={`grid-${blockIndex}`} className="grid grid-cols-3 md:gap-4">
+          <div
+            key={`grid-${blockIndex}`}
+            className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 "
+          >
             {item.vendors.map((vendor, idx) => {
               const globalIndex = item.startIndex + idx;
               const offset = randomOffsets[vendor.id] || 0;
@@ -229,7 +232,7 @@ const VendorList: React.FC<VendorListProps> = ({
                     goToVendor(vendor.category, vendor.name, vendor.id)
                   }
                 >
-                  <div className="relative overflow-hidden sm:rounded-2xl bg-gray-100 aspect-square">
+                  <div className="relative overflow-hidden  bg-gray-100 aspect-square">
                     {!isLoaded && (
                       <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
                     )}
