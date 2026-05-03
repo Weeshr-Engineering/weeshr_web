@@ -56,8 +56,6 @@ export function MobileMenuButtons({
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-
-
   const debounceRefs = useRef<{ [key: string]: NodeJS.Timeout | null }>({});
   // Track accumulated clicks per product during debounce period
   const clickCountRefs = useRef<{ [key: string]: number }>({});
@@ -143,8 +141,6 @@ export function MobileMenuButtons({
       }
     };
   }, [hasMore, loadingMore, currentPage, vendorId]);
-
-
 
   const handleAdd = (productId: string) => {
     // Update UI immediately
@@ -302,7 +298,7 @@ export function MobileMenuButtons({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-3 md:gap-4 gap-px py-6 pt-4">
+      <div className="grid grid-cols-3  py-6 pt-4">
         {Array.from({ length: 9 }).map((_, index) => (
           <Card
             key={index}
@@ -387,7 +383,7 @@ export function MobileMenuButtons({
               key={product.id}
               product={product}
               basket={basket}
-              onExpand={() => {}} 
+              onExpand={() => {}}
               onAdd={handleAdd}
             />
           );
@@ -396,5 +392,3 @@ export function MobileMenuButtons({
     </div>
   );
 }
-
-

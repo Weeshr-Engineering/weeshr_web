@@ -388,10 +388,10 @@ export default function VendorPage() {
 
       <div className="flex-1 flex flex-col bg-white rounded-t-[1rem] -mt-10 relative z-40 shadow-[0_-15px_50px_rgba(0,0,0,0.08)]">
         {/* Main Content Area */}
-        <div className="px-0 md:px-6 w-full max-w-7xl mx-auto flex-1">
+        <div className="px-0 md:px-6 w-full mx-auto flex-1">
           {/* Main question section - Elegant & Center Focused */}
           <div className="pr-6 pl-3 flex flex-col items-start">
-            <div className="flex flex-row items-center justify-between w-full max-w-7xl mx-auto gap-4 py-6">
+            <div className="flex flex-row items-center justify-between w-full  mx-auto gap-4 py-6">
               <span className="text-[#1F2937] text-2xl md:text-4xl leading-tight font-light tracking-tight text-left">
                 What would{" "}
                 <span className="relative inline-flex items-center overflow-visible">

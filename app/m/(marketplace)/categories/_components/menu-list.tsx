@@ -50,8 +50,6 @@ export function MenuList({
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-
-
   // Track image loading state for each product
   const [imageLoadedStates, setImageLoadedStates] = useState<
     Record<string, boolean>
@@ -132,8 +130,6 @@ export function MenuList({
     };
   }, [hasMore, loadingMore, currentPage, vendorId]);
 
-
-
   // Sync function - similar to BasketItemCard
   const syncAddToCart = (productId: string) => {
     if (!isAuthenticated || !userId) return;
@@ -193,7 +189,7 @@ export function MenuList({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 py-6 pt-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-0 md:gap-0 py-6 pt-4">
         {Array.from({ length: 8 }).map((_, index) => (
           <Card
             key={index}
@@ -232,9 +228,14 @@ export function MenuList({
             className="flex flex-row gap-2 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-1.5 px-3 rounded-full cursor-pointer"
           >
             <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-7 h-7 flex items-center justify-center">
-              <Icon icon="lsicon:switch-outline" className="text-[#6A70FF] w-4 h-4" />
+              <Icon
+                icon="lsicon:switch-outline"
+                className="text-[#6A70FF] w-4 h-4"
+              />
             </div>
-            <span className="text-[#1F2937] font-medium text-xs">Change receiver</span>
+            <span className="text-[#1F2937] font-medium text-xs">
+              Change receiver
+            </span>
           </button>
         )}
 
@@ -255,83 +256,82 @@ export function MenuList({
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 py-6 pt-4">
-      {(searchQuery
-        ? menuProducts.filter(
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-0 md:gap-0 py-6 pt-4">
+        {(searchQuery
+          ? menuProducts.filter(
+              (p) =>
+                p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.description.toLowerCase().includes(searchQuery.toLowerCase()),
+            )
+          : menuProducts
+        ).map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            basket={basket}
+            onExpand={() => {}} // Navigation handled inside ProductCard
+            onAdd={handleAdd}
+          />
+        ))}
+
+        {searchQuery &&
+          menuProducts.filter(
             (p) =>
               p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
               p.description.toLowerCase().includes(searchQuery.toLowerCase()),
-          )
-        : menuProducts
-      ).map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          basket={basket}
-          onExpand={() => {}} // Navigation handled inside ProductCard
-          onAdd={handleAdd}
-        />
-      ))}
-
-      {searchQuery &&
-        menuProducts.filter(
-          (p) =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.description.toLowerCase().includes(searchQuery.toLowerCase()),
-        ).length === 0 && (
-          <div className="col-span-full py-20 text-center">
-            <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <Icon
-                icon="ph:magnifying-glass-slash-bold"
-                className="w-8 h-8 text-gray-400"
-              />
+          ).length === 0 && (
+            <div className="col-span-full py-20 text-center">
+              <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Icon
+                  icon="ph:magnifying-glass-slash-bold"
+                  className="w-8 h-8 text-gray-400"
+                />
+              </div>
+              <h3 className="text-gray-900 font-semibold">No products found</h3>
+              <p className="text-gray-500 text-sm mt-1">
+                We couldn't find anything matching "{searchQuery}"
+              </p>
             </div>
-            <h3 className="text-gray-900 font-semibold">No products found</h3>
-            <p className="text-gray-500 text-sm mt-1">
-              We couldn't find anything matching "{searchQuery}"
+          )}
+
+        {/* Infinite Scroll Loading Indicator - Skeleton Cards */}
+        {loadingMore && (
+          <>
+            {Array.from({ length: 4 }).map((_, index) => (
+              <motion.div
+                key={`loading-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="w-full"
+              >
+                <Card className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 animate-pulse"></div>
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40 animate-pulse"></div>
+                </Card>
+              </motion.div>
+            ))}
+          </>
+        )}
+
+        {/* Infinite Scroll Trigger */}
+        <div ref={loadMoreRef} className="col-span-full h-10 w-full" />
+
+        {/* End of products message */}
+        {!hasMore && menuProducts.length > 0 && (
+          <div className="col-span-full flex flex-col items-center gap-2 py-8 pb-10">
+            <Icon
+              icon="material-symbols:check-circle-outline"
+              height={32}
+              width={32}
+              className="text-marketplace-primary"
+            />
+            <p className="text-sm font-medium text-muted-foreground">
+              hoohooo you've reached the end 🥰
             </p>
           </div>
         )}
-
-      {/* Infinite Scroll Loading Indicator - Skeleton Cards */}
-      {loadingMore && (
-        <>
-          {Array.from({ length: 4 }).map((_, index) => (
-            <motion.div
-              key={`loading-${index}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="w-full"
-            >
-              <Card className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 animate-pulse"></div>
-                <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40 animate-pulse"></div>
-              </Card>
-            </motion.div>
-          ))}
-        </>
-      )}
-
-      {/* Infinite Scroll Trigger */}
-      <div ref={loadMoreRef} className="col-span-full h-10 w-full" />
-
-      {/* End of products message */}
-      {!hasMore && menuProducts.length > 0 && (
-        <div className="col-span-full flex flex-col items-center gap-2 py-8 pb-10">
-          <Icon
-            icon="material-symbols:check-circle-outline"
-            height={32}
-            width={32}
-            className="text-marketplace-primary"
-          />
-          <p className="text-sm font-medium text-muted-foreground">
-            hoohooo you've reached the end 🥰
-          </p>
-        </div>
-      )}
       </div>
-
     </div>
   );
 }

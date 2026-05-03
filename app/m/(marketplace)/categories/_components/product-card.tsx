@@ -63,7 +63,7 @@ export function ProductCard({
         className={cn(
           "overflow-hidden rounded-none transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
           "bg-gradient-to-br from-white/95 via-white/90 to-white/95",
-          "backdrop-blur-xl border-none",
+          "backdrop-blur-xl border-none ",
           product.isAvailable
             ? "cursor-pointer shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
             : "opacity-50 cursor-not-allowed shadow-sm",
