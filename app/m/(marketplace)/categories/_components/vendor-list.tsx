@@ -24,6 +24,25 @@ const VendorList: React.FC<VendorListProps> = ({
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("id");
 
+  // Dynamic interval for featured items
+  const [featuredInterval, setFeaturedInterval] = React.useState(9); // Default to mobile
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setFeaturedInterval(10); // lg and above
+      } else if (window.innerWidth >= 768) {
+        setFeaturedInterval(8); // md
+      } else {
+        setFeaturedInterval(9); // mobile
+      }
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Track image loading state for each vendor
   const [imageLoadedStates, setImageLoadedStates] = React.useState<
     Record<string, boolean>
@@ -68,14 +87,14 @@ const VendorList: React.FC<VendorListProps> = ({
   if (loading) {
     return (
       <div className="space-y-px">
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] sm:gap-3 md:gap-4">
-          {Array.from({ length: 10 }).map((_, i) => (
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
+          {Array.from({ length: featuredInterval }).map((_, i) => (
             <VendorCardSkeleton key={i} />
           ))}
         </div>
         <Skeleton className="w-full aspect-[4/3] sm:rounded-3xl" />
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] sm:gap-3 md:gap-4">
-          {Array.from({ length: 10 }).map((_, i) => (
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
+          {Array.from({ length: featuredInterval }).map((_, i) => (
             <VendorCardSkeleton key={`more-${i}`} />
           ))}
         </div>
@@ -107,7 +126,6 @@ const VendorList: React.FC<VendorListProps> = ({
   };
 
   // Build the layout: regular cards followed by 1 featured card sequentially
-  const FEATURED_INTERVAL = 12;
   const items: Array<
     | { type: "regular"; vendors: Vendor[]; startIndex: number }
     | { type: "featured"; vendor: Vendor; index: number }
@@ -115,8 +133,8 @@ const VendorList: React.FC<VendorListProps> = ({
 
   let i = 0;
   while (i < vendors.length) {
-    // Collect up to 6 regular cards
-    const groupEnd = Math.min(i + FEATURED_INTERVAL, vendors.length);
+    // Collect up to featuredInterval regular cards
+    const groupEnd = Math.min(i + featuredInterval, vendors.length);
     const group = vendors.slice(i, groupEnd);
     items.push({ type: "regular", vendors: group, startIndex: i });
     i = groupEnd;
