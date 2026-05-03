@@ -1,7 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-export function VendorCardSkeleton() {
+interface VendorCardSkeletonProps {
+  className?: string;
+}
+
+export function VendorCardSkeleton({ className }: VendorCardSkeletonProps) {
   return (
-    <Skeleton className="w-full aspect-square sm:rounded-none rounded-none" />
+    <Skeleton className={cn("w-full sm:rounded-none rounded-none", className || "aspect-square")} />
   );
 }

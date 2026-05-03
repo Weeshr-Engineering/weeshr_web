@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { Vendor } from "@/service/vendor.service";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface VendorListProps {
   vendors: Vendor[];
@@ -86,18 +87,18 @@ const VendorList: React.FC<VendorListProps> = ({
 
   if (loading) {
     return (
-      <div className="space-y-px">
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
-          {Array.from({ length: featuredInterval }).map((_, i) => (
-            <VendorCardSkeleton key={i} />
-          ))}
-        </div>
-        <Skeleton className="w-full aspect-[4/3] sm:rounded-3xl" />
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
-          {Array.from({ length: featuredInterval }).map((_, i) => (
-            <VendorCardSkeleton key={`more-${i}`} />
-          ))}
-        </div>
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
+        {Array.from({ length: 20 }).map((_, i) => {
+          const isFeatured = (i + 1) % (featuredInterval + 1) === 0;
+          let spanClass = "col-span-1 row-span-1 aspect-square";
+          if (isFeatured) {
+            const cycle = Math.floor(i / (featuredInterval + 1)) % 3;
+            if (cycle === 0) spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square";
+            else if (cycle === 1) spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-1 md:aspect-[2/1]";
+            else spanClass = "col-span-3 aspect-[4/3] md:col-span-1 md:row-span-2 md:aspect-[1/2]";
+          }
+          return <VendorCardSkeleton key={i} className={spanClass} />;
+        })}
       </div>
     );
   }
@@ -125,179 +126,101 @@ const VendorList: React.FC<VendorListProps> = ({
     }),
   };
 
-  // Build the layout: regular cards followed by 1 featured card sequentially
-  const items: Array<
-    | { type: "regular"; vendors: Vendor[]; startIndex: number }
-    | { type: "featured"; vendor: Vendor; index: number }
-  > = [];
-
-  let i = 0;
-  while (i < vendors.length) {
-    // Collect up to featuredInterval regular cards
-    const groupEnd = Math.min(i + featuredInterval, vendors.length);
-    const group = vendors.slice(i, groupEnd);
-    items.push({ type: "regular", vendors: group, startIndex: i });
-    i = groupEnd;
-
-    // The next card is a featured one, if we have vendors left
-    if (i < vendors.length) {
-      items.push({ type: "featured", vendor: vendors[i], index: i });
-      i++;
-    }
-  }
-
   return (
-    <div className="space-y-px">
-      {items.map((item, blockIndex) => {
-        if (item.type === "featured") {
-          const vendor = item.vendor;
-          const offset = randomOffsets[vendor.id] || 0;
-          const currentImage =
-            vendor.productImages.length > 0
-              ? vendor.productImages[offset % vendor.productImages.length]
-              : vendor.image;
-          const isLoaded = imageLoadedStates[currentImage];
+    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px]">
+      {vendors.map((vendor, index) => {
+        const isFeatured = (index + 1) % (featuredInterval + 1) === 0;
+        const offset = randomOffsets[vendor.id] || 0;
+        const currentImage =
+          vendor.productImages.length > 0
+            ? vendor.productImages[offset % vendor.productImages.length]
+            : vendor.image;
+        const isLoaded = imageLoadedStates[currentImage];
 
-          return (
-            <motion.div
-              key={`featured-${vendor.id}`}
-              custom={item.index}
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              className="w-full cursor-pointer"
-              onClick={() =>
-                goToVendor(vendor.category, vendor.name, vendor.id)
-              }
-            >
-              <div className="">
-                {/* Featured image — taller */}
-                <div className="relative w-full aspect-[4/3] overflow-hidden">
-                  {!isLoaded && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
-                  )}
-                  <Image
-                    src={currentImage}
-                    alt={vendor.name}
-                    fill
-                    className="object-cover transition-transform duration-500 hover:scale-[1.02]"
-                    loading="lazy"
-                    sizes="100vw"
-                    quality={80}
-                    onLoad={() =>
-                      setImageLoadedStates((prev) => ({
-                        ...prev,
-                        [currentImage]: true,
-                      }))
-                    }
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src =
-                        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
-                      setImageLoadedStates((prev) => ({
-                        ...prev,
-                        [currentImage]: true,
-                      }));
-                    }}
-                  />
+        let spanClass = "col-span-1 row-span-1 aspect-square";
+        let titleClass = "text-[11px] sm:text-sm font-medium sm:font-bold";
+        let badgeClass = "text-[10px] sm:text-xs font-semibold px-2 py-0.5";
+        let containerPadding = "bottom-2 left-2 right-2";
+        let topPadding = "top-2 right-2";
 
-                  {/* Gradient overlay for text */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-
-                  {/* Category badge - top right */}
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 z-20">
-                    <span className="text-gray-700 text-xs font-medium">
-                      {vendor.category}
-                    </span>
-                  </div>
-
-                  {/* Vendor name overlay - bottom left */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-                    <p className="text-white text-xl sm:text-2xl font-medium sm:font-bold tracking-tight drop-shadow-lg">
-                      {sentenceCase(vendor?.name)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          );
+        if (isFeatured) {
+          const cycle = Math.floor(index / (featuredInterval + 1)) % 3;
+          if (cycle === 0) {
+            spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square";
+            titleClass = "text-xl sm:text-2xl font-medium sm:font-bold";
+            badgeClass = "text-xs font-medium px-3 py-1";
+            containerPadding = "p-4";
+            topPadding = "top-3 right-3";
+          } else if (cycle === 1) {
+            spanClass = "col-span-3 aspect-[4/3] md:col-span-2 md:row-span-1 md:aspect-[2/1]";
+            titleClass = "text-xl sm:text-xl font-medium sm:font-bold";
+            badgeClass = "text-[10px] sm:text-xs font-semibold px-2 py-0.5";
+            containerPadding = "p-3";
+            topPadding = "top-2 right-2";
+          } else {
+            spanClass = "col-span-3 aspect-[4/3] md:col-span-1 md:row-span-2 md:aspect-[1/2]";
+            titleClass = "text-xl sm:text-lg font-medium sm:font-bold";
+            badgeClass = "text-[10px] sm:text-xs font-semibold px-2 py-0.5";
+            containerPadding = "p-3";
+            topPadding = "top-2 right-2";
+          }
         }
 
-        // Regular grid
         return (
-          <div
-            key={`grid-${blockIndex}`}
-            className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 "
+          <motion.div
+            key={vendor.id}
+            custom={index}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            className={cn("cursor-pointer relative overflow-hidden bg-gray-100", spanClass)}
+            onClick={() => goToVendor(vendor.category, vendor.name, vendor.id)}
           >
-            {item.vendors.map((vendor, idx) => {
-              const globalIndex = item.startIndex + idx;
-              const offset = randomOffsets[vendor.id] || 0;
-              const currentImage =
-                vendor.productImages.length > 0
-                  ? vendor.productImages[offset % vendor.productImages.length]
-                  : vendor.image;
-              const isLoaded = imageLoadedStates[currentImage];
+            {!isLoaded && (
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+            )}
+            <Image
+              src={currentImage}
+              alt={vendor.name}
+              fill
+              className="object-cover transition-transform duration-500 hover:scale-[1.02]"
+              loading="lazy"
+              sizes={isFeatured ? "100vw" : "(max-width: 768px) 33vw, 25vw"}
+              quality={isFeatured ? 80 : 70}
+              onLoad={() =>
+                setImageLoadedStates((prev) => ({
+                  ...prev,
+                  [currentImage]: true,
+                }))
+              }
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src =
+                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
+                setImageLoadedStates((prev) => ({
+                  ...prev,
+                  [currentImage]: true,
+                }));
+              }}
+            />
 
-              return (
-                <motion.div
-                  key={vendor.id}
-                  custom={globalIndex}
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="cursor-pointer"
-                  onClick={() =>
-                    goToVendor(vendor.category, vendor.name, vendor.id)
-                  }
-                >
-                  <div className="relative overflow-hidden  bg-gray-100 aspect-square">
-                    {!isLoaded && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
-                    )}
-                    <Image
-                      src={currentImage}
-                      alt={vendor.name}
-                      fill
-                      className="object-cover transition-transform duration-500 hover:scale-105"
-                      loading="lazy"
-                      sizes="(max-width: 768px) 33vw, 25vw"
-                      quality={70}
-                      onLoad={() =>
-                        setImageLoadedStates((prev) => ({
-                          ...prev,
-                          [currentImage]: true,
-                        }))
-                      }
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjNGNEY2Ii8+PC9zdmc+";
-                        setImageLoadedStates((prev) => ({
-                          ...prev,
-                          [currentImage]: true,
-                        }));
-                      }}
-                    />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
 
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
+            {/* Category badge - top right */}
+            <div className={cn("absolute bg-white/85 backdrop-blur-sm rounded-full z-20", topPadding)}>
+              <span className={cn("text-gray-700 whitespace-nowrap", badgeClass)}>
+                {vendor.category}
+              </span>
+            </div>
 
-                    {/* Category badge - top right */}
-                    <div className="absolute top-2 right-2 z-20">
-                      <span className="text-[10px] sm:text-xs font-semibold text-gray-700 bg-white/85 backdrop-blur-sm rounded-full px-2 py-0.5 whitespace-nowrap">
-                        {vendor.category}
-                      </span>
-                    </div>
-
-                    {/* Vendor name - bottom left */}
-                    <p className="absolute bottom-2 left-2 right-2 text-white text-[11px] sm:text-sm font-medium sm:font-bold truncate z-20 drop-shadow-md">
-                      {sentenceCase(vendor?.name)}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+            {/* Vendor name - bottom left */}
+            <div className={cn("absolute bottom-0 left-0 right-0 z-20", isFeatured ? containerPadding : "")}>
+              <p className={cn("text-white truncate drop-shadow-lg", titleClass, !isFeatured ? containerPadding : "")}>
+                {sentenceCase(vendor?.name)}
+              </p>
+            </div>
+          </motion.div>
         );
       })}
     </div>
