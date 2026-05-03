@@ -161,9 +161,9 @@ export default function AllVendorsPage() {
   }, [vendors]);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden  ">
       <div className="shrink-0 ">
-        <WidthLayout className="flex-none !pt-0 w-full px-4 md:px-8 2xl:w-[100%]">
+        <div className="flex-none !pt-0 w-full px-4  2xl:w-[100%]">
           <ChangeReceiverDialog
             open={open}
             setOpen={setOpen}
@@ -173,7 +173,7 @@ export default function AllVendorsPage() {
           />
 
           {/* Main question */}
-          <div className=" flex items-center justify-between gap-3">
+          <div className=" flex items-center justify-between gap-3 md:my-4">
             <span className="text-primary text-2xl md:text-4xl leading-tight">
               What would{" "}
               <span className="relative inline-flex items-center overflow-visible">
@@ -250,12 +250,12 @@ export default function AllVendorsPage() {
               </div>
             </div>
           </div>
-        </WidthLayout>
+        </div>
       </div>
 
       {/* Mobile-only Tab Navigation */}
       <div className="shrink-0">
-        <WidthLayout className="flex-none !pt-0 w-full">
+        <WidthLayout className="flex-none !pt-0 w-full pt-0">
           <MobileCategoryTabs
             categories={tabCategories}
             nameParam={nameParam}

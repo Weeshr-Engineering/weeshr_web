@@ -273,9 +273,9 @@ export default function VendorPage() {
   const totalAvailable = products.length;
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen ">
       {/* Hero Banner Section - Ultra immersive and short */}
-      <section className="relative w-full md:w-[90%] md:mx-auto md:rounded-[3rem] md:mt-8 aspect-[5/2] md:aspect-[21/6] overflow-hidden shadow-lg">
+      <section className="relative w-full  md:mx-auto   aspect-[5/2] md:aspect-[30/4] overflow-hidden shadow-lg">
         {/* Banner Source Resolution */}
         {(() => {
           const bannerSrc = randomBanner || products[0]?.image;
@@ -390,27 +390,31 @@ export default function VendorPage() {
         {/* Main Content Area */}
         <div className="px-0 md:px-6 w-full max-w-7xl mx-auto flex-1">
           {/* Main question section - Elegant & Center Focused */}
-          <div className="px-6 flex flex-col items-start">
-            <div className="flex flex-row items-end justify-between w-full max-w-3xl mx-auto gap-4 py-3">
-              <span className="text-[#1F2937] text-2xl md:text-6xl leading-tight font-light tracking-tight text-left">
+          <div className="pr-6 pl-3 flex flex-col items-start">
+            <div className="flex flex-row items-center justify-between w-full max-w-7xl mx-auto gap-4 py-6">
+              <span className="text-[#1F2937] text-2xl md:text-4xl leading-tight font-light tracking-tight text-left">
                 What would{" "}
-                <span className="relative inline-flex items-center gap-2 overflow-visible">
+                <span className="relative inline-flex items-center overflow-visible">
                   <span
-                    className="relative z-10 bg-gradient-custom inline-flex items-center justify-center bg-clip-text text-transparent italic font-medium whitespace-nowrap"
+                    className="relative z-10 bg-gradient-custom bg-clip-text text-transparent font-medium whitespace-nowrap inline-flex items-center justify-center px-1 md:px-2 py-1"
                     style={{
                       fontFamily:
                         "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
-                      height: "56px",
-                      width: `${Math.max(80, (displayName?.length || 0) * 20)}px`,
+                      lineHeight: "normal",
                     }}
                   >
                     {displayName}
                   </span>
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    className="absolute bottom-1 left-0 h-2 bg-[#0CC990]/10 -z-10"
+                  />
                 </span>{" "}
-                like ? 🥳
+                like? 🥳
               </span>
 
-              {/* AI Assistant Button - Integrated next to question */}
+              {/* AI Assistant Button */}
               <div className="relative group">
                 <button
                   onClick={() => {
@@ -418,31 +422,38 @@ export default function VendorPage() {
                     setTimeout(() => setShowAiSoon(false), 2000);
                   }}
                   className={cn(
-                    "flex-shrink-0 bg-white text-[#6A70FF] h-10 flex items-center justify-center rounded-full transition-all duration-300 ease-out focus:outline-none shadow-sm hover:shadow-md px-2 border border-[#6A70FF]/10",
-                    showAiSoon ? "w-max px-3" : "w-10",
+                    "flex-shrink-0 bg-[#6A70FF]/20 text-[#6A70FF] h-10 flex items-center justify-center rounded-xl md:h-12 transition-all duration-300 ease-out focus:outline-none shadow-sm hover:shadow-lg hover:shadow-[#6A70FF]/20 hover:-translate-y-1 group-hover:bg-gradient-custom group-hover:text-white px-2",
+                    showAiSoon ? "w-max px-4" : "w-10 md:w-12",
                   )}
                 >
-                  <div className="flex items-center gap-1.5">
-                    <AnimatePresence mode="wait">
-                      {showAiSoon && (
-                        <motion.span
-                          key="soon-text"
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -10 }}
-                          className="text-[10px] font-bold uppercase tracking-widest whitespace-nowrap px-1"
-                        >
-                          Ai soon
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                    <Icon
-                      icon="humbleicons:ai"
-                      width="18"
-                      height="18"
-                      className="w-5 h-5 transition-all duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110"
-                    />
-                  </div>
+                  <AnimatePresence mode="wait">
+                    {showAiSoon ? (
+                      <motion.span
+                        key="soon"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="text-xs font-semibold whitespace-nowrap"
+                      >
+                        Coming soon
+                      </motion.span>
+                    ) : (
+                      <motion.div
+                        key="icon"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="flex items-center justify-center flex-1"
+                      >
+                        <Icon
+                          icon="humbleicons:ai"
+                          width="20"
+                          height="20"
+                          className="w-5 h-5 md:w-6 md:h-6 transition-all duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </button>
               </div>
             </div>

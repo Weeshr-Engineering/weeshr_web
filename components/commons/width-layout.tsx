@@ -6,6 +6,7 @@ interface LayoutProps {
   narrow?: boolean;
   className?: string;
   fullWidthMobile?: boolean;
+  fullWidth?: boolean; // ✅ NEW
 }
 
 const WidthLayout: React.FC<LayoutProps> = ({
@@ -13,14 +14,25 @@ const WidthLayout: React.FC<LayoutProps> = ({
   narrow = false,
   className,
   fullWidthMobile = false,
+  fullWidth = false, // ✅ default
 }) => {
+  // ✅ FULL PAGE MODE (no constraints at all)
+  if (fullWidth) {
+    return (
+      <div className={clsx("w-full min-h-screen flex flex-col", className)}>
+        {children}
+      </div>
+    );
+  }
+
   const defaultClass = narrow
     ? fullWidthMobile
       ? "w-full md:w-[96%]"
       : "w-[96%]"
     : fullWidthMobile
-    ? "w-full md:w-[92.50%]"
-    : "w-[92.50%]";
+      ? "w-full md:w-[92.50%]"
+      : "w-[92.50%]";
+
   const extraLargeClass = narrow ? "2xl:w-[75%]" : "2xl:w-[80%]";
 
   return (
@@ -28,8 +40,8 @@ const WidthLayout: React.FC<LayoutProps> = ({
       className={clsx(
         defaultClass,
         extraLargeClass,
-        "mx-auto 2xl:max-w-7xl lg:pt-16 flex flex-col flex-1",
-        className
+        "mx-auto 2xl:max-w-7xl flex flex-col flex-1",
+        className,
       )}
     >
       {children}

@@ -105,7 +105,12 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
       className="relative flex flex-col h-full bg-cover bg-bottom bg-no-repeat
     bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]"
     >
-      <WidthLayout className="h-full flex flex-col w-full">
+      <WidthLayout
+        className="h-full flex flex-col w-full
+      
+      "
+        fullWidth
+      >
         {!isProductPage && (
           <div className="shrink-0">
             <HeaderMobile customLinks={navWithQuery} />
@@ -116,7 +121,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
         <div
           className={cn(
             "flex-1 min-h-0 w-full flex flex-col",
-            !isProductPage && "md:mt-10",
+            !isProductPage && "mt-0 lg:mt-10",
           )}
         >
           {children}
@@ -140,7 +145,7 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
       fallback={
         <main className="relative flex flex-col min-h-screen bg-cover bg-top bg-no-repeat bg-[url('https://res.cloudinary.com/drykej1am/image/upload/v1757840432/weeshr-marketplace/Desktop_-_20_pleoi7.png')]">
           {/* Minimal fallback to prevent layout shift while allowing page skeletons to show first */}
-          <WidthLayout className="h-full flex flex-col">
+          <WidthLayout className="h-full flex flex-col 2xl:max-w-auto">
             <div className="flex-grow pt-20 px-4" />
           </WidthLayout>
         </main>
