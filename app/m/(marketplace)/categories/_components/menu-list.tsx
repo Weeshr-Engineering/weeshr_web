@@ -189,11 +189,11 @@ export function MenuList({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-0 md:gap-0 py-6 pt-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-0 md:gap-0 py-6 pt-4">
         {Array.from({ length: 8 }).map((_, index) => (
           <Card
             key={index}
-            className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative animate-pulse"
+            className="overflow-hidden rounded-none bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-square relative animate-pulse"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50"></div>
             <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40"></div>
@@ -256,7 +256,7 @@ export function MenuList({
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-0 md:gap-0 py-6 pt-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-0 md:gap-0 py-6 pt-4">
         {(searchQuery
           ? menuProducts.filter(
               (p) =>
@@ -305,7 +305,7 @@ export function MenuList({
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 className="w-full"
               >
-                <Card className="overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-[3/4] relative">
+                <Card className="overflow-hidden rounded-none bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-xl border-[1.5px] border-gray-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] aspect-square relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 animate-pulse"></div>
                   <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-100 to-amber-50 rounded-full h-8 w-20 border border-amber-200/40 animate-pulse"></div>
                 </Card>

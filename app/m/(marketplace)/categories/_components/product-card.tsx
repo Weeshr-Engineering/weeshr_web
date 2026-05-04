@@ -61,7 +61,7 @@ export function ProductCard({
           router.push(`${basePath}/${product.id}`);
         }}
         className={cn(
-          "overflow-hidden rounded-none transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
+          "overflow-hidden rounded-none transition-all duration-500 ease-out relative aspect-square flex flex-col",
           "bg-gradient-to-br from-white/95 via-white/90 to-white/95",
           "backdrop-blur-xl border-none ",
           product.isAvailable

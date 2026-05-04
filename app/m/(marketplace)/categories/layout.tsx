@@ -121,7 +121,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
         <div
           className={cn(
             "flex-1 min-h-0 w-full flex flex-col",
-            !isProductPage && "mt-0 lg:mt-10",
+            !isProductPage && "mt-0 lg:mt-10 xl:mt-0",
           )}
         >
           {children}
