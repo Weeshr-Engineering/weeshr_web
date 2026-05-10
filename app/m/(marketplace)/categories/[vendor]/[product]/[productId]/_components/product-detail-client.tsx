@@ -85,7 +85,7 @@ export default function ProductDetailClient({
     if (existingItem) {
       existingItem.qty += 1;
     } else {
-      updatedBasket.push({
+      updatedBasket.unshift({
         id: productToAdd.id,
         name: productToAdd.name,
         qty: 1,

@@ -410,8 +410,9 @@ export function GiftBasket({
                     item.name !== undefined &&
                     item.qty >= 1,
                 );
-              setBasket(apiBasket);
-              localStorage.setItem("weeshr_basket", JSON.stringify(apiBasket));
+              const reversedItems = apiBasket.reverse();
+              setBasket(reversedItems);
+              localStorage.setItem("weeshr_basket", JSON.stringify(reversedItems));
 
               // Set cart details from API response
               if (cartResult.data) {

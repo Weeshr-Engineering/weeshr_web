@@ -140,8 +140,9 @@ export default function VendorPage() {
               qty: item.quantity,
               name: item.productId?.name,
             }));
-            setBasket(items);
-            localStorage.setItem("weeshr_basket", JSON.stringify(items));
+            const reversedItems = [...items].reverse();
+            setBasket(reversedItems);
+            localStorage.setItem("weeshr_basket", JSON.stringify(reversedItems));
           }
         } catch (error) {
           console.error("Cart sync error:", error);
