@@ -142,9 +142,12 @@ export class ProductService {
   /**
    * Fetch single product by ID
    */
-  static async getProductById(productId: string): Promise<Product | null> {
+  static async getProductById(
+    productId: string,
+    vendorId?: string,
+  ): Promise<Product | null> {
     try {
-      const product: ApiProduct = await fetchProductById(productId);
+      const product: ApiProduct = await fetchProductById(productId, vendorId);
       if (!product) return null;
 
       const mainImage =

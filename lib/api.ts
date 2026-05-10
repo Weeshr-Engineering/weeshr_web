@@ -115,8 +115,15 @@ export async function fetchVendorBySlug(slug: string) {
   return json.data;
 }
 // Fetch single product by ID
-export async function fetchProductById(productId: string) {
-  const res = await fetch(`${API_BASE_URL}/market/products/${productId}`, {
+export async function fetchProductById(productId: string, vendorId?: string) {
+  let url = `${API_BASE_URL}/market/products?_id=${productId}`;
+
+  if (vendorId) {
+    url += `&vendorId=${vendorId}`;
+  }
+
+  const res = await fetch(url, {
+    method: "GET",
     next: { revalidate: 60 },
   });
 
@@ -126,5 +133,6 @@ export async function fetchProductById(productId: string) {
   }
 
   const json = await res.json();
-  return json.data;
+  // The API returns products in a nested data.data array even for single lookups
+  return json.data?.data?.[0] || null;
 }
