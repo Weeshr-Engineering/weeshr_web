@@ -13,6 +13,7 @@ import { BasketItem } from "@/lib/BasketItem";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
 import { ImageSlider } from "./image-slider";
+import { useRouter, usePathname } from "next/navigation";
 
 interface MenuListProps {
   vendorId: string;
@@ -39,6 +40,8 @@ export function MenuList({
   searchQuery = "",
   vendorName = "Marketplace",
 }: MenuListProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [shakeId, setShakeId] = useState<string | null>(null);
   const [menuProducts, setMenuProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -269,7 +272,23 @@ export function MenuList({
             key={product.id}
             product={product}
             basket={basket}
-            onExpand={() => {}} // Navigation handled inside ProductCard
+            onExpand={() => {
+              console.log("Navigation started to product detail:", product.id);
+              const startTime = performance.now();
+              const currentParams = new URLSearchParams(
+                window.location.search,
+              ).toString();
+              const segments = pathname.split("/");
+              const isProductDetail = segments.length > 5;
+              const basePath = isProductDetail
+                ? segments.slice(0, -1).join("/")
+                : pathname;
+              const queryString = currentParams ? `?${currentParams}` : "";
+              router.push(`${basePath}/${product.id}${queryString}`);
+              console.log(
+                `Router push called in ${performance.now() - startTime}ms`,
+              );
+            }}
             onAdd={handleAdd}
           />
         ))}

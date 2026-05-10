@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Product, ProductService } from "@/service/product.service";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ export default function ProductDetailClient({
   initialRelatedProducts,
 }: ProductDetailClientProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [product] = useState<Product>(initialProduct);
   const [relatedProducts] = useState<Product[]>(initialRelatedProducts);
   const [userId, setUserId] = useState<string | null>(null);
@@ -225,11 +226,17 @@ export default function ProductDetailClient({
                     <div
                       key={relProduct.id}
                       className="aspect-square bg-gray-100 cursor-pointer overflow-hidden hover:opacity-90 transition-opacity"
-                      onClick={() =>
+                      onClick={() => {
+                        const currentParams = new URLSearchParams(
+                          window.location.search,
+                        ).toString();
+                        const queryString = currentParams
+                          ? `?${currentParams}`
+                          : "";
                         router.push(
-                          `${pathname.split("/").slice(0, -1).join("/")}/${relProduct.id}`,
-                        )
-                      }
+                          `${pathname.split("/").slice(0, -1).join("/")}/${relProduct.id}${queryString}`,
+                        );
+                      }}
                     >
                       <img
                         src={relProduct.image}

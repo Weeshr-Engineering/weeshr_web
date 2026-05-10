@@ -383,7 +383,21 @@ export function MobileMenuButtons({
               key={product.id}
               product={product}
               basket={basket}
-              onExpand={() => {}}
+              onExpand={() => {
+                console.log(
+                  "Mobile navigation started to product detail:",
+                  product.id,
+                );
+                const startTime = performance.now();
+                const currentParams = new URLSearchParams(
+                  window.location.search,
+                ).toString();
+                const queryString = currentParams ? `?${currentParams}` : "";
+                router.push(`${pathname}/${product.id}${queryString}`);
+                console.log(
+                  `Mobile router push called in ${performance.now() - startTime}ms`,
+                );
+              }}
               onAdd={handleAdd}
             />
           );

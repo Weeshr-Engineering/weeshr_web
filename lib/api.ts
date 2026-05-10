@@ -116,10 +116,10 @@ export async function fetchVendorBySlug(slug: string) {
 }
 // Fetch single product by ID
 export async function fetchProductById(productId: string, vendorId?: string) {
-  let url = `${API_BASE_URL}/market/products?_id=${productId}`;
+  let url = `${API_BASE_URL}/market/products/${productId}`;
 
   if (vendorId) {
-    url += `&vendorId=${vendorId}`;
+    url += `?vendorId=${vendorId}`;
   }
 
   const res = await fetch(url, {
@@ -133,6 +133,7 @@ export async function fetchProductById(productId: string, vendorId?: string) {
   }
 
   const json = await res.json();
-  // The API returns products in a nested data.data array even for single lookups
-  return json.data?.data?.[0] || null;
+  // If the path-based endpoint returns a single object, json.data should be the product
+  // If it still returns a list, we'll keep the [0] fallback logic
+  return json.data?.data?.[0] || json.data || null;
 }

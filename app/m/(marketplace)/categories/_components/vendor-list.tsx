@@ -47,9 +47,12 @@ const VendorList: React.FC<VendorListProps> = ({
           randomStyles[vendor.id] = 0; // 2x2 for the first item
         } else {
           const r = Math.random();
-          if (r < 0.05) randomStyles[vendor.id] = 0; // 2x2 (5%)
-          else if (r < 0.10) randomStyles[vendor.id] = 1; // 2x1 (5%)
-          else if (r < 0.15) randomStyles[vendor.id] = 2; // 1x2 (5%)
+          if (r < 0.05)
+            randomStyles[vendor.id] = 0; // 2x2 (5%)
+          else if (r < 0.1)
+            randomStyles[vendor.id] = 1; // 2x1 (5%)
+          else if (r < 0.15)
+            randomStyles[vendor.id] = 2; // 1x2 (5%)
           else randomStyles[vendor.id] = 3; // regular (85%)
         }
       }
@@ -117,8 +120,8 @@ const VendorList: React.FC<VendorListProps> = ({
       imageSizes = "100vw";
     } else {
       spanClass += "col-span-1 aspect-square ";
-      titleClass += "text-[11px] sm:text-sm truncate ";
-      badgeClass += "text-[10px] sm:text-xs px-2 py-0.5 ";
+      titleClass += "text-[12px] sm:text-sm truncate ";
+      badgeClass += "text-[12px] sm:text-xs px-2 py-0.5 ";
       containerPadding += "bottom-2 left-2 right-2 ";
       topPadding += "top-2 right-2 ";
     }
@@ -126,7 +129,8 @@ const VendorList: React.FC<VendorListProps> = ({
     // --- Desktop classes ---
     if (isDesktop2x2) {
       spanClass += "md:col-span-2 md:row-span-2 md:aspect-square ";
-      titleClass += "md:text-2xl md:whitespace-normal md:break-words md:tracking-tight ";
+      titleClass +=
+        "md:text-2xl md:whitespace-normal md:break-words md:tracking-tight ";
       badgeClass += "md:text-xs md:px-3 md:py-1 ";
       containerPadding += "md:bottom-0 md:left-0 md:right-0 md:p-4 ";
       topPadding += "md:top-3 md:right-3 ";
@@ -134,14 +138,16 @@ const VendorList: React.FC<VendorListProps> = ({
       imageSizes = "(max-width: 768px) 100vw, 50vw";
     } else if (isDesktop2x1) {
       spanClass += "md:col-span-2 md:row-span-1 md:aspect-[2/1] ";
-      titleClass += "md:text-xl md:whitespace-normal md:break-words md:tracking-tight ";
+      titleClass +=
+        "md:text-xl md:whitespace-normal md:break-words md:tracking-tight ";
       badgeClass += "md:text-xs md:px-3 md:py-1 ";
       containerPadding += "md:bottom-0 md:left-0 md:right-0 md:p-3 ";
       topPadding += "md:top-3 md:right-3 ";
       imageSizes = "(max-width: 768px) 100vw, 50vw";
     } else if (isDesktop1x2) {
       spanClass += "md:col-span-1 md:row-span-2 md:aspect-[1/2] ";
-      titleClass += "md:text-lg md:whitespace-normal md:break-words md:tracking-tight ";
+      titleClass +=
+        "md:text-lg md:whitespace-normal md:break-words md:tracking-tight ";
       badgeClass += "md:text-xs md:px-2 md:py-0.5 ";
       containerPadding += "md:bottom-0 md:left-0 md:right-0 md:p-3 ";
       topPadding += "md:top-2 md:right-2 ";
@@ -153,7 +159,15 @@ const VendorList: React.FC<VendorListProps> = ({
       topPadding += "md:top-2 md:right-2 ";
     }
 
-    return { spanClass, titleClass, badgeClass, containerPadding, topPadding, imageQuality, imageSizes };
+    return {
+      spanClass,
+      titleClass,
+      badgeClass,
+      containerPadding,
+      topPadding,
+      imageQuality,
+      imageSizes,
+    };
   };
 
   if (loading) {
@@ -217,7 +231,10 @@ const VendorList: React.FC<VendorListProps> = ({
             variants={cardVariants}
             initial="hidden"
             animate="visible"
-            className={cn("cursor-pointer relative overflow-hidden bg-gray-100", spanClass)}
+            className={cn(
+              "cursor-pointer relative overflow-hidden bg-gray-100",
+              spanClass,
+            )}
             onClick={() => goToVendor(vendor.category, vendor.name, vendor.id)}
           >
             {!isLoaded && (
@@ -253,16 +270,12 @@ const VendorList: React.FC<VendorListProps> = ({
 
             {/* Category badge - top right */}
             <div className={topPadding}>
-              <span className={badgeClass}>
-                {vendor.category}
-              </span>
+              <span className={badgeClass}>{vendor.category}</span>
             </div>
 
             {/* Vendor name - bottom left */}
             <div className={containerPadding}>
-              <p className={titleClass}>
-                {sentenceCase(vendor?.name)}
-              </p>
+              <p className={titleClass}>{sentenceCase(vendor?.name)}</p>
             </div>
           </motion.div>
         );

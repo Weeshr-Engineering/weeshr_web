@@ -9,16 +9,29 @@ interface PageProps {
     product: string;
     productId: string;
   }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ProductDetailPage({ params }: PageProps) {
-  const resolvedParams = await params;
+export default async function ProductDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
+  console.time("ProductDetailPage fetch");
+  const [resolvedParams, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const { productId, product: vendorSlug } = resolvedParams;
+  const vendorIdFromQuery = resolvedSearchParams.vendorId as string | undefined;
 
-  let vendorIdToUse: string | undefined;
+  console.log(
+    `Fetching product detail for ID: ${productId}, Vendor: ${vendorSlug || vendorIdFromQuery}`,
+  );
 
-  // Fetch the vendor first to get the vendorId (allowed on server)
-  if (vendorSlug) {
+  let vendorIdToUse: string | undefined = vendorIdFromQuery;
+
+  // Fetch the vendor by slug only if vendorId is not already provided in query
+  if (!vendorIdToUse && vendorSlug) {
     try {
       const vendor = await VendorService.getVendorBySlug(vendorSlug);
       if (vendor) {
@@ -33,6 +46,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const product = await ProductService.getProductById(productId, vendorIdToUse);
 
   if (!product) {
+    console.timeEnd("ProductDetailPage fetch");
     return <ProductNotFound />;
   }
 
@@ -42,10 +56,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
     const response = await ProductService.getProductsByVendor(
       product.vendorId,
       1,
-      10
+      10,
     );
     relatedProducts = response.products.filter((p) => p.id !== productId);
   }
+
+  console.timeEnd("ProductDetailPage fetch");
 
   return (
     <ProductDetailClient
