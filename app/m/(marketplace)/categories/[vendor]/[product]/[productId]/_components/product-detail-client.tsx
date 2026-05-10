@@ -166,7 +166,7 @@ export default function ProductDetailClient({
         <div className="flex items-center justify-between py-2">
           <div className="flex flex-col">
             <span className="text-xs text-gray-400 font-medium">Price</span>
-            <span className="text-2xl font-semibold text-gray-900">
+            <span className="text-2xl font-medium text-gray-900">
               ₦ {product.price.toLocaleString()}
             </span>
           </div>
@@ -216,7 +216,7 @@ export default function ProductDetailClient({
               className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
             >
               <Icon icon="ph:caret-left-bold" width="18" />
-              <span className="text-sm font-semibold tracking-wide">Back</span>
+              <span className="text-sm font-medium tracking-wide">Back</span>
             </button>
           </div>
         </section>
@@ -244,7 +244,7 @@ export default function ProductDetailClient({
                 <span className="text-white/70 text-xs font-medium uppercase tracking-wider mb-0.5">
                   Price
                 </span>
-                <span className="text-white font-semibold text-2xl tracking-tight">
+                <span className="text-white font-medium text-2xl tracking-tight">
                   ₦ {product.price.toLocaleString()}
                 </span>
               </div>
@@ -299,30 +299,32 @@ export default function ProductDetailClient({
                     <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
                   </div>
                 </div>
-                <div className="mb-10 max-w-4xl flex items-start justify-between border-b border-gray-100 pb-10">
-                  <div className="space-y-3">
+                <div className="mb-10 max-w-4xl flex items-start justify-between border-b border-gray-100 pb-8">
+                  <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                       <span className="bg-[#3B41B1]/5 text-[#3B41B1] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.15em] border border-[#3B41B1]/10">
+                      <span className="bg-[#3B41B1]/5 text-[#3B41B1] px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-[0.15em] border border-[#3B41B1]/10">
                         {product.category || "Lifestyle"}
                       </span>
                       <span className="text-gray-200">/</span>
-                      <span className="text-gray-400 text-[10px] font-semibold uppercase tracking-widest">
+                      <span className="text-gray-400 text-[10px] font-medium uppercase tracking-widest">
                         Ref: {product.id.slice(-6).toUpperCase()}
                       </span>
                     </div>
-                    <h1 className="text-4xl font-semibold  text-gray-900 tracking-tight leading-tight max-w-xl">
+                    <h1 className="text-4xl font-normal  text-gray-900 tracking-tight leading-tight max-w-xl">
                       {product.name}
                     </h1>
                   </div>
-                  <div className="flex flex-col items-end gap-5 pl-8 border-l border-gray-50">
+                  <div className="flex flex-col items-end gap-2 pl-8 border-l border-gray-50">
                     <div className="flex flex-col items-end">
-                      <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-[0.2em] mb-1">Current Price</span>
-                      <span className="text-3xl font-semibold text-gray-900 tracking-tight whitespace-nowrap">
+                      <span className="text-[10px] text-gray-400 font-medium uppercase tracking-[0.2em] mb-4">
+                        Current Price
+                      </span>
+                      <span className="text-3xl font-medium text-gray-900 tracking-tight whitespace-nowrap">
                         ₦ {product.price.toLocaleString()}
                       </span>
                     </div>
                     <Button
-                      className="rounded-full px-8 h-12 bg-[#3B41B1] text-white hover:bg-[#3B41B1]/90 gap-3 font-semibold text-sm shadow-lg transition-all hover:scale-105 active:scale-95 group shrink-0"
+                      className="rounded-full px-8 h-12 bg-[#3B41B1] text-white hover:bg-[#3B41B1]/90 gap-3 font-medium text-sm shadow-lg transition-all hover:scale-105 active:scale-95 group shrink-0 mt-2"
                       onClick={() => handleAdd(product.id)}
                     >
                       Add to basket
@@ -334,7 +336,7 @@ export default function ProductDetailClient({
                 </div>
 
                 <div className="mb-12 max-w-3xl">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-4 tracking-tight flex items-center gap-2">
+                  <h3 className="text-2xl font-medium text-gray-900 mb-4 tracking-tight flex items-center gap-2">
                     <Icon icon="ph:info" className="text-[#3B41B1]" />
                     About this item
                   </h3>
@@ -344,7 +346,7 @@ export default function ProductDetailClient({
                 </div>
 
                 <div className="space-y-6 pb-12">
-                  <h3 className="text-2xl font-semibold text-gray-900 tracking-tight pl-4 border-l-4 border-[#3B41B1]">
+                  <h3 className="text-2xl font-medium text-gray-900 tracking-tight pl-4 border-l-4 border-[#3B41B1]">
                     More from {formattedProductName.split(" ")[0]}
                   </h3>
                   <MenuList
@@ -394,7 +396,7 @@ export default function ProductDetailClient({
           <div className="flex-1 overflow-y-auto scrollbar-hide pb-32">
             <ProductDetail />
             <div className="space-y-4 pt-4 pb-10">
-              <h3 className="text-xl font-semibold text-gray-900 pl-4">
+              <h3 className="text-xl font-medium text-gray-900 pl-4">
                 More from {formattedProductName.split(" ")[0]}
               </h3>
               <MobileMenuButtons
