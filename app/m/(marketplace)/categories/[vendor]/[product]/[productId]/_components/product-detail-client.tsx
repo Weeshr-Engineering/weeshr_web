@@ -150,7 +150,8 @@ export default function ProductDetailClient({
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none" />
           <div className="absolute bottom-8 left-6 z-20">
             <span className="text-white font-medium text-2xl tracking-tight">
-              {formattedProductName.split(" ")[0]}! {product.category || "Lifestyle"}
+              {formattedProductName.split(" ")[0]}!{" "}
+              {product.category || "Lifestyle"}
             </span>
           </div>
         </div>
@@ -221,51 +222,53 @@ export default function ProductDetailClient({
         </section>
 
         {/* Indigo Header Bar - Luxurious Overlap */}
-        <section className="bg-[#3B41B1] px-10 py-6 pt-5 pb-[3.5rem] flex items-center justify-between shadow-2xl sticky top-0 z-30 rounded-t-[2rem] -mt-16 border-t border-white/10">
-          <div className="flex flex-col max-w-2xl">
-            <h2 className="text-white font-medium text-3xl tracking-tight leading-tight">
-              {formattedProductName}
-            </h2>
-            <div className="flex items-center gap-2 mt-1.5 opacity-90">
-              <span className="text-white/80 font-medium text-sm tracking-wide uppercase">
-                {product.category || "Product"}
-              </span>
-              <span className="text-white/40">•</span>
-              <span className="text-white/80 font-medium text-sm">
-                By {formattedProductName.split(" ")[0]}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="flex flex-col items-end">
-              <span className="text-white/70 text-xs font-medium uppercase tracking-wider mb-0.5">
-                Price
-              </span>
-              <span className="text-white font-semibold text-2xl tracking-tight">
-                ₦ {product.price.toLocaleString()}
-              </span>
-            </div>
-            <Button
-              className="rounded-full px-6 h-12 bg-white text-[#3B41B1] hover:bg-white/90 gap-2 font-bold text-sm shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95"
-              onClick={() => handleAdd(product.id)}
-            >
-              Add to basket
-              <div className="bg-[#3B41B1]/10 rounded-full p-1 ml-1">
-                <Icon icon="ph:plus-bold" className="w-3.5 h-3.5" />
+        <section className="bg-[#3B41B1] sticky top-0 z-30 rounded-t-[2rem] -mt-16 border-t border-white/10 shadow-2xl">
+          <div className="max-w-[85rem] mx-auto w-full px-10 py-6 pt-5 pb-[3.5rem] flex items-center justify-between">
+            <div className="flex flex-col max-w-2xl">
+              <h2 className="text-white font-medium text-3xl tracking-tight leading-tight">
+                {formattedProductName}
+              </h2>
+              <div className="flex items-center gap-2 mt-1.5 opacity-90">
+                <span className="text-white/80 font-medium text-sm tracking-wide uppercase">
+                  {product.category || "Product"}
+                </span>
+                <span className="text-white/40">•</span>
+                <span className="text-white/80 font-medium text-sm">
+                  By {formattedProductName.split(" ")[0]}
+                </span>
               </div>
-            </Button>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <div className="flex flex-col items-end">
+                <span className="text-white/70 text-xs font-medium uppercase tracking-wider mb-0.5">
+                  Price
+                </span>
+                <span className="text-white font-semibold text-2xl tracking-tight">
+                  ₦ {product.price.toLocaleString()}
+                </span>
+              </div>
+              <Button
+                className="rounded-full px-6 h-12 bg-white text-[#3B41B1] hover:bg-white/90 gap-2 font-bold text-sm shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95"
+                onClick={() => handleAdd(product.id)}
+              >
+                Add to basket
+                <div className="bg-[#3B41B1]/10 rounded-full p-1 ml-1">
+                  <Icon icon="ph:plus-bold" className="w-3.5 h-3.5" />
+                </div>
+              </Button>
+            </div>
           </div>
         </section>
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col bg-white rounded-t-[1.5rem] -mt-10 relative z-40 shadow-[0_-15px_50px_rgba(0,0,0,0.06)] mb-12">
-          <div className="px-10 w-full mx-auto flex-1 pt-10">
+          <div className="px-10 w-full max-w-[85rem] mx-auto flex-1 pt-10">
             <div className="flex flex-row gap-12">
               {/* Left Column: Image, Description & More from Vendor */}
               <div className="flex-1 min-w-0">
                 {/* Product Image Gallery (Desktop) */}
-                <div className="mb-10 w-full max-w-3xl">
+                <div className="mb-10 w-full max-w-4xl">
                   <div className="relative w-full aspect-[16/9] lg:aspect-[2/1] rounded-[2rem] overflow-hidden bg-gray-50 shadow-sm">
                     <ImageSlider
                       images={
@@ -296,6 +299,40 @@ export default function ProductDetailClient({
                     <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
                   </div>
                 </div>
+                <div className="mb-10 max-w-4xl flex items-start justify-between border-b border-gray-100 pb-10">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                       <span className="bg-[#3B41B1]/5 text-[#3B41B1] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.15em] border border-[#3B41B1]/10">
+                        {product.category || "Lifestyle"}
+                      </span>
+                      <span className="text-gray-200">/</span>
+                      <span className="text-gray-400 text-[10px] font-semibold uppercase tracking-widest">
+                        Ref: {product.id.slice(-6).toUpperCase()}
+                      </span>
+                    </div>
+                    <h1 className="text-4xl font-semibold  text-gray-900 tracking-tight leading-tight max-w-xl">
+                      {product.name}
+                    </h1>
+                  </div>
+                  <div className="flex flex-col items-end gap-5 pl-8 border-l border-gray-50">
+                    <div className="flex flex-col items-end">
+                      <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-[0.2em] mb-1">Current Price</span>
+                      <span className="text-3xl font-semibold text-gray-900 tracking-tight whitespace-nowrap">
+                        ₦ {product.price.toLocaleString()}
+                      </span>
+                    </div>
+                    <Button
+                      className="rounded-full px-8 h-12 bg-[#3B41B1] text-white hover:bg-[#3B41B1]/90 gap-3 font-semibold text-sm shadow-lg transition-all hover:scale-105 active:scale-95 group shrink-0"
+                      onClick={() => handleAdd(product.id)}
+                    >
+                      Add to basket
+                      <div className="bg-white/20 rounded-full p-1  transition-transform">
+                        <Icon icon="ph:plus-bold" className="w-3.5 h-3.5" />
+                      </div>
+                    </Button>
+                  </div>
+                </div>
+
                 <div className="mb-12 max-w-3xl">
                   <h3 className="text-2xl font-semibold text-gray-900 mb-4 tracking-tight flex items-center gap-2">
                     <Icon icon="ph:info" className="text-[#3B41B1]" />

@@ -95,7 +95,7 @@ export default function PaySidePanel({
                 is getting
               </h3>
               <div className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold text-gray-600 border border-gray-200">
-                {basket.reduce((acc, item) => acc + item.qty, 0)}
+                {basket.length}
               </div>
             </div>
             <p className="text-sm text-gray-500 mt-1">
