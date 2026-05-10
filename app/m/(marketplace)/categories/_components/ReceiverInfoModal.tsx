@@ -184,8 +184,8 @@ export default function ReceiverInfoModal({
   const isFormValid = () =>
     formData.phoneNumber.trim() && formData.deliveryDate;
 
-  const handleMakePayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleMakePayment = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault();
 
     if (!isFormValid()) {
       toast.error("Please fill in all required fields");
@@ -648,7 +648,7 @@ export default function ReceiverInfoModal({
             <SheetTitle className="text-xl font-semibold text-primary">Order Details</SheetTitle>
           </SheetHeader>
 
-          <div className="overflow-y-auto p-4">
+          <div className="overflow-y-auto md:p-4">
             <PaySidePanel
               basket={basket}
               products={products}

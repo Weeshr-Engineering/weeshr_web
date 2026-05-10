@@ -10,6 +10,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { getNoteSuggestions } from "./note-suggestions";
 
 interface PaySidePanelProps {
   basket: BasketItem[];
@@ -20,7 +21,7 @@ interface PaySidePanelProps {
   totalPrice: number;
   basketCount?: number;
   receiverName?: string;
-  onProceedToPay?: () => void;
+  onProceedToPay?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   isProcessing?: boolean;
 }
 
@@ -41,6 +42,17 @@ export default function PaySidePanel({
   >({});
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [note, setNote] = useState("");
+  const [suggestionIndex, setSuggestionIndex] = useState(0);
+
+  const noteSuggestions = getNoteSuggestions(receiverName);
+
+  const handleShuffleNote = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextIndex = (suggestionIndex + 1) % noteSuggestions.length;
+    setSuggestionIndex(nextIndex);
+    setNote(noteSuggestions[nextIndex]);
+  };
 
   // Add safe defaults for all number values
   const safeSubTotal = subTotal || 0;
@@ -95,7 +107,7 @@ export default function PaySidePanel({
           <div 
             className={cn(
               "relative mb-8 transition-all duration-500",
-              isExpanded ? "flex-1 overflow-y-auto space-y-3 pr-2" : "h-[140px]"
+              isExpanded ? "h-[210px] overflow-y-auto space-y-3 pr-2" : "h-[140px]"
             )}
             onClick={(e) => {
               if (!isExpanded && basket.length > 1) {
@@ -218,13 +230,18 @@ export default function PaySidePanel({
           <div className="space-y-2 mb-6">
             <div className="flex items-center justify-between">
               <Label className="text-sm text-gray-500">Send a note with this gift</Label>
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-sm cursor-pointer hover:bg-indigo-100 transition-colors">
-                <Icon icon="solar:stars-bold" className="w-4 h-4" />
+              <div 
+                onClick={handleShuffleNote}
+                className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-sm cursor-pointer hover:bg-indigo-100 transition-all hover:scale-110 active:scale-95 group/magic"
+              >
+                <Icon icon="solar:stars-bold" className="w-4 h-4 group-hover/magic:animate-pulse" />
               </div>
             </div>
             <div className="relative group">
               <textarea
-                placeholder="I kinda love you gan ni but Yakubu, manage 😄"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder={`I kinda love you gan ni but ${receiverName}, manage 😄`}
                 className="w-full min-h-[100px] bg-white border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all resize-none shadow-sm"
               />
               <div className="absolute bottom-3 right-3 opacity-0 group-focus-within:opacity-100 transition-opacity">
@@ -238,7 +255,7 @@ export default function PaySidePanel({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onProceedToPay?.();
+                onProceedToPay?.(e);
               }}
               disabled={isProcessing || !basketCount}
               className="w-full bg-[#4145A7] text-white rounded-3xl py-4 px-4 font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
