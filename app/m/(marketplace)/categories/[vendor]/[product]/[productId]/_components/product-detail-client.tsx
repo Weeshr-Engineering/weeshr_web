@@ -13,6 +13,8 @@ import { BasketItem } from "@/lib/BasketItem";
 import { cartService } from "@/service/cart.service";
 import axios from "axios";
 import { GiftBasket } from "../../../../_components/gift-basket";
+import { MenuList } from "../../../../_components/menu-list";
+import { MobileMenuButtons } from "../../../../_components/mobile-menu-buttons";
 
 interface ProductDetailClientProps {
   initialProduct: Product;
@@ -28,6 +30,7 @@ export default function ProductDetailClient({
   const [product] = useState<Product>(initialProduct);
   const [relatedProducts] = useState<Product[]>(initialRelatedProducts);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [basket, setBasket] = useState<BasketItem[]>([]);
   const [selectedSize, setSelectedSize] = useState("250 ml");
   const sizes = ["100 ml", "250 ml", "500 ml"];
@@ -50,10 +53,14 @@ export default function ProductDetailClient({
           );
           if (profileResponse.data?.data?._id) {
             setUserId(profileResponse.data.data._id);
+            setIsAuthenticated(true);
           }
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
+          setIsAuthenticated(false);
         }
+      } else {
+        setIsAuthenticated(false);
       }
     };
 
@@ -100,7 +107,7 @@ export default function ProductDetailClient({
       }
     }
 
-    toast.success("Added to basket!");
+    // toast.success("Added to basket!");
   };
 
   return (
@@ -214,40 +221,37 @@ export default function ProductDetailClient({
                 </p>
               </div>
             </div>
-            {/* Related Products Section */}
-            {relatedProducts.length > 0 && (
-              <div className="pt-10 pb-10 space-y-4">
-                <h3 className="text-xl font-semibold text-gray-900 pl-4">
-                  Related Products
-                </h3>
+            {/* Full Vendor Product List Section */}
+            <div className=" pb-20 space-y-4 ">
+              <h3 className="text-xl font-semibold text-gray-900 pl-4">
+                More from {product.name.split(" ")[0]}
+              </h3>
 
-                <div className="grid grid-cols-3 gap-0.5">
-                  {relatedProducts.map((relProduct) => (
-                    <div
-                      key={relProduct.id}
-                      className="aspect-square bg-gray-100 cursor-pointer overflow-hidden hover:opacity-90 transition-opacity"
-                      onClick={() => {
-                        const currentParams = new URLSearchParams(
-                          window.location.search,
-                        ).toString();
-                        const queryString = currentParams
-                          ? `?${currentParams}`
-                          : "";
-                        router.push(
-                          `${pathname.split("/").slice(0, -1).join("/")}/${relProduct.id}${queryString}`,
-                        );
-                      }}
-                    >
-                      <img
-                        src={relProduct.image}
-                        alt={relProduct.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
+              <div className="lg:hidden ">
+                <div className="">
+                  <MobileMenuButtons
+                    vendorId={product.vendorId}
+                    addToBasket={handleAdd}
+                    basket={basket}
+                    setBasket={setBasket}
+                    products={relatedProducts}
+                    isAuthenticated={isAuthenticated}
+                    userId={userId || undefined}
+                  />
                 </div>
               </div>
-            )}
+
+              <div className="hidden lg:block">
+                <MenuList
+                  vendorId={product.vendorId}
+                  addToBasket={handleAdd}
+                  basket={basket}
+                  products={relatedProducts}
+                  isAuthenticated={isAuthenticated}
+                  userId={userId || undefined}
+                />
+              </div>
+            </div>
           </div>
         </div>
 

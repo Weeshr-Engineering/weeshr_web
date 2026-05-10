@@ -52,13 +52,17 @@ export function ProductCard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => {
+          const currentParams = new URLSearchParams(
+            window.location.search,
+          ).toString();
           // If we are already on a product detail page, we need to go up one level first
           const segments = pathname.split("/");
           const isProductDetail = segments.length > 5; // /m/categories/[cat]/[vendor]/[productId]
           const basePath = isProductDetail
             ? segments.slice(0, -1).join("/")
             : pathname;
-          router.push(`${basePath}/${product.id}`);
+          const queryString = currentParams ? `?${currentParams}` : "";
+          router.push(`${basePath}/${product.id}${queryString}`);
         }}
         className={cn(
           "overflow-hidden rounded-none transition-all duration-500 ease-out relative aspect-square flex flex-col",

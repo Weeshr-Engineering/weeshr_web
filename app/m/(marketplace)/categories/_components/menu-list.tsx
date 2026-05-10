@@ -43,8 +43,8 @@ export function MenuList({
   const router = useRouter();
   const pathname = usePathname();
   const [shakeId, setShakeId] = useState<string | null>(null);
-  const [menuProducts, setMenuProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [menuProducts, setMenuProducts] = useState<Product[]>(products || []);
+  const [loading, setLoading] = useState(!products || products.length === 0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [dragY, setDragY] = useState(0);
 
@@ -86,8 +86,8 @@ export function MenuList({
       }
     };
 
-    if (vendorId) fetchProducts();
-  }, [vendorId]);
+    if (vendorId && menuProducts.length === 0) fetchProducts();
+  }, [vendorId, menuProducts.length]);
 
   // Load more products
   const loadMoreProducts = async () => {
@@ -221,43 +221,47 @@ export function MenuList({
   return (
     <div className="space-y-4">
       {/* Utility Bar for Desktop */}
-      <div className="flex justify-between items-center h-10">
-        {onOpenChangeReceiver && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenChangeReceiver();
-            }}
-            className="flex flex-row gap-2 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-1.5 px-3 rounded-full cursor-pointer"
-          >
-            <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-7 h-7 flex items-center justify-center">
-              <Icon
-                icon="lsicon:switch-outline"
-                className="text-[#6A70FF] w-4 h-4"
-              />
-            </div>
-            <span className="text-[#1F2937] font-medium text-xs">
-              Change receiver
-            </span>
-          </button>
-        )}
-
-        <button
-          disabled={totalItems <= 1}
-          className={cn(
-            "text-[10px] uppercase tracking-widest px-3 py-1 transition-all duration-300",
-            totalItems > 1
-              ? "text-red-500 font-bold opacity-100 hover:scale-105 active:scale-95"
-              : "text-gray-400 font-medium opacity-10 blur-[0.5px] cursor-not-allowed",
+      {(onOpenChangeReceiver || clearBasket) && (
+        <div className="flex justify-between items-center h-10">
+          {onOpenChangeReceiver && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenChangeReceiver();
+              }}
+              className="flex flex-row gap-2 items-center text-sm hover:bg-gray-50 transition-colors duration-200 py-1.5 px-3 rounded-full cursor-pointer"
+            >
+              <div className="border-[#6A70FF] border-2 rounded-md p-0.5 w-7 h-7 flex items-center justify-center">
+                <Icon
+                  icon="lsicon:switch-outline"
+                  className="text-[#6A70FF] w-4 h-4"
+                />
+              </div>
+              <span className="text-[#1F2937] font-medium text-xs">
+                Change receiver
+              </span>
+            </button>
           )}
-          onClick={(e) => {
-            e.stopPropagation();
-            clearBasket();
-          }}
-        >
-          Clear All
-        </button>
-      </div>
+
+          {clearBasket && (
+            <button
+              disabled={totalItems <= 1}
+              className={cn(
+                "text-[10px] uppercase tracking-widest px-3 py-1 transition-all duration-300",
+                totalItems > 1
+                  ? "text-red-500 font-bold opacity-100 hover:scale-105 active:scale-95"
+                  : "text-gray-400 font-medium opacity-10 blur-[0.5px] cursor-not-allowed",
+              )}
+              onClick={(e) => {
+                e.stopPropagation();
+                clearBasket();
+              }}
+            >
+              Clear All
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-0 md:gap-0 py-6 pt-4">
         {(searchQuery

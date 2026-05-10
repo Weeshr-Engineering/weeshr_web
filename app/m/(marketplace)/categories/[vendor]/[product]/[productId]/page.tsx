@@ -42,23 +42,38 @@ export default async function ProductDetailPage({
     }
   }
 
-  // Fetch the product with the vendorId body (allowed on server with GET)
-  const product = await ProductService.getProductById(productId, vendorIdToUse);
+  let product: Product | null = null;
+  let relatedProducts: Product[] = [];
+
+  // Parallel fetch optimization: if we have vendorId in query, we can fetch everything at once
+  if (vendorIdToUse) {
+    try {
+      const [productData, relatedData] = await Promise.all([
+        ProductService.getProductById(productId, vendorIdToUse),
+        ProductService.getProductsByVendor(vendorIdToUse, 1, 10),
+      ]);
+      product = productData;
+      relatedProducts = relatedData.products.filter((p) => p.id !== productId);
+    } catch (error) {
+      console.error("Parallel fetch failed:", error);
+    }
+  } else {
+    // Fallback: Sequential fetch if vendorId is missing (e.g. landing via direct link with slug only)
+    product = await ProductService.getProductById(productId);
+
+    if (product?.vendorId) {
+      const response = await ProductService.getProductsByVendor(
+        product.vendorId,
+        1,
+        10,
+      );
+      relatedProducts = response.products.filter((p) => p.id !== productId);
+    }
+  }
 
   if (!product) {
     console.timeEnd("ProductDetailPage fetch");
     return <ProductNotFound />;
-  }
-
-  // Fetch related products
-  let relatedProducts = [];
-  if (product.vendorId) {
-    const response = await ProductService.getProductsByVendor(
-      product.vendorId,
-      1,
-      10,
-    );
-    relatedProducts = response.products.filter((p) => p.id !== productId);
   }
 
   console.timeEnd("ProductDetailPage fetch");
