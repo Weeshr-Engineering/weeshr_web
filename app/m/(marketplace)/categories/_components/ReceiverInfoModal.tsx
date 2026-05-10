@@ -607,6 +607,7 @@ export default function ReceiverInfoModal({
           deliveryFee={deliveryFee}
           serviceCharge={serviceCharge}
           totalPrice={totalPrice}
+          receiverName={finalReceiverName}
         />
       </div>
     </div>
@@ -658,6 +659,7 @@ export default function ReceiverInfoModal({
               basketCount={basketCount}
               onProceedToPay={handleMakePayment}
               isProcessing={isProcessing}
+              receiverName={finalReceiverName}
             />
           </div>
         </SheetContent>

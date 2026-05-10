@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 interface PaySidePanelProps {
   basket: BasketItem[];
@@ -17,6 +19,7 @@ interface PaySidePanelProps {
   serviceCharge: number;
   totalPrice: number;
   basketCount?: number;
+  receiverName?: string;
   onProceedToPay?: () => void;
   isProcessing?: boolean;
 }
@@ -29,6 +32,7 @@ export default function PaySidePanel({
   serviceCharge = 0,
   totalPrice,
   basketCount = 0,
+  receiverName = "Receiver",
   onProceedToPay,
   isProcessing = false,
 }: PaySidePanelProps) {
@@ -36,9 +40,7 @@ export default function PaySidePanel({
     Record<string, boolean>
   >({});
 
-  const handleItemClick = (id: string | number) => {
-    console.log("Clicked item:", id);
-  };
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Add safe defaults for all number values
   const safeSubTotal = subTotal || 0;
@@ -60,206 +62,198 @@ export default function PaySidePanel({
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-200/30 to-transparent rounded-full -translate-y-16 translate-x-16" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-cyan-200/30 to-transparent rounded-full translate-y-12 -translate-x-12" />
 
-        <CardContent className="h-full flex flex-col p-6 relative z-10">
-          {/* Header with enhanced logo and status */}
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] rounded-xl flex items-center justify-center">
-                <Icon
-                  icon="streamline-ultimate:shopping-basket-1"
-                  className="text-white text-lg"
-                />
-              </div>
-              <div>
-                <div className="flex items-center gap-1 text-gray-400">
-                  <Icon
-                    icon="mdi:shield-check"
-                    className="text-sm text-green-400"
-                  />
-                  <span className="text-xs">Secure</span>
-                </div>
+        <CardContent 
+          className="h-full flex flex-col p-6 relative z-10"
+          onClick={() => isExpanded && setIsExpanded(false)}
+        >
+          {/* Header Section */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-1">
+                What{" "}
+                <span
+                  className="bg-gradient-custom bg-clip-text text-transparent px-1"
+                  style={{
+                    fontFamily:
+                      "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                  }}
+                >
+                  {receiverName}
+                </span>{" "}
+                is getting
+              </h3>
+              <div className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold text-gray-600 border border-gray-200">
+                {basket.reduce((acc, item) => acc + item.qty, 0)}
               </div>
             </div>
-
-            {/* Logo */}
-            <Image
-              alt="Weeshr"
-              src="https://res.cloudinary.com/drykej1am/image/upload/v1704590604/j7aiv2jdwuksre2bpclu.png"
-              width={100}
-              height={34}
-              className="opacity-90"
-            />
-          </div>
-
-          {/* Order summary header */}
-          <div className="mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-              Order Summary
-            </h3>
             <p className="text-sm text-gray-500 mt-1">
               Review your items before payment
             </p>
           </div>
 
-          {/* Items list */}
-          <div className="flex-1 space-y-2 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 overflow-visible">
+          {/* Items List (Stacked or Expanded) */}
+          <div 
+            className={cn(
+              "relative mb-8 transition-all duration-500",
+              isExpanded ? "flex-1 overflow-y-auto space-y-3 pr-2" : "h-[140px]"
+            )}
+            onClick={(e) => {
+              if (!isExpanded && basket.length > 1) {
+                e.stopPropagation();
+                setIsExpanded(true);
+              }
+            }}
+          >
             {basket?.length ? (
-              basket.map((item) => {
-                const product = products.find((p) => p.id == item.id);
-                if (!product) return null;
+              isExpanded ? (
+                // Expanded View
+                basket.map((item) => {
+                  const product = products.find((p) => p.id == item.id);
+                  if (!product) return null;
+                  return (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-center gap-4 bg-white rounded-2xl p-3 border border-gray-100 shadow-sm"
+                    >
+                      <div className="relative w-16 h-16 bg-gray-50 rounded-xl overflow-hidden shrink-0">
+                        <Image src={product.image} alt={product.name} fill className="object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900 truncate">{product.name}</p>
+                        <p className="text-sm text-gray-500">₦ {product.price.toLocaleString()}</p>
+                      </div>
+                      {item.qty > 1 && (
+                        <Badge variant="secondary" className="rounded-full bg-gray-100 text-gray-600">x{item.qty}</Badge>
+                      )}
+                    </motion.div>
+                  );
+                })
+              ) : (
+                // Stacked View
+                <div className="relative h-full pt-4 cursor-pointer">
+                  {basket.slice(0, 3).map((item, index) => {
+                    const product = products.find((p) => p.id == item.id);
+                    if (!product) return null;
 
-                const itemTotal = product.price * item.qty;
+                    const scale = 1 - index * 0.05;
+                    const translateY = index * 12;
+                    const opacity = 1 - index * 0.1;
 
-                return (
-                  <div
-                    key={item.id}
-                    onClick={() => handleItemClick(item.id)}
-                    className="overflow-visible cursor-pointer flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group active:scale-[0.98]"
-                  >
-                    <div className="flex items-center gap-4 flex-1 overflow-visible">
-                      <div className="relative">
-                        <div className="relative w-12 h-12 bg-gray-100 rounded-xl overflow-hidden">
-                          {/* Shimmer skeleton while loading */}
-                          {!imageLoadedStates[product.id] && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
-                          )}
-
-                          <motion.div
-                            initial={{ opacity: 0, scale: 1.01 }}
-                            animate={{
-                              opacity: imageLoadedStates[product.id] ? 1 : 0,
-                              scale: imageLoadedStates[product.id] ? 1 : 1.01,
-                            }}
-                            transition={{
-                              duration: 0.2,
-                              ease: "easeOut",
-                            }}
-                            className="w-full h-full"
-                          >
-                            <Image
-                              src={product.image}
-                              alt={product.name}
-                              fill
-                              className="object-cover rounded-xl group-hover:scale-110 transition-transform duration-300"
-                              onLoad={() => {
-                                setImageLoadedStates((prev) => ({
-                                  ...prev,
-                                  [product.id]: true,
-                                }));
-                              }}
-                              onError={() => {
-                                setImageLoadedStates((prev) => ({
-                                  ...prev,
-                                  [product.id]: true,
-                                }));
-                              }}
-                            />
-                          </motion.div>
+                    return (
+                      <motion.div
+                        key={item.id}
+                        initial={false}
+                        animate={{ 
+                          opacity, 
+                          scale, 
+                          y: translateY, 
+                          zIndex: 30 - index,
+                          transformOrigin: "top center"
+                        }}
+                        className={cn(
+                          "absolute left-0 right-0 rounded-2xl p-4 border transition-all duration-300",
+                          index === 0 
+                            ? "bg-white border-gray-100 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] ring-1 ring-black/5" 
+                            : "bg-gray-50/80 border-gray-200 shadow-sm"
+                        )}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-16 h-16 bg-gray-100 rounded-2xl overflow-hidden shrink-0">
+                            <Image src={product.image} alt={product.name} fill className="object-cover" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-gray-900 truncate text-base">{product.name}</p>
+                            <p className="text-sm font-medium text-gray-500">₦ {product.price.toLocaleString()}</p>
+                          </div>
                         </div>
-
-                        <div className="absolute -top-2 -right-2 bg-[#4145A7] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium shadow-lg z-20">
-                          {item.qty}
-                        </div>
-                      </div>
-
-                      <div className="space-y-1 flex-1">
-                        <p className="text-sm font-semibold text-gray-900 line-clamp-1">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          ₦ {product.price.toLocaleString()} each
-                        </p>
-                      </div>
+                      </motion.div>
+                    );
+                  })}
+                  {basket.length > 1 && (
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] text-indigo-500 font-bold bg-indigo-50/50 backdrop-blur-sm px-4 py-1.5 rounded-full border border-indigo-100/50 whitespace-nowrap shadow-sm hover:bg-indigo-100 transition-colors">
+                      Click to expand all {basket.length} items
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-gray-900">
-                        ₦ {itemTotal.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-gray-400 mt-1">
-                        {item.qty} × ₦ {product.price.toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
+                  )}
+                </div>
+              )
             ) : (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Icon
-                    icon="mdi:cart-outline"
-                    className="text-gray-400 text-2xl"
-                  />
-                </div>
-                <p className="text-gray-500 text-sm">Your basket is empty</p>
-                <p className="text-gray-400 text-xs mt-1">
-                  Add items to see them here
-                </p>
+                <Icon icon="mdi:cart-outline" className="text-gray-300 text-4xl mx-auto mb-2" />
+                <p className="text-gray-500">Your basket is empty</p>
               </div>
             )}
           </div>
 
-          {/* Enhanced total section */}
-          <div className="mt-4">
-            {/* Compact cost breakdown */}
-            <div className="bg-white/50 rounded-xl p-3 border border-gray-100">
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">
-                    ₦ {safeSubTotal.toLocaleString()}{" "}
-                    {/* Now uses safeSubTotal */}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">Delivery</span>
-                  <span
-                    className={`font-medium ${
-                      safeDeliveryFee === 0 ? "text-green-600" : "text-gray-900"
-                    }`}
-                  >
-                    {safeDeliveryFee === 0
-                      ? "FREE"
-                      : `₦ ${safeDeliveryFee.toLocaleString()}`}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">Service fee</span>
-                  <span className="text-gray-900">
-                    {safeServiceCharge > 0
-                      ? `₦ ${safeServiceCharge.toLocaleString()}`
-                      : "₦ 0"}
-                  </span>
-                </div>
+          {/* Price Breakdown Section */}
+          <div className="space-y-3 mb-8">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500">Subtotal</span>
+              <span className="font-semibold text-gray-900 border-b border-dotted border-gray-300">
+                ₦ {safeSubTotal.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500">Delivery</span>
+              <span className="font-semibold text-gray-900">
+                ₦ {safeDeliveryFee.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500">Service Fee</span>
+              <span className="font-semibold text-gray-900">
+                ₦ {safeServiceCharge.toLocaleString()}
+              </span>
+            </div>
+            <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
+              <span className="text-base font-bold text-gray-900">Total</span>
+              <span className="text-lg font-bold text-[#4145A7]">
+                ₦ {safeTotalPrice.toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          {/* Note Section */}
+          <div className="space-y-2 mb-6">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm text-gray-500">Send a note with this gift</Label>
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-sm cursor-pointer hover:bg-indigo-100 transition-colors">
+                <Icon icon="solar:stars-bold" className="w-4 h-4" />
               </div>
-              <div className="border-t border-gray-200 mt-2 pt-2">
-                <div className="flex justify-between items-center text-sm font-semibold">
-                  <span className="text-gray-900">Total</span>
-                  <span className="text-[#4145A7]">
-                    ₦ {safeTotalPrice.toLocaleString()}
-                  </span>
-                </div>
+            </div>
+            <div className="relative group">
+              <textarea
+                placeholder="I kinda love you gan ni but Yakubu, manage 😄"
+                className="w-full min-h-[100px] bg-white border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all resize-none shadow-sm"
+              />
+              <div className="absolute bottom-3 right-3 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                <Icon icon="material-symbols:edit-outline" className="w-4 h-4 text-gray-400" />
               </div>
             </div>
           </div>
 
           {/* Footer with Proceed to Pay button */}
-          <div className="mt-4 pt-4 border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:hidden">
+          <div className="mt-auto pt-4 border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:hidden">
             <button
-              onClick={onProceedToPay}
+              onClick={(e) => {
+                e.stopPropagation();
+                onProceedToPay?.();
+              }}
               disabled={isProcessing || !basketCount}
-              className="w-full bg-gradient-to-r from-[#4145A7] to-[#5a5fc7] text-white rounded-3xl py-3 px-4 font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-[#4145A7] text-white rounded-3xl py-4 px-4 font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
             >
               {isProcessing ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
                   <span>Processing...</span>
                 </>
               ) : (
                 <>
-                  <span>Proceed to Pay</span>
+                  <span>Proceed to payment</span>
                   <Icon
-                    icon="streamline-ultimate:shopping-basket-1"
-                    className="h-4 w-4"
+                    icon="ph:credit-card-bold"
+                    className="h-5 w-5"
                   />
                 </>
               )}
