@@ -22,7 +22,7 @@ interface MenuListProps {
   products: Product[];
   isAuthenticated: boolean;
   userId?: string;
-  clearBasket: () => void;
+  clearBasket?: () => void;
   onOpenChangeReceiver?: () => void;
   searchQuery?: string;
   vendorName?: string;

@@ -107,9 +107,11 @@ export function BasketItemCard({
     const newQty = item.qty + 1;
 
     // Update UI immediately
-    setBasket((prev) =>
-      prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i)),
-    );
+    setBasket((prev) => {
+      const updated = prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i));
+      localStorage.setItem("weeshr_basket", JSON.stringify(updated));
+      return updated;
+    });
 
     // Accumulate clicks
     clickCountRef.current += 1;
@@ -122,13 +124,20 @@ export function BasketItemCard({
 
     if (newQty <= 0) {
       // Remove from UI immediately
-      setBasket((prev) => prev.filter((i) => i.id !== item.id));
+      setBasket((prev) => {
+        const updated = prev.filter((i) => i.id !== item.id);
+        if (updated.length === 0) localStorage.removeItem("weeshr_basket");
+        else localStorage.setItem("weeshr_basket", JSON.stringify(updated));
+        return updated;
+      });
       clickCountRef.current = -1; // Track removal
       syncQuantity(newQty);
     } else {
-      setBasket((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i)),
-      );
+      setBasket((prev) => {
+        const updated = prev.map((i) => (i.id === item.id ? { ...i, qty: newQty } : i));
+        localStorage.setItem("weeshr_basket", JSON.stringify(updated));
+        return updated;
+      });
       // Accumulate clicks (negative for decrement)
       clickCountRef.current -= 1;
       syncQuantity(newQty);

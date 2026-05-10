@@ -32,8 +32,13 @@ export default function ProductDetailClient({
   const [userId, setUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [basket, setBasket] = useState<BasketItem[]>([]);
-  const [selectedSize, setSelectedSize] = useState("250 ml");
-  const sizes = ["100 ml", "250 ml", "500 ml"];
+
+  const formattedProductName = product.name
+    ? product.name
+        .split(" ")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(" ")
+    : "";
 
   useEffect(() => {
     const loadBasketAndUser = async () => {
@@ -106,134 +111,209 @@ export default function ProductDetailClient({
         console.error("Failed to sync cart:", error);
       }
     }
-
-    // toast.success("Added to basket!");
   };
 
-  return (
-    <div className="h-[100dvh] md:h-auto md:min-h-screen bg-gray-50 flex flex-col md:py-10 overflow-hidden md:overflow-visible">
-      <div className="flex-1 bg-white flex flex-col md:w-[90%] md:max-w-6xl md:mx-auto md:rounded-[3rem] md:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden relative h-full">
-        {/* Top Navigation - Clean Header */}
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 bg-white z-50">
-          <button
-            onClick={() => router.back()}
-            className="bg-[#949BB0] hover:bg-[#83899F] rounded-full px-4 py-2 flex items-center gap-2 text-white text-sm font-medium transition-all active:scale-95"
-          >
-            <Icon icon="ph:caret-left-bold" className="w-3.5 h-3.5" />
-            Back
-          </button>
+  const allProducts = [product, ...relatedProducts];
 
-          <h2 className="text-gray-900 font-medium text-xl tracking-tight">
-            {product.category || "Lifestyle"}
-          </h2>
+  const getBasketTotal = () =>
+    basket.reduce((sum, item) => {
+      const p = allProducts.find((prod) => prod.id === item.id);
+      return sum + (p?.price || 0) * item.qty;
+    }, 0);
+
+  const handleBack = () => {
+    const segments = pathname.split("/");
+    segments.pop(); // Remove productId segment
+    const vendorUrl = segments.join("/") + window.location.search;
+    router.push(vendorUrl);
+  };
+
+  // Shared product image / detail block
+  const ProductDetail = () => (
+    <>
+      {/* Image */}
+      <div className="px-4 pt-2">
+        <div className="relative w-full aspect-[1/1.1] rounded-[2rem] overflow-hidden bg-gray-50 shadow-sm">
+          <ImageSlider
+            images={
+              product.images && product.images.length > 0
+                ? product.images
+                : [product.image]
+            }
+            alt={product.name}
+            enableAutoplay={false}
+            showArrows={false}
+            showDots={false}
+            className="h-full w-full"
+            imageClassName="object-cover"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none" />
+          <div className="absolute bottom-8 left-6 z-20">
+            <span className="text-white font-medium text-2xl tracking-tight">
+              {formattedProductName.split(" ")[0]}! {product.category || "Lifestyle"}
+            </span>
+          </div>
         </div>
+        <div className="flex gap-1.5 mt-4 px-2">
+          <div className="w-8 h-1.5 bg-[#0E0E2C] rounded-full" />
+          <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
+        </div>
+      </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
-          {/* Image Area - Rounded with Shadow */}
-          <div className="px-4 pt-2">
-            <div className="relative w-full aspect-[1/1.1] rounded-[2rem] overflow-hidden bg-gray-50 shadow-sm">
-              <ImageSlider
-                images={
-                  product.images && product.images.length > 0
-                    ? product.images
-                    : [product.image]
-                }
-                alt={product.name}
-                enableAutoplay={false}
-                showArrows={false}
-                showDots={false}
-                className="h-full w-full"
-                imageClassName="object-cover"
-              />
-
-              {/* Bottom Shadow Gradient - Deeper and taller for better contrast */}
-              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none" />
-
-              {/* Vendor Overlay */}
-              <div className="absolute bottom-8 left-6 z-20">
-                <span className="text-white font-medium text-2xl tracking-tight">
-                  {product.name.split(" ")[0]}!{" "}
-                  {product.category || "Lifestyle"}
-                </span>
-              </div>
+      {/* Price + description */}
+      <div className="p-4 space-y-4">
+        <div className="flex items-center justify-between py-2">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-400 font-medium">Price</span>
+            <span className="text-2xl font-semibold text-gray-900">
+              ₦ {product.price.toLocaleString()}
+            </span>
+          </div>
+          <Button
+            variant="outline"
+            className="rounded-full px-5 h-11 border-gray-300 text-gray-900 hover:bg-gray-50 gap-2 font-medium text-sm shadow-sm"
+            onClick={() => handleAdd(product.id)}
+          >
+            Add to basket
+            <div className="border border-gray-900 rounded-full p-0.5">
+              <Icon icon="ph:plus-bold" className="w-2.5 h-2.5" />
             </div>
+          </Button>
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {product.description}
+        </p>
+      </div>
+    </>
+  );
 
-            {/* Custom Slider Dots - Below Image */}
-            <div className="flex gap-1.5 mt-4 px-2">
-              <div className="w-8 h-1.5 bg-[#0E0E2C] rounded-full" />
-              <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
+  return (
+    <>
+      {/* ── DESKTOP: Full-width Luxury Layout (matches vendor page) ── */}
+      <div className="hidden lg:flex flex-col min-h-screen bg-[#F9FAFB]">
+        {/* Hero Banner Section - Ultra immersive product image */}
+        <section className="relative w-full aspect-[45/6] overflow-hidden shadow-lg bg-gray-900">
+          <ImageSlider
+            images={
+              product.images && product.images.length > 0
+                ? product.images
+                : [product.image]
+            }
+            alt={product.name}
+            enableAutoplay={true}
+            showArrows={true}
+            showDots={false}
+            className="absolute inset-0 w-full h-full opacity-60"
+            imageClassName="object-cover w-full h-full object-center blur-3xl scale-125"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/30 z-10" />
+
+          {/* Floating Controls */}
+          <div className="absolute top-6 left-8 right-8 flex items-center justify-between z-20">
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
+            >
+              <Icon icon="ph:caret-left-bold" width="18" />
+              <span className="text-sm font-semibold tracking-wide">Back</span>
+            </button>
+          </div>
+        </section>
+
+        {/* Indigo Header Bar - Luxurious Overlap */}
+        <section className="bg-[#3B41B1] px-10 py-6 pt-5 pb-[3.5rem] flex items-center justify-between shadow-2xl sticky top-0 z-30 rounded-t-[2rem] -mt-16 border-t border-white/10">
+          <div className="flex flex-col max-w-2xl">
+            <h2 className="text-white font-medium text-3xl tracking-tight leading-tight">
+              {formattedProductName}
+            </h2>
+            <div className="flex items-center gap-2 mt-1.5 opacity-90">
+              <span className="text-white/80 font-medium text-sm tracking-wide uppercase">
+                {product.category || "Product"}
+              </span>
+              <span className="text-white/40">•</span>
+              <span className="text-white/80 font-medium text-sm">
+                By {formattedProductName.split(" ")[0]}
+              </span>
             </div>
           </div>
 
-          {/* Details Section */}
-          <div className="p-0 md:p-8 space-y-6">
-            <div className="p-4 space-y-4">
-              {/* Size Selector */}
-              <div className="bg-[#EFEEF6] rounded-2xl p-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
-                <span className="text-sm font-medium text-gray-500 px-4">
-                  Size
-                </span>
-                <div className="flex gap-2">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={cn(
-                        "px-6 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap",
-                        selectedSize === size
-                          ? "bg-[#0E0E2C] text-white shadow-md"
-                          : "bg-white text-gray-900",
-                      )}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price and Add to Basket Row */}
-              <div className="flex items-center justify-between py-2">
-                <div className="flex flex-col">
-                  <span className="text-xs text-gray-400 font-medium">
-                    Price
-                  </span>
-                  <span className="text-2xl font-semibold text-gray-900">
-                    ₦ {product.price.toLocaleString()}
-                  </span>
-                </div>
-
-                <Button
-                  variant="outline"
-                  className="rounded-full px-5 h-11 border-gray-300 text-gray-900 hover:bg-gray-50 gap-2 font-medium text-sm shadow-sm"
-                  onClick={() => handleAdd(product.id)}
-                >
-                  Add to basket
-                  <div className="border border-gray-900 rounded-full p-0.5">
-                    <Icon icon="ph:plus-bold" className="w-2.5 h-2.5" />
-                  </div>
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {product.description}
-                </p>
-              </div>
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col items-end">
+              <span className="text-white/70 text-xs font-medium uppercase tracking-wider mb-0.5">
+                Price
+              </span>
+              <span className="text-white font-semibold text-2xl tracking-tight">
+                ₦ {product.price.toLocaleString()}
+              </span>
             </div>
-            {/* Full Vendor Product List Section */}
-            <div className=" pb-20 space-y-4 ">
-              <h3 className="text-xl font-semibold text-gray-900 pl-4">
-                More from {product.name.split(" ")[0]}
-              </h3>
+            <Button
+              className="rounded-full px-6 h-12 bg-white text-[#3B41B1] hover:bg-white/90 gap-2 font-bold text-sm shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95"
+              onClick={() => handleAdd(product.id)}
+            >
+              Add to basket
+              <div className="bg-[#3B41B1]/10 rounded-full p-1 ml-1">
+                <Icon icon="ph:plus-bold" className="w-3.5 h-3.5" />
+              </div>
+            </Button>
+          </div>
+        </section>
 
-              <div className="lg:hidden ">
-                <div className="">
-                  <MobileMenuButtons
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col bg-white rounded-t-[1.5rem] -mt-10 relative z-40 shadow-[0_-15px_50px_rgba(0,0,0,0.06)] mb-12">
+          <div className="px-10 w-full mx-auto flex-1 pt-10">
+            <div className="flex flex-row gap-12">
+              {/* Left Column: Image, Description & More from Vendor */}
+              <div className="flex-1 min-w-0">
+                {/* Product Image Gallery (Desktop) */}
+                <div className="mb-10 w-full max-w-3xl">
+                  <div className="relative w-full aspect-[16/9] lg:aspect-[2/1] rounded-[2rem] overflow-hidden bg-gray-50 shadow-sm">
+                    <ImageSlider
+                      images={
+                        product.images && product.images.length > 0
+                          ? product.images
+                          : [product.image]
+                      }
+                      alt={product.name}
+                      enableAutoplay={false}
+                      showArrows={false}
+                      showDots={false}
+                      className="h-full w-full"
+                      imageClassName="object-cover"
+                    />
+                    {/* Vintage bottom gradient and text overlay */}
+                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-8 left-6 z-20">
+                      <span className="text-white font-medium text-2xl tracking-tight">
+                        {formattedProductName.split(" ")[0]}!{" "}
+                        {product.category || "Lifestyle"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Vintage custom dots below image */}
+                  <div className="flex gap-1.5 mt-4 px-2">
+                    <div className="w-8 h-1.5 bg-[#0E0E2C] rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
+                  </div>
+                </div>
+                <div className="mb-12 max-w-3xl">
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-4 tracking-tight flex items-center gap-2">
+                    <Icon icon="ph:info" className="text-[#3B41B1]" />
+                    About this item
+                  </h3>
+                  <div className="prose prose-lg text-gray-600 leading-relaxed bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                    {product.description || "No description available."}
+                  </div>
+                </div>
+
+                <div className="space-y-6 pb-12">
+                  <h3 className="text-2xl font-semibold text-gray-900 tracking-tight pl-4 border-l-4 border-[#3B41B1]">
+                    More from {formattedProductName.split(" ")[0]}
+                  </h3>
+                  <MenuList
                     vendorId={product.vendorId}
                     addToBasket={handleAdd}
                     basket={basket}
-                    setBasket={setBasket}
                     products={relatedProducts}
                     isAuthenticated={isAuthenticated}
                     userId={userId || undefined}
@@ -241,37 +321,68 @@ export default function ProductDetailClient({
                 </div>
               </div>
 
-              <div className="hidden lg:block">
-                <MenuList
-                  vendorId={product.vendorId}
-                  addToBasket={handleAdd}
-                  basket={basket}
-                  products={relatedProducts}
-                  isAuthenticated={isAuthenticated}
-                  userId={userId || undefined}
-                />
+              {/* Right Column: Gift Basket */}
+              <div className="w-[380px] shrink-0">
+                <div className="sticky top-[100px] bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+                  <GiftBasket
+                    basket={basket}
+                    products={allProducts}
+                    getBasketTotal={getBasketTotal}
+                    setBasket={setBasket}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Sticky Basket for Mobile */}
-        <div className="lg:hidden">
-          <GiftBasket
-            basket={basket}
-            products={[product, ...relatedProducts]}
-            getBasketTotal={() =>
-              basket.reduce((sum, item) => {
-                const p = [product, ...relatedProducts].find(
-                  (prod) => prod.id === item.id,
-                );
-                return sum + (p?.price || 0) * item.qty;
-              }, 0)
-            }
-            setBasket={setBasket}
-          />
+      {/* ── MOBILE: Original layout (unchanged) ── */}
+      <div className="lg:hidden h-[100dvh] bg-gray-50 flex flex-col overflow-hidden">
+        <div className="flex-1 bg-white flex flex-col overflow-hidden relative h-full">
+          {/* Top Navigation */}
+          <div className="shrink-0 flex items-center justify-between px-6 py-4 bg-white z-50 shadow-sm">
+            <button
+              onClick={handleBack}
+              className="bg-[#949BB0] hover:bg-[#83899F] rounded-full px-4 py-2 flex items-center gap-2 text-white text-sm font-medium transition-all active:scale-95"
+            >
+              <Icon icon="ph:caret-left-bold" className="w-3.5 h-3.5" />
+              Back
+            </button>
+            <h2 className="text-gray-900 font-medium text-xl tracking-tight truncate max-w-[200px]">
+              {product.category || "Lifestyle"}
+            </h2>
+          </div>
+
+          <div className="flex-1 overflow-y-auto scrollbar-hide pb-32">
+            <ProductDetail />
+            <div className="space-y-4 pt-4 pb-10">
+              <h3 className="text-xl font-semibold text-gray-900 pl-4">
+                More from {formattedProductName.split(" ")[0]}
+              </h3>
+              <MobileMenuButtons
+                vendorId={product.vendorId}
+                addToBasket={handleAdd}
+                basket={basket}
+                setBasket={setBasket}
+                products={relatedProducts}
+                isAuthenticated={isAuthenticated}
+                userId={userId || undefined}
+              />
+            </div>
+          </div>
+
+          {/* Sticky basket */}
+          <div className="absolute bottom-0 left-0 right-0 z-50 bg-white">
+            <GiftBasket
+              basket={basket}
+              products={allProducts}
+              getBasketTotal={getBasketTotal}
+              setBasket={setBasket}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

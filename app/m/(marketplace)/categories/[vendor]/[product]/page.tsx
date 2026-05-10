@@ -116,6 +116,18 @@ export default function VendorPage() {
     checkAuth();
   }, []);
 
+  // Load initial basket from localStorage
+  useEffect(() => {
+    const savedBasket = localStorage.getItem("weeshr_basket");
+    if (savedBasket) {
+      try {
+        setBasket(JSON.parse(savedBasket));
+      } catch (e) {
+        console.error("Failed to parse basket from localStorage", e);
+      }
+    }
+  }, []);
+
   // Sync basket with server cart on mount
   useEffect(() => {
     const syncCart = async () => {
@@ -126,8 +138,10 @@ export default function VendorPage() {
             const items = response.data.items.map((item: any) => ({
               id: item.productId,
               qty: item.quantity,
+              name: item.productId?.name,
             }));
             setBasket(items);
+            localStorage.setItem("weeshr_basket", JSON.stringify(items));
           }
         } catch (error) {
           console.error("Cart sync error:", error);
@@ -213,10 +227,15 @@ export default function VendorPage() {
   const addToBasket = (id: string) => {
     setBasket((prev) => {
       const exists = prev.find((i) => i.id === id);
+      let updatedBasket;
       if (exists) {
-        return prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i));
+        updatedBasket = prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i));
+      } else {
+        const product = products.find((p) => p.id === id);
+        updatedBasket = [{ id, qty: 1, name: product?.name }, ...prev];
       }
-      return [{ id, qty: 1 }, ...prev];
+      localStorage.setItem("weeshr_basket", JSON.stringify(updatedBasket));
+      return updatedBasket;
     });
   };
 
@@ -242,6 +261,7 @@ export default function VendorPage() {
 
     // Clear UI immediately
     setBasket([]);
+    localStorage.removeItem("weeshr_basket");
 
     // Sync with API in background if authenticated
     if (isAuthenticated && userId) {

@@ -638,10 +638,13 @@ export default function ReceiverInfoModal({
       <Sheet open={showOrderDetails} onOpenChange={setShowOrderDetails}>
         <SheetContent
           side="bottom"
-          className=" p-0 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+          className="rounded-t-[2.5rem] p-0 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] border-none outline-none overflow-hidden max-h-[95vh]"
         >
-          <SheetHeader className="p-4 border-b">
-            <SheetTitle>Order Details</SheetTitle>
+          {/* Grab handle for mobile */}
+          <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 mt-4 shrink-0" />
+          
+          <SheetHeader className="px-6 py-4 border-b">
+            <SheetTitle className="text-xl font-semibold text-primary">Order Details</SheetTitle>
           </SheetHeader>
 
           <div className="overflow-y-auto p-4">

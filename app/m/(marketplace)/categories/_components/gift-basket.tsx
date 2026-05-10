@@ -130,6 +130,7 @@ export function GiftBasket({
   const clearBasket = async () => {
     const previousBasket = [...basket];
     setBasket([]);
+    localStorage.removeItem("weeshr_basket");
     setIsClearingBasket(true);
 
     if (isAuthenticated && userId) {
@@ -410,6 +411,7 @@ export function GiftBasket({
                     item.qty >= 1,
                 );
               setBasket(apiBasket);
+              localStorage.setItem("weeshr_basket", JSON.stringify(apiBasket));
 
               // Set cart details from API response
               if (cartResult.data) {
