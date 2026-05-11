@@ -578,7 +578,7 @@ export default function ReceiverInfoModal({
           <Button
             variant="default"
             disabled={!isFormValid() || isProcessing}
-            className="disabled:opacity-50 rounded-3xl px-1.5 text-xs md:flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
+            className="disabled:opacity-50 rounded-3xl px-2.5 text-xs md:flex py-1 h-9 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
             onClick={handleMakePayment}
             type="button"
           >
