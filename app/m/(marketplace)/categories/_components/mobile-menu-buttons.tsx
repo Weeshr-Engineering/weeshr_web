@@ -369,7 +369,7 @@ export function MobileMenuButtons({
         </div>
       )}
 
-      <div className="grid grid-cols-3 md:gap-4 md:py-2">
+      <div className="grid grid-cols-3 md:py-2">
         {(searchQuery
           ? menuProducts.filter(
               (p) =>
