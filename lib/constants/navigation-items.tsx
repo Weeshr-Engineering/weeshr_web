@@ -6,7 +6,7 @@ export const navigationLinks = [
 
 export const marketplaceLinks = [
   { name: "All", link: "/m/categories/all", disabled: false },
-  { name: "Gadgets", link: "/m/categories/gadgets", disabled: false }, // Disabled link
+  { name: "Gadget", link: "/m/categories/gadget", disabled: false }, // Disabled link
   {
     name: "Lifestyle",
     link: "/m/categories/lifestyle",

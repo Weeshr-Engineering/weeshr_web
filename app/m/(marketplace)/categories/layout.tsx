@@ -40,24 +40,22 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
 
   // Build navigation with dynamic category IDs
   useEffect(() => {
-    if (categories.length === 0) return;
-
+    // We don't return early if categories are empty because we still want to append the nameParam
+    // to preserve the user's context and prevent RedirectGuard from sending them back to /m
     const updatedNav = marketplaceLinks.map((item) => {
       const baseLink = item.link.split("?")[0];
-
-      // For the "All" categories link - just preserve name
-      if (baseLink === "/m/categories") {
-        return {
-          ...item,
-          link: nameParam
-            ? `${baseLink}?name=${encodeURIComponent(nameParam)}`
-            : baseLink,
-        };
-      }
+      const categoryNameFromLink = baseLink.split("/").pop();
 
       if (baseLink.startsWith("/m/categories/")) {
-        // Extract category name from the link (e.g., "food" from "/m/categories/food")
-        const categoryNameFromLink = baseLink.split("/").pop();
+        // For the "All" categories link
+        if (categoryNameFromLink === "all") {
+          return {
+            ...item,
+            link: nameParam
+              ? `${baseLink}?name=${encodeURIComponent(nameParam)}`
+              : baseLink,
+          };
+        }
 
         // Find the matching category from API data
         const category = categories.find(
@@ -74,7 +72,7 @@ const LandingLayoutContent = ({ children }: { children: React.ReactNode }) => {
             }&name=${encodeURIComponent(nameParam)}`,
           };
         } else if (nameParam) {
-          // Fallback: if category not found but we have name, just preserve name
+          // Fallback: if category not found yet but we have name, just preserve name
           return {
             ...item,
             link: `${baseLink}?name=${encodeURIComponent(nameParam)}`,
