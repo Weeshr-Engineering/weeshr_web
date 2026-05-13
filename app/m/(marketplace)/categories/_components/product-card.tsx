@@ -159,7 +159,7 @@ export function ProductCard({
         >
           <div className="space-y-2.5">
             {/* Product Info */}
-            <div className="space-y-1">
+            <div className="hidden md:block space-y-1">
               <h3 className="text-white text-[13px] md:text-[14px] font-semibold tracking-tight leading-tight drop-shadow-lg line-clamp-1">
                 {product.name}
               </h3>
@@ -177,7 +177,7 @@ export function ProductCard({
                 onAdd(product.id);
               }}
               className={cn(
-                "w-full rounded-full font-semibold text-[13px] md:text-[14px] gap-2 flex items-center justify-center h-10 md:h-11 transition-all duration-300 pointer-events-auto",
+                "hidden md:flex w-full rounded-full font-semibold text-[13px] md:text-[14px] gap-2 items-center justify-center h-10 md:h-11 transition-all duration-300 pointer-events-auto",
                 "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_30px_-6px_rgba(147,51,234,0.4)]",
                 "hover:bg-marketplace-primary/80",
                 "border-2 border-marketplace-primary/60 hover:border-marketplace-primary",
