@@ -78,17 +78,11 @@ export const FloatingNav = ({
     const baseLink = link.split("?")[0]; // Remove query params for comparison
     const currentPath = pathname;
 
-    // Special cases for marketplace category routes
-    if (baseLink === "/m/categories/food") {
-      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
-    }
-    if (baseLink === "/m/categories/fashion") {
-      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
-    }
-    if (baseLink === "/m/categories/gadgets") {
-      return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
-    }
-    if (baseLink === "/m/categories/lifestyle") {
+    // For specific category routes (e.g., /m/categories/food)
+    if (
+      baseLink.startsWith("/m/categories/") &&
+      baseLink !== "/m/categories/all"
+    ) {
       return currentPath === baseLink || currentPath.startsWith(`${baseLink}/`);
     }
 

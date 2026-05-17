@@ -130,6 +130,7 @@ export function GiftBasket({
   const clearBasket = async () => {
     const previousBasket = [...basket];
     setBasket([]);
+    localStorage.removeItem("weeshr_basket");
     setIsClearingBasket(true);
 
     if (isAuthenticated && userId) {
@@ -409,7 +410,12 @@ export function GiftBasket({
                     item.name !== undefined &&
                     item.qty >= 1,
                 );
-              setBasket(apiBasket);
+              const reversedItems = apiBasket.reverse();
+              setBasket(reversedItems);
+              localStorage.setItem(
+                "weeshr_basket",
+                JSON.stringify(reversedItems),
+              );
 
               // Set cart details from API response
               if (cartResult.data) {
@@ -524,7 +530,7 @@ export function GiftBasket({
                     isCheckingAuth ||
                     isProcessingCart
                   }
-                  className="disabled:opacity-50 rounded-3xl px-1.5 text-xs flex py-1 h-7 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                  className="disabled:opacity-50 rounded-3xl px-2 text-xs flex py-1 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
                   onClick={handleSendBasket}
                 >
                   <>
@@ -650,7 +656,7 @@ export function GiftBasket({
                         isCheckingAuth ||
                         isProcessingCart
                       }
-                      className="w-full disabled:opacity-50 rounded-3xl py-6 text-sm flex space-x-2 transition-all duration-300 bg-gradient-to-r from-[#6A70FF] to-[#4145A7] hover:opacity-90"
+                      className="w-full disabled:opacity-50 rounded-3xl py-6 text-sm flex space-x-2 transition-all duration-300 bg-[#6A70FF] hover:bg-[#4145A7] text-white shadow-lg"
                       onClick={handleSendBasket}
                     >
                       <span className="font-semibold text-lg">Send basket</span>
@@ -677,7 +683,7 @@ export function GiftBasket({
                           isCheckingAuth ||
                           isProcessingCart
                         }
-                        className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7]"
+                        className="disabled:opacity-50 rounded-3xl px-3 text-xs flex py-2 h-9 space-x-2 transition-all duration-300 bg-[#6A70FF] hover:bg-[#4145A7] text-white shadow-lg"
                         onClick={handleSendBasket}
                       >
                         <span className="font-medium">Send basket</span>

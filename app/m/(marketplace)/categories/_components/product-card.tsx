@@ -10,14 +10,13 @@ import { Product } from "@/service/product.service";
 import { BasketItem } from "@/lib/BasketItem";
 import { cn } from "@/lib/utils";
 import { ImageSlider } from "./image-slider";
+import { useRouter, usePathname } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
   basket: BasketItem[];
   onExpand: (product: Product, index?: number) => void;
   onAdd: (id: string) => void;
-  hoverId: string | null;
-  setHoverId: (id: string | null) => void;
 }
 
 export function ProductCard({
@@ -25,15 +24,15 @@ export function ProductCard({
   basket,
   onExpand,
   onAdd,
-  hoverId,
-  setHoverId,
 }: ProductCardProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const basketItem = basket.find((item) => item.id === product.id);
   const itemCount = basketItem?.qty || 0;
-  const isHovered = hoverId === product.id;
 
   const images =
     product.images && product.images.length > 0
@@ -44,21 +43,34 @@ export function ProductCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-      whileHover={product.isAvailable ? { y: -6 } : {}}
-      whileTap={product.isAvailable ? { scale: 0.97 } : {}}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={product.isAvailable ? { scale: 1.02 } : {}}
+      whileTap={product.isAvailable ? { scale: 0.98 } : {}}
       className="w-full group"
     >
       <Card
-        onMouseEnter={() => setHoverId(product.id)}
-        onMouseLeave={() => setHoverId(null)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          const currentParams = new URLSearchParams(
+            window.location.search,
+          ).toString();
+          // If we are already on a product detail page, we need to go up one level first
+          const segments = pathname.split("/");
+          const isProductDetail = segments.length > 5; // /m/categories/[cat]/[vendor]/[productId]
+          const basePath = isProductDetail
+            ? segments.slice(0, -1).join("/")
+            : pathname;
+          const queryString = currentParams ? `?${currentParams}` : "";
+          router.push(`${basePath}/${product.id}${queryString}`);
+        }}
         className={cn(
-          "overflow-hidden rounded-3xl transition-all duration-500 ease-out relative aspect-[3/4] flex flex-col",
+          "overflow-hidden rounded-none transition-all duration-500 ease-out relative aspect-square flex flex-col",
           "bg-gradient-to-br from-white/95 via-white/90 to-white/95",
-          "backdrop-blur-xl border-[1.5px]",
+          "backdrop-blur-xl border-none ",
           product.isAvailable
-            ? "cursor-pointer border-gray-200/60 hover:border-marketplace-primary/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
-            : "opacity-50 cursor-not-allowed border-gray-200/40 shadow-sm",
+            ? "cursor-pointer shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_-8px_rgba(147,51,234,0.15),0_0_0_1px_rgba(147,51,234,0.05)]"
+            : "opacity-50 cursor-not-allowed shadow-sm",
         )}
       >
         {/* Image / Slider Container */}
@@ -71,7 +83,7 @@ export function ProductCard({
             showArrows={false} // We handle arrows in slider or want a cleaner look
             className="h-full w-full"
             imageClassName={cn(
-              "transition-transform duration-700 ease-out",
+              "transition-transform duration-1000 ease-[0.16,1,0.3,1]",
               isHovered && "scale-110",
             )}
           />
@@ -107,53 +119,52 @@ export function ProductCard({
             />
           </motion.div>
 
-          {/* Dark gradient overlay on hover for text readability */}
+          {/* Dark gradient overlay on hover for text readability - Luxury softened */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-10"
+            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10"
             initial={{ opacity: 0 }}
             animate={{
               opacity: isHovered ? 1 : 0,
             }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           />
         </div>
 
         {/* Price Tag - Always visible at top left */}
         <motion.div
-          className="absolute top-3 left-3 z-30 bg-white backdrop-blur-md rounded-full px-3 py-1.5 shadow-md border border-white/60 pointer-events-none"
+          className="absolute top-3 left-3 z-30 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-sm border border-white/60 pointer-events-none"
           animate={{
             scale: isHovered ? 1.05 : 1,
-            opacity: isHovered ? 1 : 0.85,
+            opacity: 1,
+            y: isHovered ? -2 : 0,
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <p className="font-semibold text-[13px] md:text-[14px] bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent">
             ₦{product.price.toLocaleString()}
           </p>
         </motion.div>
 
-        {/* Instagram-style overlay - slides up on hover */}
+        {/* Instagram-style overlay - fade and float on hover */}
         <motion.div
-          className="absolute bottom-0 left-0 right-0 z-30 p-3 md:p-4 pointer-events-none"
-          initial={{ y: "100%", opacity: 0 }}
+          className="absolute bottom-0 left-0 right-0 z-30 p-4 md:p-6 pointer-events-none"
+          initial={{ y: 20, opacity: 0 }}
           animate={{
-            y: isHovered ? 0 : "100%",
+            y: isHovered ? 0 : 20,
             opacity: isHovered ? 1 : 0,
           }}
           transition={{
-            duration: 0.5,
-            ease: [0.25, 0.1, 0.25, 1],
+            duration: 0.6,
+            ease: [0.16, 1, 0.3, 1],
           }}
         >
           <div className="space-y-2.5">
             {/* Product Info */}
-            <div className="space-y-1">
+            <div className="hidden md:block space-y-1">
               <h3 className="text-white text-[13px] md:text-[14px] font-semibold tracking-tight leading-tight drop-shadow-lg line-clamp-1">
                 {product.name}
               </h3>
-              <p className="text-white/85 text-[11px] md:text-[12px] leading-snug drop-shadow-md line-clamp-2">
-                {product.description}
-              </p>
+       
             </div>
 
             {/* Add to Basket Button */}
@@ -165,7 +176,7 @@ export function ProductCard({
                 onAdd(product.id);
               }}
               className={cn(
-                "w-full rounded-full font-semibold text-[13px] md:text-[14px] gap-2 flex items-center justify-center h-10 md:h-11 transition-all duration-300 pointer-events-auto",
+                "hidden md:flex w-full rounded-full font-semibold text-[13px] md:text-[14px] gap-2 items-center justify-center h-10 md:h-11 transition-all duration-300 pointer-events-auto",
                 "shadow-[0_4px_20px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_30px_-6px_rgba(147,51,234,0.4)]",
                 "hover:bg-marketplace-primary/80",
                 "border-2 border-marketplace-primary/60 hover:border-marketplace-primary",

@@ -184,8 +184,8 @@ export default function ReceiverInfoModal({
   const isFormValid = () =>
     formData.phoneNumber.trim() && formData.deliveryDate;
 
-  const handleMakePayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleMakePayment = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault();
 
     if (!isFormValid()) {
       toast.error("Please fill in all required fields");
@@ -578,7 +578,7 @@ export default function ReceiverInfoModal({
           <Button
             variant="default"
             disabled={!isFormValid() || isProcessing}
-            className="disabled:opacity-50 rounded-3xl px-1.5 text-xs md:flex py-1 h-7 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
+            className="disabled:opacity-50 rounded-3xl px-2.5 text-xs md:flex py-1 h-9 space-x-2 transition-all hover:bg-gradient-to-r hover:from-[#4145A7] hover:to-[#5a5fc7] hidden"
             onClick={handleMakePayment}
             type="button"
           >
@@ -607,6 +607,7 @@ export default function ReceiverInfoModal({
           deliveryFee={deliveryFee}
           serviceCharge={serviceCharge}
           totalPrice={totalPrice}
+          receiverName={finalReceiverName}
         />
       </div>
     </div>
@@ -638,13 +639,16 @@ export default function ReceiverInfoModal({
       <Sheet open={showOrderDetails} onOpenChange={setShowOrderDetails}>
         <SheetContent
           side="bottom"
-          className=" p-0 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+          className="rounded-t-[2.5rem] p-0 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] border-none outline-none overflow-hidden max-h-[95vh]"
         >
-          <SheetHeader className="p-4 border-b">
-            <SheetTitle>Order Details</SheetTitle>
+          {/* Grab handle for mobile */}
+          <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 mt-4 shrink-0" />
+          
+          <SheetHeader className="px-6 py-4 border-b">
+            <SheetTitle className="text-xl font-semibold text-primary">Order Details</SheetTitle>
           </SheetHeader>
 
-          <div className="overflow-y-auto p-4">
+          <div className="overflow-y-auto md:p-4">
             <PaySidePanel
               basket={basket}
               products={products}
@@ -655,6 +659,7 @@ export default function ReceiverInfoModal({
               basketCount={basketCount}
               onProceedToPay={handleMakePayment}
               isProcessing={isProcessing}
+              receiverName={finalReceiverName}
             />
           </div>
         </SheetContent>

@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
 import { Product, ProductService } from "@/service/product.service";
+import { Vendor, VendorService } from "@/service/vendor.service";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -43,6 +46,12 @@ export default function VendorPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [vendor, setVendor] = useState<Vendor | null>(null);
+  const [showAiSoon, setShowAiSoon] = useState(false);
+  const [randomBanner, setRandomBanner] = useState<string | null>(null);
+  const [bannerLoaded, setBannerLoaded] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const nameParam = searchParams.get("name");
   const categoryId = searchParams.get("categoryId");
@@ -107,26 +116,87 @@ export default function VendorPage() {
     checkAuth();
   }, []);
 
-  // Fetch products for selected vendor
+  // Load initial basket from localStorage
   useEffect(() => {
-    const fetchProducts = async () => {
+    const savedBasket = localStorage.getItem("weeshr_basket");
+    if (savedBasket) {
+      try {
+        setBasket(JSON.parse(savedBasket));
+      } catch (e) {
+        console.error("Failed to parse basket from localStorage", e);
+      }
+    }
+  }, []);
+
+  // Sync basket with server cart on mount
+  useEffect(() => {
+    const syncCart = async () => {
+      if (isAuthenticated && userId) {
+        try {
+          const response = await cartService.getUserCart(userId);
+          if (response.code === 200 && response.data?.items) {
+            const items = response.data.items.map((item: any) => ({
+              id: item.productId,
+              qty: item.quantity,
+              name: item.productId?.name,
+            }));
+            const reversedItems = [...items].reverse();
+            setBasket(reversedItems);
+            localStorage.setItem("weeshr_basket", JSON.stringify(reversedItems));
+          }
+        } catch (error) {
+          console.error("Cart sync error:", error);
+        }
+      }
+    };
+    syncCart();
+  }, [isAuthenticated, userId]);
+
+  // Fetch products and vendor details
+  useEffect(() => {
+    const fetchData = async () => {
       if (!vendorId) {
         setLoading(false);
         return;
       }
       try {
         setLoading(true);
-        const response = await ProductService.getProductsByVendor(vendorId);
-        setProducts(response.products);
+
+        // Fetch vendor and products in parallel, but handle them as they arrive
+        const vendorPromise = VendorService.getVendorById(vendorId).then(
+          (data) => {
+            setVendor(data);
+            return data;
+          },
+        );
+
+        const productsPromise = ProductService.getProductsByVendor(
+          vendorId,
+        ).then((response) => {
+          setProducts(response.products);
+          return response;
+        });
+
+        const [vendorData, productsResponse] = await Promise.all([
+          vendorPromise,
+          productsPromise,
+        ]);
+
+        const products = productsResponse.products;
+
+        // Randomize banner if vendor has no image
+        if (!vendorData?.image && products.length > 0) {
+          const randomIndex = Math.floor(Math.random() * products.length);
+          setRandomBanner(products[randomIndex].image);
+        }
       } catch (error) {
-        console.error("Failed to fetch products:", error);
-        setProducts([]);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, [vendorId]);
 
   // Redirect if missing required parameters
@@ -158,10 +228,15 @@ export default function VendorPage() {
   const addToBasket = (id: string) => {
     setBasket((prev) => {
       const exists = prev.find((i) => i.id === id);
+      let updatedBasket;
       if (exists) {
-        return prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i));
+        updatedBasket = prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i));
+      } else {
+        const product = products.find((p) => p.id === id);
+        updatedBasket = [{ id, qty: 1, name: product?.name }, ...prev];
       }
-      return [{ id, qty: 1 }, ...prev];
+      localStorage.setItem("weeshr_basket", JSON.stringify(updatedBasket));
+      return updatedBasket;
     });
   };
 
@@ -187,6 +262,7 @@ export default function VendorPage() {
 
     // Clear UI immediately
     setBasket([]);
+    localStorage.removeItem("weeshr_basket");
 
     // Sync with API in background if authenticated
     if (isAuthenticated && userId) {
@@ -214,106 +290,250 @@ export default function VendorPage() {
     }
   };
 
+  // Total available products from vendor
+  const totalAvailable = products.length;
+
   return (
-    <div className="flex flex-col">
-      {/* Breadcrumb - MOBILE SIZE ADJUSTED */}
-      <div className="text-left text-xl md:text-4xl p-4 md:p-6 flex items-center font-extralight text-gray-700">
-        {loading && categoryName === "undefined" ? (
-          <div className="h-6 md:h-8 w-24 md:w-32 bg-gray-200 animate-pulse rounded-md" />
-        ) : (
+    <div className="flex flex-col min-h-screen ">
+      {/* Hero Banner Section - Ultra immersive and short */}
+      <section className="relative w-full  md:mx-auto   aspect-[5/2] md:aspect-[30/4] overflow-hidden shadow-lg">
+        {/* Banner Source Resolution */}
+        {(() => {
+          const bannerSrc = randomBanner || products[0]?.image;
+
+          return (
+            <>
+              {(!bannerSrc || (loading && !bannerLoaded)) && (
+                <Skeleton className="absolute inset-0 w-full h-full z-0" />
+              )}
+
+              {bannerSrc && (
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={bannerSrc}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: bannerLoaded ? 1 : 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="relative w-full h-full"
+                  >
+                    <motion.img
+                      src={bannerSrc}
+                      alt="Vendor Banner"
+                      className="w-full h-full object-cover"
+                      initial={{ scale: 1.1, filter: "blur(4px)" }}
+                      animate={
+                        bannerLoaded ? { scale: 1, filter: "blur(0px)" } : {}
+                      }
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                      onLoad={() => setBannerLoaded(true)}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent z-10" />
+                  </motion.div>
+                </AnimatePresence>
+              )}
+            </>
+          );
+        })()}
+
+        {/* Floating Controls - High-end Glassmorphism */}
+        <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
           <button
-            onClick={handleCategoryClick}
-            className="capitalize hover:text-blue-600 transition-colors cursor-pointer"
+            onClick={() => router.back()}
+            className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
           >
-            {effectiveCategoryName}
+            <Icon icon="ph:caret-left-bold" width="18" />
+            <span className="text-sm font-semibold tracking-wide">Back</span>
           </button>
-        )}
-        <span className="mx-1 font-bold">
-          <Icon
-            icon="teenyicons:right-outline"
-            className="h-4 w-6 text-gray-500"
-          />
-        </span>
-        <span className="capitalize font-normal">
-          {vendorName.replace(/-/g, " ")}
-        </span>
-      </div>
 
-      {/* Receiver Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6  lg:pb-0">
-        <div className="bg-white p-4 rounded-2xl text-[#6A70FF] font-light px-2 md:px-6 w-full col-span-2">
-          <div className="pl-4">
-            <ChangeReceiverDialog
-              open={open}
-              setOpen={setOpen}
-              receiverName={receiverName}
-              setReceiverName={setReceiverName}
-              handleSubmit={handleSubmit}
-            />
+          <div className="flex items-center gap-2">
+            <motion.div
+              initial={false}
+              animate={{
+                width: isSearching
+                  ? window.innerWidth < 768
+                    ? "160px"
+                    : "240px"
+                  : "0px",
+                opacity: isSearching ? 1 : 0,
+                marginRight: isSearching ? "8px" : "0px",
+              }}
+              className="overflow-hidden"
+            >
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-full py-2.5 px-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-white/50"
+              />
+            </motion.div>
 
-            {/* Main question - MOBILE SIZE ADJUSTED */}
-            <div>
-              <span className="inline-block text-primary text-xl md:text-4xl leading-snug">
+            <button
+              onClick={() => {
+                setIsSearching(!isSearching);
+                if (isSearching) setSearchQuery("");
+              }}
+              className="w-11 h-11 flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
+            >
+              <Icon
+                icon={isSearching ? "ph:x-bold" : "ph:magnifying-glass-bold"}
+                width="22"
+              />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Vendor Indigo Header Bar - Luxurious Overlap */}
+      <section className="bg-[#3B41B1] px-8 py-6 pt-4 pb-[3.5rem] flex items-center justify-between shadow-2xl sticky top-0 z-30 rounded-t-[2rem] -mt-14 md:-mt-16 border-t border-white/5">
+        <div className="flex flex-col">
+          <h2 className="text-white font-medium text-xl md:text-3xl tracking-tight leading-none">
+            {vendorName
+              .replace(/-/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase())}
+          </h2>
+        </div>
+
+        <motion.div
+          whileTap={{ scale: 0.95 }}
+          className="bg-white rounded-full px-3 py-1 flex items-center gap-2 shadow-[0_8px_20px_rgba(255,255,255,0.15)] cursor-pointer border border-white/40"
+        >
+          <Icon icon="solar:bag-bold" className="text-slate-950 w-5 h-5" />
+          <span className="text-slate-950 font-bold text-sm">
+            {!loading && totalAvailable}
+          </span>
+        </motion.div>
+      </section>
+
+      <div className="flex-1 flex flex-col bg-white rounded-t-[1rem] -mt-10 relative z-40 shadow-[0_-15px_50px_rgba(0,0,0,0.08)]">
+        {/* Main Content Area */}
+        <div className="px-0 md:px-6 w-full mx-auto flex-1">
+          {/* Main question section - Elegant & Center Focused */}
+          <div className="pr-6 pl-3 flex flex-col items-start">
+            <div className="flex flex-row items-center justify-between w-full  mx-auto gap-4 py-6">
+              <span className="text-[#1F2937] text-2xl md:text-4xl leading-tight font-light tracking-tight text-left">
                 What would{" "}
-                <span className="relative whitespace-nowrap text-blue-600 pr-1">
+                <span className="relative inline-flex items-center overflow-visible">
                   <span
-                    className="relative whitespace-nowrap bg-gradient-custom bg-clip-text text-transparent text-2xl md:text-3xl font-medium "
+                    className="relative z-10 bg-gradient-custom bg-clip-text text-transparent font-medium whitespace-nowrap inline-flex items-center justify-center px-1 md:px-2 py-1"
                     style={{
                       fontFamily:
                         "var(--font-playwrite), 'Playwrite CU', cursive, sans-serif",
+                      lineHeight: "normal",
                     }}
                   >
                     {displayName}
                   </span>
-                </span>
-                <span className="inline-block pl-1">like?</span>
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    className="absolute bottom-1 left-0 h-2 bg-[#0CC990]/10 -z-10"
+                  />
+                </span>{" "}
+                like? 🥳
               </span>
+
+              {/* AI Assistant Button */}
+              <div className="relative group">
+                <button
+                  onClick={() => {
+                    setShowAiSoon(true);
+                    setTimeout(() => setShowAiSoon(false), 2000);
+                  }}
+                  className={cn(
+                    "flex-shrink-0 bg-[#6A70FF]/20 text-[#6A70FF] h-10 flex items-center justify-center rounded-xl md:h-12 transition-all duration-300 ease-out focus:outline-none shadow-sm hover:shadow-lg hover:shadow-[#6A70FF]/20 hover:-translate-y-1 group-hover:bg-gradient-custom group-hover:text-white px-2",
+                    showAiSoon ? "w-max px-4" : "w-10 md:w-12",
+                  )}
+                >
+                  <AnimatePresence mode="wait">
+                    {showAiSoon ? (
+                      <motion.span
+                        key="soon"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="text-xs font-semibold whitespace-nowrap"
+                      >
+                        Coming soon
+                      </motion.span>
+                    ) : (
+                      <motion.div
+                        key="icon"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="flex items-center justify-center flex-1"
+                      >
+                        <Icon
+                          icon="humbleicons:ai"
+                          width="20"
+                          height="20"
+                          className="w-5 h-5 md:w-6 md:h-6 transition-all duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Dynamic label based on category - MOBILE SIZE ADJUSTED */}
-          <div className="text-muted-foreground pl-4 pt-4 text-sm md:text-base">
-            {loading ? <Skeleton className="h-4 w-32" /> : categoryLabel}
-          </div>
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex-1">
+              <div className="md:max-h-[800px] overflow-y-auto">
+                <div className="lg:hidden">
+                  <MobileMenuButtons
+                    vendorId={vendorId}
+                    addToBasket={addToBasket}
+                    basket={basket}
+                    setBasket={setBasket}
+                    products={products}
+                    isAuthenticated={isAuthenticated}
+                    userId={userId || undefined}
+                    clearBasket={clearBasket}
+                    onOpenChangeReceiver={() => setOpen(true)}
+                    searchQuery={searchQuery}
+                    vendorName={vendor?.name}
+                  />
+                </div>
 
-          <div className="md:max-h-[600px] md:max-h-96 overflow-y-auto mt-0  md:pr-2">
-            {/* Mobile version with quantity buttons */}
-            <div className="lg:hidden">
-              <MobileMenuButtons
-                vendorId={vendorId}
-                addToBasket={addToBasket}
+                <div className="hidden lg:block">
+                  <MenuList
+                    vendorId={vendorId}
+                    addToBasket={addToBasket}
+                    basket={basket}
+                    products={products}
+                    isAuthenticated={isAuthenticated}
+                    userId={userId || undefined}
+                    clearBasket={clearBasket}
+                    onOpenChangeReceiver={() => setOpen(true)}
+                    searchQuery={searchQuery}
+                    vendorName={vendor?.name}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-80 shrink-0">
+              <GiftBasket
                 basket={basket}
+                products={products}
+                getBasketTotal={getBasketTotal}
                 setBasket={setBasket}
-                products={products}
-                isAuthenticated={isAuthenticated}
-                userId={userId || undefined}
-                clearBasket={clearBasket}
-              />
-            </div>
-
-            {/* Desktop version with add to basket button */}
-            <div className="hidden md:block">
-              <MenuList
-                vendorId={vendorId}
-                addToBasket={addToBasket}
-                basket={basket}
-                products={products}
-                isAuthenticated={isAuthenticated}
-                userId={userId || undefined}
               />
             </div>
           </div>
-        </div>
-
-        <div className="md:mt-0 ">
-          <GiftBasket
-            basket={basket}
-            products={products}
-            getBasketTotal={getBasketTotal}
-            setBasket={setBasket}
-          />
         </div>
       </div>
+      <ChangeReceiverDialog
+        open={open}
+        setOpen={setOpen}
+        receiverName={receiverName}
+        setReceiverName={setReceiverName}
+        handleSubmit={handleSubmit}
+      />
     </div>
   );
 }

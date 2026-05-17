@@ -63,7 +63,7 @@ export async function fetchProductsByVendor(
   perPage: number = 100,
 ) {
   const res = await fetch(
-    `${API_BASE_URL}/market/products/?vendorId=${vendorId}&page=${page}&per_page=${perPage}`,
+    `${API_BASE_URL}/market/products?vendorId=${vendorId}&page=${page}&per_page=${perPage}`,
     {
       next: { revalidate: 60 },
     },
@@ -113,4 +113,27 @@ export async function fetchVendorBySlug(slug: string) {
 
   const json = await res.json();
   return json.data;
+}
+// Fetch single product by ID
+export async function fetchProductById(productId: string, vendorId?: string) {
+  let url = `${API_BASE_URL}/market/products/${productId}`;
+
+  if (vendorId) {
+    url += `?vendorId=${vendorId}`;
+  }
+
+  const res = await fetch(url, {
+    method: "GET",
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`Failed to fetch product: ${res.status}`);
+  }
+
+  const json = await res.json();
+  // If the path-based endpoint returns a single object, json.data should be the product
+  // If it still returns a list, we'll keep the [0] fallback logic
+  return json.data?.data?.[0] || json.data || null;
 }
