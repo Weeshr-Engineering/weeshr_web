@@ -131,7 +131,7 @@ export default function MarketplaceClient() {
           >
             {/* Two copies stacked for seamless loop */}
             <Image
-              src="/mainimage.png"
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1779039207/market-place/New_Imagery_Web_llsndm.png"
               alt="Gift products collage"
               width={430}
               height={932}
@@ -141,7 +141,7 @@ export default function MarketplaceClient() {
               onError={() => setMobileBgLoaded(true)}
             />
             <Image
-              src="/mainimage.png"
+              src="https://res.cloudinary.com/drykej1am/image/upload/v1779039207/market-place/New_Imagery_Web_llsndm.png"
               alt="Gift products collage"
               width={430}
               height={932}
@@ -308,7 +308,7 @@ export default function MarketplaceClient() {
                         lineHeight: "normal",
                       }}
                     >
-                      I am gifting  my self
+                      I am gifting my self
                     </span>
                   </button>
                 </div>

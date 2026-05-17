@@ -74,7 +74,7 @@ export default function PaySidePanel({
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-200/30 to-transparent rounded-full -translate-y-16 translate-x-16" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-cyan-200/30 to-transparent rounded-full translate-y-12 -translate-x-12" />
 
-        <CardContent 
+        <CardContent
           className="h-full flex flex-col p-6 relative z-10"
           onClick={() => isExpanded && setIsExpanded(false)}
         >
@@ -104,10 +104,12 @@ export default function PaySidePanel({
           </div>
 
           {/* Items List (Stacked or Expanded) */}
-          <div 
+          <div
             className={cn(
               "relative mb-8 transition-all duration-500",
-              isExpanded ? "h-[210px] overflow-y-auto space-y-3 pr-2" : "h-[140px]"
+              isExpanded
+                ? "h-[210px] overflow-y-auto space-y-3 pr-2"
+                : "h-[140px]",
             )}
             onClick={(e) => {
               if (!isExpanded && basket.length > 1) {
@@ -130,14 +132,28 @@ export default function PaySidePanel({
                       className="flex items-center gap-4 bg-white rounded-2xl p-3 border border-gray-100 shadow-sm"
                     >
                       <div className="relative w-16 h-16 bg-gray-50 rounded-xl overflow-hidden shrink-0">
-                        <Image src={product.image} alt={product.name} fill className="object-cover" />
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="object-cover"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 truncate">{product.name}</p>
-                        <p className="text-sm text-gray-500">₦ {product.price.toLocaleString()}</p>
+                        <p className="font-semibold text-gray-900 truncate">
+                          {product.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          ₦ {product.price.toLocaleString()}
+                        </p>
                       </div>
                       {item.qty > 1 && (
-                        <Badge variant="secondary" className="rounded-full bg-gray-100 text-gray-600">x{item.qty}</Badge>
+                        <Badge
+                          variant="secondary"
+                          className="rounded-full bg-gray-100 text-gray-600"
+                        >
+                          x{item.qty}
+                        </Badge>
                       )}
                     </motion.div>
                   );
@@ -157,27 +173,36 @@ export default function PaySidePanel({
                       <motion.div
                         key={item.id}
                         initial={false}
-                        animate={{ 
-                          opacity, 
-                          scale, 
-                          y: translateY, 
+                        animate={{
+                          opacity,
+                          scale,
+                          y: translateY,
                           zIndex: 30 - index,
-                          transformOrigin: "top center"
+                          transformOrigin: "top center",
                         }}
                         className={cn(
                           "absolute left-0 right-0 rounded-2xl p-4 border transition-all duration-300",
-                          index === 0 
-                            ? "bg-white border-gray-100 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] ring-1 ring-black/5" 
-                            : "bg-gray-50/80 border-gray-200 shadow-sm"
+                          index === 0
+                            ? "bg-white border-gray-100 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] ring-1 ring-black/5"
+                            : "bg-gray-50/80 border-gray-200 shadow-sm",
                         )}
                       >
                         <div className="flex items-center gap-4">
                           <div className="relative w-16 h-16 bg-gray-100 rounded-2xl overflow-hidden shrink-0">
-                            <Image src={product.image} alt={product.name} fill className="object-cover" />
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-bold text-gray-900 truncate text-base">{product.name}</p>
-                            <p className="text-sm font-medium text-gray-500">₦ {product.price.toLocaleString()}</p>
+                            <p className="font-bold text-gray-900 truncate text-base">
+                              {product.name}
+                            </p>
+                            <p className="text-sm font-medium text-gray-500">
+                              ₦ {product.price.toLocaleString()}
+                            </p>
                           </div>
                         </div>
                       </motion.div>
@@ -192,7 +217,10 @@ export default function PaySidePanel({
               )
             ) : (
               <div className="text-center py-12">
-                <Icon icon="mdi:cart-outline" className="text-gray-300 text-4xl mx-auto mb-2" />
+                <Icon
+                  icon="mdi:cart-outline"
+                  className="text-gray-300 text-4xl mx-auto mb-2"
+                />
                 <p className="text-gray-500">Your basket is empty</p>
               </div>
             )}
@@ -229,12 +257,17 @@ export default function PaySidePanel({
           {/* Note Section */}
           <div className="space-y-2 mb-6">
             <div className="flex items-center justify-between">
-              <Label className="text-sm text-gray-500">Send a note with this gift</Label>
-              <div 
+              <Label className="text-sm text-gray-500">
+                Send a note with this gift
+              </Label>
+              <div
                 onClick={handleShuffleNote}
                 className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-sm cursor-pointer hover:bg-indigo-100 transition-all hover:scale-110 active:scale-95 group/magic"
               >
-                <Icon icon="solar:stars-bold" className="w-4 h-4 group-hover/magic:animate-pulse" />
+                <Icon
+                  icon="solar:stars-bold"
+                  className="w-4 h-4 group-hover/magic:animate-pulse"
+                />
               </div>
             </div>
             <div className="relative group">
@@ -245,7 +278,10 @@ export default function PaySidePanel({
                 className="w-full min-h-[100px] bg-white border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all resize-none shadow-sm"
               />
               <div className="absolute bottom-3 right-3 opacity-0 group-focus-within:opacity-100 transition-opacity">
-                <Icon icon="material-symbols:edit-outline" className="w-4 h-4 text-gray-400" />
+                <Icon
+                  icon="material-symbols:edit-outline"
+                  className="w-4 h-4 text-gray-400"
+                />
               </div>
             </div>
           </div>
@@ -268,10 +304,7 @@ export default function PaySidePanel({
               ) : (
                 <>
                   <span>Proceed to payment</span>
-                  <Icon
-                    icon="ph:credit-card-bold"
-                    className="h-5 w-5"
-                  />
+                  <Icon icon="ph:credit-card-bold" className="h-5 w-5" />
                 </>
               )}
             </button>
