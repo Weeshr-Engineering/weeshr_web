@@ -316,7 +316,7 @@ export default function AllVendorsPage() {
             </span>
 
             {/* AI Assistant Button */}
-            <div className="relative group">
+            <div className="relative group mr-2">
               <button
                 onClick={() => {
                   setShowAiSoon(true);

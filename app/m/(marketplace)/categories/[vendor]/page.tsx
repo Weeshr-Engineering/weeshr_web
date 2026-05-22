@@ -234,7 +234,10 @@ export default function Page() {
                     aria-label="Clear search"
                     className="shrink-0 text-gray-400 hover:text-gray-600 pr-2"
                   >
-                    <Icon icon="material-symbols:close-rounded" className="w-4 h-4" />
+                    <Icon
+                      icon="material-symbols:close-rounded"
+                      className="w-4 h-4"
+                    />
                   </button>
                 )}
                 {!searchQuery && (
@@ -278,14 +281,14 @@ export default function Page() {
             </span>
 
             {/* AI Assistant Button */}
-            <div className="relative group">
+            <div className="relative group ">
               <button
                 onClick={() => {
                   setShowAiSoon(true);
                   setTimeout(() => setShowAiSoon(false), 2000);
                 }}
                 className={cn(
-                  "flex-shrink-0 bg-[#6A70FF]/20 text-[#6A70FF] h-10 flex items-center justify-center rounded-xl md:h-12 transition-all duration-300 ease-out focus:outline-none shadow-sm hover:shadow-lg hover:shadow-[#6A70FF]/20 hover:-translate-y-1 group-hover:bg-gradient-custom group-hover:text-white px-2",
+                  "flex-shrink-0  bg-[#6A70FF]/20 text-[#6A70FF] h-10 flex items-center justify-center rounded-xl md:h-12 transition-all duration-300 ease-out focus:outline-none shadow-sm hover:shadow-lg hover:shadow-[#6A70FF]/20 hover:-translate-y-1 group-hover:bg-gradient-custom group-hover:text-white px-2",
                   showAiSoon ? "w-max px-4" : "w-10 md:w-12",
                 )}
               >
@@ -319,7 +322,7 @@ export default function Page() {
                 </AnimatePresence>
               </button>
               {/* Pizzazz Tooltip */}
-              <div className="absolute right-0 top-full mt-2 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out transform translate-y-2 group-hover:translate-y-0 z-50">
+              <div className="absolute right-2 top-full mt-2 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out transform translate-y-2 group-hover:translate-y-0 z-50">
                 <div className="bg-[#1F2937] text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl relative flex items-center gap-1.5">
                   <Icon
                     icon="solar:stars-bold"
@@ -336,11 +339,7 @@ export default function Page() {
 
       {/* Mobile-only Tab Navigation */}
       <div className="shrink-0">
-        <WidthLayout
-        
-          
-          className="flex-none !pt-0 w-full pt-0  2xl:max-w-auto"
-        >
+        <WidthLayout className="flex-none !pt-0 w-full pt-0  2xl:max-w-auto">
           <MobileCategoryTabs
             categories={tabCategories}
             nameParam={nameParam}
