@@ -269,7 +269,7 @@ export default function ReceiverInfoModal({
         })
       : "Select a date";
   const Content = (
-    <div className="w-full flex flex-col md:flex-row-reverse gap-4 max-h-[85vh] md:max-h-none">
+    <div className="w-full flex flex-col md:flex-row-reverse gap-4 max-h-[85vh] md:h-[80vh]">
       {/* Grab handle for mobile */}
       {isMobile && (
         <div className="w-12 h-1 bg-black/20 rounded-full mx-auto mb-2 shrink-0" />
@@ -278,8 +278,8 @@ export default function ReceiverInfoModal({
 
 
       {/* Left Form */}
-      <Card className="flex-1 md:w-[55%] bg-white md:bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col max-h-full overflow-hidden">
-        <CardHeader className="pb-6">
+      <Card className="flex-1 md:w-[55%] bg-white md:bg-white/95 backdrop-blur-sm shadow-2xl border-none rounded-3xl flex flex-col overflow-hidden md:h-full">
+        <CardHeader className="pb-6 shrink-0">
           <CardTitle className="text-xl font-normal text-primary text-left">
             More about
             <span
@@ -568,7 +568,7 @@ export default function ReceiverInfoModal({
         </div>
 
         {/* Footer - Desktop only */}
-        <div className="mt-auto border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:flex justify-between items-center px-4 py-3 hidden">
+        <div className="mt-auto shrink-0 border-t-[1.5px] border-transparent [border-image:linear-gradient(to_right,#00E19D_0%,#6A70FF_36%,#00BBD4_66%,#AEE219_100%)_1] md:flex justify-between items-center px-4 py-3 hidden">
           <div>
             <h6 className="text-muted-foreground text-xs">Your basket</h6>
             <span className="font-semibold">
@@ -599,7 +599,7 @@ export default function ReceiverInfoModal({
       </Card>
 
       {/* Right: PaySidePanel - Desktop only */}
-      <div className="w-[45%] hidden md:flex">
+      <div className="w-[45%] hidden md:flex md:h-full">
         <PaySidePanel
           basket={basket}
           products={products}
