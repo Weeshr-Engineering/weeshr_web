@@ -74,7 +74,7 @@ export default function ChangeReceiverDialog({
   };
 
   const Content = (
-    <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-3xl bg-[#E9F4D1] border-none relative">
+    <Card className="w-full max-w-sm bg-white/80 backdrop-blur-sm shadow-lg px-0 rounded-b-3xl bg-[#E9F4D1] border-none relative">
       <button
         onClick={() => setOpen(false)}
         className="absolute right-4 top-4 p-1 hover:bg-black/5 rounded-full transition-colors z-10"

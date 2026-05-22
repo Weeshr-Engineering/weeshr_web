@@ -82,24 +82,11 @@ const VendorList: React.FC<VendorListProps> = ({
   }
 
   const getCardStyles = (index: number, vendorId?: string) => {
-    const isMobileFeatured = (index + 1) % 10 === 0;
-
-    let isDesktop2x2 = false;
-    let isDesktop2x1 = false;
-    let isDesktop1x2 = false;
-
-    if (vendorId && randomStyles[vendorId] !== undefined) {
-      const code = randomStyles[vendorId];
-      isDesktop2x2 = code === 0;
-      isDesktop2x1 = code === 1;
-      isDesktop1x2 = code === 2;
-    } else {
-      // Fallback for skeletons
-      const desktopCycle = index % 15;
-      isDesktop2x2 = desktopCycle === 0;
-      isDesktop2x1 = desktopCycle === 7;
-      isDesktop1x2 = desktopCycle === 11;
-    }
+    // Uniform grid: every tile is an equal-size square — no bento/featured tiles.
+    const isMobileFeatured = false;
+    const isDesktop2x2 = false;
+    const isDesktop2x1 = false;
+    const isDesktop1x2 = false;
 
     let spanClass = "";
     let titleClass = "font-medium sm:font-bold drop-shadow-md text-white ";
@@ -172,7 +159,7 @@ const VendorList: React.FC<VendorListProps> = ({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] grid-flow-row-dense">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0 grid-flow-row-dense">
         {Array.from({ length: 20 }).map((_, i) => {
           const { spanClass } = getCardStyles(i);
           return <VendorCardSkeleton key={i} className={spanClass} />;
@@ -205,7 +192,7 @@ const VendorList: React.FC<VendorListProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] grid-flow-row-dense">
+    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0 grid-flow-row-dense">
       {vendors.map((vendor, index) => {
         const offset = randomOffsets[vendor.id] || 0;
         const currentImage =
