@@ -344,11 +344,15 @@ export default function VendorPage() {
         {/* Floating Controls - High-end Glassmorphism */}
         <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
           <button
-            onClick={() => router.back()}
+            onClick={() =>
+              router.push(
+                `/m/categories/all?name=${encodeURIComponent(nameParam || "")}`,
+              )
+            }
             className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
           >
             <Icon icon="ph:caret-left-bold" width="18" />
-            <span className="text-sm font-semibold tracking-wide">Back</span>
+            <span className="text-sm font-semibold tracking-wide">Back </span>
           </button>
 
           <div className="flex items-center gap-2">
