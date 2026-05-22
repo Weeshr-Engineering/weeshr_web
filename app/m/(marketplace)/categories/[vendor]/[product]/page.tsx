@@ -142,7 +142,10 @@ export default function VendorPage() {
             }));
             const reversedItems = [...items].reverse();
             setBasket(reversedItems);
-            localStorage.setItem("weeshr_basket", JSON.stringify(reversedItems));
+            localStorage.setItem(
+              "weeshr_basket",
+              JSON.stringify(reversedItems),
+            );
           }
         } catch (error) {
           console.error("Cart sync error:", error);
@@ -230,7 +233,9 @@ export default function VendorPage() {
       const exists = prev.find((i) => i.id === id);
       let updatedBasket;
       if (exists) {
-        updatedBasket = prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i));
+        updatedBasket = prev.map((i) =>
+          i.id === id ? { ...i, qty: i.qty + 1 } : i,
+        );
       } else {
         const product = products.find((p) => p.id === id);
         updatedBasket = [{ id, qty: 1, name: product?.name }, ...prev];
