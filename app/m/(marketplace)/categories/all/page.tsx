@@ -275,11 +275,14 @@ export default function AllVendorsPage() {
                     aria-label="Clear search"
                     className="shrink-0 text-gray-400 hover:text-gray-600 pr-2"
                   >
-                    <Icon icon="material-symbols:close-rounded" className="w-4 h-4" />
+                    <Icon
+                      icon="material-symbols:close-rounded"
+                      className="w-4 h-4"
+                    />
                   </button>
                 )}
                 <span className="text-xs text-gray-400 whitespace-nowrap pr-3 hidden lg:block">
-                  Restaurant, Delicacy, Food Type
+                  Food, Fashion, Beauty, Accessories Vendors
                 </span>
               </div>
             </div>
