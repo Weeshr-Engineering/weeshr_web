@@ -61,7 +61,7 @@ export default function PaySidePanel({
   const safeTotalPrice = totalPrice || 0;
 
   return (
-    <div className="flex-1 relative">
+    <div className="flex-1 relative min-h-0">
       {/* Modern gradient background with subtle animation */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 rounded-3xl" />
 
@@ -75,7 +75,7 @@ export default function PaySidePanel({
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-cyan-200/30 to-transparent rounded-full translate-y-12 -translate-x-12" />
 
         <CardContent
-          className="h-full flex flex-col p-6 relative z-10"
+          className="h-full flex flex-col p-6 relative z-10 overflow-y-auto"
           onClick={() => isExpanded && setIsExpanded(false)}
         >
           {/* Header Section */}

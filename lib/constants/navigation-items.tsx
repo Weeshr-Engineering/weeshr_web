@@ -6,13 +6,8 @@ export const navigationLinks = [
 
 export const marketplaceLinks = [
   { name: "All", link: "/m/categories/all", disabled: false },
-  { name: "Gadget", link: "/m/categories/gadget", disabled: false }, // Disabled link
-  {
-    name: "Lifestyle",
-    link: "/m/categories/lifestyle",
-    disabled: false,
-  }, // Disabled link
-  { name: "Food", link: "/m/categories/food", disabled: false }, // Disabled link
-
-  { name: "Fashion", link: "/m/categories/fashion", disabled: false }, // Disabled link
+  { name: "Fashion", link: "/m/categories/fashion", disabled: false },
+  { name: "Food", link: "/m/categories/food", disabled: false },
+  { name: "Lifestyle", link: "/m/categories/lifestyle", disabled: false },
+  { name: "Gadgets", link: "/m/categories/gadgets", disabled: false },
 ];

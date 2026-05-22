@@ -44,16 +44,17 @@ const VendorList: React.FC<VendorListProps> = ({
       }
       if (randomStyles[vendor.id] === undefined) {
         if (index === 0) {
-          randomStyles[vendor.id] = 0; // 2x2 for the first item
+          randomStyles[vendor.id] = 0; // single 2x2 big box — only the first item
         } else {
+          // Desktop only: variety from spanning tiles WITHOUT extra big boxes
+          // (extra 2x2 tiles eat space and show fewer items at the top).
+          // 1 = 2x1 horizontal, 2 = 1x2 vertical, 3 = regular
           const r = Math.random();
-          if (r < 0.05)
-            randomStyles[vendor.id] = 0; // 2x2 (5%)
-          else if (r < 0.1)
-            randomStyles[vendor.id] = 1; // 2x1 (5%)
-          else if (r < 0.15)
-            randomStyles[vendor.id] = 2; // 1x2 (5%)
-          else randomStyles[vendor.id] = 3; // regular (85%)
+          if (r < 0.14)
+            randomStyles[vendor.id] = 1; // 2x1 horizontal (14%)
+          else if (r < 0.28)
+            randomStyles[vendor.id] = 2; // 1x2 vertical (14%)
+          else randomStyles[vendor.id] = 3; // regular 1x1 (72%)
         }
       }
     });
@@ -94,9 +95,10 @@ const VendorList: React.FC<VendorListProps> = ({
       isDesktop2x1 = code === 1;
       isDesktop1x2 = code === 2;
     } else {
-      // Fallback for skeletons
+      // Fallback (skeletons / styles not yet computed):
+      // only the very first item is the big 2x2 — never a second one.
       const desktopCycle = index % 15;
-      isDesktop2x2 = desktopCycle === 0;
+      isDesktop2x2 = index === 0;
       isDesktop2x1 = desktopCycle === 7;
       isDesktop1x2 = desktopCycle === 11;
     }
@@ -172,7 +174,7 @@ const VendorList: React.FC<VendorListProps> = ({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] grid-flow-row-dense">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0 grid-flow-row-dense">
         {Array.from({ length: 20 }).map((_, i) => {
           const { spanClass } = getCardStyles(i);
           return <VendorCardSkeleton key={i} className={spanClass} />;
@@ -205,7 +207,7 @@ const VendorList: React.FC<VendorListProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] grid-flow-row-dense">
+    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0 grid-flow-row-dense">
       {vendors.map((vendor, index) => {
         const offset = randomOffsets[vendor.id] || 0;
         const currentImage =
@@ -238,13 +240,13 @@ const VendorList: React.FC<VendorListProps> = ({
             onClick={() => goToVendor(vendor.category, vendor.name, vendor.id)}
           >
             {!isLoaded && (
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer z-0" />
             )}
             <Image
               src={currentImage}
               alt={vendor.name}
               fill
-              className="object-cover transition-transform duration-500 hover:scale-[1.02]"
+              className="object-cover transition-transform duration-500 hover:scale-[1.02] z-[1]"
               loading="lazy"
               sizes={imageSizes}
               quality={imageQuality}
