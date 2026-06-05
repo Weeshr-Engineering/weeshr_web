@@ -153,6 +153,7 @@ export function MenuList({
 
     debounceRefs.current[productId] = setTimeout(async () => {
       try {
+        const basketEntry = basket.find((b) => b.id === productId);
         // Send only the incremental change, not the entire basket
         const result = await cartService.addItemsToCart({
           userId,
@@ -160,7 +161,9 @@ export function MenuList({
             {
               productId: productId.toString(),
               quantity: clicksToSend, // Send accumulated clicks
-              price: product.price || 0,
+              ...(basketEntry?.sku ? { sku: basketEntry.sku } : {}),
+              ...(basketEntry?.color ? { color: basketEntry.color } : {}),
+              ...(basketEntry?.size ? { size: basketEntry.size } : {}),
             },
           ],
         });

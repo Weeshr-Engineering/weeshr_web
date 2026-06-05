@@ -6,6 +6,9 @@ export interface CartItem {
   productId: string;
   quantity: number;
   price?: number;
+  color?: string;
+  size?: string;
+  sku?: string;
 }
 
 export interface CartData {
@@ -78,6 +81,7 @@ class CartService {
     userId: string,
     productId: string,
     quantityToRemove?: number,
+    options?: { sku?: string; color?: string; size?: string },
   ): Promise<CartResponse> {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -94,6 +98,10 @@ class CartService {
       if (quantityToRemove) {
         payload.quantityToRemove = quantityToRemove;
       }
+
+      if (options?.sku) payload.sku = options.sku;
+      if (options?.color) payload.color = options.color;
+      if (options?.size) payload.size = options.size;
 
       const response = await axios.post(
         `${this.baseURL}/market/carts/remove-item`,
@@ -195,6 +203,47 @@ class CartService {
       return {
         code: error.response?.status || 500,
         message: error.response?.data?.message || "Failed to fetch cart",
+        error: error.message,
+      };
+    }
+  }
+
+  // Checkout the active cart (POST /market/carts/checkout requires cartId)
+  async checkout(cartId?: string): Promise<CartResponse> {
+    try {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) throw new Error("User not authenticated");
+
+      const id = cartId ?? this.currentCartId;
+      if (!id) {
+        return {
+          code: 422,
+          message: "Cart ID is required",
+          error: "Missing cartId",
+        };
+      }
+
+      const response = await axios.post(
+        `${this.baseURL}/market/carts/checkout`,
+        { cartId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      return {
+        code: response.status,
+        message: "Checkout successful",
+        data: response.data.data,
+      };
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      return {
+        code: error.response?.status || 500,
+        message: error.response?.data?.message || "Checkout failed",
         error: error.message,
       };
     }

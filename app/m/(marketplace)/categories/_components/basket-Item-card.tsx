@@ -58,10 +58,17 @@ export function BasketItemCard({
       clickCountRef.current = 0; // Reset click count after sending
 
       try {
+        const variantOpts = {
+          sku: item.sku,
+          color: item.color,
+          size: item.size,
+        };
         if (newQty === 0) {
           const result = await cartService.removeItemFromCart(
             userId,
             item.id.toString(),
+            undefined,
+            variantOpts,
           );
           if (!(result.code === 200 || result.code === 201)) {
             toast.error("Failed to sync removal with server");
@@ -73,6 +80,7 @@ export function BasketItemCard({
               userId,
               item.id.toString(),
               Math.abs(clicksToSend),
+              variantOpts,
             );
             if (!(result.code === 200 || result.code === 201)) {
               toast.error("Failed to sync quantity with server");
@@ -85,7 +93,9 @@ export function BasketItemCard({
                 {
                   productId: item.id.toString(),
                   quantity: clicksToSend, // Send accumulated clicks
-                  price: productPrice,
+                  ...(item.sku ? { sku: item.sku } : {}),
+                  ...(item.color ? { color: item.color } : {}),
+                  ...(item.size ? { size: item.size } : {}),
                 },
               ],
             });

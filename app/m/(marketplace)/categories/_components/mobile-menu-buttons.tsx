@@ -169,13 +169,21 @@ export function MobileMenuButtons({
 
       try {
         const product = products.find((p) => p.id === productId);
+        const basketEntry = basket.find((b) => b.id === productId);
+        const variantOpts = {
+          sku: basketEntry?.sku,
+          color: basketEntry?.color,
+          size: basketEntry?.size,
+        };
 
         // Send accumulated clicks
         if (clicksToSend < 0) {
           // Handle decrement (unlikely in handleAdd but possible with mixed clicks)
-          const result = await cartService.removeItemFromCart(
+          await cartService.removeItemFromCart(
             userId,
             productId.toString(),
+            undefined,
+            variantOpts,
           );
         } else {
           const result = await cartService.addItemsToCart({
@@ -184,7 +192,9 @@ export function MobileMenuButtons({
               {
                 productId: productId.toString(),
                 quantity: clicksToSend,
-                price: product?.price || 0,
+                ...(basketEntry?.sku ? { sku: basketEntry.sku } : {}),
+                ...(basketEntry?.color ? { color: basketEntry.color } : {}),
+                ...(basketEntry?.size ? { size: basketEntry.size } : {}),
               },
             ],
           });
@@ -214,6 +224,13 @@ export function MobileMenuButtons({
           clearTimeout(debounceRefs.current[productId]!);
         }
 
+        const basketEntry = prev.find((b) => b.id === productId);
+        const variantOpts = {
+          sku: basketEntry?.sku,
+          color: basketEntry?.color,
+          size: basketEntry?.size,
+        };
+
         debounceRefs.current[productId] = setTimeout(async () => {
           if (!isAuthenticated || !userId) return;
 
@@ -221,6 +238,8 @@ export function MobileMenuButtons({
             const result = await cartService.removeItemFromCart(
               userId,
               productId.toString(),
+              undefined,
+              variantOpts,
             );
             if (!(result.code === 200 || result.code === 201)) {
               toast.error("Failed to sync removal with server");
@@ -258,6 +277,12 @@ export function MobileMenuButtons({
 
         try {
           const product = products.find((p) => p.id === productId);
+          const basketEntry = basket.find((b) => b.id === productId);
+          const variantOpts = {
+            sku: basketEntry?.sku,
+            color: basketEntry?.color,
+            size: basketEntry?.size,
+          };
 
           // Send accumulated clicks
           if (clicksToSend < 0) {
@@ -266,6 +291,7 @@ export function MobileMenuButtons({
               userId,
               productId.toString(),
               Math.abs(clicksToSend),
+              variantOpts,
             );
             if (!(result.code === 200 || result.code === 201)) {
               toast.error("Failed to sync removal with server");
@@ -278,7 +304,9 @@ export function MobileMenuButtons({
                 {
                   productId: productId.toString(),
                   quantity: clicksToSend, // Send accumulated clicks
-                  price: product?.price || 0,
+                  ...(basketEntry?.sku ? { sku: basketEntry.sku } : {}),
+                  ...(basketEntry?.color ? { color: basketEntry.color } : {}),
+                  ...(basketEntry?.size ? { size: basketEntry.size } : {}),
                 },
               ],
             });

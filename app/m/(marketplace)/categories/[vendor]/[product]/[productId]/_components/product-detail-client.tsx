@@ -39,6 +39,16 @@ export default function ProductDetailClient({
     initialProduct.sizes?.[0] ?? null,
   );
 
+  const selectedVariant =
+    selectedColor || selectedSize
+      ? product.config.find(
+          (c) =>
+            (selectedColor ? c.color === selectedColor : !c.color) &&
+            (selectedSize ? c.size === selectedSize : !c.size),
+        )
+      : undefined;
+  const displayPrice = selectedVariant?.amount ?? product.price;
+
   const formattedProductName = product.name
     ? product.name
         .split(" ")
@@ -85,8 +95,25 @@ export default function ProductDetailClient({
         : relatedProducts.find((p) => p.id === targetId);
     if (!productToAdd) return;
 
+    const isCurrent = productToAdd.id === product.id;
+    const color = isCurrent ? selectedColor ?? undefined : undefined;
+    const size = isCurrent ? selectedSize ?? undefined : undefined;
+    const variant =
+      isCurrent && (color || size)
+        ? productToAdd.config.find(
+            (c) =>
+              (color ? c.color === color : !c.color) &&
+              (size ? c.size === size : !c.size),
+          )
+        : undefined;
+    const unitPrice = variant?.amount ?? productToAdd.price;
+    const sku = variant?.sku;
+
     const updatedBasket = [...basket];
-    const existingItem = updatedBasket.find((item) => item.id === targetId);
+    const existingItem = updatedBasket.find(
+      (item) =>
+        item.id === targetId && item.color === color && item.size === size,
+    );
 
     if (existingItem) {
       existingItem.qty += 1;
@@ -95,6 +122,9 @@ export default function ProductDetailClient({
         id: productToAdd.id,
         name: productToAdd.name,
         qty: 1,
+        color,
+        size,
+        sku,
       });
     }
 
@@ -109,7 +139,9 @@ export default function ProductDetailClient({
             {
               productId: targetId,
               quantity: 1,
-              price: productToAdd.price,
+              ...(color ? { color } : {}),
+              ...(size ? { size } : {}),
+              ...(sku ? { sku } : {}),
             },
           ],
         });
@@ -173,7 +205,7 @@ export default function ProductDetailClient({
           <div className="flex flex-col">
             <span className="text-xs text-gray-400 font-medium">Price</span>
             <span className="text-2xl font-medium text-gray-900">
-              ₦ {product.price.toLocaleString()}
+              ₦ {displayPrice.toLocaleString()}
             </span>
           </div>
           <Button
@@ -311,7 +343,7 @@ export default function ProductDetailClient({
                   Price
                 </span>
                 <span className="text-white font-medium text-2xl tracking-tight">
-                  ₦ {product.price.toLocaleString()}
+                  ₦ {displayPrice.toLocaleString()}
                 </span>
               </div>
               <Button
@@ -386,7 +418,7 @@ export default function ProductDetailClient({
                         Current Price
                       </span>
                       <span className="text-3xl font-medium text-gray-900 tracking-tight whitespace-nowrap">
-                        ₦ {product.price.toLocaleString()}
+                        ₦ {displayPrice.toLocaleString()}
                       </span>
                     </div>
                     <Button
