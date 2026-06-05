@@ -29,6 +29,23 @@ export interface ApiProduct {
   availableQty?: number;
   createdAt: string;
   updatedAt: string;
+  config?: Array<{
+    color?: string;
+    size?: string;
+    amount?: number;
+    qty?: number;
+    availableQty?: number;
+    sku?: string;
+  }>;
+}
+
+export interface ProductVariant {
+  color?: string;
+  size?: string;
+  amount?: number;
+  qty?: number;
+  availableQty?: number;
+  sku?: string;
 }
 
 export interface Product {
@@ -42,6 +59,9 @@ export interface Product {
   category: string;
   categoryId: string;
   isAvailable: boolean;
+  config: ProductVariant[];
+  colors: string[];
+  sizes: string[];
 }
 
 /**
@@ -89,6 +109,14 @@ export class ProductService {
             ? product.images.map((img) => img.secure_url)
             : [mainImage];
 
+        const config = product.config ?? [];
+        const colors = Array.from(
+          new Set(config.map((c) => c.color?.trim()).filter((c): c is string => !!c)),
+        );
+        const sizes = Array.from(
+          new Set(config.map((c) => c.size?.trim()).filter((s): s is string => !!s)),
+        );
+
         return {
           id: product._id,
           name: product.name,
@@ -105,6 +133,9 @@ export class ProductService {
             (product.availableQty !== undefined
               ? product.availableQty > 0
               : product.qty > 0),
+          config,
+          colors,
+          sizes,
         };
       });
 
@@ -160,6 +191,14 @@ export class ProductService {
           ? product.images.map((img) => img.secure_url)
           : [mainImage];
 
+      const config = product.config ?? [];
+      const colors = Array.from(
+        new Set(config.map((c) => c.color?.trim()).filter((c): c is string => !!c)),
+      );
+      const sizes = Array.from(
+        new Set(config.map((c) => c.size?.trim()).filter((s): s is string => !!s)),
+      );
+
       return {
         id: product._id,
         name: product.name,
@@ -176,6 +215,9 @@ export class ProductService {
           (product.availableQty !== undefined
             ? product.availableQty > 0
             : product.qty > 0),
+        config,
+        colors,
+        sizes,
       };
     } catch (error) {
       console.error(`Error fetching product ${productId}:`, error);

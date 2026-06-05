@@ -32,6 +32,12 @@ export default function ProductDetailClient({
   const [userId, setUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [basket, setBasket] = useState<BasketItem[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    initialProduct.colors?.[0] ?? null,
+  );
+  const [selectedSize, setSelectedSize] = useState<string | null>(
+    initialProduct.sizes?.[0] ?? null,
+  );
 
   const formattedProductName = product.name
     ? product.name
@@ -181,6 +187,66 @@ export default function ProductDetailClient({
             </div>
           </Button>
         </div>
+        {product.colors?.length > 0 && (
+          <div className="flex items-center gap-3 rounded-2xl bg-[#EEF0FF]/70 px-3 py-2.5">
+            <span className="text-xs text-gray-500 font-medium shrink-0 pl-1">
+              Colour
+            </span>
+            <div className="flex flex-wrap gap-2 flex-1">
+              {product.colors.map((color) => {
+                const isActive = selectedColor === color;
+                return (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setSelectedColor(color)}
+                    aria-pressed={isActive}
+                    className={cn(
+                      "flex items-center gap-1.5 pl-1.5 pr-3 h-9 rounded-xl text-xs font-medium transition-all active:scale-95",
+                      isActive
+                        ? "bg-[#0E0E2C] text-white shadow-sm"
+                        : "bg-white text-gray-800 border border-gray-200/80",
+                    )}
+                  >
+                    <span
+                      className="w-5 h-5 rounded-full border border-white/80 ring-1 ring-black/5"
+                      style={{ backgroundColor: color }}
+                    />
+                    <span className="capitalize">{color}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {product.sizes?.length > 0 && (
+          <div className="flex items-center gap-3 rounded-2xl bg-[#EEF0FF]/70 px-3 py-2.5">
+            <span className="text-xs text-gray-500 font-medium shrink-0 pl-1">
+              Size
+            </span>
+            <div className="flex flex-wrap gap-2 flex-1">
+              {product.sizes.map((size) => {
+                const isActive = selectedSize === size;
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => setSelectedSize(size)}
+                    aria-pressed={isActive}
+                    className={cn(
+                      "min-w-[3rem] h-9 px-3.5 inline-flex items-center justify-center rounded-xl text-xs font-medium transition-all active:scale-95",
+                      isActive
+                        ? "bg-[#0E0E2C] text-white shadow-sm"
+                        : "bg-white text-gray-800 border border-gray-200/80",
+                    )}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
         <p className="text-sm text-gray-600 leading-relaxed">
           {product.description}
         </p>
@@ -334,6 +400,72 @@ export default function ProductDetailClient({
                     </Button>
                   </div>
                 </div>
+
+                {(product.colors?.length > 0 || product.sizes?.length > 0) && (
+                  <div className="mb-10 max-w-4xl pb-8 border-b border-gray-100 space-y-3">
+                    {product.colors?.length > 0 && (
+                      <div className="flex items-center gap-4 rounded-2xl bg-[#EEF0FF]/70 px-4 py-3">
+                        <span className="text-sm text-gray-500 font-medium shrink-0 pl-2 min-w-[3.5rem]">
+                          Colour
+                        </span>
+                        <div className="flex flex-wrap gap-2.5 flex-1">
+                          {product.colors.map((color) => {
+                            const isActive = selectedColor === color;
+                            return (
+                              <button
+                                key={color}
+                                type="button"
+                                onClick={() => setSelectedColor(color)}
+                                aria-pressed={isActive}
+                                className={cn(
+                                  "flex items-center gap-2 pl-2 pr-4 h-11 rounded-2xl text-sm font-medium transition-all active:scale-95",
+                                  isActive
+                                    ? "bg-[#0E0E2C] text-white shadow-sm"
+                                    : "bg-white text-gray-800 border border-gray-200/80 hover:border-gray-300",
+                                )}
+                              >
+                                <span
+                                  className="w-6 h-6 rounded-full border border-white/80 ring-1 ring-black/5"
+                                  style={{ backgroundColor: color }}
+                                />
+                                <span className="capitalize">{color}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {product.sizes?.length > 0 && (
+                      <div className="flex items-center gap-4 rounded-2xl bg-[#EEF0FF]/70 px-4 py-3">
+                        <span className="text-sm text-gray-500 font-medium shrink-0 pl-2 min-w-[3.5rem]">
+                          Size
+                        </span>
+                        <div className="flex flex-wrap gap-2.5 flex-1">
+                          {product.sizes.map((size) => {
+                            const isActive = selectedSize === size;
+                            return (
+                              <button
+                                key={size}
+                                type="button"
+                                onClick={() => setSelectedSize(size)}
+                                aria-pressed={isActive}
+                                className={cn(
+                                  "min-w-[4rem] h-11 px-5 inline-flex items-center justify-center rounded-2xl text-sm font-medium transition-all active:scale-95",
+                                  isActive
+                                    ? "bg-[#0E0E2C] text-white shadow-sm"
+                                    : "bg-white text-gray-800 border border-gray-200/80 hover:border-gray-300",
+                                )}
+                              >
+                                {size}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="mb-12 max-w-3xl">
                   <h3 className="text-2xl font-medium text-gray-900 mb-4 tracking-tight flex items-center gap-2">
